@@ -1,0 +1,61 @@
+project:
+  type: website
+
+  render:
+    - "*.qmd"
+    - "*.md"
+    - "*.ipynb"
+    - "!*.rmd"
+    - "!*.Rmd"
+
+website:
+  favicon: _images/logos/favicon.png
+  repo-url: "https://github.com/eu-cdse/documentation"
+  repo-branch: "publish"
+  site-url: "https://documentation.dataspace.copernicus.eu/"
+  # issue-url: "https://github.com/eu-cdse/documentation/issues"
+  site-path: "/Home.html"
+  search:
+    location: sidebar
+    type: textbox
+    copy-button: true
+
+  navbar:
+    background: "#0A4393"
+    height: 50
+    foreground: "light"
+    logo: "_images/logos/CDSE-landscape-full-neg.svg"
+    logo-href: "https://dataspace.copernicus.eu/"
+    pinned: true
+
+  page-navigation: true
+
+  title: "Documentation"
+
+  sidebar:
+    style: "floating"
+    collapse-level: 1
+    contents:
+      - href: Home.qmd
+        text: Welcome
+
+format:
+  html:
+    toc: true
+    toc-depth: 4
+    page-layout: full
+    theme:
+      - custom
+      - layout.scss
+    css: custom.css
+    include-in-header:
+      file: custom.html
+    link-external-icon: true
+    link-external-newwindow: true
+
+    mermaid-format: png
+    mermaid:
+      theme: neutral
+bread-crumbs: true
+ipynb-filters:
+  - notebook_filter.py
