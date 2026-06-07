@@ -1,0 +1,22 @@
+---
+title:  openEO news
+date:   2024-06-01
+author: openEO maintenance team
+listing: 
+  - id: news-listing
+  - type: table
+    contents:
+      - "*.qmd"
+    exclude:
+      title: "openEO news"
+    sort: "date desc"
+    filter-ui: true
+    fields: [date, title, author]
+    grid-columns: 3
+
+---
+
+The openEO community is active and there are always new developments, events and news to share. This page gives an overview of the latest news and highlights from the openEO ecosystem.
+
+::: {#news-listing}
+:::

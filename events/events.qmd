@@ -1,0 +1,22 @@
+---
+title:  openEO events
+date:   2024-06-01
+author: openEO maintenance team
+listing: 
+  - id: events-listing
+  - type: table
+    contents:
+      - "*.qmd"
+    exclude:
+      title: "openEO events"
+    sort: "date desc"
+    filter-ui: true
+    fields: [date, title, author]
+    grid-columns: 3
+
+---
+
+The openEO community organizes and participates in various events, such as workshops, webinars, conferences and hackathons. This page provides an overview of upcoming and past events related to openEO, along with links to agendas, materials and recordings when available.
+
+::: {#events-listing}
+:::

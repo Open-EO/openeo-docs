@@ -11,13 +11,17 @@ website:
       - text: "About"
         href: about.qmd
       - text: "Documentation"
-        href: docs/index.qmd
+        href: 404-not-found.qmd
       - text: "Software"
-        href: software.qmd
+        href: 404-not-found.qmd
     right:
-      - text: "Get Started"
-        href: docs/index.qmd
-        # style this as CTA via custom.css targeting .nav-cta
+      - text: "Latest news"
+        href: news/news.qmd
+      - text: "Events"
+        href: events/events.qmd
+      - text: "Contact"
+        href: 404-not-found.qmd
+      
   search: true
 
 format:
