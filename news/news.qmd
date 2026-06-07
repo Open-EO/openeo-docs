@@ -4,6 +4,8 @@ date:   2024-06-01
 author: openEO maintenance team
 listing: 
   - id: news-listing
+    type: grid
+    max-items: 9
     contents:
       - "*.qmd"
     exclude:
