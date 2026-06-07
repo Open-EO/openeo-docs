@@ -5,7 +5,6 @@ author: openEO maintenance team
 listing: 
   - id: news-listing
     type: grid
-    max-items: 9
     contents:
       - "*.qmd"
     exclude:
@@ -13,7 +12,8 @@ listing:
     sort: "date desc"
     filter-ui: true
     image-placeholder: "./images/openeo_logo.png"
-
+    page-size: 9
+    fields: [date, author, title, description]
 ---
 
 The openEO community is active and there are always new developments, events and news to share. This page gives an overview of the latest news and highlights from the openEO ecosystem.
