@@ -4,6 +4,503 @@
     "href": "index.html",
     "title": "Earth observationfor everyone.",
     "section": "",
-    "text": "🎉 openEO API 1.3.0 released — read the release notes →\n\n\n\n\n  \n    🌍 v1.3.0 now available\n    Earth observationfor everyone.\n    openEO provides a unified API...\n    \n      Get Started →\n    \n  \n\n\n\n\n10+ Cloud back-ends\n\n\n200+ Standardised processes\n\n\n4 Client libraries\n\n\nOGC Community Standard\n\n\n\n\n\n  What is openEO\n  \n    \n      One API.Any cloud. Any language.\n      Whether you're using Python, R, JavaScript or QGIS — openEO lets you write your analysis once and run it on any compatible back-end. No vendor lock-in. No rewriting code.\n      \n        \n          ✓\n          \n            Standardised processes\n            Use the same process names across every back-end\n          \n        \n        \n          ✓\n          \n            Datacube model\n            Work with spatiotemporal datacubes natively\n          \n        \n        \n          ✓\n          \n            Open source\n            Apache 2.0 — inspect, extend, contribute\n          \n        \n      \n    \n    \n      s\n        \n          \n          example.py\n        \n        copy\n      \n      import openeo\n\n# Connect to any openEO back-end\nconn = openeo.connect(\"BACKEND_URL\")\nconn.authenticate_oidc()\n\n# Load Sentinel-2 data as a datacube\ncube = conn.load_collection(\n    \"SENTINEL2_L2A\",\n    spatial_extent={\"west\": 4.0, \"east\": 4.5,\n                    \"south\": 51.0, \"north\": 51.5},\n    temporal_extent=[\"2024-06-01\", \"2024-08-31\"],\n    bands=[\"B04\", \"B08\"]\n)\n\n# Compute NDVI\nndvi = cube.ndvi(nir=\"B08\", red=\"B04\")\nndvi.download(\"ndvi.nc\")\n\n    \n  \n\n\n\n\n\n\n  Get started\n  Choose your path\n  New to openEO? Start with a guide for your preferred language or tool.\n  \n    \n      🐍\n      Python\n      The most feature-complete client. Ideal for data scientists and researchers building analysis pipelines.\n      → python_light.html\n    \n    \n      📊\n      R\n      Integrate Earth observation data directly into your R analysis workflows and spatial packages.\n      → R client docs\n    \n    \n      ⚡\n      JavaScript\n      Build interactive web applications that query and visualise EO data in the browser.\n      → JS client docs\n    \n    \n      🗺️\n      QGIS Plugin\n      Access openEO back-ends directly from QGIS with a graphical interface — no coding required.\n      → QGIS guide\n    \n    \n      📖\n      Concepts & Glossary\n      Understand datacubes, processes, UDFs, and the openEO data model before writing any code.\n      → docs_light.html\n    \n    \n      🔧\n      For Developers\n      Build a back-end or client library. API reference, profiles, and implementation guidelines.\n      → developer docs\n    \n  \n\n\n\n\n  Documentation\n  Everything you need\n  Structured documentation for users, developers, and service providers.\n  \n    \n      User Docs\n      Introduction\n      Start here. Learn the openEO concepts, connect to a back-end, and run your first job.\n    \n    \n      User Docs\n      Datacubes\n      Deep dive into the spatiotemporal datacube model that underpins all openEO processing.\n    \n    \n      User Docs\n      Cookbook\n      Practical recipes: NDVI, cloud masking, time series, batch jobs, and more.\n    \n    \n      Developer\n      API Reference\n      Full OpenAPI specification for the openEO REST API v1.x.\n    \n    \n      Developer\n      Back-end Guide\n      Implement an openEO-compliant back-end with xarray, Dask, and more.\n    \n    \n      Processes\n      Process Reference\n      Browse all 200+ standardised process definitions with examples and parameters.\n    \n  \n\n\n\n\n  Latest news\n  What's new\n  \n    \n      Feb 3, 2026\n      openEO API 1.3.0 and openEO Processes 2.0.0 RC2 released\n      release\n    \n    \n      Dec 22, 2025\n      New openEO QGIS plugin has been released\n      plugin\n    \n    \n      Apr 5, 2025\n      OGC seeks public comment on openEO as a Community Standard (phase 2)\n      community\n    \n  \n\n\n\n\n  Ecosystem\n  Available on every major platform\n  Install openEO via your preferred package manager.\n  \n    pip install openeo\n    install.packages(\"openeo\")\n    npm install @openeo/js-client\n    conda install -c conda-forge openeo\n  \n\n\n\n\n  \n    \n      \n      openEO\n    \n    An open API and ecosystem for Earth observation cloud processing. Governed by the openEO Project Steering Committee.\n  \n  \n    Documentation\n    \n      Introduction\n      Datacubes\n      Processes\n      Cookbook\n      Authentication\n    \n  \n\n  \n    Clients\n    \n      Python\n      R\n      JavaScript\n      QGIS\n      Julia\n    \n  \n  \n    Project\n    \n      About\n      PSC\n      GitHub ↗\n      Contact\n      openEO Hub ↗\n    \n  \n\n© 2026 openEO — Apache 2.0 License  ·  Built with openEO"
+    "text": "🎉 openEO API 1.3.0 released — read the release notes →\n\n\n\n\n  \n    🌍 v1.3.0 now available\n    Earth observationfor everyone.\n    openEO provides a unified API...\n    \n      Get Started →\n    \n  \n\n\n\n\n  100+EO Collections\n  100+Processes\n  8+Backends\n  100000+Users\n\n\n\n\n  What is openEO\n  \n    \n      One API.Any cloud. Any language.\n      Whether you're using Python, R, JavaScript or QGIS — openEO lets you write your analysis once and run it on any compatible back-end. No vendor lock-in. No rewriting code.\n      \n        \n          ✓\n          \n            Standardised processes\n            Use the same process names across every back-end\n          \n        \n        \n          ✓\n          \n            Datacube model\n            Work with spatiotemporal datacubes natively\n          \n        \n        \n          ✓\n          \n            Open source\n            Apache 2.0 — inspect, extend, contribute\n          \n        \n      \n    \n    \n      s\n        \n          \n          example.py\n        \n        copy\n      \n      import openeo\n\n# Connect to any openEO back-end\nconn = openeo.connect(\"BACKEND_URL\")\nconn.authenticate_oidc()\n\n# Load Sentinel-2 data as a datacube\ncube = conn.load_collection(\n    \"SENTINEL2_L2A\",\n    spatial_extent={\"west\": 4.0, \"east\": 4.5,\n                    \"south\": 51.0, \"north\": 51.5},\n    temporal_extent=[\"2024-06-01\", \"2024-08-31\"],\n    bands=[\"B04\", \"B08\"]\n)\n\n# Compute NDVI\nndvi = cube.ndvi(nir=\"B08\", red=\"B04\")\nndvi.download(\"ndvi.nc\")\n\n    \n  \n\n\n\n\n\n\n  Get started\n  Choose your path\n  New to openEO? Start with a guide for your preferred language or tool.\n  \n    \n      🐍\n      Python\n      The most feature-complete client. Ideal for data scientists and researchers building analysis pipelines.\n      → python_light.html\n    \n    \n      📊\n      R\n      Integrate Earth observation data directly into your R analysis workflows and spatial packages.\n      → R client docs\n    \n    \n      ⚡\n      JavaScript\n      Build interactive web applications that query and visualise EO data in the browser.\n      → JS client docs\n    \n    \n      🗺️\n      QGIS Plugin\n      Access openEO back-ends directly from QGIS with a graphical interface — no coding required.\n      → QGIS guide\n    \n    \n      📖\n      Concepts & Glossary\n      Understand datacubes, processes, UDFs, and the openEO data model before writing any code.\n      → docs_light.html\n    \n    \n      🔧\n      For Developers\n      Build a back-end or client library. API reference, profiles, and implementation guidelines.\n      → developer docs\n    \n  \n\n\n\n\n\nLatest news\n\nWhat’s new\n\n\n\n   \n    \n    \n      Order By\n      Default\n      \n        Date - Oldest\n      \n      \n        Date - Newest\n      \n      \n        Title\n      \n    \n  \n    \n      \n      \n    \n\n\n\n\n\n\nDate\n\n\n\nTitle\n\n\n\n\n\n\n\n\nMay 14, 2026\n\n\nOGC publishes openEO as a new Community Standard\n\n\n\n\n\n\nFeb 3, 2026\n\n\nopenEO API 1.3.0 and openEO Processes 2.0.0 RC2 released\n\n\n\n\n\n\nDec 22, 2025\n\n\nNew openEO QGIS plugin has been released\n\n\n\n\n\n\nNo matching items\n\n\n\n\n\n  \n    \n      \n      openEO\n    \n    An open API and ecosystem for Earth observation cloud processing. Governed by the openEO Project Steering Committee.\n  \n  \n    Documentation\n    \n      Introduction\n      Datacubes\n      Processes\n      Cookbook\n      Authentication\n    \n  \n\n  \n    Clients\n    \n      Python\n      R\n      JavaScript\n      QGIS\n      Julia\n    \n  \n  \n    Project\n    \n      About\n      PSC\n      GitHub ↗\n      Contact\n      openEO Hub ↗\n    \n  \n\n© 2026 openEO — Apache 2.0 License  ·  Built with openEO"
+  },
+  {
+    "objectID": "events/events.html",
+    "href": "events/events.html",
+    "title": "openEO events",
+    "section": "",
+    "text": "The openEO community organizes and participates in various events, such as workshops, webinars, conferences and hackathons. This page provides an overview of upcoming and past events related to openEO, along with links to agendas, materials and recordings when available.\n\n\n\n\n\n\n\n\n\n\nIEEE IGARRS 2021 HD-3: Hands-on openEO: access cloud platforms using your preferred programming language\n\n\n\n\n\n\n\n\n\n\n\nNo matching items\n\n\n\n\n\n\n\n   \n    \n    \n      Order By\n      Default\n      \n        Date - Oldest\n      \n      \n        Date - Newest\n      \n      \n        Title\n      \n      \n        Author\n      \n    \n  \n    \n      \n      \n    \n\n\n\n\n\n\nDate\n\n\n\nTitle\n\n\n\nAuthor\n\n\n\n\n\n\n\n\n \n\n\nIEEE IGARRS 2021 HD-3: Hands-on openEO: access cloud platforms using your preferred programming language\n\n\n \n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "news/2017-12-18-VITO_meeting.html",
+    "href": "news/2017-12-18-VITO_meeting.html",
+    "title": "First week of intensive collaboration: Dec 4-6, 2017",
+    "section": "",
+    "text": "On Dec 4-6, VITO’s remote sensing lab hosted the first openEO week of intensive collaboration, in Mol, Belgium. Thirteen developers from 8 different partners gathered to discuss, and work on realising the first three use cases, which are planned to be delivered in Month 6 (March 2018):\n\n\nFirst week of intense collaboration for #openEO @VITO_RS_, drafting a first API and doing use cases. @MundialisInfo @EODC_GmbH #ifgi @CopernicusEU @sinergise @EURAC #JRC pic.twitter.com/9uCYd9A96S\n\n— openEO (@open_EO) December 5, 2017\n\n\nWe worked on the following back-ends:\n\nSentinel hub\nEODC file-based\nRasdaman\nGRASS\nGeoTrellis\n\nand on the R and python clients, and started working on a &lt;a :href=“$site.themeConfig.docPath + ‘glossary.html’”&gt;glossary.\nAmong the many insights we gathered by sitting together and talk, we found that\n\nthe “core API” as described in the proposal is not so much a software layer on itself, but rather an API in front of every compute back-end; this simplifies the whole architecture pretty much\nOpenSearch should have the ability to describe collections of granules (or images, tiles) in addition to describing individual granules\nband can be seen as array dimension as well as attributes of array records, but seeing it as a dimension may make life easier\nuse case 1 can be described as a sequence of filter operations (on image collection, bounding box, date range, and bands) followed by two aggregate operations (compute division over bands, compute mininum over time)\n\nIntermediate results can be found in a bunch of repositories, mostly proof-of-concept, on the openEO Github organisation."
+  },
+  {
+    "objectID": "news/2018-05-23-user-requirements-survey-launched.html",
+    "href": "news/2018-05-23-user-requirements-survey-launched.html",
+    "title": "User Requirements Survey for openEO launched",
+    "section": "",
+    "text": "This survey aims to gather a detailed view of external user needs in relation EO data access and analysis. This will enable the openEO project team to better identify current needs of different users and the potential for openEO to be useful to them and to overcome any barriers they have in their work streams. Ultimately, this will steer the openEO API in a way which meets user needs including being compatible with additional EO service providers and their data infrastructures. Additional processes and use cases will also be added where necessary with the aim of benefiting more potential users.\nThe survey is open to all, so please fill it in by 18 June 2018, and share within your relevant networks. It should take no longer than 10 minutes to complete.\nhttps://ec.europa.eu/eusurvey/runner/openEO_UserSurvey"
+  },
+  {
+    "objectID": "news/2022-07-07-monthly-dev-calls.html",
+    "href": "news/2022-07-07-monthly-dev-calls.html",
+    "title": "Monthly openEO community meeting",
+    "section": "",
+    "text": "The openEO PSC is pleased to announce a new monthly openEO community meeting that takes place every first Wednesday of a month at 14:00 CET.\nThis is meant to be a project-independant platform for developers to announce news, inform about recent or planned work, exchange ideas, discuss issues and get to know each other. In the past there have been project-specific developer calls, but we would like to build bridges between projects and coordinate the work better.\nIf you’d like to join these calls, please send an e-mail to openeo.psc@uni-muenster.de. Everyone is welcome!"
+  },
+  {
+    "objectID": "news/2020-09-02-openeo-user-workshop.html",
+    "href": "news/2020-09-02-openeo-user-workshop.html",
+    "title": "openEO Virtual User Workshop",
+    "section": "",
+    "text": "UPDATE:\nPresentations and Notebooks of the user workshop can be downloaded here.\n\nopenEO hosts a (virtual) user workshop on 19 October 2020 (10:30 - 16:30 CEST in two parts) and encourages interested parties to register for this event at https://ec.europa.eu/eusurvey/runner/openEOUserWorkshop.\nNeeded preparation: Manuals for installing the various client APIs, recommended for testing openEO in guided sessions, can be found in the User Documentation under Getting Started.\nUser questionnaire: Please help us also by spending some minutes for this user questionnaire.\nAccess details: Please click the session topics below to connect to the corresponding sessions in Microsoft Teams.\nAgenda:\n\n\n\n\nPart 1\n\n\n\n\nNo.\n\n\nStart\n\n\nDuration\n\n\nTopic\n\n\nRemark\n\n\n\n\n\n\n1.1\n\n\n10:30h\n\n\n30min\n\n\nIntroduction into openEO + technical overview\n\n\n\n\n\n\n1.2\n\n\n11:00h\n\n\n20min\n\n\nOverview backends\n\n\n\n\n\n\n1.3\n\n\n11:20h\n\n\n20min\n\n\nOverview processes + documentation\n\n\n\n\n\n\n1.4\n\n\n11:40h\n\n\n5min\n\n\nInstallation of openEO\n\n\n\n\n\n\n1.5\n\n\n11:45h\n\n\n15min\n\n\nQ/A: Backends, Installation, Q/A Chat\n\n\nQuestionaire\n\n\n\n\nBreak for users to install openEO, partners stay available in chat for answering questions on that in bilateral talks\n\n\n\n\n\n\n\n\n\n\nPart 2\n\n\n\n\nNo.\n\n\nStart\n\n\nDuration\n\n\nTopic\n\n\nRemark\n\n\n\n\n\n\n2.1\n\n\n14:00h\n\n\n5min\n\n\nWelcome back / Ways for users to approach to openEO\n\n\n\n\n\n\nLive Demontrations, Part 1\n\n\n\n\n2.2a\n\n\n14:05h\n\n\n20min\n\n\nPython Client\n\n\nParallel session\n\n\n\n\n2.2b\n\n\n14:05h\n\n\n20min\n\n\nJavaScript Client + mobile application\n\n\n\n\n\n\n14:25h\n\n\n5min\n\n\nShort break / Switching sessions\n\n\n\n\nLive Demontrations, Part 2\n\n\n\n\n2.3a\n\n\n14:30h\n\n\n20min\n\n\nWeb Editor + QGIS\n\n\nParallel session\n\n\n\n\n2.3b\n\n\n14:30h\n\n\n20min\n\n\nR Client\n\n\n\n\n\n\n14:50h\n\n\n5min\n\n\nShort break / Switching sessions\n\n\n\n\nGuided Sessions and Q/A\n\n\n\n\n2.4a\n\n\n14:55h\n\n\n60min\n\n\nGuided room for users to test the R Client\n\n\nParallel session\n\n\n\n\n2.4b\n\n\n14:55h\n\n\n60min\n\n\nGuided room for users to test the Python Client\n\n\n\n\n2.4c\n\n\n14:55h\n\n\n60min\n\n\nGuided room for users to test other clients\n\n\n\n\n2.5a\n\n\n15:55h\n\n\n15min\n\n\nQ/A and Discussions: R Client\n\n\nParallel session\n\n\n\n\n2.5b\n\n\n15:55h\n\n\n15min\n\n\nQ/A and Discussions: Python\n\n\n\n\n2.5c\n\n\n15:55h\n\n\n15min\n\n\nQ/A and Discussions: Other clients\n\n\n\n\nWrap up\n\n\n\n\n2.6\n\n\n16:10h\n\n\n20min\n\n\nQ/A; Discussion on user needs, future work\n\n\n\n\n\n\nBackground: openEO is a user-driven open source API, which grants a uniform communication between the Earth Observation (EO) data user community and diverse EO cloud service providers. Thus, it aims for a cross-platform interoperability to ease a comparison, the cooperation and the switch between them. The project consortium (H2020 Grant No 776242) released a stable version of the openEO API, covering standardised online processing of all aspects of an EO data life cycle on diverse cloud platforms.\nIn this User Workshop, the audience is provided with insight into the functionalities of the openEO API. In various live demonstration and training sessions, real demonstration cases will be explained from the user perspective. Possible applications of the openEO API will be presented for different access levels – from the use of programming languages to browser based model builders or mobile applications. Target audience for this event are programmers, decision makers, as well as third-party cloud EO service providers."
+  },
+  {
+    "objectID": "news/2022-04-08-psc-meetings.html",
+    "href": "news/2022-04-08-psc-meetings.html",
+    "title": "openEO PSC meetings",
+    "section": "",
+    "text": "Last wednesday, the first regular openEO PSC meeting took place. We have now agreed to meet on a monthly basis, each first Wednesday of the month at 15:00 CET/CEST. We will always discuss the open issues in the PSC issue tracker and talk through the future and strategic directions openEO is heading towards. The meetings are open to the public and anyone can join as a guest. If you’d like to join the next meeting, please contact openeo.psc@uni-muenster.de and we’ll send you an invite."
+  },
+  {
+    "objectID": "news/2025-12-22-new-qgis-plugin.html",
+    "href": "news/2025-12-22-new-qgis-plugin.html",
+    "title": "New openEO QGIS plugin has been released",
+    "section": "",
+    "text": "We’re excited to announce the availability of a new and fully rewritten openEO QGIS plugin, now ready for broader testing by the community.\nThis release represents a major step forward in usability, stability, and feature coverage. The plugin has been redesigned from the ground up and is now fully integrated into the QGIS Browser, providing a seamless and intuitive way to access openEO backends and resources directly from QGIS.\nThe plugin requires QGIS 3.40.0 or later and is expected to be compatible with the upcoming QGIS 4.0. It can be downloaded from within QGIS, just search for ‘openEO’ in the plugin manager."
+  },
+  {
+    "objectID": "news/2025-12-22-new-qgis-plugin.html#whats-new",
+    "href": "news/2025-12-22-new-qgis-plugin.html#whats-new",
+    "title": "New openEO QGIS plugin has been released",
+    "section": "What’s New",
+    "text": "What’s New\nThe rewritten plugin introduces a wide range of new features and improvements:\n\nDeep QGIS integration\n\nFully integrated into the QGIS Browser for easy access\n\nBroad API & backend support\n\nSupport for all openEO API 1.x versions\nopenEO Hub integration\n\nImproved authentication\n\nSupport for OpenID Connect and HTTP Basic authentication\nGenerally improved and more robust authentication handling, including multi account support\n\nExplore and manage openEO resources\n\nBrowse Collections, batch jobs, and web services\nAllows for pagination and sorting\n\nRich visualization capabilities\n\nVisualize batch job results:\n\nGeoTIFF\n\nnetCDF (raster only)\n\nGeoJSON\n\nGeoParquet\n\nVisualize web services:\n\nXYZ\n\nWMTS\n\nPreview collections when supported by the backend (XYZ, WMTS)\n\nSTAC integration\n\nCopy STAC metadata URLs and STAC asset URLs to easily load other assets via the QGIS layer manager (e.g. CSV) or the QGIS STAC integration (e.g. STAC Items for STAC Collections)\n\nEasy data download\n\nDownload assets all at once or individually"
+  },
+  {
+    "objectID": "news/2025-12-22-new-qgis-plugin.html#call-for-testing-feedback",
+    "href": "news/2025-12-22-new-qgis-plugin.html#call-for-testing-feedback",
+    "title": "New openEO QGIS plugin has been released",
+    "section": "Call for Testing & Feedback",
+    "text": "Call for Testing & Feedback\nWe consider the current version stable and ready to be tested by a broader user audience. Over the coming weeks, we will collect feedback and apply final refinements, with a final release planned for the end of January or early February. We also plan to present the QGIS plugin in one of the next openEO community meeting, please keep an eye on the planned topics.\nYour feedback is highly appreciated!\nPlease share issues, suggestions, or improvements via GitHub issues."
+  },
+  {
+    "objectID": "news/2025-12-22-new-qgis-plugin.html#acknowledgements",
+    "href": "news/2025-12-22-new-qgis-plugin.html#acknowledgements",
+    "title": "New openEO QGIS plugin has been released",
+    "section": "Acknowledgements",
+    "text": "Acknowledgements\nThe revival and complete reshaping of the openEO QGIS plugin was driven by Caro Niebl, an intern at moreGeo, who has dedicated the past weeks to rethinking and rebuilding the plugin from the ground up.\nThis work was funded to a large extent by VITO. We would like to sincerely thank them for their support and contribution to the openEO ecosystem."
+  },
+  {
+    "objectID": "news/2025-12-22-new-qgis-plugin.html#this-and-next-year",
+    "href": "news/2025-12-22-new-qgis-plugin.html#this-and-next-year",
+    "title": "New openEO QGIS plugin has been released",
+    "section": "This and Next Year",
+    "text": "This and Next Year\nIt has been a great year for openEO. CDSE is making openEO available to a large number of users, and more projects are adopting openEO with more launches expected next year.\nWe are looking forward to next year, expecting new releases of the openEO API and openEO processes, and hopefully an adoption as OGC community standard.\n🎄 Merry Christmas and a Happy New Year to the openEO community!"
+  },
+  {
+    "objectID": "news/2021-11-08-r-client-on-cran.html",
+    "href": "news/2021-11-08-r-client-on-cran.html",
+    "title": "R Client on CRAN",
+    "section": "",
+    "text": "Today, we released a new version 1.1.0 of the openEO R Client, which features a couple of improvements and bug fixes.\nAt the same time, the R client has been published on CRAN, too: openeo This means you can now install the R client more easily and directly through CRAN with the following command:\ninstall.packages(\"openeo\")\nIf you have trouble installing or working with the package, feel free to leave an issue in the GitHub issue tracker."
+  },
+  {
+    "objectID": "news/2019-10-07-EO-big-data-hackaton.html",
+    "href": "news/2019-10-07-EO-big-data-hackaton.html",
+    "title": "H2020 EO Big Data Hackathon Nov 7-8",
+    "section": "",
+    "text": "openEO will participate, along with the four other H2020 projects funded under the same call, in the H2020 EO Big Data Hackathon, which is open for participation.\nThe hackaton will take place on Nov 7 and 8, 2019, in Frascati, Italy."
+  },
+  {
+    "objectID": "news/2020-11-30-openeo-api-101-released.html",
+    "href": "news/2020-11-30-openeo-api-101-released.html",
+    "title": "openEO API v1.0.1 released",
+    "section": "",
+    "text": "Today, the newly established openEO Project Steering Committee released a new version 1.0.1 of the openEO API. This doesn’t include any new functionality, but clarifies ambiguous parts of the specification and changes the API’s recommendation regarding CORS headers to avoid potential security issues with credentials in web browsers. Back-ends are advised to check their implementations against the new specification and update the CORS headers accordingly. The web clients have already been updated accordingly.\nMore details about the release: * Details on the CORS issue * Changelog * API documentation"
+  },
+  {
+    "objectID": "news/2020-07-31-openeo-api-released.html",
+    "href": "news/2020-07-31-openeo-api-released.html",
+    "title": "Stable release of the openEO API and Processes (v1.0.0)",
+    "section": "",
+    "text": "After two release candidates in early 2020, the openEO Consortium released the first stable version of its openEO API and their set of common processes. This blog post gives an overview of the most notable changes since version 0.4 and provides an outlook on the next months’ project activity.\nFor those who are new to openEO, we have developed an open API to connect R, Python, JavaScript and other clients to big Earth observation cloud back-ends in a simple and unified way. The idea is that this will make cloud-based processing of large satellite image collections, or other data cubes such as weather model data easier for data scientists. The entire development process has been open, and all software developed in this project is open source and available on GitHub. For more information about openEO, please read page about the project first."
+  },
+  {
+    "objectID": "news/2020-07-31-openeo-api-released.html#processes",
+    "href": "news/2020-07-31-openeo-api-released.html#processes",
+    "title": "Stable release of the openEO API and Processes (v1.0.0)",
+    "section": "Processes",
+    "text": "Processes\nThe most important change was introduced just recently in openEO API version 1.0.0 RC2. Until then, openEO process graphs allowed users to express processing algorithms and execute them on a back-end using pre-defined processes exposed by a back-end provider. While this still exists, a user can now also promote a process graph to a full openEO process description, following the same schema as the pre-defined processes: it must include the processing instructions and metadata like an identifier, parameters, return values, examples etc. This allows user-defined processes to be stored and used like pre-defined processes, enabling users to extend the processing capabilities of a back-end. Users can now encapsulate algorithms in separate user-defined processes and re-use these in other user-defined processes. This also allows the exchange of processes (algorithms) between users and back-ends, and creates the possibility for a repository of user-contributed processes that other users can benefit from. A place for finding and sharing such processes is (planned to be) the openEO Hub.\nThrough user-defined processes (and user defined functions) users may also be able to substitute processes that back-ends have not implemented. In fact, several pre-defined processes are defined with alternative processing instructions that use other openEO pre-defined processes to solve the task. For example, the pre-defined process normalized_ difference can be emulated with a combination of the processes add, subtract and divide. So if a back-end is missing the normalized_difference process, a user can just download it and use an openEO client to push it to the back-end where it then acts as drop-in replacement for the missing pre-defined process. In the future we plan to allow just using the URL of the process, so that no download/upload would be required.\nAs mentioned above, openEO offers a set of common processes to improve interoperability and portability between back-ends. This is not a complete list and is expected to be extended by the openEO Consortium. More than that, we would like to see that processes arise from the community and that we can take over and standardize whatever comes up and is useful for the different domains working with openEO. We can then simply use the user-defined processes as they share the same schema as the pre-defined processes.\nThe pre-defined openEO processes are released separately from the API to ensure a faster release cycle than we plan for the API. We want to be able to quickly adapt to community needs with additional processes. Future version of the processes are valid with any future API version through the specification of the process metadata standard in openEO.\nThe pre-defined processes itself also got an update just after the API release, but the changes are relatively small compared to the API. The focus was to clarify unspecified and ambiguous parts of the specification. Some processes such as apply_neighborhood and constant were added for the use cases. In collaboration with Julia Wagemann from the ECMWF we started defining processes such as aggregate_temporal_frequency, anomaly and climatological_normal for climatology and meteorology use-cases. Unfortunately, this effort could not be finished yet due to the COVID-19 situation. We want to continue to broaden the processes to be useful for more domains apart from core Earth Observation."
+  },
+  {
+    "objectID": "news/2020-07-31-openeo-api-released.html#stac-and-ogc-apis",
+    "href": "news/2020-07-31-openeo-api-released.html#stac-and-ogc-apis",
+    "title": "Stable release of the openEO API and Processes (v1.0.0)",
+    "section": "STAC and OGC APIs",
+    "text": "STAC and OGC APIs\nThe openEO API now supports STAC (API) versions 0.9 and 1.x, which implements OGC API - Features. Thus, a potential integration of the openEO API with upcoming OGC API standards should be easy to establish."
+  },
+  {
+    "objectID": "news/2020-07-31-openeo-api-released.html#user-defined-functions-udfs",
+    "href": "news/2020-07-31-openeo-api-released.html#user-defined-functions-udfs",
+    "title": "Stable release of the openEO API and Processes (v1.0.0)",
+    "section": "User-defined Functions (UDFs)",
+    "text": "User-defined Functions (UDFs)\nNote: Don’t get confused, user-defined processes and user-defined functions describe different things.\nAlthough already foreseen in API version 0.4.0, the openEO UDF API has evolved and is better integrated in the openEO API. It now allows to run Docker containers or custom scripts in potentially any programming language. The UDF API itself is not part of the openEO API, but is a separate specification to describe the data exchange between a back-end implementing the openEO API and a UDF API instance. The UDF API is in release candidate phase and we’ll likely post a separate blog post focussing solely on them. Currently, implementations in R and Python are available. It is foreseen that users could also host their own UDF API instances and call them from remote back-ends."
+  },
+  {
+    "objectID": "news/2020-07-31-openeo-api-released.html#other-improvements",
+    "href": "news/2020-07-31-openeo-api-released.html#other-improvements",
+    "title": "Stable release of the openEO API and Processes (v1.0.0)",
+    "section": "Other improvements",
+    "text": "Other improvements\nOther notable changes and additions:\n\nSupport for importing user-provided data sets has been added.\nProviders can now expose their terms of service and privacy policies.\nThe WebSocket-based Subscription API for notifications and monitoring introduced in version 0.4 has been replaced by a logging mechanism in the HTTP API. This makes implementing the API easier for clients and back-ends, but doesn’t work in real-time any longer.\n\nThe full set of changes can be found in the API’s change log."
+  },
+  {
+    "objectID": "news/2020-07-31-openeo-api-released.html#limitations",
+    "href": "news/2020-07-31-openeo-api-released.html#limitations",
+    "title": "Stable release of the openEO API and Processes (v1.0.0)",
+    "section": "Limitations",
+    "text": "Limitations\nWith openEO, we are digging into new grounds regarding the interoperability of big Earth observation clouds. While we could solve a lot of issues that came up, there were some issues that we couldn’t solve as part of the API and processes. We want to be honest and give some insights into the lessons learned, so I have posted these as a separate blog post."
+  },
+  {
+    "objectID": "news/2020-07-31-openeo-api-released.html#next-steps",
+    "href": "news/2020-07-31-openeo-api-released.html#next-steps",
+    "title": "Stable release of the openEO API and Processes (v1.0.0)",
+    "section": "Next steps",
+    "text": "Next steps\nThe API’s development went through several iterations and is working well for our broad range of use cases, which we’ll report soon. Implementations by several organizations for several API versions provide evidence that the API and the processes are useful for a wide range of use cases. Client and back-end developers will now finish their implementations and we hope to have the first operational services this year. We will follow up with new blog posts once other releases are available. If you are interested in trying out openEO, please contact us to get more information."
+  },
+  {
+    "objectID": "news/2026-02-03-new-openeo-versions-130-200rc2.html",
+    "href": "news/2026-02-03-new-openeo-versions-130-200rc2.html",
+    "title": "openEO API 1.3.0 and openEO Processes 2.0.0 RC2 released",
+    "section": "",
+    "text": "Today, we have released the new version 1.3.0 of the openEO API. At the same time, we’ve also released openEO Processes 2.0.0-rc.2.\nThese releases continue the journey towards first-class vector data cube support, while also bringing a number of quality-of-life improvements for implementers (back-ends) and consumers (clients).\nBack-ends and clients are advised to check their implementations against the new specifications and update accordingly.\nBelow you can find details about the individual releases:"
+  },
+  {
+    "objectID": "news/2026-02-03-new-openeo-versions-130-200rc2.html#openeo-api-v1.3.0",
+    "href": "news/2026-02-03-new-openeo-versions-130-200rc2.html#openeo-api-v1.3.0",
+    "title": "openEO API 1.3.0 and openEO Processes 2.0.0 RC2 released",
+    "section": "openEO API v1.3.0",
+    "text": "openEO API v1.3.0\nopenEO API 1.3.0 contains a set of improvements, clarifications and new capabilities, with a strong focus on authentication, batch job metadata and interoperability.\n\nAPI documentation\n\nPlease consult the changelog for the full list of changes and additions.\n\nAPI Highlights\n\nNew extensions:\n\nProcessing Parameters Extension\nRemote Process Definition Extension\nWorkspaces Extension\n\nAuthentication updates: Support for standard JSON Web Tokens (JWT) as Bearer tokens, while deprecating the openEO-specific token format.\nBatch job metadata improvements: Additional timestamps such as queued, started and unpublished, a status diagram, and extended timestamps in STAC results.\nImproved logging: Added stacktrace to log entries to simplify debugging.\nDiscovery and process metadata tightened: GET / now requires the fields type and conformsTo; GET /processes adds a version property for processes; GET / also adds a new web-editor link relation type.\nDeprecations: STAC 0.9.x is deprecated.\n\nFeedback is more than welcome. Please report issues and questions through the GitHub issue tracker. The next version is likely v1.4.0, work has started."
+  },
+  {
+    "objectID": "news/2026-02-03-new-openeo-versions-130-200rc2.html#openeo-processes-v2.0.0-rc.2",
+    "href": "news/2026-02-03-new-openeo-versions-130-200rc2.html#openeo-processes-v2.0.0-rc.2",
+    "title": "openEO API 1.3.0 and openEO Processes 2.0.0 RC2 released",
+    "section": "openEO Processes v2.0.0-rc.2",
+    "text": "openEO Processes v2.0.0-rc.2\nopenEO Processes 2.0.0-rc.2 is the second release candidate of the upcoming 2.0 release series. It builds on the 2.0 work that introduced the datacube data type and vector cube support, and continues to improve process definitions, consistency and implementability.\nPlease note that some changes are breaking changes. Make sure to review the changelog carefully before updating implementations.\n\nProcesses documentation\n\nPlease consult the changelog for a full list of changes and additions.\n\nProcesses Highlights\n\nImplementation support: A new implementation guide for implementing OGC API - Processes in openEO, plus a dedicated set of unit tests.\nNew processes:\n\nexport_collection, export_workspace\nrun_ogcapi, run_ogcapi_externally\nstac_modify\ntext_find\n\nMore stable processes: apply_polygon, date_between, date_shift, filter_labels and inspect are now marked as stable.\nBehaviour and consistency updates:\n\nsave_results returns the STAC resource (instead of boolean true).\nall returns true for empty arrays; any returns false for empty arrays.\napply_polygon renamed parameter polygons to geometries.\nclip throws an exception if min &gt; max. #472\ndate_difference allows week as a unit.\nis_nan returns false for non-numerical data types. #486\n\nClarifications and fixes across the board: Improved handling of NaN, null and no-data values, added uniqueness constraints for various array-typed parameters, and numerous targeted fixes (e.g. geometry dimension type clarifications).\n\nAs this is a release candidate, feedback is more than welcome. Please report issues and questions through the GitHub issue tracker. The next version is likely v2.0.0 (stable)."
+  },
+  {
+    "objectID": "news/2020-07-31-lessons-learned.html",
+    "href": "news/2020-07-31-lessons-learned.html",
+    "title": "Lessons learned while developing the openEO API",
+    "section": "",
+    "text": "With openEO, we are digging into new grounds regarding the interoperability of big Earth observation clouds. While we could address a lot of problems that came up, some issues remained that we couldn’t solve. This article explains some of the lessons learned and thus also gives an honest overview about current limitations of the openEO API."
+  },
+  {
+    "objectID": "news/2020-07-31-lessons-learned.html#collection-names",
+    "href": "news/2020-07-31-lessons-learned.html#collection-names",
+    "title": "Lessons learned while developing the openEO API",
+    "section": "1. Collection Names",
+    "text": "1. Collection Names\nThe naming of data sets (collections) is different across providers. We thought about recommending to follow lists like the CEOS Mission Index, but then the question is what data does it really refer to? It lists Sentinel-2 A and Sentinel-2 B, but would that be Level 1C or 2A or something completely different? Therefore, openEO decided to not enforce any naming scheme as data sets throughout the affiliated providers were mostly differently pre-processed anyway. To improve the situation, openEO allows to define process parameters. This allows to define algorithms independently of data set names, which can later be assigned when executing the process. Also, openEO recommends to split processing instructions into two parts: data loading/pre-processing and the actual algorithm.\nSome more background information can be found in the corresponding GitHub issue. In general, many limitations (including the following) concern the data holdings of the providers and may hopefully be solved by initiatives that work on Analysis Ready Data (ARD)."
+  },
+  {
+    "objectID": "news/2020-07-31-lessons-learned.html#other-names",
+    "href": "news/2020-07-31-lessons-learned.html#other-names",
+    "title": "Lessons learned while developing the openEO API",
+    "section": "2. Other Names",
+    "text": "2. Other Names\nSimilarly, the naming of bands (and potentially other dimension labels, too) are inconsistent across providers, we faced names such as B2, B02, 2 or blue for Sentinel-2. openEO doesn’t enforce any naming scheme, but has found ways to improve the situation for users. First, process parameters can be used (see above). Second, bands can also be specified using the common names as specified by STAC or wavelength ranges. openEO recommends to use common names whenever available.\nFor example, to avoid specific naming you could filter for Sentinel-2 (A and B) band 2 as follows: * by common name: filter_bands(data = cube, bands = ['blue']) (blue maps to the wavelength range 0.45 - 0.50 according to STAC) * by wavelength, specified in μm: filter_bands(data = cube, wavelength = [[0.49, 0.50]]) (wavelength is 0.4966 for Sentinel-2A and 0.4921 for Sentinel-2B)\nIn general, metadata is aligned for usage in openEO processes by using the STAC specification, which improves interoperability."
+  },
+  {
+    "objectID": "news/2020-07-31-lessons-learned.html#chunked-collections",
+    "href": "news/2020-07-31-lessons-learned.html#chunked-collections",
+    "title": "Lessons learned while developing the openEO API",
+    "section": "3. Chunked Collections",
+    "text": "3. Chunked Collections\nSome providers (for example Google Earth Engine) expose data sets such as Sentinel-2 L2A as one large collection. Other providers expose the data sets split into groups, e.g. chunked by CRS and resolution. EURAC has collections such as S2_32632_60m_L2A or S2_32635_10m_L2A for example. There are valid reasons for any of the implementations, but to explain them is too much for this article. Unfortunately, those differences decrease the interoperability and in the end the re-usability of the processes. openEO aims to make algorithms re-usable and thus recommends to split processing instructions into two parts: data loading/pre-processing and the actual algorithm. This allows greater re-usability of the algorithms."
+  },
+  {
+    "objectID": "news/2020-07-31-lessons-learned.html#what-to-specify",
+    "href": "news/2020-07-31-lessons-learned.html#what-to-specify",
+    "title": "Lessons learned while developing the openEO API",
+    "section": "4. What to specify?",
+    "text": "4. What to specify?\nThe API has a focus on Service and Data Discovery, Data Processing and Result Retrieval/Publishing. Some more customer-oriented tasks such as user registration and payments are not handled through the openEO API. These aspects are too different across providers and can be handled more efficiently through external interfaces. Most providers already offer such services independently of the openEO API implementation anyway to offer their pre-openEO services.\nStill, the openEO API uses OpenID Connect as main Authentication and Authorization mechanism (see also point 5). OpenID Connect has a User Registration extension draft that can be used by back-ends and may be adopted in the future. We closely follow upcoming specifications and standards and are happy to adopt anything useful.\n\nFile Formats\nSimilarly, file formats and their options are often very different between processing software. That is why GDAL exists. To improve interoperability, the openEO API just recommends to align them with GDAL, which is used in most relevant software anyway. Unfortunately, this comes with some small inconveniences. For example, most people would probably expect to just specify “GeoTiff” as file format name, but GDAL has named it “GTiff”. Another idea was to use media types such as application/json, but then we realized that these are often to broad or not even defined. For example, openEO had to push the OGC to specify an official media type for GeoTiff. But the same issue exists for other file formats, too."
+  },
+  {
+    "objectID": "news/2020-07-31-lessons-learned.html#authentication",
+    "href": "news/2020-07-31-lessons-learned.html#authentication",
+    "title": "Lessons learned while developing the openEO API",
+    "section": "5. Authentication",
+    "text": "5. Authentication\nOne of the most complex issues we faced during the API development was actually not EO or data processing related. It was the Authentication and Authorization mechanism. We quickly decided to use one of the well-established standards available for security reasons. Unfortunately, most of them don’t seem to cater very well for our use case where you have a number of different clients and back-ends communicating with each other. Usually in the Web you have multiple clients communicating with a single back-end (1:n), but in openEO we have a n:m relation. There are CLI tools, web clients and more that need to authenticate against a growing set of independent providers. Therefore, you can’t easily ship clients with security measures like Client IDs (and Client Secrets) as required by OpenID Connect (based on OAuth 2). Users need to get those information by themselves and provide it to the clients, which is inconvenient and probably confusing to many non-developers. This issue is probably the thing I dislike most in the current API specification and thus would love to hear from you whether there are good solutions out there that we missed."
+  },
+  {
+    "objectID": "news/2020-07-31-lessons-learned.html#debugging-experience",
+    "href": "news/2020-07-31-lessons-learned.html#debugging-experience",
+    "title": "Lessons learned while developing the openEO API",
+    "section": "6. Debugging Experience",
+    "text": "6. Debugging Experience\nThe logging and debugging experience varies a lot between cloud processing and the “traditional workflow” (you download data and compute locally with your preferred tools). While it’s “free” on a local machine to just do “trial and error” to check whether something is running, cloud processing usually comes with a cost and you likely don’t want to work with “trial and error”. Also you don’t directly have access to the hardware and software and thus it is harder to investigate problems. openEO took several measures to mitigate these issues, but it is still a different experience for users. I guess that is a long learning process until it is adopted by users and may need additional effort to implement tools to improve the situation. While many users are getting used to it in situations where a streamlined experience is somewhat possible as only few clients communicate with a single provider (e.g. Google Earth Engine), the issue increases in openEO due to the different infrastructure and software used on back-end side."
+  },
+  {
+    "objectID": "news/2020-07-31-lessons-learned.html#defining-interoperable-processes",
+    "href": "news/2020-07-31-lessons-learned.html#defining-interoperable-processes",
+    "title": "Lessons learned while developing the openEO API",
+    "section": "7. Defining interoperable Processes",
+    "text": "7. Defining interoperable Processes\nDefining a common set of pre-defined processes was a very long and challenging task.\n\nFirst, we had to come up with a useful schema that allowed us to describe processes in JSON. We got inspired by different other standards such as WPS and OpenAPI.\nSecond, we had to find what processes are required and which granularity they should have. That quickly led to over a hundred processes, mainly for data cube and math operations. And that was only for mostly raster operations. We still have a big hole in the processes regarding vector related operations, but we aim to close that in the next year(s).\nThird, we had to figure out what common processing softwares offered and how to come up with process definitions than can be implemented with those softwares.\nLast, we had to specify it in a way that is unambiguous and easy to understand by users.\n\nAll of these tasks took much more time than initially expected. For example, one of the partners reported that the granularity of the processes is not really suited for the underlying processing software. While we couldn’t really change the granularity, it was at least not an issue to make openEO work for them. Fortunately, the process part of the openEO API is very flexible and allows providers to change the processes according to their needs or define their own processes. Due to the fact that the actual parameters and return values are described in JSON Schema, clients and back-ends can easily re-use existing JSON Schema implementations and adopt to changes in the process specifications. Thus, if a back-end doesn’t support parts of a process, it can just be changed/removed and a client can understand that and cater for it."
+  },
+  {
+    "objectID": "news/2020-07-31-lessons-learned.html#conclusion",
+    "href": "news/2020-07-31-lessons-learned.html#conclusion",
+    "title": "Lessons learned while developing the openEO API",
+    "section": "Conclusion",
+    "text": "Conclusion\nThis was a deep dive into some of my challenges during the last years. I hope it is useful for others and I’m hoping to get into discussions with developers facing similar issues. Maybe with joint forces we can solve some of these for a better cloud processing experience in the future. If you have anything to say, please contact me via e-mail, GitHub issues (API, Processes) or Twitter. You can also contact openEO."
+  },
+  {
+    "objectID": "news/2018-10-30-year-one-review-meeting.html",
+    "href": "news/2018-10-30-year-one-review-meeting.html",
+    "title": "openEO year one review meeting",
+    "section": "",
+    "text": "The openEO consortium is currently undergoing its first evaluation process by the European Commission. During the first year the partners exceeded the planned progress. During the starting phase the meaning of the different layers was clarified more precisely. openEO represents a set of contracts between two API layers.\n\nInstances of the core API are implemented at back-end drivers within the respective EO service providers. By guaranteeing the same instances at the various back-ends, their interoperability can be guaranteed.\nClient APIs – software libraries specific to given programming languages – are enabling users to interact with the back-end’s drivers. The communication between clients and service providers is realised via HTTP requests, which’s complexity is not visible to the users, but is dealt with by openEO.\n\nSince the successful development of the Proof of Concept, client APIs are developed for Python, R, and JavaScript, enabling the execution of a growing set of functionalities. Being language neutral, new client APIs of e.g. additional programming languages, Quantum GIS interfaces, or GRASS GIS can be added easily. Currently, the core API is establishing access to entry points of 7 European EO service providers, which are thus able to provide services to the user, reflecting examples from all stages of EO data processing.\nA process catalogue is under development, describing a set of functionalities to be implemented for openEO, their I/O data and their exact workflow. Interested users are encouraged to discuss with the consortium partners via the various provided channels to enable openEO forming widely accepted and used standards with a consistent syntax. The well-defined process catalogue shall also serve 3rd-party processing platforms with a template to become accessible to openEO. In the same manner, a client library development guideline is being prepared momentarily to ensure a standardised implementation of the client APIs.\nFor using arbitrary code to process EO data with the openEO API, first User-Defined Functions (UDF) are currently implemented and added to openEO-compatible workflows. The UDFs are running in specific dockers at the EO data service providers.\nopenEO is published in its version 0.3.0, providing a HTTP communication between the users and service providers specified by OpenAPI 3.0 JSON files. The JSON data entails process graphs, sent as a job to the back-ends, which can be executed in three different ways.\n\nA batch job can be submitted, which stays inactive until processing is requested. It will run only once and stores its results after execution.\nSecondary web services allow web-based access using different protocols such as OGC WMS, OGC WCS or XYZ tiles. The computation runs on demand to allow users to change e.g. the result’s viewing extent or level of detail.\nLightweight process graphs (e.g. small previews) can be executed synchronously. More costly processes have to expect timeouts for long-polling HTTP requests.\n\nThe next steps for the consortium will entail the realisation of the newest openEO version at all back-ends and a definition of the targeted level of UDFs (e.g. simple NDVI calculation vs. machine learning algorithms). The process catalogues will be widened up, entailing at least all needed processes to implement the project’s use cases via openEO. As an interested user please contact us, if you have any suggestions.\nFinally, we plan to submit our first preliminary stable openEO version in May 2019."
+  },
+  {
+    "objectID": "news/2024-04-05-openeo-ogc-rfc2.html",
+    "href": "news/2024-04-05-openeo-ogc-rfc2.html",
+    "title": "OGC seeks public comment on the adoption of openEO as a Community Standard (phase 2)",
+    "section": "",
+    "text": "OGC seeks public comment on the potential adoption of openEO as an OGC Community Standard. Comments are due by April 21, 2025.\nFor more details, please read the press release that was published by OGC: OGC looks to adopt openEO as Community Standard; Seeking Public Comment before moving to vote\nWe’ll keep you updated about the progress."
+  },
+  {
+    "objectID": "news/2019-03-07-openeo-api-040.html",
+    "href": "news/2019-03-07-openeo-api-040.html",
+    "title": "openEO API v0.4.0 released",
+    "section": "",
+    "text": "Today, the openEO Consortium released the new version 0.4.0 of the openEO API. The following blog post will give a short overview over the most notable changes and additions to the API specification."
+  },
+  {
+    "objectID": "news/2019-03-07-openeo-api-040.html#new-process-catalogue-and-process-graph-changes",
+    "href": "news/2019-03-07-openeo-api-040.html#new-process-catalogue-and-process-graph-changes",
+    "title": "openEO API v0.4.0 released",
+    "section": "New process catalogue and process graph changes",
+    "text": "New process catalogue and process graph changes\nThe focus of this release was the definition of a full process catalogue, which is now in implementation by the back-ends. We defined a set of over 100 processes, which can soon be used for remote sensing and related tasks. For this, we had to introduce a new encoding for the process graphs, which now allows parallelism, callbacks and more.\nThe following image shows visually how a user could derive minimum EVI measurements over pixel time series of Sentinel 2 imagery:\n\n\n\nAlgorithm to process an EVI\n\n\nOnce implemented, we plan that the following Python client code could be used to generate the process graph to send it to a back-end:\nimport openeo\nsession = openeo.connect(\"https://example.openeo.org\")\ns2_radio = session.imagecollection(\"Sentinel-2\", spatial_extent = {\"west\": 16.1, \"east\": 16.6, \"north\": 48.6, \"south\": 47.2}, temporal_extent = [\"2018-01-01\", \"2018-02-01\"])\nblue = s2_radio.band('B02')\nred = s2_radio.band('B04')\nnir = s2_radio.band('B08')\nevi_cube = (2.5 * (nir - red)) / ((nir + 6.0 * red - 7.5 * blue) + 1.0)\nresult = evi_cube.reduce(\"temporal\", \"min\").save_result(\"GTiff\")\nIn JavaScript it is planned to work as follows:\nfunction eviReducer(b, data) {\n  var blue = data.at(0);\n  var red = data.at(1);\n  var nir = data.at(2);\n  return b.product([\n    2.5,\n    b.divide([\n      b.subtract([nir, red]),\n      b.sum([1, nir, b.product([6, red]), b.product([-7.5, blue])])\n    ])\n  ]);\n}\n\nvar connection = OpenEO.connect(\"https://example.openeo.org\");\nvar builder = connection.buildProcessGraph();\nvar result = builder.loadCollection(\"Sentinel-2\", {west: 16.1, east: 16.6, north: 48.6, south: 47.2}, [\"2018-01-01\", \"2018-02-01\"])\n                    .filterBands([\"B02\", \"B04\", \"B08\"])\n                    .reduce(\"spectral\", eviReducer)\n                    .reduce(\"temporal\", (b, data) =&gt; data.min())\n                    .saveResult(\"GTiff\");\nSimilarly, it would work in the R client. You can also check the process graph documentation if you’d like to know how this algorithm looks as a process graph."
+  },
+  {
+    "objectID": "news/2019-03-07-openeo-api-040.html#other-improvements",
+    "href": "news/2019-03-07-openeo-api-040.html#other-improvements",
+    "title": "openEO API v0.4.0 released",
+    "section": "Other improvements",
+    "text": "Other improvements\nWe also updated our Data Discovery to be compatible with the most recent version of STAC, v0.6.2. In the last months, openEO contributed several extensions to the STAC specification such as an extension to describe Synthetic-Aperture Radar (SAR) data or an extension to describe Data Cubes.\nDespite the process and data discovery, we generally improved the discovery of openEO back-ends. For example, the API now also allows clients to automatically detect supported API versions at the back-end, so that users don’t need to keep track of that and can always connect to the same URL without worrying about compatibility between clients and back-ends. Our approach to user-defined functions (UDFs) was also better integrated withing the API. UDF runtimes can be discovered now and well-defined processes allow executing UDFs. Many more improvements were incorporated into the API specification based on feedback from the review meeting, discussions with users and implementations (see the full changelog)."
+  },
+  {
+    "objectID": "news/2019-03-07-openeo-api-040.html#next-steps",
+    "href": "news/2019-03-07-openeo-api-040.html#next-steps",
+    "title": "openEO API v0.4.0 released",
+    "section": "Next steps",
+    "text": "Next steps\nThis is the API version, which is targeted towards getting the first more universally usable version of the openEO clients and back-ends released. We will work hard now to implement the back-ends and clients to comply with the new API version and will follow up with a new blog post once this is achieved. Afterwards, all interested parties can use clients and back-ends to get a first solid impression of the project. In the meantime, it is already possible to make experiments with the back-ends and clients working on the API version 0.3.1. Please contact us to get more information about it. Having said that, the new version is not the last one and we will continue to improve the API, client and back-ends. So any feedback is highly appreciated and can be sent our way via GitHub issues in the corresponding GitHub repositories or via any of the other contact options."
+  },
+  {
+    "objectID": "news/2023-12-06-openeo-submitted-to-ogc.html",
+    "href": "news/2023-12-06-openeo-submitted-to-ogc.html",
+    "title": "openEO submitted to OGC for consideration as an OGC community standard",
+    "section": "",
+    "text": "The openEO PSC is happy to share that we have submitted openEO to OGC for consideration as an OGC community standard. More specifically, the submission document justifies why the openEO API specification (version 1.2.0) and the openEO process specification (version 1.2.0) are - from our point of view - a good candidate for an OGC community standard. We hope OGC accepts our documents and establishes the corresponding procedures soon.\nThe members of the openEO PSC voted to submit the justification document to OGC by unanimous consent. We are glad that the following OGC members confirmed to support the OCG submmissin of openEO:\n\nUniversity of Münster - Institute for Geoinformatics\nEurac Research\nVITO (Flemish Institute for Technological Research)\nGeoConnections - Natural Resources Canada\nEUMETSAT\nEuropean Space Agency (ESA)\nEOX IT Services GmbH\nTelespazio VEGA UK Ltd\nPlanet Labs PBC\nGerman Aerospace Center – DLR\nMatthias Mohr - Softwareentwicklung\n\nWe’ll keep you updated about the progress. The next step is likely a public request for comments."
+  },
+  {
+    "objectID": "news/2018-03-15-poc.html",
+    "href": "news/2018-03-15-poc.html",
+    "title": "openEO proves its concept",
+    "section": "",
+    "text": "Earth Observation data are becoming too large to be downloaded locally for analysis. Also, the way they are organised (as tiles, or granules: files containing the imagery for a small part of the Earth and a single observation date) makes it unnecessary complicated to analyse them. The solution to this is to store these data in the cloud, on compute back-ends, process them there, and browse the results or download resulting figures or numbers. But how do we do that?\nThe aim of openEO is to develop an open API to connect R, python and javascript clients to big Earth observation cloud back-ends in a simple and unified way.\nWith such an API, * each client can work with every back-end, and * it becomes possible to compare back-ends in terms of capacity, cost, and results (validation, reproducibility)"
+  },
+  {
+    "objectID": "news/2018-03-15-poc.html#the-problem",
+    "href": "news/2018-03-15-poc.html#the-problem",
+    "title": "openEO proves its concept",
+    "section": "",
+    "text": "Earth Observation data are becoming too large to be downloaded locally for analysis. Also, the way they are organised (as tiles, or granules: files containing the imagery for a small part of the Earth and a single observation date) makes it unnecessary complicated to analyse them. The solution to this is to store these data in the cloud, on compute back-ends, process them there, and browse the results or download resulting figures or numbers. But how do we do that?\nThe aim of openEO is to develop an open API to connect R, python and javascript clients to big Earth observation cloud back-ends in a simple and unified way.\nWith such an API, * each client can work with every back-end, and * it becomes possible to compare back-ends in terms of capacity, cost, and results (validation, reproducibility)"
+  },
+  {
+    "objectID": "news/2018-03-15-poc.html#why-an-api",
+    "href": "news/2018-03-15-poc.html#why-an-api",
+    "title": "openEO proves its concept",
+    "section": "Why an API?",
+    "text": "Why an API?\nAn API is an application programming interface. It defines a language that two computers (a client and a server) use to communicate.\nThe following figure shows how many interfaces are needed to be able to compare back-ends from different clients, without an openEO API:\n\n\n\nCurrent situation, without openEO API\n\n\nWith an openEO API (dark blue), the situation becomes much easier:\n\n\n\nSituation in the future, with openEO API\n\n\nHowever, existing back-ends need to be taught to work with the new API, and clients that interact with back-ends need to be developed.\nThe task of the openEO project is to design, develop, and evaluate an API for cloud-based Earth Observation data processing."
+  },
+  {
+    "objectID": "news/2018-03-15-poc.html#first-results",
+    "href": "news/2018-03-15-poc.html#first-results",
+    "title": "openEO proves its concept",
+    "section": "First results",
+    "text": "First results\nThe openEO project started in Oct 2017. Now, within 6 months, we finished the first proof of concept, and demonstrate it. Three use cases were selected for this, three clients were developed pretty much from scratch (Python, R, and JavaScript), and seven back-ends were built or interfaced. Full information is available from the projects github organisation, and we point here to the\n\nswagger-2.0 complient API and its documentation"
+  },
+  {
+    "objectID": "news/2018-03-15-poc.html#the-three-use-cases",
+    "href": "news/2018-03-15-poc.html#the-three-use-cases",
+    "title": "openEO proves its concept",
+    "section": "The three use cases",
+    "text": "The three use cases\nThe three use cases comprise 1. Derive minimum NDVI measurements over pixel time series of Sentinel 2 imagery 2. Create a monthly aggregated Sentinel 1 product from a custom Python script 3. Compute time series of zonal (regional) statistics of Sentinel 2 imagery over user-uploaded polygons\nThe full description, including the consecutive interaction steps of the API, is found on the * proof-of-concept use cases site"
+  },
+  {
+    "objectID": "news/2018-03-15-poc.html#links-to-the-client-and-back-end-implementations",
+    "href": "news/2018-03-15-poc.html#links-to-the-client-and-back-end-implementations",
+    "title": "openEO proves its concept",
+    "section": "Links to the client and back-end implementations",
+    "text": "Links to the client and back-end implementations\nClients:\n\nPython client; Example notebook\nR client\nJavascript client and JavaScript web editor\n\nBack-ends\n\nGRASS GIS driver\nWCPS driver\nOpenShift driver\nPython GeoPySpark/GeoTrellis driver\nSentinel Hub driver\nGoogle Earth Engine back-end\nR back-end (developed for testing purposes)\n\nWith all this, you can install your own back-end of choice, install a client, and start analysing the data! (but do read “Next steps”, below). Alternatively, we show a couple of videos of screen casts made while testing the various clients and back-ends."
+  },
+  {
+    "objectID": "news/2018-03-15-poc.html#proof-of-concept-videos",
+    "href": "news/2018-03-15-poc.html#proof-of-concept-videos",
+    "title": "openEO proves its concept",
+    "section": "Proof-of-concept videos",
+    "text": "Proof-of-concept videos\n\nR client and WCPS back-end, use case 1\n\n\n\n\nGrass GIS back-end, use cases 1, 2 and 3\n\n\n\n\nR client and R back-end, use-case 1\n\n\n\n\nR client and R back-end, use case 3\n\n\n\n\nopenEO Web Editor (JS client) with three back-ends (use case 1)\nDemonstrates use of back-ends Sentinel Hub, WCPS EURAC, and OpenShift EODC\n\n\n\n\nopenEO Web Editor (JS client) with R back-end (use case 3)\n\n\n\n\nPython client with GeoPySpark back-end (use case 1)\n\n\n\n\nopenEO Web Editor (JS client) with Google Earth Engine back-end (use case 1)"
+  },
+  {
+    "objectID": "news/2018-03-15-poc.html#links-to-documents",
+    "href": "news/2018-03-15-poc.html#links-to-documents",
+    "title": "openEO proves its concept",
+    "section": "Links to documents",
+    "text": "Links to documents\nThe following four documents (formal project deliverables) describe the proof-of-concept more extensively: * openEO core API prototype including Proof of Concept * Two early prototype back-ends * Proof of Concept (Python)\nIn addition, a document has been written that describes standards and interfaces used by the various back-ends, and the extent to which they are or will be useful for further developing the openEO API: * Overview document about back offices metadata standards and interfaces\nThese deliverables have been submitted, but have not been approved, and hence may not be final."
+  },
+  {
+    "objectID": "news/2018-03-15-poc.html#next-steps",
+    "href": "news/2018-03-15-poc.html#next-steps",
+    "title": "openEO proves its concept",
+    "section": "Next steps",
+    "text": "Next steps\nDuring the proof-of-concept, intentionally a number of difficult issues were not addressed, including * billing (costs) of processes and account management and * authentification while others were defined rather vaguely, including * the description of data (end point /data) * the description of processes (end point /processes).\nThe next steps will include: * discussing of the use-cases in the proof-of-concept * deciding whether to adopt existing standards and interfaces, e.g. for data descriptions * getting users involved outside the openEO consortium to define further requirements and priorities * designing a new iteration of the openEO API."
+  },
+  {
+    "objectID": "news/2018-03-15-poc.html#getting-involved",
+    "href": "news/2018-03-15-poc.html#getting-involved",
+    "title": "openEO proves its concept",
+    "section": "Getting involved",
+    "text": "Getting involved\nAs any API, the openAPI will only become good and useful if it is being used, and it needs testing by a wide audience. We are now at the stage of designing it, but at the point where large chunks are useful already. If you want to contribute to any of this, please do not hesitate and contact us e.g. by * expressing interest * writing GitHub issues wherever you think it is appropriate * sending an email"
+  },
+  {
+    "objectID": "news/2018-01-31-WWU_meeting.html",
+    "href": "news/2018-01-31-WWU_meeting.html",
+    "title": "Second week of intensive collaboration: Jan 22-24, 2018",
+    "section": "",
+    "text": "On Jan 22-24, the Institute for Geoinformatics at the University of Muenster hosted the second week of intense collaboration. 16 developers from 8 partners worked on implementing the proof of concept use cases for different clients and backends, improving the core API, and connecting the clients to different backends.\nWe continued implementing the GeoTrellis, WCPS, GRASS GIS, and Sentinel Hub backend drivers and a Python client for OpenEO, which we started during our meeting in December at VITO.\nBesides many improvements in the proof of concept implementations, this week resulted in two more prototypical OpenEO clients:\n\nA simple browser-based JS client was tested with the Sentinel Hub driver and its implementation of the first proof of concept use case (computing minimum NDVI values over time series of Sentinel 2 data).\nThe openeo R package also implements the first use case and demonstrates how R users will communicate with OpenEO backends.\n\n\nDuring the three days, we also discussed important ideas of the core API specification and how it can be improved by supporting synchronous processing and representing descriptions of process chains as resources. EODC presented its new OpenShift-based architecture to run OpenEO queries in containers. Further important discussions made clear how our proof of concept in month 6 will look like.\nMore details of the week’s results can be found in our GitHub repositories."
+  },
+  {
+    "objectID": "news/2023-05-25-new-openeo-versions-120-200rc1.html",
+    "href": "news/2023-05-25-new-openeo-versions-120-200rc1.html",
+    "title": "New releases for openEO API and openEO Processes, focus on vector data",
+    "section": "",
+    "text": "Today, we have released the new version 1.2.0 of the openEO API. At the same time, we’ve also released a 2.0.0 release candidate for the openEO processes.\nThe focus of these releases is to implement vector data (cube) support in openEO so that the focus is not strongly on raster data any longer.\nBack-ends and clients are advised to check their implementations against the new specifications and update accordingly.\nBelow you can find details about the individual releases:"
+  },
+  {
+    "objectID": "news/2023-05-25-new-openeo-versions-120-200rc1.html#openeo-api-v1.2.0",
+    "href": "news/2023-05-25-new-openeo-versions-120-200rc1.html#openeo-api-v1.2.0",
+    "title": "New releases for openEO API and openEO Processes, focus on vector data",
+    "section": "openEO API v1.2.0",
+    "text": "openEO API v1.2.0\nWe’ve collected improvements and useful new features for two years. It contains clarifications, new extensions (for orders and federation), vector data cubes, STAC (API) updates, alignment with OGC APIs, more link relation types, improved batch job results and logs, and other minor improvements. This API release is required to be able to release openEO processes in version 2.0.0-rc.1 due to the changes from the “raster-cube” to “datacube” subtype and the related changes in the process schema.\n\nAPI documentation\n\nPlease consult the changelog for the changes and additions that have been made to the API."
+  },
+  {
+    "objectID": "news/2023-05-25-new-openeo-versions-120-200rc1.html#openeo-processes-v2.0.0-rc.1",
+    "href": "news/2023-05-25-new-openeo-versions-120-200rc1.html#openeo-processes-v2.0.0-rc.1",
+    "title": "New releases for openEO API and openEO Processes, focus on vector data",
+    "section": "openEO Processes v2.0.0-rc.1",
+    "text": "openEO Processes v2.0.0-rc.1\nAsWe’ve collected improvements and useful new processes for over a year. The processes incorporate the long-awaited changes for vector data cubes. Unfortunately, this involves some breaking changes (e.g., the new datacube datatype) and thus we are moving from 1.x to 2.x. Due to the amount of (breaking) changes, we propose the changes to the community as a release candidate first so that we can evaluate whether it all works as expected. We’ll then cut the final release once some implementations confirm that the changes work as planned. Feedback is more than welcome and we’ll closely monitor the GitHub issue tracker for your issues. Please feel encoruaged to post your feedback there.\n\nProcesses documentation\n\nThis release includes (for the first time) a couple of breaking changes. Therefore, we’ll highlight the breaking changes below. Please consult the changelog for a full list of changes and additions.\n\nAdded better support for labeled arrays. Labels are not discarded in all cases anymore. Affected processes:\n\narray_append\narray_concat\narray_modify\n\narray_modify: Change the default value for length from 1 to 0. #312\naggregate_temporal, filter_temporal, load_collection and load_result/load_stac:\n\nThe temporal intervals must always be non-empty, i.e. the second instance in time must be after the first instance in time. #331\n24 as the hour is not allowed anymore.** #331\n\ninspect: The parameter message has been moved to be the second argument. #369\nNew definition for aggregate_spatial:\n\nAllows more than 3 input dimensions #126\nAllow to not export statistics by changing the parameter target_dimension #366\n\nUpdated the processes based on the subtypes raster-cube or vector-cube to work with the subtype datacube instead. #68\nsort and order: The ordering of ties is not defined anymore. #409\nquantiles: Parameter probabilities provided as array must be in ascending order. #297\nfit_curve and predict_curve: Heavily modified specifications. fit_curve works on arrays instead of data cubes, predict_curve doesn’t support gap filling anymore, clarify no-data handling, … #425\nclimatological_normal: The climatology_period parameter accepts an array of integers instead of strings. #331\nbetween: Support for temporal comparison. Use date_between instead. #331\nDeprecated GeometryCollections are not supported any longer. #389\nDeprecated PROJ definitions for the CRS are not supported any longer.\nThe comparison processes eq, neq, lt, lte, gt, gte and array_contains:\n\nRemoved support for temporal comparison. Instead explicitly use date_difference.\nRemoved support for the input data types array and object. #208\n\nsort and order: Removed support for time-only values. #331"
+  },
+  {
+    "objectID": "news/2026-05-14-openeo-is-an-ogc-community-standard.html",
+    "href": "news/2026-05-14-openeo-is-an-ogc-community-standard.html",
+    "title": "OGC publishes openEO as a new Community Standard",
+    "section": "",
+    "text": "The Open Geospatial Consortium (OGC) has officially published the openEO specification as a new OGC Community Standard.\nThe standard consists of two complementary parts:\n\nThe openEO API (version 1.2.0), the HTTP API specification defined as an OpenAPI document and approved as an OGC Community Standard.\nThe openEO Processes (version 1.2.0), the collection of requirements for separately versioned predefined processes conforming to the openEO API specification, approved as an OGC Community Practice.\n\nThe published standard is available on the OGC website.\nNote: At the time the specification was submitted to OGC, both the openEO API and openEO Processes were at version 1.2.0. Due to the length of the standardization process, the published documents could not be updated to newer versions in time. The latest releases are currently openEO API v1.3.0 and openEO Processes v2.0.0-rc.2. We plan to update the OGC Community Standard once a stable release of openEO Processes 2.0 becomes available."
+  },
+  {
+    "objectID": "news/2024-03-22_mooc_cubeandclouds.html",
+    "href": "news/2024-03-22_mooc_cubeandclouds.html",
+    "title": "MOOC Cubes and Clouds - open for registration",
+    "section": "",
+    "text": "The latest EO college course “Cubes and Clouds” explores the newest concepts in Earth Observation through engaging lectures, videos, animated content, and hands-on exercises!\nopenEO plays a main role in the course due to its standardized API for homogenizing cloud processing. It allows for portablility of the created workflow between different cloud providers, reproducibility and sharing of the workflow which is enriched with valuable metadata. The idea behind and need for openEO are tought in a dedicated lecture. All hands-on exercises use openEO, guiding participants from basic processes to carrying out end-to-end EO workflows and sharing their results!\nYou can subscribe to the course for free and learn about cloud native EO at Cubes & Clouds – EO College (eo-college.org)."
+  },
+  {
+    "objectID": "news/news.html",
+    "href": "news/news.html",
+    "title": "openEO news",
+    "section": "",
+    "text": "The openEO community is active and there are always new developments, events and news to share. This page gives an overview of the latest news and highlights from the openEO ecosystem.\n\n\n\n\n\n\n\n\n\n\nFirst week of intensive collaboration: Dec 4-6, 2017\n\n\n\n\n\n\n\n\nDec 18, 2017\n\n\nEdzer Pebesma\n\n\n\n\n\n\n\n\n\n\n\n\nH2020 EO Big Data Hackathon Nov 7-8\n\n\n\n\n\n\n\n\nOct 7, 2019\n\n\nEdzer Pebesma\n\n\n\n\n\n\n\n\n\n\n\n\nLessons learned while developing the openEO API\n\n\n\n\n\n\n\n\nJul 31, 2020\n\n\nMatthias Mohr\n\n\n\n\n\n\n\n\n\n\n\n\nMOOC Cubes and Clouds - open for registration\n\n\n\n\n\n\n\n\nMar 22, 2024\n\n\nPeter Zellner\n\n\n\n\n\n\n\n\n\n\n\n\nMonthly openEO community meeting\n\n\n\n\n\n\n\n\nJul 7, 2022\n\n\nMatthias Mohr\n\n\n\n\n\n\n\n\n\n\n\n\nNew openEO QGIS plugin has been released\n\n\n\n\n\n\n\n\nDec 22, 2025\n\n\nMatthias Mohr, Caro Niebl\n\n\n\n\n\n\n\n\n\n\n\n\nNew releases for openEO API and openEO Processes, focus on vector data\n\n\n\n\n\n\n\n\nMay 25, 2023\n\n\nMatthias Mohr\n\n\n\n\n\n\n\n\n\n\n\n\nOGC publishes openEO as a new Community Standard\n\n\n\n\n\n\n\n\nMay 14, 2026\n\n\nMatthias Mohr\n\n\n\n\n\n\n\n\n\n\n\n\nOGC seeks public comment on the adoption of openEO as a Community Standard (phase 1)\n\n\n\n\n\n\n\n\nFeb 6, 2024\n\n\nMatthias Mohr\n\n\n\n\n\n\n\n\n\n\n\n\nOGC seeks public comment on the adoption of openEO as a Community Standard (phase 2)\n\n\n\n\n\n\n\n\nApr 5, 2025\n\n\nMatthias Mohr\n\n\n\n\n\n\n\n\n\n\n\n\nR Client on CRAN\n\n\n\n\n\n\n\n\nNov 8, 2021\n\n\nMatthias Mohr\n\n\n\n\n\n\n\n\n\n\n\n\nR Client v1.2.0 has been released\n\n\n\n\n\n\n\n\nMay 12, 2022\n\n\nMatthias Mohr, Florian Lahn\n\n\n\n\n\n\n\n\n\n\n\n\nR Client v1.3.0 has been released\n\n\n\n\n\n\n\n\nNov 17, 2022\n\n\nMatthias Mohr, Peter J. Zellner, Florian Lahn\n\n\n\n\n\n\n\n\n\n\n\n\nSecond week of intensive collaboration: Jan 22-24, 2018\n\n\n\n\n\n\n\n\nJan 31, 2018\n\n\nMarius Appel\n\n\n\n\n\n\n\n\n\n\n\n\nStable release of the openEO API and Processes (v1.0.0)\n\n\n\n\n\n\n\n\nJul 31, 2020\n\n\nMatthias Mohr\n\n\n\n\n\n\n\n\n\n\n\n\nUser Requirements Survey for openEO launched\n\n\n\n\n\n\n\n\nMay 23, 2018\n\n\nSarah Carter\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome to openEO!\n\n\n\n\n\n\n\n\nDec 5, 2017\n\n\nEdzer Pebesma\n\n\n\n\n\n\n\n\n\n\n\n\nopenEO API 1.3.0 and openEO Processes 2.0.0 RC2 released\n\n\n\n\n\n\n\n\nFeb 3, 2026\n\n\nMatthias Mohr\n\n\n\n\n\n\n\n\n\n\n\n\nopenEO API v0.4.0 released\n\n\n\n\n\n\n\n\nMar 7, 2019\n\n\nMatthias Mohr\n\n\n\n\n\n\n\n\n\n\n\n\nopenEO API v1.0.1 released\n\n\n\n\n\n\n\n\nNov 30, 2020\n\n\nMatthias Mohr\n\n\n\n\n\n\n\n\n\n\n\n\nopenEO API v1.1.0 released\n\n\n\n\n\n\n\n\nMay 17, 2021\n\n\nMatthias Mohr\n\n\n\n\n\n\n\n\n\n\n\n\nopenEO PSC meetings\n\n\n\n\n\n\n\n\nApr 8, 2022\n\n\nMatthias Mohr\n\n\n\n\n\n\n\n\n\n\n\n\nopenEO Virtual User Workshop\n\n\n\n\n\n\n\n\nSep 2, 2020\n\n\nMatthias Schramm\n\n\n\n\n\n\n\n\n\n\n\n\nopenEO proves its concept\n\n\n\n\n\n\n\n\nMar 17, 2018\n\n\nEdzer Pebesma, the openEO consortium\n\n\n\n\n\n\n\n\n\n\n\n\nopenEO submitted to OGC for consideration as an OGC community standard\n\n\n\n\n\n\n\n\nDec 6, 2023\n\n\nMatthias Mohr\n\n\n\n\n\n\n\n\n\n\n\n\nopenEO year one review meeting\n\n\n\n\n\n\n\n\nOct 30, 2018\n\n\nMatthias Schramm\n\n\n\n\n\nNo matching items\n\n  \n\n\n\n\n\n\n\n\n   \n    \n    \n      Order By\n      Default\n      \n        Date - Oldest\n      \n      \n        Date - Newest\n      \n      \n        Title\n      \n      \n        Author\n      \n    \n  \n    \n      \n      \n    \n\n\n\n\n\n\nDate\n\n\n\nTitle\n\n\n\nAuthor\n\n\n\n\n\n\n\n\nMay 14, 2026\n\n\nOGC publishes openEO as a new Community Standard\n\n\nMatthias Mohr\n\n\n\n\n\n\nFeb 3, 2026\n\n\nopenEO API 1.3.0 and openEO Processes 2.0.0 RC2 released\n\n\nMatthias Mohr\n\n\n\n\n\n\nDec 22, 2025\n\n\nNew openEO QGIS plugin has been released\n\n\nMatthias Mohr, Caro Niebl\n\n\n\n\n\n\nApr 5, 2025\n\n\nOGC seeks public comment on the adoption of openEO as a Community Standard (phase 2)\n\n\nMatthias Mohr\n\n\n\n\n\n\nMar 22, 2024\n\n\nMOOC Cubes and Clouds - open for registration\n\n\nPeter Zellner\n\n\n\n\n\n\nFeb 6, 2024\n\n\nOGC seeks public comment on the adoption of openEO as a Community Standard (phase 1)\n\n\nMatthias Mohr\n\n\n\n\n\n\nDec 6, 2023\n\n\nopenEO submitted to OGC for consideration as an OGC community standard\n\n\nMatthias Mohr\n\n\n\n\n\n\nMay 25, 2023\n\n\nNew releases for openEO API and openEO Processes, focus on vector data\n\n\nMatthias Mohr\n\n\n\n\n\n\nNov 17, 2022\n\n\nR Client v1.3.0 has been released\n\n\nMatthias Mohr, Peter J. Zellner, Florian Lahn\n\n\n\n\n\n\nJul 7, 2022\n\n\nMonthly openEO community meeting\n\n\nMatthias Mohr\n\n\n\n\n\n\nMay 12, 2022\n\n\nR Client v1.2.0 has been released\n\n\nMatthias Mohr, Florian Lahn\n\n\n\n\n\n\nApr 8, 2022\n\n\nopenEO PSC meetings\n\n\nMatthias Mohr\n\n\n\n\n\n\nNov 8, 2021\n\n\nR Client on CRAN\n\n\nMatthias Mohr\n\n\n\n\n\n\nMay 17, 2021\n\n\nopenEO API v1.1.0 released\n\n\nMatthias Mohr\n\n\n\n\n\n\nNov 30, 2020\n\n\nopenEO API v1.0.1 released\n\n\nMatthias Mohr\n\n\n\n\n\n\nSep 2, 2020\n\n\nopenEO Virtual User Workshop\n\n\nMatthias Schramm\n\n\n\n\n\n\nJul 31, 2020\n\n\nLessons learned while developing the openEO API\n\n\nMatthias Mohr\n\n\n\n\n\n\nJul 31, 2020\n\n\nStable release of the openEO API and Processes (v1.0.0)\n\n\nMatthias Mohr\n\n\n\n\n\n\nOct 7, 2019\n\n\nH2020 EO Big Data Hackathon Nov 7-8\n\n\nEdzer Pebesma\n\n\n\n\n\n\nMar 7, 2019\n\n\nopenEO API v0.4.0 released\n\n\nMatthias Mohr\n\n\n\n\n\n\nOct 30, 2018\n\n\nopenEO year one review meeting\n\n\nMatthias Schramm\n\n\n\n\n\n\nMay 23, 2018\n\n\nUser Requirements Survey for openEO launched\n\n\nSarah Carter\n\n\n\n\n\n\nMar 17, 2018\n\n\nopenEO proves its concept\n\n\nEdzer Pebesma, the openEO consortium\n\n\n\n\n\n\nJan 31, 2018\n\n\nSecond week of intensive collaboration: Jan 22-24, 2018\n\n\nMarius Appel\n\n\n\n\n\n\nDec 18, 2017\n\n\nFirst week of intensive collaboration: Dec 4-6, 2017\n\n\nEdzer Pebesma\n\n\n\n\n\n\nDec 5, 2017\n\n\nWelcome to openEO!\n\n\nEdzer Pebesma\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "news/2017-12-05-welcome.html",
+    "href": "news/2017-12-05-welcome.html",
+    "title": "Welcome to openEO!",
+    "section": "",
+    "text": "openEO is an H2020 project funded under call EO-2-2017: EO Big Data Shift, from Oct 2017 to Sept 2020.\nThe project aims at making it easier to analyse large amounts of Earth observation data, and tries to do this by developing open source software solutions. We develop an API to connect R, python and javascript clients to big Earth observation cloud back-ends in a simple and unified way.\nWe invite everyone interested to participate. Get in touch today!"
+  },
+  {
+    "objectID": "news/2022-05-12-r-client-v120.html",
+    "href": "news/2022-05-12-r-client-v120.html",
+    "title": "R Client v1.2.0 has been released",
+    "section": "",
+    "text": "Today, we released a new version 1.2.0 of the openEO R Client, which features a couple of improvements and bug fixes.\nYou can get it through CRAN: openeo This means you can install or update the R client with the following command:\ninstall.packages(\"openeo\")\nIf you have trouble installing or working with the package, feel free to leave an issue in the GitHub issue tracker.\nWe would like to highlight some of the changes:\n\nget_sample: We’ve introduced a method to retrieve sample data that can be used to experiment with a small subset of the data locally. A vignette shows how to use it: Sample Data Retrieval\nMany functions such as list_collections , describe_collection, list_processes now return visual components in environments that support it (Jupyter, RMarkdown, knitr). Here’s an example of the collection list, which includes searching capabilities: \nThe metadata filter in load_collection was made much easier to use. You may need to adapt your code! The new method to filter by cloud cover looks very clean and is less cumbersome to write. It is as simple as this: properties = list(\"eo:cloud_cover\" = function(x) x &lt;= 50) Beforehand, the same filter had to be specified as such:\nproperties = list(\n      \"eo:cloud_cover\" = list(\n          \"process_graph\" = list(\n              \"cc\" = list(\n                  \"process_id\" = \"lte\"\n                  , \"arguments\" = list(\n                      \"x\" = list(\"from_parameter\" = \"value\")\n                      , \"y\" = p\n                  )\n                  , \"result\" = TRUE\n              )\n          )\n      )\n  )\nThe login procedure was greatly simplified for back-ends that support this new behavior. For example, on openEO Platform you can now login simply by calling the login method as such login() instead of passing a client ID and secret tom connect() or login(). It is still possible, but not required any more. It will then interactively guide you through the login procedure. It is now also supported to login in environments that are remotely hosted (e.g. RStudio Cloud, Jupyter).\nGetting the JSON representation of a process is now simplified. The new recommended way is toJSON(as(result, \"Process\")) where result is the last node of your process, which usually is save_result.\nDirectly load data into stars if you set as_stars=TRUE in compute_result"
+  },
+  {
+    "objectID": "news/2021-05-17-openeo-api-110-released.html",
+    "href": "news/2021-05-17-openeo-api-110-released.html",
+    "title": "openEO API v1.1.0 released",
+    "section": "",
+    "text": "Today, we released a new version 1.1.0 of the openEO API.\nIt features a number of relatively minor, but interesting new features. The OpenID Connect authentication process has been made easier by providing negotiating client IDs automatically. Jobs, Services, and Logs can provide detailed usage metrics to users so that they can monitor memory usage, CPU usage, data transfer, and other metrics. For synchronous processing, a recommendation has been added on how to deliver multiple files (via TAR archives). Overall, we also aligned better with the STAC specification, which recently has been released in 1.0.0 release candidate state. For several parts exposed by the API can now be declared to be experimental or deprecated. Finally, the API specification also clarifies several ambiguous parts of the specification.\nBack-ends and clients are advised to check their implementations against the new specification and update accordingly.\nMore details about the release: * Changelog * API documentation"
+  },
+  {
+    "objectID": "news/2022-11-17-r-client-v130.html",
+    "href": "news/2022-11-17-r-client-v130.html",
+    "title": "R Client v1.3.0 has been released",
+    "section": "",
+    "text": "We released a new version of the R client (1.3.0) with new exciting improvements and a couple of new vignettes. To see the full list of changes, please consult the Changelog.\nYou can get the new version through CRAN: openeo This means you can install or update the R client with the following command:\nIf you have trouble installing or working with the package, feel free to leave an issue in the GitHub issue tracker."
+  },
+  {
+    "objectID": "news/2022-11-17-r-client-v130.html#better-support-for-sf",
+    "href": "news/2022-11-17-r-client-v130.html#better-support-for-sf",
+    "title": "R Client v1.3.0 has been released",
+    "section": "Better support for sf",
+    "text": "Better support for sf\nA new feature is that sf objects can be used in processes as parameters. For example, st_bbox() can be used to pass bounding boxes more easily as spatial extent to the process load_collection. Please see the following example for details:\nlibrary(sf)\nbbox = st_bbox(c(xmin=16.1,\n                xmax=16.6,\n                ymax=48.6,\n                ymin= 47.2), crs = 4326)\n\ndata = p$load_collection(id = \"SENTINEL-2\",\n                        spatial_extent = bbox,\n                        temporal_extent = list(\"2018-04-01\", \"2018-05-01\"))\nYou can see a full example here."
+  },
+  {
+    "objectID": "news/2022-11-17-r-client-v130.html#new-vignettes",
+    "href": "news/2022-11-17-r-client-v130.html#new-vignettes",
+    "title": "R Client v1.3.0 has been released",
+    "section": "New Vignettes",
+    "text": "New Vignettes\nThe new vignettes cover the following topics:\n\nProcess Graph Concepts This vignette shows the main concepts regarding the process graph building with the openeo package and explains aspects the openEO API and the openEO processes from a user perspective. It states the logical structure of an openEO process description and how process graphs are created from predefined processes. Also, the details about parameters and arguments of processes are explained, especially how this affects R, where function parameters are usually type free.\nProcess Graph Building Application We describe the details on how to create process graphs and respectively “User Defined Processes” (UDP). Those processes can be seen as the analysis workflows that are run as jobs at a designated openEO back-end. They might be called later directly or some variables can be added to the UDP to customize the processes at runtime, e.g. set the temporal interval or the area of interest. This vignette focuses on the user point of view.\nPackage Software Architecture This is the first part of a contribution guide which ensures that developers can effectively contribute to the R-Client. Since a server-client based package is different from most other R packages some concepts are used that most R users and developers are not so familiar with. Therefore, this contribution guide eases the process of actively contributing to the packages development or bug fixing by explaining the underlying concepts.\nDeveloper Implementation Details In this guide selected core mechanisms of the openEO package are described. It is targeted towards interested developers and it is highly recommended to dive into the source code, while reading through this guide. The explanations here are abstracted from the code and shall guide new developers on the concepts and routines of this package."
+  },
+  {
+    "objectID": "news/2024-02-06-openeo-ogc-rfc.html",
+    "href": "news/2024-02-06-openeo-ogc-rfc.html",
+    "title": "OGC seeks public comment on the adoption of openEO as a Community Standard (phase 1)",
+    "section": "",
+    "text": "After submitting openEO to OGC for consideration as an OGC community standard two months ago, OGC now seeks public comment on the potential adoption of openEO as an OGC Community Standard. Comments are due by February 27, 2024.\nFor more details, please read the press release that was published today by OGC: Request for Comments: OGC considering openEO as a Community Standard; comment sought on its adoption\nopenEO will also be presented at the next OGC member meeting in Delft on Thu, 28 Mar 2024 during the closing planery.\nWe’ll keep you updated about the progress."
+  },
+  {
+    "objectID": "404-not-found.html",
+    "href": "404-not-found.html",
+    "title": "404 — Process Not Found",
+    "section": "",
+    "text": "🌍\n  404\n  \n    ProcessNotFoundException\n  \n  \n    The page you're looking for is not available. It might be that the URL is incorrect, or that the content has been moved or deleted. It's also possible that this page is still under development.\n  \n  ← Back to home"
+  },
+  {
+    "objectID": "events/igarrs2021.html",
+    "href": "events/igarrs2021.html",
+    "title": "IEEE IGARRS 2021 HD-3: Hands-on openEO: access cloud platforms using your preferred programming language",
+    "section": "",
+    "text": "This page contains the agenda, and links to used material for the IEEE IGARRS 2021 openEO tutorial.\nDetails: https://igarss2021.com/tutorials.php#tut9\n\n\n\n14:00-14:20: Introduction to openEO (Pieter Kempeneers - JRC)\n14:20-14:30: Q&A\n14:30-15:30: Python client (VITO) (Jeroen Dries - VITO)\n15:30-16:15: R client (WUR) (Dainius Masiliunas - WUR)\n16:15-16:30: Break\n16:30-16:45: openEO UIs (Jeroen Dries - VITO)\n16:45-17:15: Use case demo (Jeroen Dries - VITO)\n17:15-18:00: Q&A\n\n\n\n\n\n\nFor participants interested in trying thing out, try logging into Terrascope openEO backend:\nhttps://docs.terrascope.be/#/Developers/WebServices/OpenEO/OpenEO\nJupyter notebooks with the openEO Python client installed: https://notebooks.terrascope.be\nThis jupyter environment also has the notebook samples in this git repository already available:\nhttps://github.com/VITObelgium/notebook-samples\nOtherwise, git can be used to check out the notebooks, or simply download the ‘ipynb’ file.\nUse ‘edugain and social accounts’ login to avoid having to register at Terrascope, you may still be required to fill in a form.\n\n\n\nGeneral Python documentation:\nhttps://open-eo.github.io/openeo-python-client/\nBasics:\nhttps://github.com/Open-EO/openeo-python-client/blob/master/examples/notebooks/openeo-terrascope-webinar.ipynb\nMore advanced:\nhttps://github.com/VITObelgium/notebook-samples/blob/master/tools/openEO/openeo-showcase.ipynb\n\n\n\n\nhttps://openeo.org/documentation/1.0/r/\nDemonstration notebook:\nhttps://github.com/VITObelgium/notebook-samples/blob/master/tools/openEO/openeo-r-client.ipynb\n\n\n\nhttps://hub.openeo.org\nhttps://editor.openeo.org\n\n\n\nUsing predefined ‘higher level’ services:\nhttps://github.com/VITObelgium/notebook-samples/blob/master/Terrascope/Beginner/OpenEO_CropCalendarService.ipynb\nCreating ‘higher level’ services:\nhttps://open-eo.github.io/openeo-python-client/udp.html#building-and-storing-user-defined-process"
+  },
+  {
+    "objectID": "events/igarrs2021.html#agenda",
+    "href": "events/igarrs2021.html#agenda",
+    "title": "IEEE IGARRS 2021 HD-3: Hands-on openEO: access cloud platforms using your preferred programming language",
+    "section": "",
+    "text": "14:00-14:20: Introduction to openEO (Pieter Kempeneers - JRC)\n14:20-14:30: Q&A\n14:30-15:30: Python client (VITO) (Jeroen Dries - VITO)\n15:30-16:15: R client (WUR) (Dainius Masiliunas - WUR)\n16:15-16:30: Break\n16:30-16:45: openEO UIs (Jeroen Dries - VITO)\n16:45-17:15: Use case demo (Jeroen Dries - VITO)\n17:15-18:00: Q&A"
+  },
+  {
+    "objectID": "events/igarrs2021.html#python-client",
+    "href": "events/igarrs2021.html#python-client",
+    "title": "IEEE IGARRS 2021 HD-3: Hands-on openEO: access cloud platforms using your preferred programming language",
+    "section": "",
+    "text": "For participants interested in trying thing out, try logging into Terrascope openEO backend:\nhttps://docs.terrascope.be/#/Developers/WebServices/OpenEO/OpenEO\nJupyter notebooks with the openEO Python client installed: https://notebooks.terrascope.be\nThis jupyter environment also has the notebook samples in this git repository already available:\nhttps://github.com/VITObelgium/notebook-samples\nOtherwise, git can be used to check out the notebooks, or simply download the ‘ipynb’ file.\nUse ‘edugain and social accounts’ login to avoid having to register at Terrascope, you may still be required to fill in a form.\n\n\n\nGeneral Python documentation:\nhttps://open-eo.github.io/openeo-python-client/\nBasics:\nhttps://github.com/Open-EO/openeo-python-client/blob/master/examples/notebooks/openeo-terrascope-webinar.ipynb\nMore advanced:\nhttps://github.com/VITObelgium/notebook-samples/blob/master/tools/openEO/openeo-showcase.ipynb"
+  },
+  {
+    "objectID": "events/igarrs2021.html#r-client",
+    "href": "events/igarrs2021.html#r-client",
+    "title": "IEEE IGARRS 2021 HD-3: Hands-on openEO: access cloud platforms using your preferred programming language",
+    "section": "",
+    "text": "https://openeo.org/documentation/1.0/r/\nDemonstration notebook:\nhttps://github.com/VITObelgium/notebook-samples/blob/master/tools/openEO/openeo-r-client.ipynb"
+  },
+  {
+    "objectID": "events/igarrs2021.html#openeo-user-interfaces",
+    "href": "events/igarrs2021.html#openeo-user-interfaces",
+    "title": "IEEE IGARRS 2021 HD-3: Hands-on openEO: access cloud platforms using your preferred programming language",
+    "section": "",
+    "text": "https://hub.openeo.org\nhttps://editor.openeo.org"
+  },
+  {
+    "objectID": "events/igarrs2021.html#use-cases",
+    "href": "events/igarrs2021.html#use-cases",
+    "title": "IEEE IGARRS 2021 HD-3: Hands-on openEO: access cloud platforms using your preferred programming language",
+    "section": "",
+    "text": "Using predefined ‘higher level’ services:\nhttps://github.com/VITObelgium/notebook-samples/blob/master/Terrascope/Beginner/OpenEO_CropCalendarService.ipynb\nCreating ‘higher level’ services:\nhttps://open-eo.github.io/openeo-python-client/udp.html#building-and-storing-user-defined-process"
   }
 ]

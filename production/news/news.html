@@ -1,0 +1,1716 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="openEO maintenance team">
+<meta name="dcterms.date" content="2024-06-01">
+
+<title>openEO news – openEO</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-listing/list.min.js"></script>
+<script src="../site_libs/quarto-listing/quarto-listing.js"></script>
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-e75af1c7ea8d8d9e12fb46278eb83e61.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script>
+
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    const listingTargetEl = window.document.querySelector('#listing-news-listing .list');
+    if (!listingTargetEl) {
+      // No listing discovered, do not attach.
+      return; 
+    }
+
+    const options = {
+      valueNames: ['listing-date','listing-title','listing-author','listing-image','listing-description',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
+      page: 25,
+    pagination: { item: "<li class='page-item'><a class='page page-link' href='#'></a></li>" },
+      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description"],
+    };
+
+    window['quarto-listings'] = window['quarto-listings'] || {};
+    window['quarto-listings']['listing-news-listing'] = new List('listing-news-listing', options);
+
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  });
+
+  window.addEventListener('hashchange',() => {
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  })
+  
+
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    const listingTargetEl = window.document.querySelector('#listing-listing-1 .list');
+    if (!listingTargetEl) {
+      // No listing discovered, do not attach.
+      return; 
+    }
+
+    const options = {
+      valueNames: ['listing-date','listing-title','listing-author',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-title-sort'] }],
+      
+      searchColumns: ["listing-date","listing-title","listing-author"],
+    };
+
+    window['quarto-listings'] = window['quarto-listings'] || {};
+    window['quarto-listings']['listing-listing-1'] = new List('listing-listing-1', options);
+
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  });
+
+  window.addEventListener('hashchange',() => {
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  })
+  </script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&amp;family=Source+Code+Pro:wght@400;500&amp;display=swap" rel="stylesheet">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../custom.css">
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">openEO</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../about.qmd"> 
+<span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../404-not-found.html"> 
+<span class="menu-text">Documentation</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../404-not-found.html"> 
+<span class="menu-text">Software</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="../news/news.html" aria-current="page"> 
+<span class="menu-text">Latest news</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../events/events.html"> 
+<span class="menu-text">Events</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../404-not-found.html"> 
+<span class="menu-text">Contact</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content column-page" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">openEO news</h1>
+</div>
+
+
+
+<div class="quarto-title-meta column-page">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>openEO maintenance team </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">June 1, 2024</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>The openEO community is active and there are always new developments, events and news to share. This page gives an overview of the latest news and highlights from the openEO ecosystem.</p>
+<div id="listing-news-listing" class="quarto-listing quarto-listing-container-default">
+<div class="list quarto-listing-default">
+<div class="quarto-post image-right" data-index="0" data-listing-date-sort="1513555200000" data-listing-file-modified-sort="1780836486419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="254">
+<div class="thumbnail"><a href="../news/2017-12-18-VITO_meeting.html" class="no-external">
+
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../news/2017-12-18-VITO_meeting.html" class="no-external">First week of intensive collaboration: Dec 4-6, 2017</a>
+</h3>
+<div class="delink listing-description"><a href="../news/2017-12-18-VITO_meeting.html" class="no-external">
+On Dec 4-6, VITO’s remote sensing lab hosted the first openEO <em>week of intensive collaboration</em>, in Mol, Belgium. Thirteen developers from 8 different partners gathered to…
+</a></div>
+</div>
+<div class="metadata">
+<a href="../news/2017-12-18-VITO_meeting.html" class="no-external">
+<div class="listing-date">
+Dec 18, 2017
+</div>
+<div class="listing-author">
+Edzer Pebesma
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="1" data-listing-date-sort="1570406400000" data-listing-file-modified-sort="1780836486419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="40">
+<div class="thumbnail"><a href="../news/2019-10-07-EO-big-data-hackaton.html" class="no-external">
+
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../news/2019-10-07-EO-big-data-hackaton.html" class="no-external">H2020 EO Big Data Hackathon Nov 7-8</a>
+</h3>
+<div class="delink listing-description"><a href="../news/2019-10-07-EO-big-data-hackaton.html" class="no-external">
+openEO will participate, along with the four other H2020 projects funded under the same call, in the H2020 EO Big Data Hackathon, which is open for participation.
+</a></div>
+</div>
+<div class="metadata">
+<a href="../news/2019-10-07-EO-big-data-hackaton.html" class="no-external">
+<div class="listing-date">
+Oct 7, 2019
+</div>
+<div class="listing-author">
+Edzer Pebesma
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="2" data-listing-date-sort="1596153600000" data-listing-file-modified-sort="1780836486419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="8" data-listing-word-count-sort="1439">
+<div class="thumbnail"><a href="../news/2020-07-31-lessons-learned.html" class="no-external">
+
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../news/2020-07-31-lessons-learned.html" class="no-external">Lessons learned while developing the openEO API</a>
+</h3>
+<div class="delink listing-description"><a href="../news/2020-07-31-lessons-learned.html" class="no-external">
+With openEO, we are digging into new grounds regarding the interoperability of big Earth observation clouds. While we could address a lot of problems that came up, some…<em></em>
+</a></div>
+</div>
+<div class="metadata">
+<a href="../news/2020-07-31-lessons-learned.html" class="no-external">
+<div class="listing-date">
+Jul 31, 2020
+</div>
+<div class="listing-author">
+Matthias Mohr
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="3" data-listing-date-sort="1711065600000" data-listing-file-modified-sort="1780836486419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="118">
+<div class="thumbnail"><a href="../news/2024-03-22_mooc_cubeandclouds.html" class="no-external">
+
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../news/2024-03-22_mooc_cubeandclouds.html" class="no-external">MOOC Cubes and Clouds - open for registration</a>
+</h3>
+<div class="delink listing-description"><a href="../news/2024-03-22_mooc_cubeandclouds.html" class="no-external">
+The latest EO college course “Cubes and Clouds” explores the newest concepts in Earth Observation through engaging lectures, videos, animated content, and hands-on exercises!
+</a></div>
+</div>
+<div class="metadata">
+<a href="../news/2024-03-22_mooc_cubeandclouds.html" class="no-external">
+<div class="listing-date">
+Mar 22, 2024
+</div>
+<div class="listing-author">
+Peter Zellner
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="4" data-listing-date-sort="1657152000000" data-listing-file-modified-sort="1780836486419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="86">
+<div class="thumbnail"><a href="../news/2022-07-07-monthly-dev-calls.html" class="no-external">
+
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../news/2022-07-07-monthly-dev-calls.html" class="no-external">Monthly openEO community meeting</a>
+</h3>
+<div class="delink listing-description"><a href="../news/2022-07-07-monthly-dev-calls.html" class="no-external">
+The openEO PSC is pleased to announce a new monthly openEO community meeting that takes place <strong>every first Wednesday of a month at 14:00 CET</strong>.
+</a></div>
+</div>
+<div class="metadata">
+<a href="../news/2022-07-07-monthly-dev-calls.html" class="no-external">
+<div class="listing-date">
+Jul 7, 2022
+</div>
+<div class="listing-author">
+Matthias Mohr
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="5" data-listing-date-sort="1766361600000" data-listing-file-modified-sort="1780836486419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="537">
+<div class="thumbnail"><a href="../news/2025-12-22-new-qgis-plugin.html" class="no-external">
+
+<p class="card-img-top"><img loading='lazy' src="../documentation/1.0/qgis/images/qgis-plugin.jpg"  class="thumbnail-image card-img"/></p>
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../news/2025-12-22-new-qgis-plugin.html" class="no-external">New openEO QGIS plugin has been released</a>
+</h3>
+<div class="delink listing-description"><a href="../news/2025-12-22-new-qgis-plugin.html" class="no-external">
+We’re excited to announce the availability of a <strong>new and fully rewritten openEO QGIS plugin</strong>, now ready for broader testing by the community.
+</a></div>
+</div>
+<div class="metadata">
+<a href="../news/2025-12-22-new-qgis-plugin.html" class="no-external">
+<div class="listing-date">
+Dec 22, 2025
+</div>
+<div class="listing-author">
+Matthias Mohr, Caro Niebl
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="6" data-listing-date-sort="1684972800000" data-listing-file-modified-sort="1780836486419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="598">
+<div class="thumbnail"><a href="../news/2023-05-25-new-openeo-versions-120-200rc1.html" class="no-external">
+
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../news/2023-05-25-new-openeo-versions-120-200rc1.html" class="no-external">New releases for openEO API and openEO Processes, focus on vector data</a>
+</h3>
+<div class="delink listing-description"><a href="../news/2023-05-25-new-openeo-versions-120-200rc1.html" class="no-external">
+Today, we have released the new version 1.2.0 of the openEO API. At the same time, we’ve also released a 2.0.0 release candidate for the openEO processes.
+</a></div>
+</div>
+<div class="metadata">
+<a href="../news/2023-05-25-new-openeo-versions-120-200rc1.html" class="no-external">
+<div class="listing-date">
+May 25, 2023
+</div>
+<div class="listing-author">
+Matthias Mohr
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="7" data-listing-date-sort="1778716800000" data-listing-file-modified-sort="1780836486419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="148">
+<div class="thumbnail"><a href="../news/2026-05-14-openeo-is-an-ogc-community-standard.html" class="no-external">
+
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../news/2026-05-14-openeo-is-an-ogc-community-standard.html" class="no-external">OGC publishes openEO as a new Community Standard</a>
+</h3>
+<div class="delink listing-description"><a href="../news/2026-05-14-openeo-is-an-ogc-community-standard.html" class="no-external">
+The Open Geospatial Consortium (OGC) has officially published the openEO specification as a new OGC Community Standard.
+</a></div>
+</div>
+<div class="metadata">
+<a href="../news/2026-05-14-openeo-is-an-ogc-community-standard.html" class="no-external">
+<div class="listing-date">
+May 14, 2026
+</div>
+<div class="listing-author">
+Matthias Mohr
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="8" data-listing-date-sort="1707177600000" data-listing-file-modified-sort="1780836486419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="90">
+<div class="thumbnail"><a href="../news/2024-02-06-openeo-ogc-rfc.html" class="no-external">
+
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../news/2024-02-06-openeo-ogc-rfc.html" class="no-external">OGC seeks public comment on the adoption of openEO as a Community Standard (phase 1)</a>
+</h3>
+<div class="delink listing-description"><a href="../news/2024-02-06-openeo-ogc-rfc.html" class="no-external">
+After submitting openEO to OGC for consideration as an OGC community standard two months ago, OGC now seeks public comment on the potential adoption of openEO as an OGC…
+</a></div>
+</div>
+<div class="metadata">
+<a href="../news/2024-02-06-openeo-ogc-rfc.html" class="no-external">
+<div class="listing-date">
+Feb 6, 2024
+</div>
+<div class="listing-author">
+Matthias Mohr
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="9" data-listing-date-sort="1743811200000" data-listing-file-modified-sort="1780836486419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="53">
+<div class="thumbnail"><a href="../news/2024-04-05-openeo-ogc-rfc2.html" class="no-external">
+
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../news/2024-04-05-openeo-ogc-rfc2.html" class="no-external">OGC seeks public comment on the adoption of openEO as a Community Standard (phase 2)</a>
+</h3>
+<div class="delink listing-description"><a href="../news/2024-04-05-openeo-ogc-rfc2.html" class="no-external">
+OGC seeks public comment on the potential adoption of openEO as an OGC Community Standard. Comments are due by April 21, 2025.
+</a></div>
+</div>
+<div class="metadata">
+<a href="../news/2024-04-05-openeo-ogc-rfc2.html" class="no-external">
+<div class="listing-date">
+Apr 5, 2025
+</div>
+<div class="listing-author">
+Matthias Mohr
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="10" data-listing-date-sort="1636329600000" data-listing-file-modified-sort="1780836486419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="72">
+<div class="thumbnail"><a href="../news/2021-11-08-r-client-on-cran.html" class="no-external">
+
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../news/2021-11-08-r-client-on-cran.html" class="no-external">R Client on CRAN</a>
+</h3>
+<div class="delink listing-description"><a href="../news/2021-11-08-r-client-on-cran.html" class="no-external">
+Today, we released a new version 1.1.0 of the openEO R Client, which features a couple of improvements and bug fixes.
+</a></div>
+</div>
+<div class="metadata">
+<a href="../news/2021-11-08-r-client-on-cran.html" class="no-external">
+<div class="listing-date">
+Nov 8, 2021
+</div>
+<div class="listing-author">
+Matthias Mohr
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="11" data-listing-date-sort="1652313600000" data-listing-file-modified-sort="1780836486419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="551">
+<div class="thumbnail"><a href="../news/2022-05-12-r-client-v120.html" class="no-external">
+
+<p class="card-img-top"><img loading='lazy' src="images/r-client-vis.png"  class="thumbnail-image card-img"/></p>
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../news/2022-05-12-r-client-v120.html" class="no-external">R Client v1.2.0 has been released</a>
+</h3>
+<div class="delink listing-description"><a href="../news/2022-05-12-r-client-v120.html" class="no-external">
+Today, we released a new version 1.2.0 of the openEO R Client, which features a couple of improvements and bug fixes.
+</a></div>
+</div>
+<div class="metadata">
+<a href="../news/2022-05-12-r-client-v120.html" class="no-external">
+<div class="listing-date">
+May 12, 2022
+</div>
+<div class="listing-author">
+Matthias Mohr, Florian Lahn
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="12" data-listing-date-sort="1668643200000" data-listing-file-modified-sort="1780836486419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="533">
+<div class="thumbnail"><a href="../news/2022-11-17-r-client-v130.html" class="no-external">
+
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../news/2022-11-17-r-client-v130.html" class="no-external">R Client v1.3.0 has been released</a>
+</h3>
+<div class="delink listing-description"><a href="../news/2022-11-17-r-client-v130.html" class="no-external">
+We released a new version of the R client (1.3.0) with new exciting improvements and a couple of new vignettes. To see the full list of changes, please consult the Changelog.
+</a></div>
+</div>
+<div class="metadata">
+<a href="../news/2022-11-17-r-client-v130.html" class="no-external">
+<div class="listing-date">
+Nov 17, 2022
+</div>
+<div class="listing-author">
+Matthias Mohr, Peter J. Zellner, Florian Lahn
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="13" data-listing-date-sort="1517356800000" data-listing-file-modified-sort="1780836486419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="224">
+<div class="thumbnail"><a href="../news/2018-01-31-WWU_meeting.html" class="no-external">
+
+<p class="card-img-top"><img loading='lazy' src="images/20180123_134945.jpg"  class="thumbnail-image card-img"/></p>
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../news/2018-01-31-WWU_meeting.html" class="no-external">Second week of intensive collaboration: Jan 22-24, 2018</a>
+</h3>
+<div class="delink listing-description"><a href="../news/2018-01-31-WWU_meeting.html" class="no-external">
+On Jan 22-24, the Institute for Geoinformatics at the University of Muenster hosted the <em>second week of intense collaboration</em>. 16 developers from 8 partners worked on…
+</a></div>
+</div>
+<div class="metadata">
+<a href="../news/2018-01-31-WWU_meeting.html" class="no-external">
+<div class="listing-date">
+Jan 31, 2018
+</div>
+<div class="listing-author">
+Marius Appel
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="14" data-listing-date-sort="1596153600000" data-listing-file-modified-sort="1780836486419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1074">
+<div class="thumbnail"><a href="../news/2020-07-31-openeo-api-released.html" class="no-external">
+
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../news/2020-07-31-openeo-api-released.html" class="no-external">Stable release of the openEO API and Processes (v1.0.0)</a>
+</h3>
+<div class="delink listing-description"><a href="../news/2020-07-31-openeo-api-released.html" class="no-external">
+After two release candidates in early 2020, the openEO Consortium released the first stable version of its openEO API and their set of common processes. This blog post gives…
+</a></div>
+</div>
+<div class="metadata">
+<a href="../news/2020-07-31-openeo-api-released.html" class="no-external">
+<div class="listing-date">
+Jul 31, 2020
+</div>
+<div class="listing-author">
+Matthias Mohr
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="15" data-listing-date-sort="1527033600000" data-listing-file-modified-sort="1780836486419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="131">
+<div class="thumbnail"><a href="../news/2018-05-23-user-requirements-survey-launched.html" class="no-external">
+
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../news/2018-05-23-user-requirements-survey-launched.html" class="no-external">User Requirements Survey for openEO launched</a>
+</h3>
+<div class="delink listing-description"><a href="../news/2018-05-23-user-requirements-survey-launched.html" class="no-external">
+This survey aims to gather a detailed view of external user needs in relation EO data access and analysis. This will enable the openEO project team to better identify…
+</a></div>
+</div>
+<div class="metadata">
+<a href="../news/2018-05-23-user-requirements-survey-launched.html" class="no-external">
+<div class="listing-date">
+May 23, 2018
+</div>
+<div class="listing-author">
+Sarah Carter
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="16" data-listing-date-sort="1512432000000" data-listing-file-modified-sort="1780836486418" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="73">
+<div class="thumbnail"><a href="../news/2017-12-05-welcome.html" class="no-external">
+
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../news/2017-12-05-welcome.html" class="no-external">Welcome to openEO!</a>
+</h3>
+<div class="delink listing-description"><a href="../news/2017-12-05-welcome.html" class="no-external">
+openEO is an H2020 project funded under call EO-2-2017: EO Big Data Shift, from Oct 2017 to Sept 2020.
+</a></div>
+</div>
+<div class="metadata">
+<a href="../news/2017-12-05-welcome.html" class="no-external">
+<div class="listing-date">
+Dec 5, 2017
+</div>
+<div class="listing-author">
+Edzer Pebesma
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="17" data-listing-date-sort="1770076800000" data-listing-file-modified-sort="1780836486419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="479">
+<div class="thumbnail"><a href="../news/2026-02-03-new-openeo-versions-130-200rc2.html" class="no-external">
+
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../news/2026-02-03-new-openeo-versions-130-200rc2.html" class="no-external">openEO API 1.3.0 and openEO Processes 2.0.0 RC2 released</a>
+</h3>
+<div class="delink listing-description"><a href="../news/2026-02-03-new-openeo-versions-130-200rc2.html" class="no-external">
+Today, we have released the new version 1.3.0 of the openEO API. At the same time, we’ve also released openEO Processes 2.0.0-rc.2.
+</a></div>
+</div>
+<div class="metadata">
+<a href="../news/2026-02-03-new-openeo-versions-130-200rc2.html" class="no-external">
+<div class="listing-date">
+Feb 3, 2026
+</div>
+<div class="listing-author">
+Matthias Mohr
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="18" data-listing-date-sort="1551916800000" data-listing-file-modified-sort="1780836486419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="686">
+<div class="thumbnail"><a href="../news/2019-03-07-openeo-api-040.html" class="no-external">
+
+<p class="card-img-top"><img loading='lazy' src="images/040-pg-example.png"  class="thumbnail-image card-img"/></p>
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../news/2019-03-07-openeo-api-040.html" class="no-external">openEO API v0.4.0 released</a>
+</h3>
+<div class="delink listing-description"><a href="../news/2019-03-07-openeo-api-040.html" class="no-external">
+Today, the openEO Consortium <strong>released the new version 0.4.0 of the openEO API</strong>. The following blog post will give a short overview over the most notable changes and additions…
+</a></div>
+</div>
+<div class="metadata">
+<a href="../news/2019-03-07-openeo-api-040.html" class="no-external">
+<div class="listing-date">
+Mar 7, 2019
+</div>
+<div class="listing-author">
+Matthias Mohr
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="19" data-listing-date-sort="1606694400000" data-listing-file-modified-sort="1780836486419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="80">
+<div class="thumbnail"><a href="../news/2020-11-30-openeo-api-101-released.html" class="no-external">
+
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../news/2020-11-30-openeo-api-101-released.html" class="no-external">openEO API v1.0.1 released</a>
+</h3>
+<div class="delink listing-description"><a href="../news/2020-11-30-openeo-api-101-released.html" class="no-external">
+Today, the newly established openEO Project Steering Committee released a new version 1.0.1 of the openEO API. This doesn’t include any new functionality, but clarifies…
+</a></div>
+</div>
+<div class="metadata">
+<a href="../news/2020-11-30-openeo-api-101-released.html" class="no-external">
+<div class="listing-date">
+Nov 30, 2020
+</div>
+<div class="listing-author">
+Matthias Mohr
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="20" data-listing-date-sort="1621209600000" data-listing-file-modified-sort="1780836486419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="139">
+<div class="thumbnail"><a href="../news/2021-05-17-openeo-api-110-released.html" class="no-external">
+
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../news/2021-05-17-openeo-api-110-released.html" class="no-external">openEO API v1.1.0 released</a>
+</h3>
+<div class="delink listing-description"><a href="../news/2021-05-17-openeo-api-110-released.html" class="no-external">
+Today, we released a new version 1.1.0 of the openEO API.
+</a></div>
+</div>
+<div class="metadata">
+<a href="../news/2021-05-17-openeo-api-110-released.html" class="no-external">
+<div class="listing-date">
+May 17, 2021
+</div>
+<div class="listing-author">
+Matthias Mohr
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="21" data-listing-date-sort="1649376000000" data-listing-file-modified-sort="1780836486419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="81">
+<div class="thumbnail"><a href="../news/2022-04-08-psc-meetings.html" class="no-external">
+
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../news/2022-04-08-psc-meetings.html" class="no-external">openEO PSC meetings</a>
+</h3>
+<div class="delink listing-description"><a href="../news/2022-04-08-psc-meetings.html" class="no-external">
+Last wednesday, the first regular openEO PSC meeting took place. We have now agreed to meet on a monthly basis, each <strong>first Wednesday of the month at 15:00 CET/CEST</strong>. We will…<code></code>
+</a></div>
+</div>
+<div class="metadata">
+<a href="../news/2022-04-08-psc-meetings.html" class="no-external">
+<div class="listing-date">
+Apr 8, 2022
+</div>
+<div class="listing-author">
+Matthias Mohr
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="22" data-listing-date-sort="1599004800000" data-listing-file-modified-sort="1780836486419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1294">
+<div class="thumbnail"><a href="../news/2020-09-02-openeo-user-workshop.html" class="no-external">
+
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../news/2020-09-02-openeo-user-workshop.html" class="no-external">openEO Virtual User Workshop</a>
+</h3>
+<div class="delink listing-description"><a href="../news/2020-09-02-openeo-user-workshop.html" class="no-external">
+<strong>Presentations</strong> and <strong>Notebooks</strong> of the user workshop can be downloaded here.
+</a></div>
+</div>
+<div class="metadata">
+<a href="../news/2020-09-02-openeo-user-workshop.html" class="no-external">
+<div class="listing-date">
+Sep 2, 2020
+</div>
+<div class="listing-author">
+Matthias Schramm
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="23" data-listing-date-sort="1521244800000" data-listing-file-modified-sort="1780836486419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="810">
+<div class="thumbnail"><a href="../news/2018-03-15-poc.html" class="no-external">
+
+<p class="card-img-top"><img loading='lazy' src="../images/api.png"  class="thumbnail-image card-img"/></p>
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../news/2018-03-15-poc.html" class="no-external">openEO proves its concept</a>
+</h3>
+<div class="delink listing-description"><a href="../news/2018-03-15-poc.html" class="no-external">
+Earth Observation data are becoming too large to be downloaded locally for analysis. Also, the way they are organised (as tiles, or <em>granules</em>: files containing the imagery…
+</a></div>
+</div>
+<div class="metadata">
+<a href="../news/2018-03-15-poc.html" class="no-external">
+<div class="listing-date">
+Mar 17, 2018
+</div>
+<div class="listing-author">
+Edzer Pebesma, the openEO consortium
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="24" data-listing-date-sort="1701820800000" data-listing-file-modified-sort="1780836486419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="159">
+<div class="thumbnail"><a href="../news/2023-12-06-openeo-submitted-to-ogc.html" class="no-external">
+
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../news/2023-12-06-openeo-submitted-to-ogc.html" class="no-external">openEO submitted to OGC for consideration as an OGC community standard</a>
+</h3>
+<div class="delink listing-description"><a href="../news/2023-12-06-openeo-submitted-to-ogc.html" class="no-external">
+The openEO PSC is happy to share that we have submitted openEO to OGC for consideration as an OGC community standard. More specifically, the submission document justifies…
+</a></div>
+</div>
+<div class="metadata">
+<a href="../news/2023-12-06-openeo-submitted-to-ogc.html" class="no-external">
+<div class="listing-date">
+Dec 6, 2023
+</div>
+<div class="listing-author">
+Matthias Mohr
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="25" data-listing-date-sort="1540857600000" data-listing-file-modified-sort="1780836486419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="536">
+<div class="thumbnail"><a href="../news/2018-10-30-year-one-review-meeting.html" class="no-external">
+
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../news/2018-10-30-year-one-review-meeting.html" class="no-external">openEO year one review meeting</a>
+</h3>
+<div class="delink listing-description"><a href="../news/2018-10-30-year-one-review-meeting.html" class="no-external">
+The openEO consortium is currently undergoing its first evaluation process by the European Commission. During the first year the partners exceeded the planned progress.…
+</a></div>
+</div>
+<div class="metadata">
+<a href="../news/2018-10-30-year-one-review-meeting.html" class="no-external">
+<div class="listing-date">
+Oct 30, 2018
+</div>
+<div class="listing-author">
+Matthias Schramm
+</div>
+</a>
+</div>
+</div>
+</div>
+<div class="listing-no-matching d-none">No matching items</div>
+<nav id="news-listing-pagination" class="listing-pagination" aria-label="Page Navigation">
+  <ul class="pagination"></ul>
+</nav>
+</div>
+
+
+
+
+<div class="quarto-listing quarto-listing-container-table" id="listing-listing-1">
+<div class="listing-actions-group">
+   <div class="input-group input-group-sm quarto-listing-sort">
+    <span class="input-group-text"><i class="bi bi-sort-down"></i></span>
+    <select id="listing-listing-1-sort" class="form-select" aria-label="Order By" onchange="window['quarto-listings']['listing-listing-1'].sort(this.options[this.selectedIndex].value, { order: this.options[this.selectedIndex].getAttribute('data-direction')})">
+      <option value="" disabled="" selected="" hidden="">Order By</option>
+      <option value="index" data-direction="asc">Default</option>
+      <option value="listing-date-sort" data-direction="asc">
+        Date - Oldest
+      </option>
+      <option value="listing-date-sort" data-direction="desc">
+        Date - Newest
+      </option>
+      <option value="listing-title-sort" data-direction="asc">
+        Title
+      </option>
+      <option value="listing-author" data-direction="asc">
+        Author
+      </option>
+    </select>
+  </div>
+    <div class="input-group input-group-sm quarto-listing-filter">
+      <span class="input-group-text"><i class="bi bi-search"></i></span>
+      <input type="text" class="search form-control" placeholder="Filter">
+    </div>
+</div>
+<table class="quarto-listing-table table">
+<thead>
+<tr>
+
+<th>
+<a class="sort" data-sort="listing-date-sort" onclick="if (this.classList.contains('sort-asc')) { this.classList.add('sort-desc'); this.classList.remove('sort-asc') } else { this.classList.add('sort-asc'); this.classList.remove('sort-desc')} return false;">Date</a>
+</th>
+
+<th>
+<a class="sort" data-sort="listing-title-sort" onclick="if (this.classList.contains('sort-asc')) { this.classList.add('sort-desc'); this.classList.remove('sort-asc') } else { this.classList.add('sort-asc'); this.classList.remove('sort-desc')} return false;">Title</a>
+</th>
+
+<th>
+<a class="sort" data-sort="listing-author" onclick="if (this.classList.contains('sort-asc')) { this.classList.add('sort-desc'); this.classList.remove('sort-asc') } else { this.classList.add('sort-asc'); this.classList.remove('sort-desc')} return false;">Author</a>
+</th>
+
+</tr>
+</thead>
+<tbody class="list">
+
+<tr data-index="0" data-listing-date-sort="1778716800000" data-listing-file-modified-sort="1780836486419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="148" data-listing-title-sort="OGC publishes openEO as a new Community Standard" data-listing-filename-sort="2026-05-14-openeo-is-an-ogc-community-standard.qmd">
+<td>
+<span class="listing-date">May 14, 2026</span>
+</td>
+<td>
+<a href="../news/2026-05-14-openeo-is-an-ogc-community-standard.html" class="title listing-title">OGC publishes openEO as a new Community Standard</a>
+</td>
+<td>
+<span class="listing-author">Matthias Mohr</span>
+</td>
+
+</tr>
+
+<tr data-index="1" data-listing-date-sort="1770076800000" data-listing-file-modified-sort="1780836486419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="479" data-listing-title-sort="openEO API 1.3.0 and openEO Processes 2.0.0 RC2 released" data-listing-filename-sort="2026-02-03-new-openeo-versions-130-200rc2.qmd">
+<td>
+<span class="listing-date">Feb 3, 2026</span>
+</td>
+<td>
+<a href="../news/2026-02-03-new-openeo-versions-130-200rc2.html" class="title listing-title">openEO API 1.3.0 and openEO Processes 2.0.0 RC2 released</a>
+</td>
+<td>
+<span class="listing-author">Matthias Mohr</span>
+</td>
+
+</tr>
+
+<tr data-index="2" data-listing-date-sort="1766361600000" data-listing-file-modified-sort="1780836486419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="537" data-listing-title-sort="New openEO QGIS plugin has been released" data-listing-filename-sort="2025-12-22-new-qgis-plugin.qmd">
+<td>
+<span class="listing-date">Dec 22, 2025</span>
+</td>
+<td>
+<a href="../news/2025-12-22-new-qgis-plugin.html" class="title listing-title">New openEO QGIS plugin has been released</a>
+</td>
+<td>
+<span class="listing-author">Matthias Mohr, Caro Niebl</span>
+</td>
+
+</tr>
+
+<tr data-index="3" data-listing-date-sort="1743811200000" data-listing-file-modified-sort="1780836486419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="53" data-listing-title-sort="OGC seeks public comment on the adoption of openEO as a Community Standard (phase 2)" data-listing-filename-sort="2024-04-05-openeo-ogc-rfc2.qmd">
+<td>
+<span class="listing-date">Apr 5, 2025</span>
+</td>
+<td>
+<a href="../news/2024-04-05-openeo-ogc-rfc2.html" class="title listing-title">OGC seeks public comment on the adoption of openEO as a Community Standard (phase 2)</a>
+</td>
+<td>
+<span class="listing-author">Matthias Mohr</span>
+</td>
+
+</tr>
+
+<tr data-index="4" data-listing-date-sort="1711065600000" data-listing-file-modified-sort="1780836486419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="118" data-listing-title-sort="MOOC Cubes and Clouds - open for registration" data-listing-filename-sort="2024-03-22_mooc_cubeandclouds.qmd">
+<td>
+<span class="listing-date">Mar 22, 2024</span>
+</td>
+<td>
+<a href="../news/2024-03-22_mooc_cubeandclouds.html" class="title listing-title">MOOC Cubes and Clouds - open for registration</a>
+</td>
+<td>
+<span class="listing-author">Peter Zellner</span>
+</td>
+
+</tr>
+
+<tr data-index="5" data-listing-date-sort="1707177600000" data-listing-file-modified-sort="1780836486419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="90" data-listing-title-sort="OGC seeks public comment on the adoption of openEO as a Community Standard (phase 1)" data-listing-filename-sort="2024-02-06-openeo-ogc-rfc.qmd">
+<td>
+<span class="listing-date">Feb 6, 2024</span>
+</td>
+<td>
+<a href="../news/2024-02-06-openeo-ogc-rfc.html" class="title listing-title">OGC seeks public comment on the adoption of openEO as a Community Standard (phase 1)</a>
+</td>
+<td>
+<span class="listing-author">Matthias Mohr</span>
+</td>
+
+</tr>
+
+<tr data-index="6" data-listing-date-sort="1701820800000" data-listing-file-modified-sort="1780836486419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="159" data-listing-title-sort="openEO submitted to OGC for consideration as an OGC community standard" data-listing-filename-sort="2023-12-06-openeo-submitted-to-ogc.qmd">
+<td>
+<span class="listing-date">Dec 6, 2023</span>
+</td>
+<td>
+<a href="../news/2023-12-06-openeo-submitted-to-ogc.html" class="title listing-title">openEO submitted to OGC for consideration as an OGC community standard</a>
+</td>
+<td>
+<span class="listing-author">Matthias Mohr</span>
+</td>
+
+</tr>
+
+<tr data-index="7" data-listing-date-sort="1684972800000" data-listing-file-modified-sort="1780836486419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="598" data-listing-title-sort="New releases for openEO API and openEO Processes, focus on vector data" data-listing-filename-sort="2023-05-25-new-openeo-versions-120-200rc1.qmd">
+<td>
+<span class="listing-date">May 25, 2023</span>
+</td>
+<td>
+<a href="../news/2023-05-25-new-openeo-versions-120-200rc1.html" class="title listing-title">New releases for openEO API and openEO Processes, focus on vector data</a>
+</td>
+<td>
+<span class="listing-author">Matthias Mohr</span>
+</td>
+
+</tr>
+
+<tr data-index="8" data-listing-date-sort="1668643200000" data-listing-file-modified-sort="1780836486419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="533" data-listing-title-sort="R Client v1.3.0 has been released" data-listing-filename-sort="2022-11-17-r-client-v130.qmd">
+<td>
+<span class="listing-date">Nov 17, 2022</span>
+</td>
+<td>
+<a href="../news/2022-11-17-r-client-v130.html" class="title listing-title">R Client v1.3.0 has been released</a>
+</td>
+<td>
+<span class="listing-author">Matthias Mohr, Peter J. Zellner, Florian Lahn</span>
+</td>
+
+</tr>
+
+<tr data-index="9" data-listing-date-sort="1657152000000" data-listing-file-modified-sort="1780836486419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="86" data-listing-title-sort="Monthly openEO community meeting" data-listing-filename-sort="2022-07-07-monthly-dev-calls.qmd">
+<td>
+<span class="listing-date">Jul 7, 2022</span>
+</td>
+<td>
+<a href="../news/2022-07-07-monthly-dev-calls.html" class="title listing-title">Monthly openEO community meeting</a>
+</td>
+<td>
+<span class="listing-author">Matthias Mohr</span>
+</td>
+
+</tr>
+
+<tr data-index="10" data-listing-date-sort="1652313600000" data-listing-file-modified-sort="1780836486419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="551" data-listing-title-sort="R Client v1.2.0 has been released" data-listing-filename-sort="2022-05-12-r-client-v120.qmd">
+<td>
+<span class="listing-date">May 12, 2022</span>
+</td>
+<td>
+<a href="../news/2022-05-12-r-client-v120.html" class="title listing-title">R Client v1.2.0 has been released</a>
+</td>
+<td>
+<span class="listing-author">Matthias Mohr, Florian Lahn</span>
+</td>
+
+</tr>
+
+<tr data-index="11" data-listing-date-sort="1649376000000" data-listing-file-modified-sort="1780836486419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="81" data-listing-title-sort="openEO PSC meetings" data-listing-filename-sort="2022-04-08-psc-meetings.qmd">
+<td>
+<span class="listing-date">Apr 8, 2022</span>
+</td>
+<td>
+<a href="../news/2022-04-08-psc-meetings.html" class="title listing-title">openEO PSC meetings</a>
+</td>
+<td>
+<span class="listing-author">Matthias Mohr</span>
+</td>
+
+</tr>
+
+<tr data-index="12" data-listing-date-sort="1636329600000" data-listing-file-modified-sort="1780836486419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="72" data-listing-title-sort="R Client on CRAN" data-listing-filename-sort="2021-11-08-r-client-on-cran.qmd">
+<td>
+<span class="listing-date">Nov 8, 2021</span>
+</td>
+<td>
+<a href="../news/2021-11-08-r-client-on-cran.html" class="title listing-title">R Client on CRAN</a>
+</td>
+<td>
+<span class="listing-author">Matthias Mohr</span>
+</td>
+
+</tr>
+
+<tr data-index="13" data-listing-date-sort="1621209600000" data-listing-file-modified-sort="1780836486419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="139" data-listing-title-sort="openEO API v1.1.0 released" data-listing-filename-sort="2021-05-17-openeo-api-110-released.qmd">
+<td>
+<span class="listing-date">May 17, 2021</span>
+</td>
+<td>
+<a href="../news/2021-05-17-openeo-api-110-released.html" class="title listing-title">openEO API v1.1.0 released</a>
+</td>
+<td>
+<span class="listing-author">Matthias Mohr</span>
+</td>
+
+</tr>
+
+<tr data-index="14" data-listing-date-sort="1606694400000" data-listing-file-modified-sort="1780836486419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="80" data-listing-title-sort="openEO API v1.0.1 released" data-listing-filename-sort="2020-11-30-openeo-api-101-released.qmd">
+<td>
+<span class="listing-date">Nov 30, 2020</span>
+</td>
+<td>
+<a href="../news/2020-11-30-openeo-api-101-released.html" class="title listing-title">openEO API v1.0.1 released</a>
+</td>
+<td>
+<span class="listing-author">Matthias Mohr</span>
+</td>
+
+</tr>
+
+<tr data-index="15" data-listing-date-sort="1599004800000" data-listing-file-modified-sort="1780836486419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1294" data-listing-title-sort="openEO Virtual User Workshop" data-listing-filename-sort="2020-09-02-openeo-user-workshop.qmd">
+<td>
+<span class="listing-date">Sep 2, 2020</span>
+</td>
+<td>
+<a href="../news/2020-09-02-openeo-user-workshop.html" class="title listing-title">openEO Virtual User Workshop</a>
+</td>
+<td>
+<span class="listing-author">Matthias Schramm</span>
+</td>
+
+</tr>
+
+<tr data-index="16" data-listing-date-sort="1596153600000" data-listing-file-modified-sort="1780836486419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="8" data-listing-word-count-sort="1439" data-listing-title-sort="Lessons learned while developing the openEO API" data-listing-filename-sort="2020-07-31-lessons-learned.qmd">
+<td>
+<span class="listing-date">Jul 31, 2020</span>
+</td>
+<td>
+<a href="../news/2020-07-31-lessons-learned.html" class="title listing-title">Lessons learned while developing the openEO API</a>
+</td>
+<td>
+<span class="listing-author">Matthias Mohr</span>
+</td>
+
+</tr>
+
+<tr data-index="17" data-listing-date-sort="1596153600000" data-listing-file-modified-sort="1780836486419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1074" data-listing-title-sort="Stable release of the openEO API and Processes (v1.0.0)" data-listing-filename-sort="2020-07-31-openeo-api-released.qmd">
+<td>
+<span class="listing-date">Jul 31, 2020</span>
+</td>
+<td>
+<a href="../news/2020-07-31-openeo-api-released.html" class="title listing-title">Stable release of the openEO API and Processes (v1.0.0)</a>
+</td>
+<td>
+<span class="listing-author">Matthias Mohr</span>
+</td>
+
+</tr>
+
+<tr data-index="18" data-listing-date-sort="1570406400000" data-listing-file-modified-sort="1780836486419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="40" data-listing-title-sort="H2020 EO Big Data Hackathon Nov 7-8" data-listing-filename-sort="2019-10-07-EO-big-data-hackaton.qmd">
+<td>
+<span class="listing-date">Oct 7, 2019</span>
+</td>
+<td>
+<a href="../news/2019-10-07-EO-big-data-hackaton.html" class="title listing-title">H2020 EO Big Data Hackathon Nov 7-8</a>
+</td>
+<td>
+<span class="listing-author">Edzer Pebesma</span>
+</td>
+
+</tr>
+
+<tr data-index="19" data-listing-date-sort="1551916800000" data-listing-file-modified-sort="1780836486419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="686" data-listing-title-sort="openEO API v0.4.0 released" data-listing-filename-sort="2019-03-07-openeo-api-040.qmd">
+<td>
+<span class="listing-date">Mar 7, 2019</span>
+</td>
+<td>
+<a href="../news/2019-03-07-openeo-api-040.html" class="title listing-title">openEO API v0.4.0 released</a>
+</td>
+<td>
+<span class="listing-author">Matthias Mohr</span>
+</td>
+
+</tr>
+
+<tr data-index="20" data-listing-date-sort="1540857600000" data-listing-file-modified-sort="1780836486419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="536" data-listing-title-sort="openEO year one review meeting" data-listing-filename-sort="2018-10-30-year-one-review-meeting.qmd">
+<td>
+<span class="listing-date">Oct 30, 2018</span>
+</td>
+<td>
+<a href="../news/2018-10-30-year-one-review-meeting.html" class="title listing-title">openEO year one review meeting</a>
+</td>
+<td>
+<span class="listing-author">Matthias Schramm</span>
+</td>
+
+</tr>
+
+<tr data-index="21" data-listing-date-sort="1527033600000" data-listing-file-modified-sort="1780836486419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="131" data-listing-title-sort="User Requirements Survey for openEO launched" data-listing-filename-sort="2018-05-23-user-requirements-survey-launched.qmd">
+<td>
+<span class="listing-date">May 23, 2018</span>
+</td>
+<td>
+<a href="../news/2018-05-23-user-requirements-survey-launched.html" class="title listing-title">User Requirements Survey for openEO launched</a>
+</td>
+<td>
+<span class="listing-author">Sarah Carter</span>
+</td>
+
+</tr>
+
+<tr data-index="22" data-listing-date-sort="1521244800000" data-listing-file-modified-sort="1780836486419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="810" data-listing-title-sort="openEO proves its concept" data-listing-filename-sort="2018-03-15-poc.qmd">
+<td>
+<span class="listing-date">Mar 17, 2018</span>
+</td>
+<td>
+<a href="../news/2018-03-15-poc.html" class="title listing-title">openEO proves its concept</a>
+</td>
+<td>
+<span class="listing-author">Edzer Pebesma, the openEO consortium</span>
+</td>
+
+</tr>
+
+<tr data-index="23" data-listing-date-sort="1517356800000" data-listing-file-modified-sort="1780836486419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="224" data-listing-title-sort="Second week of intensive collaboration: Jan 22-24, 2018" data-listing-filename-sort="2018-01-31-WWU_meeting.qmd">
+<td>
+<span class="listing-date">Jan 31, 2018</span>
+</td>
+<td>
+<a href="../news/2018-01-31-WWU_meeting.html" class="title listing-title">Second week of intensive collaboration: Jan 22-24, 2018</a>
+</td>
+<td>
+<span class="listing-author">Marius Appel</span>
+</td>
+
+</tr>
+
+<tr data-index="24" data-listing-date-sort="1513555200000" data-listing-file-modified-sort="1780836486419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="254" data-listing-title-sort="First week of intensive collaboration: Dec 4-6, 2017" data-listing-filename-sort="2017-12-18-VITO_meeting.qmd">
+<td>
+<span class="listing-date">Dec 18, 2017</span>
+</td>
+<td>
+<a href="../news/2017-12-18-VITO_meeting.html" class="title listing-title">First week of intensive collaboration: Dec 4-6, 2017</a>
+</td>
+<td>
+<span class="listing-author">Edzer Pebesma</span>
+</td>
+
+</tr>
+
+<tr data-index="25" data-listing-date-sort="1512432000000" data-listing-file-modified-sort="1780836486418" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="73" data-listing-title-sort="Welcome to openEO!" data-listing-filename-sort="2017-12-05-welcome.qmd">
+<td>
+<span class="listing-date">Dec 5, 2017</span>
+</td>
+<td>
+<a href="../news/2017-12-05-welcome.html" class="title listing-title">Welcome to openEO!</a>
+</td>
+<td>
+<span class="listing-author">Edzer Pebesma</span>
+</td>
+
+</tr>
+
+</tbody>
+</table>
+<div class="listing-no-matching d-none">No matching items</div>
+</div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
