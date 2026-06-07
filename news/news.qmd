@@ -4,14 +4,13 @@ date:   2024-06-01
 author: openEO maintenance team
 listing: 
   - id: news-listing
-  - type: table
     contents:
       - "*.qmd"
     exclude:
       title: "openEO news"
     sort: "date desc"
     filter-ui: true
-    fields: [date, title, author]
+    image-placeholder: "./images/openeo_logo.png"
 
 ---
 
