@@ -12,7 +12,6 @@ listing:
     sort: "date desc"
     filter-ui: true
     fields: [date, title, author]
-    grid-columns: 3
 
 ---
 
