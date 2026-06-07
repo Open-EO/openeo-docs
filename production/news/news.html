@@ -103,34 +103,6 @@ ul.task-list li input[type="checkbox"] {
       window['quarto-listing-loaded']();
     }
   })
-  
-
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing-1 .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-date','listing-title','listing-author',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-title-sort'] }],
-      
-      searchColumns: ["listing-date","listing-title","listing-author"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing-1'] = new List('listing-listing-1', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
   </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&amp;family=Source+Code+Pro:wght@400;500&amp;display=swap" rel="stylesheet">
@@ -259,75 +231,31 @@ window.Quarto = {
 
 <p>The openEO community is active and there are always new developments, events and news to share. This page gives an overview of the latest news and highlights from the openEO ecosystem.</p>
 <div id="listing-news-listing" class="quarto-listing quarto-listing-container-default">
+<div class="listing-actions-group">
+    <div class="input-group input-group-sm quarto-listing-filter">
+      <span class="input-group-text"><i class="bi bi-search"></i></span>
+      <input type="text" class="search form-control" placeholder="Filter">
+    </div>
+</div>
 <div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-listing-date-sort="1513555200000" data-listing-file-modified-sort="1780836834771" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="254">
-<div class="thumbnail"><a href="../news/2017-12-18-VITO_meeting.html" class="no-external">
+<div class="quarto-post image-right" data-index="0" data-listing-date-sort="1778716800000" data-listing-file-modified-sort="1780837808347" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="148">
+<div class="thumbnail"><a href="../news/2026-05-14-openeo-is-an-ogc-community-standard.html" class="no-external">
 
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../news/2017-12-18-VITO_meeting.html" class="no-external">First week of intensive collaboration: Dec 4-6, 2017</a>
-</h3>
-<div class="delink listing-description"><a href="../news/2017-12-18-VITO_meeting.html" class="no-external">
-On Dec 4-6, VITO’s remote sensing lab hosted the first openEO <em>week of intensive collaboration</em>, in Mol, Belgium. Thirteen developers from 8 different partners gathered to…
-</a></div>
-</div>
-<div class="metadata">
-<a href="../news/2017-12-18-VITO_meeting.html" class="no-external">
-<div class="listing-date">
-Dec 18, 2017
-</div>
-<div class="listing-author">
-Edzer Pebesma
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="1" data-listing-date-sort="1570406400000" data-listing-file-modified-sort="1780836834771" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="40">
-<div class="thumbnail"><a href="../news/2019-10-07-EO-big-data-hackaton.html" class="no-external">
-
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+<p class="card-img-top"><img loading='lazy' src="./images/openeo_logo.png"  class="thumbnail-image card-img"/></p>
 
 </a></div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="../news/2019-10-07-EO-big-data-hackaton.html" class="no-external">H2020 EO Big Data Hackathon Nov 7-8</a>
+<a href="../news/2026-05-14-openeo-is-an-ogc-community-standard.html" class="no-external">OGC publishes openEO as a new Community Standard</a>
 </h3>
-<div class="delink listing-description"><a href="../news/2019-10-07-EO-big-data-hackaton.html" class="no-external">
-openEO will participate, along with the four other H2020 projects funded under the same call, in the H2020 EO Big Data Hackathon, which is open for participation.
+<div class="delink listing-description"><a href="../news/2026-05-14-openeo-is-an-ogc-community-standard.html" class="no-external">
+The Open Geospatial Consortium (OGC) has officially published the openEO specification as a new OGC Community Standard.
 </a></div>
 </div>
 <div class="metadata">
-<a href="../news/2019-10-07-EO-big-data-hackaton.html" class="no-external">
+<a href="../news/2026-05-14-openeo-is-an-ogc-community-standard.html" class="no-external">
 <div class="listing-date">
-Oct 7, 2019
-</div>
-<div class="listing-author">
-Edzer Pebesma
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="2" data-listing-date-sort="1596153600000" data-listing-file-modified-sort="1780836834771" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="8" data-listing-word-count-sort="1439">
-<div class="thumbnail"><a href="../news/2020-07-31-lessons-learned.html" class="no-external">
-
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../news/2020-07-31-lessons-learned.html" class="no-external">Lessons learned while developing the openEO API</a>
-</h3>
-<div class="delink listing-description"><a href="../news/2020-07-31-lessons-learned.html" class="no-external">
-With openEO, we are digging into new grounds regarding the interoperability of big Earth observation clouds. While we could address a lot of problems that came up, some…<em></em>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../news/2020-07-31-lessons-learned.html" class="no-external">
-<div class="listing-date">
-Jul 31, 2020
+May 14, 2026
 </div>
 <div class="listing-author">
 Matthias Mohr
@@ -335,49 +263,24 @@ Matthias Mohr
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="3" data-listing-date-sort="1711065600000" data-listing-file-modified-sort="1780836834771" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="118">
-<div class="thumbnail"><a href="../news/2024-03-22_mooc_cubeandclouds.html" class="no-external">
+<div class="quarto-post image-right" data-index="1" data-listing-date-sort="1770076800000" data-listing-file-modified-sort="1780837808347" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="479">
+<div class="thumbnail"><a href="../news/2026-02-03-new-openeo-versions-130-200rc2.html" class="no-external">
 
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../news/2024-03-22_mooc_cubeandclouds.html" class="no-external">MOOC Cubes and Clouds - open for registration</a>
-</h3>
-<div class="delink listing-description"><a href="../news/2024-03-22_mooc_cubeandclouds.html" class="no-external">
-The latest EO college course “Cubes and Clouds” explores the newest concepts in Earth Observation through engaging lectures, videos, animated content, and hands-on exercises!
-</a></div>
-</div>
-<div class="metadata">
-<a href="../news/2024-03-22_mooc_cubeandclouds.html" class="no-external">
-<div class="listing-date">
-Mar 22, 2024
-</div>
-<div class="listing-author">
-Peter Zellner
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="4" data-listing-date-sort="1657152000000" data-listing-file-modified-sort="1780836834771" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="86">
-<div class="thumbnail"><a href="../news/2022-07-07-monthly-dev-calls.html" class="no-external">
-
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+<p class="card-img-top"><img loading='lazy' src="./images/openeo_logo.png"  class="thumbnail-image card-img"/></p>
 
 </a></div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="../news/2022-07-07-monthly-dev-calls.html" class="no-external">Monthly openEO community meeting</a>
+<a href="../news/2026-02-03-new-openeo-versions-130-200rc2.html" class="no-external">openEO API 1.3.0 and openEO Processes 2.0.0 RC2 released</a>
 </h3>
-<div class="delink listing-description"><a href="../news/2022-07-07-monthly-dev-calls.html" class="no-external">
-The openEO PSC is pleased to announce a new monthly openEO community meeting that takes place <strong>every first Wednesday of a month at 14:00 CET</strong>.
+<div class="delink listing-description"><a href="../news/2026-02-03-new-openeo-versions-130-200rc2.html" class="no-external">
+Today, we have released the new version 1.3.0 of the openEO API. At the same time, we’ve also released openEO Processes 2.0.0-rc.2.
 </a></div>
 </div>
 <div class="metadata">
-<a href="../news/2022-07-07-monthly-dev-calls.html" class="no-external">
+<a href="../news/2026-02-03-new-openeo-versions-130-200rc2.html" class="no-external">
 <div class="listing-date">
-Jul 7, 2022
+Feb 3, 2026
 </div>
 <div class="listing-author">
 Matthias Mohr
@@ -385,7 +288,7 @@ Matthias Mohr
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="5" data-listing-date-sort="1766361600000" data-listing-file-modified-sort="1780836834771" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="537">
+<div class="quarto-post image-right" data-index="2" data-listing-date-sort="1766361600000" data-listing-file-modified-sort="1780837808347" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="537">
 <div class="thumbnail"><a href="../news/2025-12-22-new-qgis-plugin.html" class="no-external">
 
 <p class="card-img-top"><img loading='lazy' src="../documentation/1.0/qgis/images/qgis-plugin.jpg"  class="thumbnail-image card-img"/></p>
@@ -410,85 +313,10 @@ Matthias Mohr, Caro Niebl
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="6" data-listing-date-sort="1684972800000" data-listing-file-modified-sort="1780836834771" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="598">
-<div class="thumbnail"><a href="../news/2023-05-25-new-openeo-versions-120-200rc1.html" class="no-external">
-
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../news/2023-05-25-new-openeo-versions-120-200rc1.html" class="no-external">New releases for openEO API and openEO Processes, focus on vector data</a>
-</h3>
-<div class="delink listing-description"><a href="../news/2023-05-25-new-openeo-versions-120-200rc1.html" class="no-external">
-Today, we have released the new version 1.2.0 of the openEO API. At the same time, we’ve also released a 2.0.0 release candidate for the openEO processes.
-</a></div>
-</div>
-<div class="metadata">
-<a href="../news/2023-05-25-new-openeo-versions-120-200rc1.html" class="no-external">
-<div class="listing-date">
-May 25, 2023
-</div>
-<div class="listing-author">
-Matthias Mohr
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="7" data-listing-date-sort="1778716800000" data-listing-file-modified-sort="1780836834771" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="148">
-<div class="thumbnail"><a href="../news/2026-05-14-openeo-is-an-ogc-community-standard.html" class="no-external">
-
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../news/2026-05-14-openeo-is-an-ogc-community-standard.html" class="no-external">OGC publishes openEO as a new Community Standard</a>
-</h3>
-<div class="delink listing-description"><a href="../news/2026-05-14-openeo-is-an-ogc-community-standard.html" class="no-external">
-The Open Geospatial Consortium (OGC) has officially published the openEO specification as a new OGC Community Standard.
-</a></div>
-</div>
-<div class="metadata">
-<a href="../news/2026-05-14-openeo-is-an-ogc-community-standard.html" class="no-external">
-<div class="listing-date">
-May 14, 2026
-</div>
-<div class="listing-author">
-Matthias Mohr
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="8" data-listing-date-sort="1707177600000" data-listing-file-modified-sort="1780836834771" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="90">
-<div class="thumbnail"><a href="../news/2024-02-06-openeo-ogc-rfc.html" class="no-external">
-
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../news/2024-02-06-openeo-ogc-rfc.html" class="no-external">OGC seeks public comment on the adoption of openEO as a Community Standard (phase 1)</a>
-</h3>
-<div class="delink listing-description"><a href="../news/2024-02-06-openeo-ogc-rfc.html" class="no-external">
-After submitting openEO to OGC for consideration as an OGC community standard two months ago, OGC now seeks public comment on the potential adoption of openEO as an OGC…
-</a></div>
-</div>
-<div class="metadata">
-<a href="../news/2024-02-06-openeo-ogc-rfc.html" class="no-external">
-<div class="listing-date">
-Feb 6, 2024
-</div>
-<div class="listing-author">
-Matthias Mohr
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="9" data-listing-date-sort="1743811200000" data-listing-file-modified-sort="1780836834771" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="53">
+<div class="quarto-post image-right" data-index="3" data-listing-date-sort="1743811200000" data-listing-file-modified-sort="1780837808347" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="53">
 <div class="thumbnail"><a href="../news/2024-04-05-openeo-ogc-rfc2.html" class="no-external">
 
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+<p class="card-img-top"><img loading='lazy' src="./images/openeo_logo.png"  class="thumbnail-image card-img"/></p>
 
 </a></div>
 <div class="body">
@@ -510,24 +338,49 @@ Matthias Mohr
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="10" data-listing-date-sort="1636329600000" data-listing-file-modified-sort="1780836834771" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="72">
-<div class="thumbnail"><a href="../news/2021-11-08-r-client-on-cran.html" class="no-external">
+<div class="quarto-post image-right" data-index="4" data-listing-date-sort="1711065600000" data-listing-file-modified-sort="1780837808347" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="118">
+<div class="thumbnail"><a href="../news/2024-03-22_mooc_cubeandclouds.html" class="no-external">
 
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+<p class="card-img-top"><img loading='lazy' src="./images/openeo_logo.png"  class="thumbnail-image card-img"/></p>
 
 </a></div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="../news/2021-11-08-r-client-on-cran.html" class="no-external">R Client on CRAN</a>
+<a href="../news/2024-03-22_mooc_cubeandclouds.html" class="no-external">MOOC Cubes and Clouds - open for registration</a>
 </h3>
-<div class="delink listing-description"><a href="../news/2021-11-08-r-client-on-cran.html" class="no-external">
-Today, we released a new version 1.1.0 of the openEO R Client, which features a couple of improvements and bug fixes.
+<div class="delink listing-description"><a href="../news/2024-03-22_mooc_cubeandclouds.html" class="no-external">
+The latest EO college course “Cubes and Clouds” explores the newest concepts in Earth Observation through engaging lectures, videos, animated content, and hands-on exercises!
 </a></div>
 </div>
 <div class="metadata">
-<a href="../news/2021-11-08-r-client-on-cran.html" class="no-external">
+<a href="../news/2024-03-22_mooc_cubeandclouds.html" class="no-external">
 <div class="listing-date">
-Nov 8, 2021
+Mar 22, 2024
+</div>
+<div class="listing-author">
+Peter Zellner
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="5" data-listing-date-sort="1707177600000" data-listing-file-modified-sort="1780837808347" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="90">
+<div class="thumbnail"><a href="../news/2024-02-06-openeo-ogc-rfc.html" class="no-external">
+
+<p class="card-img-top"><img loading='lazy' src="./images/openeo_logo.png"  class="thumbnail-image card-img"/></p>
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../news/2024-02-06-openeo-ogc-rfc.html" class="no-external">OGC seeks public comment on the adoption of openEO as a Community Standard (phase 1)</a>
+</h3>
+<div class="delink listing-description"><a href="../news/2024-02-06-openeo-ogc-rfc.html" class="no-external">
+After submitting openEO to OGC for consideration as an OGC community standard two months ago, OGC now seeks public comment on the potential adoption of openEO as an OGC…
+</a></div>
+</div>
+<div class="metadata">
+<a href="../news/2024-02-06-openeo-ogc-rfc.html" class="no-external">
+<div class="listing-date">
+Feb 6, 2024
 </div>
 <div class="listing-author">
 Matthias Mohr
@@ -535,7 +388,107 @@ Matthias Mohr
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="11" data-listing-date-sort="1652313600000" data-listing-file-modified-sort="1780836834771" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="551">
+<div class="quarto-post image-right" data-index="6" data-listing-date-sort="1701820800000" data-listing-file-modified-sort="1780837808347" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="159">
+<div class="thumbnail"><a href="../news/2023-12-06-openeo-submitted-to-ogc.html" class="no-external">
+
+<p class="card-img-top"><img loading='lazy' src="./images/openeo_logo.png"  class="thumbnail-image card-img"/></p>
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../news/2023-12-06-openeo-submitted-to-ogc.html" class="no-external">openEO submitted to OGC for consideration as an OGC community standard</a>
+</h3>
+<div class="delink listing-description"><a href="../news/2023-12-06-openeo-submitted-to-ogc.html" class="no-external">
+The openEO PSC is happy to share that we have submitted openEO to OGC for consideration as an OGC community standard. More specifically, the submission document justifies…
+</a></div>
+</div>
+<div class="metadata">
+<a href="../news/2023-12-06-openeo-submitted-to-ogc.html" class="no-external">
+<div class="listing-date">
+Dec 6, 2023
+</div>
+<div class="listing-author">
+Matthias Mohr
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="7" data-listing-date-sort="1684972800000" data-listing-file-modified-sort="1780837808347" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="598">
+<div class="thumbnail"><a href="../news/2023-05-25-new-openeo-versions-120-200rc1.html" class="no-external">
+
+<p class="card-img-top"><img loading='lazy' src="./images/openeo_logo.png"  class="thumbnail-image card-img"/></p>
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../news/2023-05-25-new-openeo-versions-120-200rc1.html" class="no-external">New releases for openEO API and openEO Processes, focus on vector data</a>
+</h3>
+<div class="delink listing-description"><a href="../news/2023-05-25-new-openeo-versions-120-200rc1.html" class="no-external">
+Today, we have released the new version 1.2.0 of the openEO API. At the same time, we’ve also released a 2.0.0 release candidate for the openEO processes.
+</a></div>
+</div>
+<div class="metadata">
+<a href="../news/2023-05-25-new-openeo-versions-120-200rc1.html" class="no-external">
+<div class="listing-date">
+May 25, 2023
+</div>
+<div class="listing-author">
+Matthias Mohr
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="8" data-listing-date-sort="1668643200000" data-listing-file-modified-sort="1780837808347" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="533">
+<div class="thumbnail"><a href="../news/2022-11-17-r-client-v130.html" class="no-external">
+
+<p class="card-img-top"><img loading='lazy' src="./images/openeo_logo.png"  class="thumbnail-image card-img"/></p>
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../news/2022-11-17-r-client-v130.html" class="no-external">R Client v1.3.0 has been released</a>
+</h3>
+<div class="delink listing-description"><a href="../news/2022-11-17-r-client-v130.html" class="no-external">
+We released a new version of the R client (1.3.0) with new exciting improvements and a couple of new vignettes. To see the full list of changes, please consult the Changelog.
+</a></div>
+</div>
+<div class="metadata">
+<a href="../news/2022-11-17-r-client-v130.html" class="no-external">
+<div class="listing-date">
+Nov 17, 2022
+</div>
+<div class="listing-author">
+Matthias Mohr, Peter J. Zellner, Florian Lahn
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="9" data-listing-date-sort="1657152000000" data-listing-file-modified-sort="1780837808347" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="86">
+<div class="thumbnail"><a href="../news/2022-07-07-monthly-dev-calls.html" class="no-external">
+
+<p class="card-img-top"><img loading='lazy' src="./images/openeo_logo.png"  class="thumbnail-image card-img"/></p>
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../news/2022-07-07-monthly-dev-calls.html" class="no-external">Monthly openEO community meeting</a>
+</h3>
+<div class="delink listing-description"><a href="../news/2022-07-07-monthly-dev-calls.html" class="no-external">
+The openEO PSC is pleased to announce a new monthly openEO community meeting that takes place <strong>every first Wednesday of a month at 14:00 CET</strong>.
+</a></div>
+</div>
+<div class="metadata">
+<a href="../news/2022-07-07-monthly-dev-calls.html" class="no-external">
+<div class="listing-date">
+Jul 7, 2022
+</div>
+<div class="listing-author">
+Matthias Mohr
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="10" data-listing-date-sort="1652313600000" data-listing-file-modified-sort="1780837808347" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="551">
 <div class="thumbnail"><a href="../news/2022-05-12-r-client-v120.html" class="no-external">
 
 <p class="card-img-top"><img loading='lazy' src="images/r-client-vis.png"  class="thumbnail-image card-img"/></p>
@@ -560,60 +513,160 @@ Matthias Mohr, Florian Lahn
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="12" data-listing-date-sort="1668643200000" data-listing-file-modified-sort="1780836834771" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="533">
-<div class="thumbnail"><a href="../news/2022-11-17-r-client-v130.html" class="no-external">
+<div class="quarto-post image-right" data-index="11" data-listing-date-sort="1649376000000" data-listing-file-modified-sort="1780837808346" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="81">
+<div class="thumbnail"><a href="../news/2022-04-08-psc-meetings.html" class="no-external">
 
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../news/2022-11-17-r-client-v130.html" class="no-external">R Client v1.3.0 has been released</a>
-</h3>
-<div class="delink listing-description"><a href="../news/2022-11-17-r-client-v130.html" class="no-external">
-We released a new version of the R client (1.3.0) with new exciting improvements and a couple of new vignettes. To see the full list of changes, please consult the Changelog.
-</a></div>
-</div>
-<div class="metadata">
-<a href="../news/2022-11-17-r-client-v130.html" class="no-external">
-<div class="listing-date">
-Nov 17, 2022
-</div>
-<div class="listing-author">
-Matthias Mohr, Peter J. Zellner, Florian Lahn
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="13" data-listing-date-sort="1517356800000" data-listing-file-modified-sort="1780836834771" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="224">
-<div class="thumbnail"><a href="../news/2018-01-31-WWU_meeting.html" class="no-external">
-
-<p class="card-img-top"><img loading='lazy' src="images/20180123_134945.jpg"  class="thumbnail-image card-img"/></p>
+<p class="card-img-top"><img loading='lazy' src="./images/openeo_logo.png"  class="thumbnail-image card-img"/></p>
 
 </a></div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="../news/2018-01-31-WWU_meeting.html" class="no-external">Second week of intensive collaboration: Jan 22-24, 2018</a>
+<a href="../news/2022-04-08-psc-meetings.html" class="no-external">openEO PSC meetings</a>
 </h3>
-<div class="delink listing-description"><a href="../news/2018-01-31-WWU_meeting.html" class="no-external">
-On Jan 22-24, the Institute for Geoinformatics at the University of Muenster hosted the <em>second week of intense collaboration</em>. 16 developers from 8 partners worked on…
+<div class="delink listing-description"><a href="../news/2022-04-08-psc-meetings.html" class="no-external">
+Last wednesday, the first regular openEO PSC meeting took place. We have now agreed to meet on a monthly basis, each <strong>first Wednesday of the month at 15:00 CET/CEST</strong>. We will…<code></code>
 </a></div>
 </div>
 <div class="metadata">
-<a href="../news/2018-01-31-WWU_meeting.html" class="no-external">
+<a href="../news/2022-04-08-psc-meetings.html" class="no-external">
 <div class="listing-date">
-Jan 31, 2018
+Apr 8, 2022
 </div>
 <div class="listing-author">
-Marius Appel
+Matthias Mohr
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="14" data-listing-date-sort="1596153600000" data-listing-file-modified-sort="1780836834771" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1074">
+<div class="quarto-post image-right" data-index="12" data-listing-date-sort="1636329600000" data-listing-file-modified-sort="1780837808346" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="72">
+<div class="thumbnail"><a href="../news/2021-11-08-r-client-on-cran.html" class="no-external">
+
+<p class="card-img-top"><img loading='lazy' src="./images/openeo_logo.png"  class="thumbnail-image card-img"/></p>
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../news/2021-11-08-r-client-on-cran.html" class="no-external">R Client on CRAN</a>
+</h3>
+<div class="delink listing-description"><a href="../news/2021-11-08-r-client-on-cran.html" class="no-external">
+Today, we released a new version 1.1.0 of the openEO R Client, which features a couple of improvements and bug fixes.
+</a></div>
+</div>
+<div class="metadata">
+<a href="../news/2021-11-08-r-client-on-cran.html" class="no-external">
+<div class="listing-date">
+Nov 8, 2021
+</div>
+<div class="listing-author">
+Matthias Mohr
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="13" data-listing-date-sort="1621209600000" data-listing-file-modified-sort="1780837808346" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="139">
+<div class="thumbnail"><a href="../news/2021-05-17-openeo-api-110-released.html" class="no-external">
+
+<p class="card-img-top"><img loading='lazy' src="./images/openeo_logo.png"  class="thumbnail-image card-img"/></p>
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../news/2021-05-17-openeo-api-110-released.html" class="no-external">openEO API v1.1.0 released</a>
+</h3>
+<div class="delink listing-description"><a href="../news/2021-05-17-openeo-api-110-released.html" class="no-external">
+Today, we released a new version 1.1.0 of the openEO API.
+</a></div>
+</div>
+<div class="metadata">
+<a href="../news/2021-05-17-openeo-api-110-released.html" class="no-external">
+<div class="listing-date">
+May 17, 2021
+</div>
+<div class="listing-author">
+Matthias Mohr
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="14" data-listing-date-sort="1606694400000" data-listing-file-modified-sort="1780837808346" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="80">
+<div class="thumbnail"><a href="../news/2020-11-30-openeo-api-101-released.html" class="no-external">
+
+<p class="card-img-top"><img loading='lazy' src="./images/openeo_logo.png"  class="thumbnail-image card-img"/></p>
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../news/2020-11-30-openeo-api-101-released.html" class="no-external">openEO API v1.0.1 released</a>
+</h3>
+<div class="delink listing-description"><a href="../news/2020-11-30-openeo-api-101-released.html" class="no-external">
+Today, the newly established openEO Project Steering Committee released a new version 1.0.1 of the openEO API. This doesn’t include any new functionality, but clarifies…
+</a></div>
+</div>
+<div class="metadata">
+<a href="../news/2020-11-30-openeo-api-101-released.html" class="no-external">
+<div class="listing-date">
+Nov 30, 2020
+</div>
+<div class="listing-author">
+Matthias Mohr
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="15" data-listing-date-sort="1599004800000" data-listing-file-modified-sort="1780837808346" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1294">
+<div class="thumbnail"><a href="../news/2020-09-02-openeo-user-workshop.html" class="no-external">
+
+<p class="card-img-top"><img loading='lazy' src="./images/openeo_logo.png"  class="thumbnail-image card-img"/></p>
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../news/2020-09-02-openeo-user-workshop.html" class="no-external">openEO Virtual User Workshop</a>
+</h3>
+<div class="delink listing-description"><a href="../news/2020-09-02-openeo-user-workshop.html" class="no-external">
+<strong>Presentations</strong> and <strong>Notebooks</strong> of the user workshop can be downloaded here.
+</a></div>
+</div>
+<div class="metadata">
+<a href="../news/2020-09-02-openeo-user-workshop.html" class="no-external">
+<div class="listing-date">
+Sep 2, 2020
+</div>
+<div class="listing-author">
+Matthias Schramm
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="16" data-listing-date-sort="1596153600000" data-listing-file-modified-sort="1780837808346" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="8" data-listing-word-count-sort="1439">
+<div class="thumbnail"><a href="../news/2020-07-31-lessons-learned.html" class="no-external">
+
+<p class="card-img-top"><img loading='lazy' src="./images/openeo_logo.png"  class="thumbnail-image card-img"/></p>
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../news/2020-07-31-lessons-learned.html" class="no-external">Lessons learned while developing the openEO API</a>
+</h3>
+<div class="delink listing-description"><a href="../news/2020-07-31-lessons-learned.html" class="no-external">
+With openEO, we are digging into new grounds regarding the interoperability of big Earth observation clouds. While we could address a lot of problems that came up, some…<em></em>
+</a></div>
+</div>
+<div class="metadata">
+<a href="../news/2020-07-31-lessons-learned.html" class="no-external">
+<div class="listing-date">
+Jul 31, 2020
+</div>
+<div class="listing-author">
+Matthias Mohr
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="17" data-listing-date-sort="1596153600000" data-listing-file-modified-sort="1780837808346" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1074">
 <div class="thumbnail"><a href="../news/2020-07-31-openeo-api-released.html" class="no-external">
 
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+<p class="card-img-top"><img loading='lazy' src="./images/openeo_logo.png"  class="thumbnail-image card-img"/></p>
 
 </a></div>
 <div class="body">
@@ -635,49 +688,24 @@ Matthias Mohr
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="15" data-listing-date-sort="1527033600000" data-listing-file-modified-sort="1780836834771" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="131">
-<div class="thumbnail"><a href="../news/2018-05-23-user-requirements-survey-launched.html" class="no-external">
+<div class="quarto-post image-right" data-index="18" data-listing-date-sort="1570406400000" data-listing-file-modified-sort="1780837808346" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="40">
+<div class="thumbnail"><a href="../news/2019-10-07-EO-big-data-hackaton.html" class="no-external">
 
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../news/2018-05-23-user-requirements-survey-launched.html" class="no-external">User Requirements Survey for openEO launched</a>
-</h3>
-<div class="delink listing-description"><a href="../news/2018-05-23-user-requirements-survey-launched.html" class="no-external">
-This survey aims to gather a detailed view of external user needs in relation EO data access and analysis. This will enable the openEO project team to better identify…
-</a></div>
-</div>
-<div class="metadata">
-<a href="../news/2018-05-23-user-requirements-survey-launched.html" class="no-external">
-<div class="listing-date">
-May 23, 2018
-</div>
-<div class="listing-author">
-Sarah Carter
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="16" data-listing-date-sort="1512432000000" data-listing-file-modified-sort="1780836834770" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="73">
-<div class="thumbnail"><a href="../news/2017-12-05-welcome.html" class="no-external">
-
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+<p class="card-img-top"><img loading='lazy' src="./images/openeo_logo.png"  class="thumbnail-image card-img"/></p>
 
 </a></div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="../news/2017-12-05-welcome.html" class="no-external">Welcome to openEO!</a>
+<a href="../news/2019-10-07-EO-big-data-hackaton.html" class="no-external">H2020 EO Big Data Hackathon Nov 7-8</a>
 </h3>
-<div class="delink listing-description"><a href="../news/2017-12-05-welcome.html" class="no-external">
-openEO is an H2020 project funded under call EO-2-2017: EO Big Data Shift, from Oct 2017 to Sept 2020.
+<div class="delink listing-description"><a href="../news/2019-10-07-EO-big-data-hackaton.html" class="no-external">
+openEO will participate, along with the four other H2020 projects funded under the same call, in the H2020 EO Big Data Hackathon, which is open for participation.
 </a></div>
 </div>
 <div class="metadata">
-<a href="../news/2017-12-05-welcome.html" class="no-external">
+<a href="../news/2019-10-07-EO-big-data-hackaton.html" class="no-external">
 <div class="listing-date">
-Dec 5, 2017
+Oct 7, 2019
 </div>
 <div class="listing-author">
 Edzer Pebesma
@@ -685,32 +713,7 @@ Edzer Pebesma
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="17" data-listing-date-sort="1770076800000" data-listing-file-modified-sort="1780836834771" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="479">
-<div class="thumbnail"><a href="../news/2026-02-03-new-openeo-versions-130-200rc2.html" class="no-external">
-
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../news/2026-02-03-new-openeo-versions-130-200rc2.html" class="no-external">openEO API 1.3.0 and openEO Processes 2.0.0 RC2 released</a>
-</h3>
-<div class="delink listing-description"><a href="../news/2026-02-03-new-openeo-versions-130-200rc2.html" class="no-external">
-Today, we have released the new version 1.3.0 of the openEO API. At the same time, we’ve also released openEO Processes 2.0.0-rc.2.
-</a></div>
-</div>
-<div class="metadata">
-<a href="../news/2026-02-03-new-openeo-versions-130-200rc2.html" class="no-external">
-<div class="listing-date">
-Feb 3, 2026
-</div>
-<div class="listing-author">
-Matthias Mohr
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="18" data-listing-date-sort="1551916800000" data-listing-file-modified-sort="1780836834771" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="686">
+<div class="quarto-post image-right" data-index="19" data-listing-date-sort="1551916800000" data-listing-file-modified-sort="1780837808346" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="686">
 <div class="thumbnail"><a href="../news/2019-03-07-openeo-api-040.html" class="no-external">
 
 <p class="card-img-top"><img loading='lazy' src="images/040-pg-example.png"  class="thumbnail-image card-img"/></p>
@@ -735,99 +738,24 @@ Matthias Mohr
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="19" data-listing-date-sort="1606694400000" data-listing-file-modified-sort="1780836834771" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="80">
-<div class="thumbnail"><a href="../news/2020-11-30-openeo-api-101-released.html" class="no-external">
+<div class="quarto-post image-right" data-index="20" data-listing-date-sort="1540857600000" data-listing-file-modified-sort="1780837808346" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="536">
+<div class="thumbnail"><a href="../news/2018-10-30-year-one-review-meeting.html" class="no-external">
 
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../news/2020-11-30-openeo-api-101-released.html" class="no-external">openEO API v1.0.1 released</a>
-</h3>
-<div class="delink listing-description"><a href="../news/2020-11-30-openeo-api-101-released.html" class="no-external">
-Today, the newly established openEO Project Steering Committee released a new version 1.0.1 of the openEO API. This doesn’t include any new functionality, but clarifies…
-</a></div>
-</div>
-<div class="metadata">
-<a href="../news/2020-11-30-openeo-api-101-released.html" class="no-external">
-<div class="listing-date">
-Nov 30, 2020
-</div>
-<div class="listing-author">
-Matthias Mohr
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="20" data-listing-date-sort="1621209600000" data-listing-file-modified-sort="1780836834771" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="139">
-<div class="thumbnail"><a href="../news/2021-05-17-openeo-api-110-released.html" class="no-external">
-
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+<p class="card-img-top"><img loading='lazy' src="./images/openeo_logo.png"  class="thumbnail-image card-img"/></p>
 
 </a></div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="../news/2021-05-17-openeo-api-110-released.html" class="no-external">openEO API v1.1.0 released</a>
+<a href="../news/2018-10-30-year-one-review-meeting.html" class="no-external">openEO year one review meeting</a>
 </h3>
-<div class="delink listing-description"><a href="../news/2021-05-17-openeo-api-110-released.html" class="no-external">
-Today, we released a new version 1.1.0 of the openEO API.
+<div class="delink listing-description"><a href="../news/2018-10-30-year-one-review-meeting.html" class="no-external">
+The openEO consortium is currently undergoing its first evaluation process by the European Commission. During the first year the partners exceeded the planned progress.…
 </a></div>
 </div>
 <div class="metadata">
-<a href="../news/2021-05-17-openeo-api-110-released.html" class="no-external">
+<a href="../news/2018-10-30-year-one-review-meeting.html" class="no-external">
 <div class="listing-date">
-May 17, 2021
-</div>
-<div class="listing-author">
-Matthias Mohr
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="21" data-listing-date-sort="1649376000000" data-listing-file-modified-sort="1780836834771" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="81">
-<div class="thumbnail"><a href="../news/2022-04-08-psc-meetings.html" class="no-external">
-
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../news/2022-04-08-psc-meetings.html" class="no-external">openEO PSC meetings</a>
-</h3>
-<div class="delink listing-description"><a href="../news/2022-04-08-psc-meetings.html" class="no-external">
-Last wednesday, the first regular openEO PSC meeting took place. We have now agreed to meet on a monthly basis, each <strong>first Wednesday of the month at 15:00 CET/CEST</strong>. We will…<code></code>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../news/2022-04-08-psc-meetings.html" class="no-external">
-<div class="listing-date">
-Apr 8, 2022
-</div>
-<div class="listing-author">
-Matthias Mohr
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="22" data-listing-date-sort="1599004800000" data-listing-file-modified-sort="1780836834771" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1294">
-<div class="thumbnail"><a href="../news/2020-09-02-openeo-user-workshop.html" class="no-external">
-
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../news/2020-09-02-openeo-user-workshop.html" class="no-external">openEO Virtual User Workshop</a>
-</h3>
-<div class="delink listing-description"><a href="../news/2020-09-02-openeo-user-workshop.html" class="no-external">
-<strong>Presentations</strong> and <strong>Notebooks</strong> of the user workshop can be downloaded here.
-</a></div>
-</div>
-<div class="metadata">
-<a href="../news/2020-09-02-openeo-user-workshop.html" class="no-external">
-<div class="listing-date">
-Sep 2, 2020
+Oct 30, 2018
 </div>
 <div class="listing-author">
 Matthias Schramm
@@ -835,7 +763,32 @@ Matthias Schramm
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="23" data-listing-date-sort="1521244800000" data-listing-file-modified-sort="1780836834771" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="810">
+<div class="quarto-post image-right" data-index="21" data-listing-date-sort="1527033600000" data-listing-file-modified-sort="1780837808346" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="131">
+<div class="thumbnail"><a href="../news/2018-05-23-user-requirements-survey-launched.html" class="no-external">
+
+<p class="card-img-top"><img loading='lazy' src="./images/openeo_logo.png"  class="thumbnail-image card-img"/></p>
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../news/2018-05-23-user-requirements-survey-launched.html" class="no-external">User Requirements Survey for openEO launched</a>
+</h3>
+<div class="delink listing-description"><a href="../news/2018-05-23-user-requirements-survey-launched.html" class="no-external">
+This survey aims to gather a detailed view of external user needs in relation EO data access and analysis. This will enable the openEO project team to better identify…
+</a></div>
+</div>
+<div class="metadata">
+<a href="../news/2018-05-23-user-requirements-survey-launched.html" class="no-external">
+<div class="listing-date">
+May 23, 2018
+</div>
+<div class="listing-author">
+Sarah Carter
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="22" data-listing-date-sort="1521244800000" data-listing-file-modified-sort="1780837808346" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="810">
 <div class="thumbnail"><a href="../news/2018-03-15-poc.html" class="no-external">
 
 <p class="card-img-top"><img loading='lazy' src="../images/api.png"  class="thumbnail-image card-img"/></p>
@@ -860,52 +813,77 @@ Edzer Pebesma, the openEO consortium
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="24" data-listing-date-sort="1701820800000" data-listing-file-modified-sort="1780836834771" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="159">
-<div class="thumbnail"><a href="../news/2023-12-06-openeo-submitted-to-ogc.html" class="no-external">
+<div class="quarto-post image-right" data-index="23" data-listing-date-sort="1517356800000" data-listing-file-modified-sort="1780837808346" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="224">
+<div class="thumbnail"><a href="../news/2018-01-31-WWU_meeting.html" class="no-external">
 
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+<p class="card-img-top"><img loading='lazy' src="images/20180123_134945.jpg"  class="thumbnail-image card-img"/></p>
 
 </a></div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="../news/2023-12-06-openeo-submitted-to-ogc.html" class="no-external">openEO submitted to OGC for consideration as an OGC community standard</a>
+<a href="../news/2018-01-31-WWU_meeting.html" class="no-external">Second week of intensive collaboration: Jan 22-24, 2018</a>
 </h3>
-<div class="delink listing-description"><a href="../news/2023-12-06-openeo-submitted-to-ogc.html" class="no-external">
-The openEO PSC is happy to share that we have submitted openEO to OGC for consideration as an OGC community standard. More specifically, the submission document justifies…
+<div class="delink listing-description"><a href="../news/2018-01-31-WWU_meeting.html" class="no-external">
+On Jan 22-24, the Institute for Geoinformatics at the University of Muenster hosted the <em>second week of intense collaboration</em>. 16 developers from 8 partners worked on…
 </a></div>
 </div>
 <div class="metadata">
-<a href="../news/2023-12-06-openeo-submitted-to-ogc.html" class="no-external">
+<a href="../news/2018-01-31-WWU_meeting.html" class="no-external">
 <div class="listing-date">
-Dec 6, 2023
+Jan 31, 2018
 </div>
 <div class="listing-author">
-Matthias Mohr
+Marius Appel
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="25" data-listing-date-sort="1540857600000" data-listing-file-modified-sort="1780836834771" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="536">
-<div class="thumbnail"><a href="../news/2018-10-30-year-one-review-meeting.html" class="no-external">
+<div class="quarto-post image-right" data-index="24" data-listing-date-sort="1513555200000" data-listing-file-modified-sort="1780837808346" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="254">
+<div class="thumbnail"><a href="../news/2017-12-18-VITO_meeting.html" class="no-external">
 
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+<p class="card-img-top"><img loading='lazy' src="./images/openeo_logo.png"  class="thumbnail-image card-img"/></p>
 
 </a></div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="../news/2018-10-30-year-one-review-meeting.html" class="no-external">openEO year one review meeting</a>
+<a href="../news/2017-12-18-VITO_meeting.html" class="no-external">First week of intensive collaboration: Dec 4-6, 2017</a>
 </h3>
-<div class="delink listing-description"><a href="../news/2018-10-30-year-one-review-meeting.html" class="no-external">
-The openEO consortium is currently undergoing its first evaluation process by the European Commission. During the first year the partners exceeded the planned progress.…
+<div class="delink listing-description"><a href="../news/2017-12-18-VITO_meeting.html" class="no-external">
+On Dec 4-6, VITO’s remote sensing lab hosted the first openEO <em>week of intensive collaboration</em>, in Mol, Belgium. Thirteen developers from 8 different partners gathered to…
 </a></div>
 </div>
 <div class="metadata">
-<a href="../news/2018-10-30-year-one-review-meeting.html" class="no-external">
+<a href="../news/2017-12-18-VITO_meeting.html" class="no-external">
 <div class="listing-date">
-Oct 30, 2018
+Dec 18, 2017
 </div>
 <div class="listing-author">
-Matthias Schramm
+Edzer Pebesma
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="25" data-listing-date-sort="1512432000000" data-listing-file-modified-sort="1780837808346" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="73">
+<div class="thumbnail"><a href="../news/2017-12-05-welcome.html" class="no-external">
+
+<p class="card-img-top"><img loading='lazy' data-src="./images/openeo_logo.png"  class="thumbnail-image card-img"/></p>
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../news/2017-12-05-welcome.html" class="no-external">Welcome to openEO!</a>
+</h3>
+<div class="delink listing-description"><a href="../news/2017-12-05-welcome.html" class="no-external">
+openEO is an H2020 project funded under call EO-2-2017: EO Big Data Shift, from Oct 2017 to Sept 2020.
+</a></div>
+</div>
+<div class="metadata">
+<a href="../news/2017-12-05-welcome.html" class="no-external">
+<div class="listing-date">
+Dec 5, 2017
+</div>
+<div class="listing-author">
+Edzer Pebesma
 </div>
 </a>
 </div>
@@ -920,394 +898,7 @@ Matthias Schramm
 
 
 
-<div class="quarto-listing quarto-listing-container-table" id="listing-listing-1">
-<div class="listing-actions-group">
-   <div class="input-group input-group-sm quarto-listing-sort">
-    <span class="input-group-text"><i class="bi bi-sort-down"></i></span>
-    <select id="listing-listing-1-sort" class="form-select" aria-label="Order By" onchange="window['quarto-listings']['listing-listing-1'].sort(this.options[this.selectedIndex].value, { order: this.options[this.selectedIndex].getAttribute('data-direction')})">
-      <option value="" disabled="" selected="" hidden="">Order By</option>
-      <option value="index" data-direction="asc">Default</option>
-      <option value="listing-date-sort" data-direction="asc">
-        Date - Oldest
-      </option>
-      <option value="listing-date-sort" data-direction="desc">
-        Date - Newest
-      </option>
-      <option value="listing-title-sort" data-direction="asc">
-        Title
-      </option>
-      <option value="listing-author" data-direction="asc">
-        Author
-      </option>
-    </select>
-  </div>
-    <div class="input-group input-group-sm quarto-listing-filter">
-      <span class="input-group-text"><i class="bi bi-search"></i></span>
-      <input type="text" class="search form-control" placeholder="Filter">
-    </div>
-</div>
-<table class="quarto-listing-table table">
-<thead>
-<tr>
-
-<th>
-<a class="sort" data-sort="listing-date-sort" onclick="if (this.classList.contains('sort-asc')) { this.classList.add('sort-desc'); this.classList.remove('sort-asc') } else { this.classList.add('sort-asc'); this.classList.remove('sort-desc')} return false;">Date</a>
-</th>
-
-<th>
-<a class="sort" data-sort="listing-title-sort" onclick="if (this.classList.contains('sort-asc')) { this.classList.add('sort-desc'); this.classList.remove('sort-asc') } else { this.classList.add('sort-asc'); this.classList.remove('sort-desc')} return false;">Title</a>
-</th>
-
-<th>
-<a class="sort" data-sort="listing-author" onclick="if (this.classList.contains('sort-asc')) { this.classList.add('sort-desc'); this.classList.remove('sort-asc') } else { this.classList.add('sort-asc'); this.classList.remove('sort-desc')} return false;">Author</a>
-</th>
-
-</tr>
-</thead>
-<tbody class="list">
-
-<tr data-index="0" data-listing-date-sort="1778716800000" data-listing-file-modified-sort="1780836834771" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="148" data-listing-title-sort="OGC publishes openEO as a new Community Standard" data-listing-filename-sort="2026-05-14-openeo-is-an-ogc-community-standard.qmd">
-<td>
-<span class="listing-date">May 14, 2026</span>
-</td>
-<td>
-<a href="../news/2026-05-14-openeo-is-an-ogc-community-standard.html" class="title listing-title">OGC publishes openEO as a new Community Standard</a>
-</td>
-<td>
-<span class="listing-author">Matthias Mohr</span>
-</td>
-
-</tr>
-
-<tr data-index="1" data-listing-date-sort="1770076800000" data-listing-file-modified-sort="1780836834771" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="479" data-listing-title-sort="openEO API 1.3.0 and openEO Processes 2.0.0 RC2 released" data-listing-filename-sort="2026-02-03-new-openeo-versions-130-200rc2.qmd">
-<td>
-<span class="listing-date">Feb 3, 2026</span>
-</td>
-<td>
-<a href="../news/2026-02-03-new-openeo-versions-130-200rc2.html" class="title listing-title">openEO API 1.3.0 and openEO Processes 2.0.0 RC2 released</a>
-</td>
-<td>
-<span class="listing-author">Matthias Mohr</span>
-</td>
-
-</tr>
-
-<tr data-index="2" data-listing-date-sort="1766361600000" data-listing-file-modified-sort="1780836834771" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="537" data-listing-title-sort="New openEO QGIS plugin has been released" data-listing-filename-sort="2025-12-22-new-qgis-plugin.qmd">
-<td>
-<span class="listing-date">Dec 22, 2025</span>
-</td>
-<td>
-<a href="../news/2025-12-22-new-qgis-plugin.html" class="title listing-title">New openEO QGIS plugin has been released</a>
-</td>
-<td>
-<span class="listing-author">Matthias Mohr, Caro Niebl</span>
-</td>
-
-</tr>
-
-<tr data-index="3" data-listing-date-sort="1743811200000" data-listing-file-modified-sort="1780836834771" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="53" data-listing-title-sort="OGC seeks public comment on the adoption of openEO as a Community Standard (phase 2)" data-listing-filename-sort="2024-04-05-openeo-ogc-rfc2.qmd">
-<td>
-<span class="listing-date">Apr 5, 2025</span>
-</td>
-<td>
-<a href="../news/2024-04-05-openeo-ogc-rfc2.html" class="title listing-title">OGC seeks public comment on the adoption of openEO as a Community Standard (phase 2)</a>
-</td>
-<td>
-<span class="listing-author">Matthias Mohr</span>
-</td>
-
-</tr>
-
-<tr data-index="4" data-listing-date-sort="1711065600000" data-listing-file-modified-sort="1780836834771" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="118" data-listing-title-sort="MOOC Cubes and Clouds - open for registration" data-listing-filename-sort="2024-03-22_mooc_cubeandclouds.qmd">
-<td>
-<span class="listing-date">Mar 22, 2024</span>
-</td>
-<td>
-<a href="../news/2024-03-22_mooc_cubeandclouds.html" class="title listing-title">MOOC Cubes and Clouds - open for registration</a>
-</td>
-<td>
-<span class="listing-author">Peter Zellner</span>
-</td>
-
-</tr>
-
-<tr data-index="5" data-listing-date-sort="1707177600000" data-listing-file-modified-sort="1780836834771" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="90" data-listing-title-sort="OGC seeks public comment on the adoption of openEO as a Community Standard (phase 1)" data-listing-filename-sort="2024-02-06-openeo-ogc-rfc.qmd">
-<td>
-<span class="listing-date">Feb 6, 2024</span>
-</td>
-<td>
-<a href="../news/2024-02-06-openeo-ogc-rfc.html" class="title listing-title">OGC seeks public comment on the adoption of openEO as a Community Standard (phase 1)</a>
-</td>
-<td>
-<span class="listing-author">Matthias Mohr</span>
-</td>
-
-</tr>
-
-<tr data-index="6" data-listing-date-sort="1701820800000" data-listing-file-modified-sort="1780836834771" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="159" data-listing-title-sort="openEO submitted to OGC for consideration as an OGC community standard" data-listing-filename-sort="2023-12-06-openeo-submitted-to-ogc.qmd">
-<td>
-<span class="listing-date">Dec 6, 2023</span>
-</td>
-<td>
-<a href="../news/2023-12-06-openeo-submitted-to-ogc.html" class="title listing-title">openEO submitted to OGC for consideration as an OGC community standard</a>
-</td>
-<td>
-<span class="listing-author">Matthias Mohr</span>
-</td>
-
-</tr>
-
-<tr data-index="7" data-listing-date-sort="1684972800000" data-listing-file-modified-sort="1780836834771" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="598" data-listing-title-sort="New releases for openEO API and openEO Processes, focus on vector data" data-listing-filename-sort="2023-05-25-new-openeo-versions-120-200rc1.qmd">
-<td>
-<span class="listing-date">May 25, 2023</span>
-</td>
-<td>
-<a href="../news/2023-05-25-new-openeo-versions-120-200rc1.html" class="title listing-title">New releases for openEO API and openEO Processes, focus on vector data</a>
-</td>
-<td>
-<span class="listing-author">Matthias Mohr</span>
-</td>
-
-</tr>
-
-<tr data-index="8" data-listing-date-sort="1668643200000" data-listing-file-modified-sort="1780836834771" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="533" data-listing-title-sort="R Client v1.3.0 has been released" data-listing-filename-sort="2022-11-17-r-client-v130.qmd">
-<td>
-<span class="listing-date">Nov 17, 2022</span>
-</td>
-<td>
-<a href="../news/2022-11-17-r-client-v130.html" class="title listing-title">R Client v1.3.0 has been released</a>
-</td>
-<td>
-<span class="listing-author">Matthias Mohr, Peter J. Zellner, Florian Lahn</span>
-</td>
-
-</tr>
-
-<tr data-index="9" data-listing-date-sort="1657152000000" data-listing-file-modified-sort="1780836834771" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="86" data-listing-title-sort="Monthly openEO community meeting" data-listing-filename-sort="2022-07-07-monthly-dev-calls.qmd">
-<td>
-<span class="listing-date">Jul 7, 2022</span>
-</td>
-<td>
-<a href="../news/2022-07-07-monthly-dev-calls.html" class="title listing-title">Monthly openEO community meeting</a>
-</td>
-<td>
-<span class="listing-author">Matthias Mohr</span>
-</td>
-
-</tr>
-
-<tr data-index="10" data-listing-date-sort="1652313600000" data-listing-file-modified-sort="1780836834771" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="551" data-listing-title-sort="R Client v1.2.0 has been released" data-listing-filename-sort="2022-05-12-r-client-v120.qmd">
-<td>
-<span class="listing-date">May 12, 2022</span>
-</td>
-<td>
-<a href="../news/2022-05-12-r-client-v120.html" class="title listing-title">R Client v1.2.0 has been released</a>
-</td>
-<td>
-<span class="listing-author">Matthias Mohr, Florian Lahn</span>
-</td>
-
-</tr>
-
-<tr data-index="11" data-listing-date-sort="1649376000000" data-listing-file-modified-sort="1780836834771" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="81" data-listing-title-sort="openEO PSC meetings" data-listing-filename-sort="2022-04-08-psc-meetings.qmd">
-<td>
-<span class="listing-date">Apr 8, 2022</span>
-</td>
-<td>
-<a href="../news/2022-04-08-psc-meetings.html" class="title listing-title">openEO PSC meetings</a>
-</td>
-<td>
-<span class="listing-author">Matthias Mohr</span>
-</td>
-
-</tr>
-
-<tr data-index="12" data-listing-date-sort="1636329600000" data-listing-file-modified-sort="1780836834771" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="72" data-listing-title-sort="R Client on CRAN" data-listing-filename-sort="2021-11-08-r-client-on-cran.qmd">
-<td>
-<span class="listing-date">Nov 8, 2021</span>
-</td>
-<td>
-<a href="../news/2021-11-08-r-client-on-cran.html" class="title listing-title">R Client on CRAN</a>
-</td>
-<td>
-<span class="listing-author">Matthias Mohr</span>
-</td>
-
-</tr>
-
-<tr data-index="13" data-listing-date-sort="1621209600000" data-listing-file-modified-sort="1780836834771" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="139" data-listing-title-sort="openEO API v1.1.0 released" data-listing-filename-sort="2021-05-17-openeo-api-110-released.qmd">
-<td>
-<span class="listing-date">May 17, 2021</span>
-</td>
-<td>
-<a href="../news/2021-05-17-openeo-api-110-released.html" class="title listing-title">openEO API v1.1.0 released</a>
-</td>
-<td>
-<span class="listing-author">Matthias Mohr</span>
-</td>
-
-</tr>
-
-<tr data-index="14" data-listing-date-sort="1606694400000" data-listing-file-modified-sort="1780836834771" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="80" data-listing-title-sort="openEO API v1.0.1 released" data-listing-filename-sort="2020-11-30-openeo-api-101-released.qmd">
-<td>
-<span class="listing-date">Nov 30, 2020</span>
-</td>
-<td>
-<a href="../news/2020-11-30-openeo-api-101-released.html" class="title listing-title">openEO API v1.0.1 released</a>
-</td>
-<td>
-<span class="listing-author">Matthias Mohr</span>
-</td>
-
-</tr>
-
-<tr data-index="15" data-listing-date-sort="1599004800000" data-listing-file-modified-sort="1780836834771" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1294" data-listing-title-sort="openEO Virtual User Workshop" data-listing-filename-sort="2020-09-02-openeo-user-workshop.qmd">
-<td>
-<span class="listing-date">Sep 2, 2020</span>
-</td>
-<td>
-<a href="../news/2020-09-02-openeo-user-workshop.html" class="title listing-title">openEO Virtual User Workshop</a>
-</td>
-<td>
-<span class="listing-author">Matthias Schramm</span>
-</td>
-
-</tr>
-
-<tr data-index="16" data-listing-date-sort="1596153600000" data-listing-file-modified-sort="1780836834771" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="8" data-listing-word-count-sort="1439" data-listing-title-sort="Lessons learned while developing the openEO API" data-listing-filename-sort="2020-07-31-lessons-learned.qmd">
-<td>
-<span class="listing-date">Jul 31, 2020</span>
-</td>
-<td>
-<a href="../news/2020-07-31-lessons-learned.html" class="title listing-title">Lessons learned while developing the openEO API</a>
-</td>
-<td>
-<span class="listing-author">Matthias Mohr</span>
-</td>
-
-</tr>
-
-<tr data-index="17" data-listing-date-sort="1596153600000" data-listing-file-modified-sort="1780836834771" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1074" data-listing-title-sort="Stable release of the openEO API and Processes (v1.0.0)" data-listing-filename-sort="2020-07-31-openeo-api-released.qmd">
-<td>
-<span class="listing-date">Jul 31, 2020</span>
-</td>
-<td>
-<a href="../news/2020-07-31-openeo-api-released.html" class="title listing-title">Stable release of the openEO API and Processes (v1.0.0)</a>
-</td>
-<td>
-<span class="listing-author">Matthias Mohr</span>
-</td>
-
-</tr>
-
-<tr data-index="18" data-listing-date-sort="1570406400000" data-listing-file-modified-sort="1780836834771" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="40" data-listing-title-sort="H2020 EO Big Data Hackathon Nov 7-8" data-listing-filename-sort="2019-10-07-EO-big-data-hackaton.qmd">
-<td>
-<span class="listing-date">Oct 7, 2019</span>
-</td>
-<td>
-<a href="../news/2019-10-07-EO-big-data-hackaton.html" class="title listing-title">H2020 EO Big Data Hackathon Nov 7-8</a>
-</td>
-<td>
-<span class="listing-author">Edzer Pebesma</span>
-</td>
-
-</tr>
-
-<tr data-index="19" data-listing-date-sort="1551916800000" data-listing-file-modified-sort="1780836834771" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="686" data-listing-title-sort="openEO API v0.4.0 released" data-listing-filename-sort="2019-03-07-openeo-api-040.qmd">
-<td>
-<span class="listing-date">Mar 7, 2019</span>
-</td>
-<td>
-<a href="../news/2019-03-07-openeo-api-040.html" class="title listing-title">openEO API v0.4.0 released</a>
-</td>
-<td>
-<span class="listing-author">Matthias Mohr</span>
-</td>
-
-</tr>
-
-<tr data-index="20" data-listing-date-sort="1540857600000" data-listing-file-modified-sort="1780836834771" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="536" data-listing-title-sort="openEO year one review meeting" data-listing-filename-sort="2018-10-30-year-one-review-meeting.qmd">
-<td>
-<span class="listing-date">Oct 30, 2018</span>
-</td>
-<td>
-<a href="../news/2018-10-30-year-one-review-meeting.html" class="title listing-title">openEO year one review meeting</a>
-</td>
-<td>
-<span class="listing-author">Matthias Schramm</span>
-</td>
-
-</tr>
-
-<tr data-index="21" data-listing-date-sort="1527033600000" data-listing-file-modified-sort="1780836834771" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="131" data-listing-title-sort="User Requirements Survey for openEO launched" data-listing-filename-sort="2018-05-23-user-requirements-survey-launched.qmd">
-<td>
-<span class="listing-date">May 23, 2018</span>
-</td>
-<td>
-<a href="../news/2018-05-23-user-requirements-survey-launched.html" class="title listing-title">User Requirements Survey for openEO launched</a>
-</td>
-<td>
-<span class="listing-author">Sarah Carter</span>
-</td>
-
-</tr>
-
-<tr data-index="22" data-listing-date-sort="1521244800000" data-listing-file-modified-sort="1780836834771" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="810" data-listing-title-sort="openEO proves its concept" data-listing-filename-sort="2018-03-15-poc.qmd">
-<td>
-<span class="listing-date">Mar 17, 2018</span>
-</td>
-<td>
-<a href="../news/2018-03-15-poc.html" class="title listing-title">openEO proves its concept</a>
-</td>
-<td>
-<span class="listing-author">Edzer Pebesma, the openEO consortium</span>
-</td>
-
-</tr>
-
-<tr data-index="23" data-listing-date-sort="1517356800000" data-listing-file-modified-sort="1780836834771" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="224" data-listing-title-sort="Second week of intensive collaboration: Jan 22-24, 2018" data-listing-filename-sort="2018-01-31-WWU_meeting.qmd">
-<td>
-<span class="listing-date">Jan 31, 2018</span>
-</td>
-<td>
-<a href="../news/2018-01-31-WWU_meeting.html" class="title listing-title">Second week of intensive collaboration: Jan 22-24, 2018</a>
-</td>
-<td>
-<span class="listing-author">Marius Appel</span>
-</td>
-
-</tr>
-
-<tr data-index="24" data-listing-date-sort="1513555200000" data-listing-file-modified-sort="1780836834771" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="254" data-listing-title-sort="First week of intensive collaboration: Dec 4-6, 2017" data-listing-filename-sort="2017-12-18-VITO_meeting.qmd">
-<td>
-<span class="listing-date">Dec 18, 2017</span>
-</td>
-<td>
-<a href="../news/2017-12-18-VITO_meeting.html" class="title listing-title">First week of intensive collaboration: Dec 4-6, 2017</a>
-</td>
-<td>
-<span class="listing-author">Edzer Pebesma</span>
-</td>
-
-</tr>
-
-<tr data-index="25" data-listing-date-sort="1512432000000" data-listing-file-modified-sort="1780836834770" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="73" data-listing-title-sort="Welcome to openEO!" data-listing-filename-sort="2017-12-05-welcome.qmd">
-<td>
-<span class="listing-date">Dec 5, 2017</span>
-</td>
-<td>
-<a href="../news/2017-12-05-welcome.html" class="title listing-title">Welcome to openEO!</a>
-</td>
-<td>
-<span class="listing-author">Edzer Pebesma</span>
-</td>
-
-</tr>
-
-</tbody>
-</table>
-<div class="listing-no-matching d-none">No matching items</div>
-</div></main> <!-- /main -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
