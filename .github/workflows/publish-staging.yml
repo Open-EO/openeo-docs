@@ -1,0 +1,45 @@
+name: Publish Staging
+
+on:
+  push:
+    branches:
+      - staging
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # Optional: install Python packages if needed
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Render Quarto project
+        run: quarto render
+
+      # -------------------------
+      # ARCHIVE ONLY (no Pages deployment)
+      # -------------------------
+      - name: Archive staging build
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: ./_site
+          destination_dir: staging
+          keep_files: true

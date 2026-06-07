@@ -1,4 +1,4 @@
-name: Publish Quarto Site
+name: Publish Production
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - main
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -42,14 +42,29 @@ jobs:
       - name: Render Quarto project
         run: quarto render
 
-      - name: Configure Pages
+      # -------------------------
+      # ARCHIVE to gh-pages
+      # -------------------------
+      - name: Archive production build
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: ./_site
+          destination_dir: production
+          keep_files: true
+
+      # -------------------------
+      # DEPLOY to GitHub Pages (REAL SITE)
+      # -------------------------
+      - name: Setup Pages
         uses: actions/configure-pages@v5
 
-      - name: Upload Pages Artifact
+      - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: _site
+          path: ./_site
 
-      - name: Deploy to GitHub Pages
+      - name: Deploy to Pages
         id: deployment
         uses: actions/deploy-pages@v4
