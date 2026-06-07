@@ -6,9 +6,26 @@ format:
     page-layout: full
 ---
 
-::: {.callout-note appearance="minimal"}
-🎉 openEO API 1.3.0 released — [read the release notes →](#)
-:::
+
+```{=html}
+<!-- ANNOUNCE BAR -->
+<div class="announce-bar">
+  🎉 openEO API 1.3.0 released — <a href="#">read the release notes →</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">🌍 v1.3.0 now available</div>
+    <h1>Earth observation<br>for <em>everyone</em>.</h1>
+    <p>openEO provides a unified API...</p>
+    <div class="hero-actions">
+      <a href="docs/" class="btn-primary">Get Started →</a>
+    </div>
+  </div>
+</section>
+
+```
 
 
 ::: {.stats-bar}
@@ -33,61 +50,7 @@ format:
 :::
 :::
 
-::: {.cards-grid}
-::: {.card}
-[🐍]{.card-icon}
-
-### Python
-The most feature-complete client. Ideal for data scientists and researchers.
-
-[→ Python docs](python/index.qmd){.card-arrow}
-:::
-
-::: {.card}
-[📊]{.card-icon}
-
-### R
-Integrate EO data directly into your R workflows.
-
-[→ R client docs](#){.card-arrow}
-:::
-
-::: {.card}
-[📊]{.card-icon}
-
-### R
-Integrate EO data directly into your R workflows.
-
-[→ R client docs](#){.card-arrow}
-:::
-
-:::
-
 ```{=html}
-<!-- ANNOUNCE BAR -->
-<div class="announce-bar">
-  🎉 openEO API 1.3.0 released — <a href="#">read the release notes →</a>
-</div>
-
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-content">
-    <div class="hero-badge">🌍 v1.3.0 now available</div>
-    <h1>Earth observation<br>for <em>everyone</em>.</h1>
-    <p>openEO provides a unified API...</p>
-    <div class="hero-actions">
-      <a href="docs/" class="btn-primary">Get Started →</a>
-    </div>
-  </div>
-</section>
-
-<!-- STATS BAR -->
-<div class="stats-bar">
-  <div class="stat"><div class="stat-num">10+</div><div class="stat-label">Cloud back-ends</div></div>
-  <div class="stat"><div class="stat-num">10+</div><div class="stat-label">Cloud back-ends</div></div>
-  <div class="stat"><div class="stat-num">10+</div><div class="stat-label">Cloud back-ends</div></div>
-  <div class="stat"><div class="stat-num">10+</div><div class="stat-label">Cloud back-ends</div></div>
-</div>
 
 <!-- WHAT IS OPENEO -->
 <section>
@@ -150,6 +113,9 @@ ndvi.<span class="fn">download</span>(<span class="str">"ndvi.nc"</span>)
     </div>
   </div>
 </section>
+
+
+
 <!-- GET STARTED CARDS -->
 <section class="alt">
   <span class="section-eyebrow">Get started</span>

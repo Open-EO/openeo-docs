@@ -18,9 +18,6 @@ website:
       - text: "Get Started"
         href: docs/index.qmd
         # style this as CTA via custom.css targeting .nav-cta
-  page-footer:
-    background: "#1a2744"
-    left: "© 2026 openEO — Apache 2.0"
   search: true
 
 format:
