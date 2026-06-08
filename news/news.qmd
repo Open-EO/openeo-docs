@@ -4,7 +4,7 @@ date:   2024-06-01
 author: openEO maintenance team
 listing: 
   - id: news-listing
-    type: grid
+    type: table
     contents:
       - "*.qmd"
     exclude:
@@ -12,6 +12,7 @@ listing:
     sort: "date desc"
     filter-ui: true
     image-placeholder: "./images/openeo_logo.png"
+    page-size: 9
     fields: [date, author, title, description]
 ---
 

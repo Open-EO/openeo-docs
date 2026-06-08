@@ -3,15 +3,15 @@ title: ""
 format:
   html:
     toc: false
-    page-layout: full
+    page-layout: custom
 listing:
   - id: latest-news
     contents: news/20*.qmd
     sort: "date desc"
     max-items: 3
     type: table
-    fields: [date, title]
-    filter-ui: true
+    fields: [date, title, author]
+    filter-ui: false
 ---
 
 
@@ -25,8 +25,8 @@ listing:
 <section class="hero">
   <div class="hero-content">
     <div class="hero-badge">🌍 v1.3.0 now available</div>
-    <h1>Earth observation<br>for <em>everyone</em>.</h1>
-    <p>openEO provides a unified API...</p>
+    <h1>Open-Source API<br>for <em>Earth Observation Analysis</em></h1>
+    <p><b>The openEO API</b> allows users to connect to Earth observation cloud back-ends in a simple and unified way.</p>
     <div class="hero-actions">
       <a href="docs/" class="btn-primary">Get Started →</a>
     </div>
@@ -47,27 +47,34 @@ listing:
   <div class="what-grid">
     <div>
       <h2 class="section-title">One API.<br>Any cloud. Any language.</h2>
-      <p class="section-sub">Whether you're using Python, R, JavaScript or QGIS — openEO lets you write your analysis once and run it on any compatible back-end. No vendor lock-in. No rewriting code.</p>
+      <p class="section-sub">Whether you're using Python, R , JavaScript or Julia - <b>openEO</b> lets you write your analysis once and run it on any compatible back-end. No vendor lock-in. No rewriting code.</p>
       <div class="feature-list">
         <div class="feature-item">
           <div class="feature-check">✓</div>
           <div>
             <strong>Standardised processes</strong>
-            <span>Use the same process names across every back-end</span>
+            <span>Use the same process names across different openEO back-ends </span>
           </div>
         </div>
         <div class="feature-item">
           <div class="feature-check">✓</div>
           <div>
-            <strong>Datacube model</strong>
+            <strong>Datacube concept</strong>
             <span>Work with spatiotemporal datacubes natively</span>
           </div>
         </div>
         <div class="feature-item">
           <div class="feature-check">✓</div>
           <div>
+            <strong>Reusable</strong>
+            <span>Share and reuse EO workflows as processes</span>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-check">✓</div>
+          <div>
             <strong>Open source</strong>
-            <span>Apache 2.0 — inspect, extend, contribute</span>
+            <span>Apache 2.0: inspect, extend, contribute</span>
           </div>
         </div>
       </div>
@@ -101,6 +108,16 @@ ndvi.<span class="fn">download</span>(<span class="str">"ndvi.nc"</span>)
 </div>
     </div>
   </div>
+
+```
+::: {.callout-caution}
+
+openEO is not to be confused with independant services that implement the specifications such as [openEO Platform](https://openeo.cloud/) or [CDSE](https://dataspace.copernicus.eu/).
+For a list of services built on top of openEO, please visit the [openEO Hub](https://hub.openeo.org/).
+
+:::
+
+```{=html}
 </section>
 
 
@@ -111,6 +128,18 @@ ndvi.<span class="fn">download</span>(<span class="str">"ndvi.nc"</span>)
   <h2 class="section-title">Choose your path</h2>
   <p class="section-sub">New to openEO? Start with a guide for your preferred language or tool.</p>
   <div class="cards-grid">
+    <a href="docs_light.html" class="card">
+      <div class="card-icon">📖</div>
+      <h3>Concepts & Glossary</h3>
+      <p>Understand datacubes, processes, UDFs, and the openEO data model before writing any code.</p>
+      <div class="card-arrow">→ docs_light.html</div>
+    </a>
+        <a href="software.qmd" class="card">
+      <div class="card-icon">🔧</div>
+      <h3>openEO Software</h3>
+      <p>Explore the openEO software ecosystem, including clients, back-ends, and tools for building and deploying geospatial data processing workflows.</p>
+      <div class="card-arrow">→ software list</div>
+    </a>
     <a href="python_light.html" class="card">
       <div class="card-icon">🐍</div>
       <h3>Python</h3>
@@ -135,12 +164,6 @@ ndvi.<span class="fn">download</span>(<span class="str">"ndvi.nc"</span>)
       <p>Access openEO back-ends directly from QGIS with a graphical interface — no coding required.</p>
       <div class="card-arrow">→ QGIS guide</div>
     </a>
-    <a href="docs_light.html" class="card">
-      <div class="card-icon">📖</div>
-      <h3>Concepts & Glossary</h3>
-      <p>Understand datacubes, processes, UDFs, and the openEO data model before writing any code.</p>
-      <div class="card-arrow">→ docs_light.html</div>
-    </a>
     <a href="#" class="card">
       <div class="card-icon">🔧</div>
       <h3>For Developers</h3>
@@ -150,45 +173,6 @@ ndvi.<span class="fn">download</span>(<span class="str">"ndvi.nc"</span>)
   </div>
 </section>
 
-<!-- 
-<section>
-  <span class="section-eyebrow">Documentation</span>
-  <h2 class="section-title">Everything you need</h2>
-  <p class="section-sub">Structured documentation for users, developers, and service providers.</p>
-  <div class="docs-grid">
-    <a href="docs_light.html" class="docs-cell">
-      <span class="docs-cell-tag tag-user">User Docs</span>
-      <h3>Introduction</h3>
-      <p>Start here. Learn the openEO concepts, connect to a back-end, and run your first job.</p>
-    </a>
-    <a href="docs_light.html" class="docs-cell">
-      <span class="docs-cell-tag tag-user">User Docs</span>
-      <h3>Datacubes</h3>
-      <p>Deep dive into the spatiotemporal datacube model that underpins all openEO processing.</p>
-    </a>
-    <a href="docs_light.html" class="docs-cell">
-      <span class="docs-cell-tag tag-user">User Docs</span>
-      <h3>Cookbook</h3>
-      <p>Practical recipes: NDVI, cloud masking, time series, batch jobs, and more.</p>
-    </a>
-    <a href="#" class="docs-cell">
-      <span class="docs-cell-tag tag-dev">Developer</span>
-      <h3>API Reference</h3>
-      <p>Full OpenAPI specification for the openEO REST API v1.x.</p>
-    </a>
-    <a href="#" class="docs-cell">
-      <span class="docs-cell-tag tag-dev">Developer</span>
-      <h3>Back-end Guide</h3>
-      <p>Implement an openEO-compliant back-end with xarray, Dask, and more.</p>
-    </a>
-    <a href="#" class="docs-cell">
-      <span class="docs-cell-tag tag-api">Processes</span>
-      <h3>Process Reference</h3>
-      <p>Browse all 200+ standardised process definitions with examples and parameters.</p>
-    </a>
-  </div>
-</section> 
--->
 ```
 
 <!-- NEWS (native Quarto block) -->
@@ -210,7 +194,7 @@ ndvi.<span class="fn">download</span>(<span class="str">"ndvi.nc"</span>)
       <svg width="16" height="16" viewBox="0 0 22 22" fill="none" style="vertical-align:middle;margin-right:6px;"><circle cx="11" cy="11" r="10" stroke="#7dd9e8" stroke-width="1.5"/><path d="M6 11 Q11 5 16 11 Q11 17 6 11Z" fill="#7dd9e8" opacity="0.7"/></svg>
       openEO
     </div>
-    <p>An open API and ecosystem for Earth observation cloud processing. Governed by the openEO Project Steering Committee.</p>
+    <p>The project maintains the API and process specifications, and an open-source ecosystem with clients and server implementations.</p>
   </div>
   <div>
     <h4>Documentation</h4>
@@ -226,23 +210,14 @@ ndvi.<span class="fn">download</span>(<span class="str">"ndvi.nc"</span>)
   <div>
     <h4>Clients</h4>
     <ul>
-      <li><a href="#">Python</a></li>
-      <li><a href="#">R</a></li>
-      <li><a href="#">JavaScript</a></li>
-      <li><a href="#">QGIS</a></li>
-      <li><a href="#">Julia</a></li>
-    </ul>
-  </div>
-  <div>
-    <h4>Project</h4>
-    <ul>
-      <li><a href="#">About</a></li>
-      <li><a href="#">PSC</a></li>
-      <li><a href="#">GitHub ↗</a></li>
-      <li><a href="#">Contact</a></li>
-      <li><a href="#">openEO Hub ↗</a></li>
+      <li><a href="https://cran.r-project.org/package=openeo">CRAN / R</a></li>
+      <li><a href="https://www.npmjs.com/search?q=%40openeo%2F">npm / JS</a></li>
+      <li><a href="https://pypi.org/project/openeo/">PyPI / Python</a></li>
+      <li><a href="https://anaconda.org/conda-forge/openeo">Conda Forge</a></li>
+      <li><a href="https://github.com/Open-EO/openeo-julia-client">Julia</a></li>
+      <li><a href="https://plugins.qgis.org/plugins/openeo_plugin/">QGIS</a></li>
     </ul>
   </div>
 </footer>
-<div class="footer-bottom">© 2026 openEO — Apache 2.0 License &nbsp;·&nbsp; Built with openEO</div>
+<div class="footer-bottom">© 2026 openEO — Apache 2.0 License &nbsp;·&nbsp; Built with Quarto</div>
 ```

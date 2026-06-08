@@ -279,6 +279,23 @@ section.alt { background: var(--bg-secondary); }
   border: 1px solid #b2d8e0;
 }
 
+#news-listing {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+#news-listing-pagination {
+  order: 100 !important;
+}
+
+#news-listing .list.grid {
+  order: 0 !important;
+}
+
+#news-listing .listing-no-matching {
+  order: 1 !important;
+}
+
 /* ─── INSTALL BADGES ─── */
 .clients-row {
   display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
@@ -316,4 +333,210 @@ footer ul a:hover { color: #ffffff; }
   .stats-bar { flex-direction: column; }
   .stat { border-right: none; border-bottom: 1px solid var(--border); }
   .docs-cell { border-right: none !important; }
+}
+
+/* ─── PEOPLE & SUPPORT CARDS ─── */
+:root {
+  --clr-bg:        #f4f6f9;
+  --clr-surface:   #ffffff;
+  --clr-primary:   #1a4f8a;
+  --clr-accent:    #2da44e;
+  --clr-accent2:   #e06c2b;
+  --clr-text:      #1c2333;
+  --clr-muted:     #6b7893;
+  --clr-border:    #dde3ed;
+  --radius:        14px;
+  --shadow:        0 4px 24px rgba(26,79,138,.10);
+  --shadow-hover:  0 10px 40px rgba(26,79,138,.18);
+  --transition:    all .25s cubic-bezier(.4,0,.2,1);
+  font-family: 'Crimson Pro', 'Georgia', serif;
+}
+
+/* ── Section header ────────────────────────────────────── */
+.psc-section-header {
+  text-align: center;
+  margin: 3rem 0 2rem;
+}
+.psc-section-header h2 {
+  font-family: 'DM Sans', 'Helvetica Neue', sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--clr-primary);
+  letter-spacing: -.03em;
+  margin-bottom: .4rem;
+}
+.psc-section-header p {
+  color: var(--clr-muted);
+  font-size: 1.05rem;
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+/* ── Card grid ─────────────────────────────────────────── */
+.psc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  padding: 0 0 3rem;
+}
+
+/* ── Individual card ───────────────────────────────────── */
+.psc-card {
+  background: var(--clr-surface);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius);
+  padding: 1.75rem 1.5rem 1.4rem;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+.psc-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--clr-primary), var(--clr-accent));
+  opacity: 0;
+  transition: var(--transition);
+}
+.psc-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-hover);
+  border-color: var(--clr-primary);
+}
+.psc-card:hover::before { opacity: 1; }
+
+/* Chair badge */
+.psc-card.chair::before { opacity: 1; }
+.psc-chair-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--clr-primary), var(--clr-accent));
+  color: #fff;
+  font-family: 'DM Sans', sans-serif;
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: .2rem .65rem;
+  border-radius: 20px;
+  margin-bottom: .9rem;
+}
+
+/* ── Avatar ─────────────────────────────────────────────── */
+.psc-avatar-wrap {
+  position: relative;
+  margin-bottom: 1rem;
+}
+.psc-avatar {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--clr-border);
+  background: var(--clr-bg);
+  display: block;
+  transition: var(--transition);
+}
+.psc-card:hover .psc-avatar {
+  border-color: var(--clr-primary);
+}
+.psc-avatar-fallback {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--clr-primary) 0%, #3a7bd5 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #fff;
+  border: 3px solid var(--clr-border);
+  transition: var(--transition);
+}
+.psc-card:hover .psc-avatar-fallback {
+  border-color: var(--clr-primary);
+}
+
+/* ── Text content ───────────────────────────────────────── */
+.psc-name {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--clr-text);
+  margin: 0 0 .2rem;
+}
+.psc-org {
+  font-size: .88rem;
+  color: var(--clr-muted);
+  margin: 0 0 1rem;
+  font-style: italic;
+}
+
+/* ── Link buttons ───────────────────────────────────────── */
+.psc-links {
+  display: flex;
+  gap: .55rem;
+  margin-top: auto;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.psc-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  padding: .38rem .85rem;
+  border-radius: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: .8rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: var(--transition);
+  border: 1.5px solid transparent;
+}
+.psc-btn-linkedin {
+  background: #e8f0fb;
+  color: var(--clr-primary);
+  border-color: #c5d8f5;
+}
+.psc-btn-linkedin:hover {
+  background: var(--clr-primary);
+  color: #fff;
+  border-color: var(--clr-primary);
+  text-decoration: none;
+}
+.psc-btn-email {
+  background: #eaf6ee;
+  color: #1a7a3a;
+  border-color: #b8e3c5;
+}
+.psc-btn-email:hover {
+  background: var(--clr-accent);
+  color: #fff;
+  border-color: var(--clr-accent);
+  text-decoration: none;
+}
+.psc-btn-github {
+  background: #f0f0f0;
+  color: #333;
+  border-color: #d0d0d0;
+}
+.psc-btn-github:hover {
+  background: #24292e;
+  color: #fff;
+  border-color: #24292e;
+  text-decoration: none;
+}
+
+/* Icon SVGs inline */
+.btn-icon { width: 13px; height: 13px; fill: currentColor; flex-shrink: 0; }
+
+@media (max-width: 600px) {
+  .psc-grid { grid-template-columns: 1fr; }
 }
