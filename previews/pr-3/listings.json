@@ -1,0 +1,70 @@
+[
+  {
+    "listing": "/news/news.html",
+    "items": [
+      "/news/2026-05-14-openeo-is-an-ogc-community-standard.html",
+      "/news/2026-02-03-new-openeo-versions-130-200rc2.html",
+      "/news/2025-12-22-new-qgis-plugin.html",
+      "/news/2024-04-05-openeo-ogc-rfc2.html",
+      "/news/2024-03-22_mooc_cubeandclouds.html",
+      "/news/2024-02-06-openeo-ogc-rfc.html",
+      "/news/2023-12-06-openeo-submitted-to-ogc.html",
+      "/news/2023-05-25-new-openeo-versions-120-200rc1.html",
+      "/news/2022-11-17-r-client-v130.html",
+      "/news/2022-07-07-monthly-dev-calls.html",
+      "/news/2022-05-12-r-client-v120.html",
+      "/news/2022-04-08-psc-meetings.html",
+      "/news/2021-11-08-r-client-on-cran.html",
+      "/news/2021-05-17-openeo-api-110-released.html",
+      "/news/2020-11-30-openeo-api-101-released.html",
+      "/news/2020-09-02-openeo-user-workshop.html",
+      "/news/2020-07-31-lessons-learned.html",
+      "/news/2020-07-31-openeo-api-released.html",
+      "/news/2019-10-07-EO-big-data-hackaton.html",
+      "/news/2019-03-07-openeo-api-040.html",
+      "/news/2018-10-30-year-one-review-meeting.html",
+      "/news/2018-05-23-user-requirements-survey-launched.html",
+      "/news/2018-03-15-poc.html",
+      "/news/2018-01-31-WWU_meeting.html",
+      "/news/2017-12-18-VITO_meeting.html",
+      "/news/2017-12-05-welcome.html"
+    ]
+  },
+  {
+    "listing": "/events/events.html",
+    "items": [
+      "/events/igarrs2021.html"
+    ]
+  },
+  {
+    "listing": "/index.html",
+    "items": [
+      "/news/2026-05-14-openeo-is-an-ogc-community-standard.html",
+      "/news/2026-02-03-new-openeo-versions-130-200rc2.html",
+      "/news/2025-12-22-new-qgis-plugin.html",
+      "/news/2024-04-05-openeo-ogc-rfc2.html",
+      "/news/2024-03-22_mooc_cubeandclouds.html",
+      "/news/2024-02-06-openeo-ogc-rfc.html",
+      "/news/2023-12-06-openeo-submitted-to-ogc.html",
+      "/news/2023-05-25-new-openeo-versions-120-200rc1.html",
+      "/news/2022-11-17-r-client-v130.html",
+      "/news/2022-07-07-monthly-dev-calls.html",
+      "/news/2022-05-12-r-client-v120.html",
+      "/news/2022-04-08-psc-meetings.html",
+      "/news/2021-11-08-r-client-on-cran.html",
+      "/news/2021-05-17-openeo-api-110-released.html",
+      "/news/2020-11-30-openeo-api-101-released.html",
+      "/news/2020-09-02-openeo-user-workshop.html",
+      "/news/2020-07-31-lessons-learned.html",
+      "/news/2020-07-31-openeo-api-released.html",
+      "/news/2019-10-07-EO-big-data-hackaton.html",
+      "/news/2019-03-07-openeo-api-040.html",
+      "/news/2018-10-30-year-one-review-meeting.html",
+      "/news/2018-05-23-user-requirements-survey-launched.html",
+      "/news/2018-03-15-poc.html",
+      "/news/2018-01-31-WWU_meeting.html",
+      "/news/2017-12-18-VITO_meeting.html",
+      "/news/2017-12-05-welcome.html"
+    ]
+  }
+]
