@@ -28,7 +28,7 @@ listing:
     <h1>Open-Source API<br>for <em>Earth Observation Analysis</em></h1>
     <p><b>The openEO API</b> allows users to connect to Earth observation cloud back-ends in a simple and unified way.</p>
     <div class="hero-actions">
-      <a href="docs/" class="btn-primary">Get Started →</a>
+      <a href="#get-started-section" class="btn-primary">Get Started →</a>
     </div>
   </div>
 </section>
@@ -123,7 +123,52 @@ For a list of services built on top of openEO, please visit the [openEO Hub](htt
 
 
 <!-- GET STARTED CARDS -->
-<section class="alt">
+
+ <section class="alt">
+  <span class="section-eyebrow">With openEO</span>
+  <h2 class="section-title">Are you interested in...</h2>
+  <p class="section-sub">openEO can be used to process and analyze Earth observation data from diverse sources in a unified and efficient manner.</p>
+  <div class="cards-grid">
+    <a href="docs_light.html" class="card">
+      <div class="card-icon">📖</div>
+      <h3>Downloading RGB image</h3>
+      <p>Learn how to download and visualize RGB images from Earth observation data.</p>
+      <div class="card-arrow">→ docs_light.html</div>
+    </a>
+        <a href="software.qmd" class="card">
+      <div class="card-icon">🔧</div>
+      <h3>Performing Band Math</h3>
+      <p>Perform mathematical operations on different spectral bands to derive new insights from Earth observation data.</p>
+      <div class="card-arrow">→ evi calculation</div>
+    </a>
+    <a href="python_light.html" class="card">
+      <div class="card-icon">🐍</div>
+      <h3>Bringing your own functions</h3>
+      <p>Define and use your own functions to process Earth observation data within openEO workflows.</p>
+      <div class="card-arrow">→ User-Defined-Function</div>
+    </a>
+    <a href="#" class="card">
+      <div class="card-icon">📊</div>
+      <h3>Share EO workflow as Service</h3>
+      <p>Deploy and manage your Earth observation workflows as a service, enabling automated processing and analysis.</p>
+      <div class="card-arrow">→ User-defined-process</div>
+    </a>
+    <a href="#" class="card">
+      <div class="card-icon">⚡</div>
+      <h3>Large-scale Processing</h3>
+      <p>Process and analyze large volumes of Earth observation data efficiently using openEO's scalable infrastructure.</p>
+      <div class="card-arrow">→ Scalability</div>
+    </a>
+    <a href="#" class="card">
+      <div class="card-icon">🗺️</div>
+      <h3>Using Random Forest</h3>
+      <p>Apply machine learning algorithms like Random Forest to classify and analyze Earth observation data.</p>
+      <div class="card-arrow">→ Random Forest guide</div>
+    </a>
+  </div>
+</section>
+
+<section class="alt" id="get-started-section">
   <span class="section-eyebrow">Get started</span>
   <h2 class="section-title">Choose your path</h2>
   <p class="section-sub">New to openEO? Start with a guide for your preferred language or tool.</p>
@@ -134,34 +179,22 @@ For a list of services built on top of openEO, please visit the [openEO Hub](htt
       <p>Understand datacubes, processes, UDFs, and the openEO data model before writing any code.</p>
       <div class="card-arrow">→ docs_light.html</div>
     </a>
-        <a href="software.qmd" class="card">
+    <a href="software.qmd" class="card">
       <div class="card-icon">🔧</div>
-      <h3>openEO Software</h3>
-      <p>Explore the openEO software ecosystem, including clients, back-ends, and tools for building and deploying geospatial data processing workflows.</p>
+      <h3>Cookbook</h3>
+      <p>Get started with practical examples and step-by-step guides to use openEO effectively for a specific usecase.</p>
       <div class="card-arrow">→ software list</div>
     </a>
-    <a href="python_light.html" class="card">
-      <div class="card-icon">🐍</div>
-      <h3>Python</h3>
-      <p>The most feature-complete client. Ideal for data scientists and researchers building analysis pipelines.</p>
-      <div class="card-arrow">→ python_light.html</div>
-    </a>
-    <a href="#" class="card">
-      <div class="card-icon">📊</div>
-      <h3>R</h3>
-      <p>Integrate Earth observation data directly into your R analysis workflows and spatial packages.</p>
-      <div class="card-arrow">→ R client docs</div>
-    </a>
-    <a href="#" class="card">
-      <div class="card-icon">⚡</div>
-      <h3>JavaScript</h3>
-      <p>Build interactive web applications that query and visualise EO data in the browser.</p>
-      <div class="card-arrow">→ JS client docs</div>
+    <a href="software.qmd" class="card">
+      <div class="card-icon">🔧</div>
+      <h3>Built-in openEO Processes</h3>
+      <p>Learn how to use different openEO processes to analyze Earth observation data efficiently using either 🐍 Python, 📊 R or ⚡ JavaScript clients.</p>
+      <div class="card-arrow">→ software list</div>
     </a>
     <a href="#" class="card">
       <div class="card-icon">🗺️</div>
       <h3>QGIS Plugin</h3>
-      <p>Access openEO back-ends directly from QGIS with a graphical interface — no coding required.</p>
+      <p>Access openEO back-ends directly from QGIS with a graphical interface  to visualize openEO outputs.</p>
       <div class="card-arrow">→ QGIS guide</div>
     </a>
     <a href="#" class="card">

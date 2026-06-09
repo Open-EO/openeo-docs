@@ -21,10 +21,10 @@ website:
     left:
       - text: "About"
         href: about.qmd
-      - text: "Applications"
-        href: https://hub.openeo.org/
-      - text: "Services"
+      - text: "Guides"
         href: 404-not-found.qmd
+      - text: "Services"
+        href: https://hub.openeo.org/
       - text: "News"
         href: news/news.qmd
       - text: "Meetings"
