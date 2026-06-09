@@ -1,6 +1,6 @@
 [
   {
-    "listing": "/index.html",
+    "listing": "/news/news.html",
     "items": [
       "/news/2026-05-14-openeo-is-an-ogc-community-standard.html",
       "/news/2026-02-03-new-openeo-versions-130-200rc2.html",
@@ -37,7 +37,7 @@
     ]
   },
   {
-    "listing": "/news/news.html",
+    "listing": "/index.html",
     "items": [
       "/news/2026-05-14-openeo-is-an-ogc-community-standard.html",
       "/news/2026-02-03-new-openeo-versions-130-200rc2.html",

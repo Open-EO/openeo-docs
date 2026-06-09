@@ -97,34 +97,60 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../about.qmd"> 
+    <a class="nav-link" href="../about.html"> 
 <span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../404-not-found.html"> 
-<span class="menu-text">Documentation</span></a>
+    <a class="nav-link" href="https://hub.openeo.org/"> 
+<span class="menu-text">Applications</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="../404-not-found.html"> 
-<span class="menu-text">Software</span></a>
+<span class="menu-text">Services</span></a>
   </li>  
-</ul>
-            <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
     <a class="nav-link" href="../news/news.html"> 
-<span class="menu-text">Latest news</span></a>
+<span class="menu-text">News</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../meetings.html"> 
+<span class="menu-text">Meetings</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="../events/events.html"> 
 <span class="menu-text">Events</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../404-not-found.html"> 
-<span class="menu-text">Contact</span></a>
+    <a class="nav-link" href="../psc.html"> 
+<span class="menu-text">PSC</span></a>
   </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-support" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Support</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-support">    
+        <li>
+    <a class="dropdown-item" href="../Contact.qmd">
+ <span class="dropdown-text">Contact</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://forum.dataspace.copernicus.eu/c/openeo/28">
+ <span class="dropdown-text">CDSE Forum</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Examples.qmd">
+ <span class="dropdown-text">Notebook examples</span></a>
+  </li>  
+    </ul>
+  </li>
 </ul>
           </div> <!-- /navcollapse -->
-            <div class="quarto-navbar-tools">
+            <div class="quarto-navbar-tools tools-wide">
+    <a href="mailto:openeo.psc@uni-muenster.de" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-envelope"></i></a>
+    <a href="https://www.linkedin.com/company/openeospec/" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-linkedin"></i></a>
+    <a href="https://bsky.app/profile/openeo.org" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-bluesky"></i></a>
+    <a href="https://github.com/Open-EO" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-github"></i></a>
+    <a href="https://www.youtube.com/channel/UCMJQil8j9sHBQkcSlSaEsvQ" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-youtube"></i></a>
 </div>
       </div> <!-- /container-fluid -->
     </nav>
@@ -133,9 +159,35 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#the-problem" id="toc-the-problem" class="nav-link active" data-scroll-target="#the-problem">The problem</a></li>
+  <li><a href="#why-an-api" id="toc-why-an-api" class="nav-link" data-scroll-target="#why-an-api">Why an API?</a></li>
+  <li><a href="#first-results" id="toc-first-results" class="nav-link" data-scroll-target="#first-results">First results</a></li>
+  <li><a href="#the-three-use-cases" id="toc-the-three-use-cases" class="nav-link" data-scroll-target="#the-three-use-cases">The three use cases</a></li>
+  <li><a href="#links-to-the-client-and-back-end-implementations" id="toc-links-to-the-client-and-back-end-implementations" class="nav-link" data-scroll-target="#links-to-the-client-and-back-end-implementations">Links to the client and back-end implementations</a></li>
+  <li><a href="#proof-of-concept-videos" id="toc-proof-of-concept-videos" class="nav-link" data-scroll-target="#proof-of-concept-videos">Proof-of-concept videos</a>
+  <ul class="collapse">
+  <li><a href="#r-client-and-wcps-back-end-use-case-1" id="toc-r-client-and-wcps-back-end-use-case-1" class="nav-link" data-scroll-target="#r-client-and-wcps-back-end-use-case-1">R client and WCPS back-end, use case 1</a></li>
+  <li><a href="#grass-gis-back-end-use-cases-1-2-and-3" id="toc-grass-gis-back-end-use-cases-1-2-and-3" class="nav-link" data-scroll-target="#grass-gis-back-end-use-cases-1-2-and-3">Grass GIS back-end, use cases 1, 2 and 3</a></li>
+  <li><a href="#r-client-and-r-back-end-use-case-1" id="toc-r-client-and-r-back-end-use-case-1" class="nav-link" data-scroll-target="#r-client-and-r-back-end-use-case-1">R client and R back-end, use-case 1</a></li>
+  <li><a href="#r-client-and-r-back-end-use-case-3" id="toc-r-client-and-r-back-end-use-case-3" class="nav-link" data-scroll-target="#r-client-and-r-back-end-use-case-3">R client and R back-end, use case 3</a></li>
+  <li><a href="#openeo-web-editor-js-client-with-three-back-ends-use-case-1" id="toc-openeo-web-editor-js-client-with-three-back-ends-use-case-1" class="nav-link" data-scroll-target="#openeo-web-editor-js-client-with-three-back-ends-use-case-1">openEO Web Editor (JS client) with three back-ends (use case 1)</a></li>
+  <li><a href="#openeo-web-editor-js-client-with-r-back-end-use-case-3" id="toc-openeo-web-editor-js-client-with-r-back-end-use-case-3" class="nav-link" data-scroll-target="#openeo-web-editor-js-client-with-r-back-end-use-case-3">openEO Web Editor (JS client) with R back-end (use case 3)</a></li>
+  <li><a href="#python-client-with-geopyspark-back-end-use-case-1" id="toc-python-client-with-geopyspark-back-end-use-case-1" class="nav-link" data-scroll-target="#python-client-with-geopyspark-back-end-use-case-1">Python client with GeoPySpark back-end (use case 1)</a></li>
+  <li><a href="#openeo-web-editor-js-client-with-google-earth-engine-back-end-use-case-1" id="toc-openeo-web-editor-js-client-with-google-earth-engine-back-end-use-case-1" class="nav-link" data-scroll-target="#openeo-web-editor-js-client-with-google-earth-engine-back-end-use-case-1">openEO Web Editor (JS client) with Google Earth Engine back-end (use case 1)</a></li>
+  </ul></li>
+  <li><a href="#links-to-documents" id="toc-links-to-documents" class="nav-link" data-scroll-target="#links-to-documents">Links to documents</a></li>
+  <li><a href="#next-steps" id="toc-next-steps" class="nav-link" data-scroll-target="#next-steps">Next steps</a></li>
+  <li><a href="#getting-involved" id="toc-getting-involved" class="nav-link" data-scroll-target="#getting-involved">Getting involved</a></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
-<main class="content column-page" id="quarto-document-content">
+<main class="content column-page-left" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
@@ -144,7 +196,7 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<div class="quarto-title-meta column-page">
+<div class="quarto-title-meta column-page-left">
 
     <div>
     <div class="quarto-title-meta-heading">Author</div>

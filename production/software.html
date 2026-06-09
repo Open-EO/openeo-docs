@@ -6,10 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Matthias Mohr, Caro Niebl">
-<meta name="dcterms.date" content="2025-12-22">
 
-<title>New openEO QGIS plugin has been released – openEO</title>
+<title>software – openEO</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -28,23 +26,23 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../">
-<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/popper.min.js"></script>
-<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-e75af1c7ea8d8d9e12fb46278eb83e61.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-e75af1c7ea8d8d9e12fb46278eb83e61.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -75,8 +73,37 @@ ul.task-list li input[type="checkbox"] {
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&amp;family=Source+Code+Pro:wght@400;500&amp;display=swap" rel="stylesheet">
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
-<link rel="stylesheet" href="../custom.css">
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="custom.css">
 </head>
 
 <body class="nav-fixed quarto-light">
@@ -86,7 +113,7 @@ ul.task-list li input[type="checkbox"] {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="../index.html">
+    <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">openEO</span>
     </a>
   </div>
@@ -97,7 +124,7 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../about.html"> 
+    <a class="nav-link" href="./about.html"> 
 <span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item">
@@ -105,23 +132,23 @@ ul.task-list li input[type="checkbox"] {
 <span class="menu-text">Applications</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../404-not-found.html"> 
+    <a class="nav-link" href="./404-not-found.html"> 
 <span class="menu-text">Services</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../news/news.html"> 
+    <a class="nav-link" href="./news/news.html"> 
 <span class="menu-text">News</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../meetings.html"> 
+    <a class="nav-link" href="./meetings.html"> 
 <span class="menu-text">Meetings</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../events/events.html"> 
+    <a class="nav-link" href="./events/events.html"> 
 <span class="menu-text">Events</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../psc.html"> 
+    <a class="nav-link" href="./psc.html"> 
 <span class="menu-text">PSC</span></a>
   </li>  
   <li class="nav-item dropdown ">
@@ -130,7 +157,7 @@ ul.task-list li input[type="checkbox"] {
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-support">    
         <li>
-    <a class="dropdown-item" href="../Contact.qmd">
+    <a class="dropdown-item" href="./Contact.qmd">
  <span class="dropdown-text">Contact</span></a>
   </li>  
         <li>
@@ -138,7 +165,7 @@ ul.task-list li input[type="checkbox"] {
  <span class="dropdown-text">CDSE Forum</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../Examples.qmd">
+    <a class="dropdown-item" href="./Examples.qmd">
  <span class="dropdown-text">Notebook examples</span></a>
   </li>  
     </ul>
@@ -164,133 +191,113 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#whats-new" id="toc-whats-new" class="nav-link active" data-scroll-target="#whats-new">What’s New</a></li>
-  <li><a href="#call-for-testing-feedback" id="toc-call-for-testing-feedback" class="nav-link" data-scroll-target="#call-for-testing-feedback">Call for Testing &amp; Feedback</a></li>
-  <li><a href="#acknowledgements" id="toc-acknowledgements" class="nav-link" data-scroll-target="#acknowledgements">Acknowledgements</a></li>
-  <li><a href="#this-and-next-year" id="toc-this-and-next-year" class="nav-link" data-scroll-target="#this-and-next-year">This and Next Year</a></li>
+  <li><a href="#software" id="toc-software" class="nav-link active" data-scroll-target="#software">Software</a>
+  <ul class="collapse">
+  <li><a href="#clients" id="toc-clients" class="nav-link" data-scroll-target="#clients">Clients</a></li>
+  <li><a href="#back-ends" id="toc-back-ends" class="nav-link" data-scroll-target="#back-ends">Back-ends</a></li>
+  <li><a href="#specification" id="toc-specification" class="nav-link" data-scroll-target="#specification">Specification</a></li>
+  <li><a href="#ecosystem" id="toc-ecosystem" class="nav-link" data-scroll-target="#ecosystem">Ecosystem</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content column-page-left" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">New openEO QGIS plugin has been released</h1>
-</div>
+<main class="content column-page-left" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
 
 
 
-<div class="quarto-title-meta column-page-left">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Matthias Mohr, Caro Niebl </p>
-          </div>
-  </div>
-    
-    <div>
-    <div class="quarto-title-meta-heading">Published</div>
-    <div class="quarto-title-meta-contents">
-      <p class="date">December 22, 2025</p>
-    </div>
-  </div>
-  
-    
-  </div>
-  
-
-
-</header>
-
-
-<p>We’re excited to announce the availability of a <strong>new and fully rewritten openEO QGIS plugin</strong>, now ready for broader testing by the community.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="../documentation/1.0/qgis/images/qgis-plugin.jpg" class="img-fluid figure-img"></p>
-<figcaption>QGIS plugin overview in QGIS with GeoTiff visualization</figcaption>
-</figure>
-</div>
-<p>This release represents a major step forward in usability, stability, and feature coverage. The plugin has been redesigned from the ground up and is now <strong>fully integrated into the QGIS Browser</strong>, providing a seamless and intuitive way to access openEO backends and resources directly from QGIS.</p>
+<section id="software" class="level1">
+<h1>Software</h1>
+<p>All developed software is organized within the <a href="https://github.com/open-eo/">openEO GitHub organization</a>.</p>
+<section id="clients" class="level2">
+<h2 class="anchored" data-anchor-id="clients">Clients</h2>
+<p>Software that allows remote sensers and other users to access the openEO back-ends:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Client software</th>
+<th>Package Manager / Hosted Version</th>
+<th>GitHub</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>JavaScript/TypeScript library</td>
+<td>npm: <a href="https://www.npmjs.com/package/@openeo/js-client"><span class="citation" data-cites="openeo/js-client">@openeo/js-client</span></a></td>
+<td><a href="https://github.com/Open-EO/openeo-js-client">openeo-js-client</a></td>
+</tr>
+<tr class="even">
+<td>Python library</td>
+<td>PyPI: <a href="https://pypi.org/project/openeo/">openeo</a> / Conda Forge: <a href="https://anaconda.org/conda-forge/openeo">openeo</a></td>
+<td><a href="https://github.com/Open-EO/openeo-python-client">openeo-python-client</a></td>
+</tr>
+<tr class="odd">
+<td>QGIS plugin</td>
+<td>QGIS plugin repository: <a href="https://plugins.qgis.org/plugins/openeo_plugin/">openEO</a></td>
+<td><a href="https://github.com/Open-EO/openeo-qgis-plugin">openeo-qgis-plugin</a></td>
+</tr>
+<tr class="even">
+<td>R library</td>
+<td>CRAN: <a href="https://cran.r-project.org/package=openeo">openeo</a></td>
+<td><a href="https://github.com/Open-EO/openeo-r-client">openeo-r-client</a></td>
+</tr>
+<tr class="odd">
+<td>Web Editor</td>
+<td><a href="https://editor.openeo.org">Hosted Version</a></td>
+<td><a href="https://github.com/Open-EO/openeo-web-editor">openeo-web-editor</a></td>
+</tr>
+</tbody>
+</table>
+<p>See the &lt;a :href=“<span class="math inline">\(site.themeConfig.docPath + 'getting-started.html'"&gt;**getting started guide for users**&lt;/a&gt; for more information.
+Users considering to implement a new client library should read the &lt;a :href="\)</span>site.themeConfig.docPath + ‘developers/clients/getting-started.html’”&gt;<strong>getting started guide for client developers</strong>.</p>
+</section>
+<section id="back-ends" class="level2">
+<h2 class="anchored" data-anchor-id="back-ends">Back-ends</h2>
+<p>Data and infrastructure providers can host their own instance of the openEO API:</p>
 <ul>
-<li><p><strong>QGIS plugin repository:</strong><br>
-<a href="https://plugins.qgis.org/plugins/openeo_plugin/" class="uri">https://plugins.qgis.org/plugins/openeo_plugin/</a></p></li>
-<li><p><strong>Updated documentation &amp; setup instructions:</strong><br>
-<a href="https://openeo.org/documentation/1.0/qgis/" class="uri">https://openeo.org/documentation/1.0/qgis/</a></p></li>
+<li><a href="https://github.com/Open-EO/openeo-geopyspark-driver">GeoPySpark (Geotrellis)</a> (by VITO) - has <a href="https://github.com/Open-EO/openeo-geopyspark-integrationtests">integration tests</a>, requires <a href="https://github.com/Open-EO/openeo-geotrellis-extensions">GeoTrellis extensions</a>.</li>
+<li><a href="https://github.com/Open-EO/openeo-earthengine-driver">Google Earth Engine</a> (by WWU)</li>
+<li><a href="https://github.com/Open-EO/openeo-grassgis-driver">GRASS GIS</a> (by mundialis)</li>
+<li><a href="https://github.com/Open-EO/openeo-jeodpp-driver">JEODPP</a> (by JRC)</li>
+<li><a href="https://github.com/SARScripts/openeo_odc_driver">Open Data Cube</a> (by EURAC, funded by ESA)</li>
+<li><a href="https://github.com/Open-EO/openeo-eodc-driver">Apache Airflow / eoDataReaders</a> (by EODC)</li>
+<li><a href="https://github.com/Open-EO/openeo-sentinelhub-python-driver">Sentinel Hub</a> (by Sinergise)</li>
+<li><a href="https://github.com/Open-EO/openeo-wcps-driver">WCPS (rasdaman)</a> (by EURAC)</li>
+<li><a href="https://github.com/Open-EO/openeo-r-backend">R back-end</a> (by WWU) - discontinued until further notice (last version: 0.3)</li>
+<li><a href="https://github.com/IBM/tensorlakehouse-openeo-driver">TensorLakeHouse</a> (by IBM Research)</li>
 </ul>
-<p>The plugin requires <strong>QGIS 3.40.0 or later</strong> and is expected to be compatible with the upcoming <strong>QGIS 4.0</strong>. It can be downloaded from within QGIS, just search for ‘openEO’ in the plugin manager.</p>
-<section id="whats-new" class="level2">
-<h2 class="anchored" data-anchor-id="whats-new">What’s New</h2>
-<p>The rewritten plugin introduces a wide range of new features and improvements:</p>
+<p>See the &lt;a :href=“$site.themeConfig.docPath + ‘developers/backends/getting-started.html’”&gt;<strong>getting started guide for back-end providers</strong> for more information.</p>
+<p>To start developing a new back-end driver, you may start with any of the common functionalities implemented in several programming languages:</p>
 <ul>
-<li><strong>Deep QGIS integration</strong>
+<li><a href="https://github.com/Open-EO/openeo-spring-driver">Java (Spring) API Commons</a></li>
+<li><a href="https://github.com/Open-EO/openeo-python-driver">Python API Commons</a></li>
+<li><a href="https://github.com/Open-EO/openeo-pg-parser-python">Python Process Graph Parser</a></li>
+<li><a href="https://github.com/Open-EO/openeo-js-processgraphs">JavaScript Process Graph Parser</a></li>
+<li><a href="https://github.com/Open-EO/openeo-processes-python">Python Processes</a> - many openEO processes implemented in Python</li>
+</ul>
+<p>Our approach to tackle language-agnostic user-defined functions can be found in the following repositories:</p>
 <ul>
-<li>Fully integrated into the <strong>QGIS Browser</strong> for easy access</li>
-</ul></li>
-<li><strong>Broad API &amp; backend support</strong>
-<ul>
-<li>Support for <strong>all openEO API 1.x versions</strong></li>
-<li><strong>openEO Hub</strong> integration</li>
-</ul></li>
-<li><strong>Improved authentication</strong>
-<ul>
-<li>Support for <strong>OpenID Connect</strong> and <strong>HTTP Basic authentication</strong></li>
-<li>Generally improved and more robust authentication handling, including multi account support</li>
-</ul></li>
-<li><strong>Explore and manage openEO resources</strong>
-<ul>
-<li>Browse <strong>Collections</strong>, <strong>batch jobs</strong>, and <strong>web services</strong></li>
-<li>Allows for pagination and sorting</li>
-</ul></li>
-<li><strong>Rich visualization capabilities</strong>
-<ul>
-<li>Visualize batch job results:
-<ul>
-<li>GeoTIFF<br>
-</li>
-<li>netCDF (raster only)<br>
-</li>
-<li>GeoJSON<br>
-</li>
-<li>GeoParquet</li>
-</ul></li>
-<li>Visualize web services:
-<ul>
-<li>XYZ<br>
-</li>
-<li>WMTS</li>
-</ul></li>
-<li>Preview collections when supported by the backend (XYZ, WMTS)</li>
-</ul></li>
-<li><strong>STAC integration</strong>
-<ul>
-<li>Copy <strong>STAC metadata URLs</strong> and <strong>STAC asset URLs</strong> to easily load other assets via the QGIS layer manager (e.g.&nbsp;CSV) or the QGIS STAC integration (e.g.&nbsp;STAC Items for STAC Collections)</li>
-</ul></li>
-<li><strong>Easy data download</strong>
-<ul>
-<li>Download assets <strong>all at once</strong> or <strong>individually</strong></li>
-</ul></li>
+<li><a href="https://github.com/Open-EO/openeo-udf">UDF Python reference implementation</a></li>
+<li><a href="https://github.com/Open-EO/openeo-r-udf">UDF R reference implementation</a></li>
 </ul>
 </section>
-<section id="call-for-testing-feedback" class="level2">
-<h2 class="anchored" data-anchor-id="call-for-testing-feedback">Call for Testing &amp; Feedback</h2>
-<p>We consider the current version <strong>stable and ready to be tested by a broader user audience</strong>. Over the coming weeks, we will collect feedback and apply final refinements, with a <strong>final release planned for the end of January or early February</strong>. We also plan to present the QGIS plugin in one of the next openEO community meeting, please keep an eye on the <a href="https://openeo.org/meetings.html">planned topics</a>.</p>
-<p><strong>Your feedback is highly appreciated!</strong><br>
-Please share issues, suggestions, or improvements via <a href="https://github.com/Open-EO/openeo-qgis-plugin/issues"><strong>GitHub issues</strong></a>.</p>
+<section id="specification" class="level2">
+<h2 class="anchored" data-anchor-id="specification">Specification</h2>
+<p>The API specification is available in the <strong><a href="https://github.com/Open-EO/openeo-api">openEO API repository</a></strong>. The process definitions are available in the <strong><a href="https://github.com/Open-EO/openeo-processes">openEO processes repository</a></strong>.</p>
 </section>
-<section id="acknowledgements" class="level2">
-<h2 class="anchored" data-anchor-id="acknowledgements">Acknowledgements</h2>
-<p>The revival and complete reshaping of the openEO QGIS plugin was driven by <strong>Caro Niebl</strong>, an intern at <a href="https://moregeo.it">moreGeo</a>, who has dedicated the past weeks to rethinking and rebuilding the plugin from the ground up.</p>
-<p>This work was funded to a large extent by <a href="https://vito.be">VITO</a>. We would like to sincerely thank them for their support and contribution to the openEO ecosystem.</p>
-</section>
-<section id="this-and-next-year" class="level2">
-<h2 class="anchored" data-anchor-id="this-and-next-year">This and Next Year</h2>
-<p>It has been a great year for openEO. CDSE is making openEO available to a large number of users, and more projects are adopting openEO with more launches expected next year.</p>
-<p>We are looking forward to next year, expecting new releases of the openEO API and openEO processes, and hopefully an adoption as OGC community standard.</p>
-<p>🎄 <strong>Merry Christmas and a Happy New Year to the openEO community!</strong></p>
+<section id="ecosystem" class="level2">
+<h2 class="anchored" data-anchor-id="ecosystem">Ecosystem</h2>
+<ul>
+<li><a href="https://github.com/Open-EO/openeo-backend-validator">Back-end validator</a> - Validation for back-end implementations. <a href="https://github.com/Open-EO/openeo-result-validation-engine">Image-based validation of EO processing results</a> is also worked on.</li>
+<li><a href="https://hub.openeo.org">openEO Hub</a> (<a href="https://github.com/Open-EO/openeo-hub">GitHub</a>) - The central platform for openEO services.</li>
+<li><a href="https://github.com/Open-EO/openeo-processes-docgen">Processes DocGen</a> - A tool to generate a visual interface for openEO process definitions.</li>
+<li><a href="https://github.com/Open-EO/openeo-vue-components">Vue.js Components</a> - Common Vue.js 2 components for openEO</li>
+<li><a href="https://github.com/Open-EO/openeo-js-commons">JavaScript Commons</a> - Common JavaScript functionality for openEO clients and back-ends</li>
+</ul>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

@@ -82,7 +82,7 @@ ul.task-list li input[type="checkbox"] {
     }
 
     const options = {
-      valueNames: ['listing-date','listing-title',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-title-sort'] }],
+      valueNames: ['listing-date','listing-title','listing-author',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-title-sort'] }],
       
       searchColumns: ["listing-date","listing-title","listing-author"],
     };
@@ -137,7 +137,7 @@ window.Quarto = {
 <link rel="stylesheet" href="custom.css">
 </head>
 
-<body class="nav-fixed quarto-light">
+<body class="nav-fixed fullcontent quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -155,45 +155,69 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./about.qmd"> 
+    <a class="nav-link" href="./about.html"> 
 <span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./404-not-found.html"> 
-<span class="menu-text">Documentation</span></a>
+    <a class="nav-link" href="https://hub.openeo.org/"> 
+<span class="menu-text">Applications</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./404-not-found.html"> 
-<span class="menu-text">Software</span></a>
+<span class="menu-text">Services</span></a>
   </li>  
-</ul>
-            <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
     <a class="nav-link" href="./news/news.html"> 
-<span class="menu-text">Latest news</span></a>
+<span class="menu-text">News</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./meetings.html"> 
+<span class="menu-text">Meetings</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./events/events.html"> 
 <span class="menu-text">Events</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./404-not-found.html"> 
-<span class="menu-text">Contact</span></a>
+    <a class="nav-link" href="./psc.html"> 
+<span class="menu-text">PSC</span></a>
   </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-support" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Support</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-support">    
+        <li>
+    <a class="dropdown-item" href="./Contact.qmd">
+ <span class="dropdown-text">Contact</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://forum.dataspace.copernicus.eu/c/openeo/28">
+ <span class="dropdown-text">CDSE Forum</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./Examples.qmd">
+ <span class="dropdown-text">Notebook examples</span></a>
+  </li>  
+    </ul>
+  </li>
 </ul>
           </div> <!-- /navcollapse -->
-            <div class="quarto-navbar-tools">
+            <div class="quarto-navbar-tools tools-wide">
+    <a href="mailto:openeo.psc@uni-muenster.de" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-envelope"></i></a>
+    <a href="https://www.linkedin.com/company/openeospec/" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-linkedin"></i></a>
+    <a href="https://bsky.app/profile/openeo.org" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-bluesky"></i></a>
+    <a href="https://github.com/Open-EO" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-github"></i></a>
+    <a href="https://www.youtube.com/channel/UCMJQil8j9sHBQkcSlSaEsvQ" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-youtube"></i></a>
 </div>
       </div> <!-- /container-fluid -->
     </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<div id="quarto-content" class="quarto-container page-layout-custom page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
 <!-- main -->
-<main class="content column-page" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
 
 
 
@@ -207,8 +231,8 @@ window.Quarto = {
 <section class="hero">
   <div class="hero-content">
     <div class="hero-badge">🌍 v1.3.0 now available</div>
-    <h1>Earth observation<br>for <em>everyone</em>.</h1>
-    <p>openEO provides a unified API...</p>
+    <h1>Open-Source API<br>for <em>Earth Observation Analysis</em></h1>
+    <p><b>The openEO API</b> allows users to connect to Earth observation cloud back-ends in a simple and unified way.</p>
     <div class="hero-actions">
       <a href="docs/" class="btn-primary">Get Started →</a>
     </div>
@@ -228,28 +252,35 @@ window.Quarto = {
   <span class="section-eyebrow">What is openEO</span>
   <div class="what-grid">
     <div>
-      <h2 class="section-title anchored">One API.<br>Any cloud. Any language.</h2>
-      <p class="section-sub">Whether you're using Python, R, JavaScript or QGIS — openEO lets you write your analysis once and run it on any compatible back-end. No vendor lock-in. No rewriting code.</p>
+      <h2 class="section-title">One API.<br>Any cloud. Any language.</h2>
+      <p class="section-sub">Whether you're using Python, R , JavaScript or Julia - <b>openEO</b> lets you write your analysis once and run it on any compatible back-end. No vendor lock-in. No rewriting code.</p>
       <div class="feature-list">
         <div class="feature-item">
           <div class="feature-check">✓</div>
           <div>
             <strong>Standardised processes</strong>
-            <span>Use the same process names across every back-end</span>
+            <span>Use the same process names across different openEO back-ends </span>
           </div>
         </div>
         <div class="feature-item">
           <div class="feature-check">✓</div>
           <div>
-            <strong>Datacube model</strong>
+            <strong>Datacube concept</strong>
             <span>Work with spatiotemporal datacubes natively</span>
           </div>
         </div>
         <div class="feature-item">
           <div class="feature-check">✓</div>
           <div>
+            <strong>Reusable</strong>
+            <span>Share and reuse EO workflows as processes</span>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-check">✓</div>
+          <div>
             <strong>Open source</strong>
-            <span>Apache 2.0 — inspect, extend, contribute</span>
+            <span>Apache 2.0: inspect, extend, contribute</span>
           </div>
         </div>
       </div>
@@ -283,6 +314,20 @@ ndvi.<span class="fn">download</span>(<span class="str">"ndvi.nc"</span>)
 </div>
     </div>
   </div>
+
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Caution
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>openEO is not to be confused with independant services that implement the specifications such as <a href="https://openeo.cloud/">openEO Platform</a> or <a href="https://dataspace.copernicus.eu/">CDSE</a>. For a list of services built on top of openEO, please visit the <a href="https://hub.openeo.org/">openEO Hub</a>.</p>
+</div>
+</div>
 </section>
 
 
@@ -290,91 +335,58 @@ ndvi.<span class="fn">download</span>(<span class="str">"ndvi.nc"</span>)
 <!-- GET STARTED CARDS -->
 <section class="alt">
   <span class="section-eyebrow">Get started</span>
-  <h2 class="section-title anchored">Choose your path</h2>
+  <h2 class="section-title">Choose your path</h2>
   <p class="section-sub">New to openEO? Start with a guide for your preferred language or tool.</p>
   <div class="cards-grid">
+    <a href="docs_light.html" class="card">
+      <div class="card-icon">📖</div>
+      <h3>Concepts &amp; Glossary</h3>
+      <p>Understand datacubes, processes, UDFs, and the openEO data model before writing any code.</p>
+      <div class="card-arrow">→ docs_light.html</div>
+    </a>
+        <a href="./software.html" class="card">
+      <div class="card-icon">🔧</div>
+      <h3>openEO Software</h3>
+      <p>Explore the openEO software ecosystem, including clients, back-ends, and tools for building and deploying geospatial data processing workflows.</p>
+      <div class="card-arrow">→ software list</div>
+    </a>
     <a href="python_light.html" class="card">
       <div class="card-icon">🐍</div>
-      <h3 class="anchored">Python</h3>
+      <h3>Python</h3>
       <p>The most feature-complete client. Ideal for data scientists and researchers building analysis pipelines.</p>
       <div class="card-arrow">→ python_light.html</div>
     </a>
     <a href="#" class="card">
       <div class="card-icon">📊</div>
-      <h3 class="anchored">R</h3>
+      <h3>R</h3>
       <p>Integrate Earth observation data directly into your R analysis workflows and spatial packages.</p>
       <div class="card-arrow">→ R client docs</div>
     </a>
     <a href="#" class="card">
       <div class="card-icon">⚡</div>
-      <h3 class="anchored">JavaScript</h3>
+      <h3>JavaScript</h3>
       <p>Build interactive web applications that query and visualise EO data in the browser.</p>
       <div class="card-arrow">→ JS client docs</div>
     </a>
     <a href="#" class="card">
       <div class="card-icon">🗺️</div>
-      <h3 class="anchored">QGIS Plugin</h3>
+      <h3>QGIS Plugin</h3>
       <p>Access openEO back-ends directly from QGIS with a graphical interface — no coding required.</p>
       <div class="card-arrow">→ QGIS guide</div>
     </a>
-    <a href="docs_light.html" class="card">
-      <div class="card-icon">📖</div>
-      <h3 class="anchored">Concepts &amp; Glossary</h3>
-      <p>Understand datacubes, processes, UDFs, and the openEO data model before writing any code.</p>
-      <div class="card-arrow">→ docs_light.html</div>
-    </a>
     <a href="#" class="card">
       <div class="card-icon">🔧</div>
-      <h3 class="anchored">For Developers</h3>
+      <h3>For Developers</h3>
       <p>Build a back-end or client library. API reference, profiles, and implementation guidelines.</p>
       <div class="card-arrow">→ developer docs</div>
     </a>
   </div>
 </section>
 
-<!-- 
-<section>
-  <span class="section-eyebrow">Documentation</span>
-  <h2 class="section-title">Everything you need</h2>
-  <p class="section-sub">Structured documentation for users, developers, and service providers.</p>
-  <div class="docs-grid">
-    <a href="docs_light.html" class="docs-cell">
-      <span class="docs-cell-tag tag-user">User Docs</span>
-      <h3>Introduction</h3>
-      <p>Start here. Learn the openEO concepts, connect to a back-end, and run your first job.</p>
-    </a>
-    <a href="docs_light.html" class="docs-cell">
-      <span class="docs-cell-tag tag-user">User Docs</span>
-      <h3>Datacubes</h3>
-      <p>Deep dive into the spatiotemporal datacube model that underpins all openEO processing.</p>
-    </a>
-    <a href="docs_light.html" class="docs-cell">
-      <span class="docs-cell-tag tag-user">User Docs</span>
-      <h3>Cookbook</h3>
-      <p>Practical recipes: NDVI, cloud masking, time series, batch jobs, and more.</p>
-    </a>
-    <a href="#" class="docs-cell">
-      <span class="docs-cell-tag tag-dev">Developer</span>
-      <h3>API Reference</h3>
-      <p>Full OpenAPI specification for the openEO REST API v1.x.</p>
-    </a>
-    <a href="#" class="docs-cell">
-      <span class="docs-cell-tag tag-dev">Developer</span>
-      <h3>Back-end Guide</h3>
-      <p>Implement an openEO-compliant back-end with xarray, Dask, and more.</p>
-    </a>
-    <a href="#" class="docs-cell">
-      <span class="docs-cell-tag tag-api">Processes</span>
-      <h3>Process Reference</h3>
-      <p>Browse all 200+ standardised process definitions with examples and parameters.</p>
-    </a>
-  </div>
-</section> 
--->
 <!-- NEWS (native Quarto block) -->
 <section class="alt">
 <span class="section-eyebrow">Latest news</span>
-<h2 class="section-title anchored">
+<h2 class="section-title">
 What’s new
 </h2>
 <div id="listing-latest-news" class="quarto-listing quarto-listing-container-table">
@@ -393,12 +405,11 @@ What’s new
       <option value="listing-title-sort" data-direction="asc">
         Title
       </option>
+      <option value="listing-author" data-direction="asc">
+        Author
+      </option>
     </select>
   </div>
-    <div class="input-group input-group-sm quarto-listing-filter">
-      <span class="input-group-text"><i class="bi bi-search"></i></span>
-      <input type="text" class="search form-control" placeholder="Filter">
-    </div>
 </div>
 <table class="quarto-listing-table table">
 <thead>
@@ -412,36 +423,49 @@ What’s new
 <a class="sort" data-sort="listing-title-sort" onclick="if (this.classList.contains('sort-asc')) { this.classList.add('sort-desc'); this.classList.remove('sort-asc') } else { this.classList.add('sort-asc'); this.classList.remove('sort-desc')} return false;">Title</a>
 </th>
 
+<th>
+<a class="sort" data-sort="listing-author" onclick="if (this.classList.contains('sort-asc')) { this.classList.add('sort-desc'); this.classList.remove('sort-asc') } else { this.classList.add('sort-asc'); this.classList.remove('sort-desc')} return false;">Author</a>
+</th>
+
 </tr>
 </thead>
 <tbody class="list">
 
-<tr data-index="0" data-listing-date-sort="1778716800000" data-listing-file-modified-sort="1780839082714" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="148" data-listing-title-sort="OGC publishes openEO as a new Community Standard" data-listing-filename-sort="2026-05-14-openeo-is-an-ogc-community-standard.qmd">
+<tr data-index="0" data-listing-date-sort="1778716800000" data-listing-file-modified-sort="1781006562358" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="148" data-listing-title-sort="OGC publishes openEO as a new Community Standard" data-listing-filename-sort="2026-05-14-openeo-is-an-ogc-community-standard.qmd">
 <td>
 <span class="listing-date">May 14, 2026</span>
 </td>
 <td>
 <a href="./news/2026-05-14-openeo-is-an-ogc-community-standard.html" class="title listing-title">OGC publishes openEO as a new Community Standard</a>
 </td>
+<td>
+<span class="listing-author">Matthias Mohr</span>
+</td>
 
 </tr>
 
-<tr data-index="1" data-listing-date-sort="1770076800000" data-listing-file-modified-sort="1780839082714" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="479" data-listing-title-sort="openEO API 1.3.0 and openEO Processes 2.0.0 RC2 released" data-listing-filename-sort="2026-02-03-new-openeo-versions-130-200rc2.qmd">
+<tr data-index="1" data-listing-date-sort="1770076800000" data-listing-file-modified-sort="1781006562358" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="479" data-listing-title-sort="openEO API 1.3.0 and openEO Processes 2.0.0 RC2 released" data-listing-filename-sort="2026-02-03-new-openeo-versions-130-200rc2.qmd">
 <td>
 <span class="listing-date">Feb 3, 2026</span>
 </td>
 <td>
 <a href="./news/2026-02-03-new-openeo-versions-130-200rc2.html" class="title listing-title">openEO API 1.3.0 and openEO Processes 2.0.0 RC2 released</a>
 </td>
+<td>
+<span class="listing-author">Matthias Mohr</span>
+</td>
 
 </tr>
 
-<tr data-index="2" data-listing-date-sort="1766361600000" data-listing-file-modified-sort="1780839082714" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="537" data-listing-title-sort="New openEO QGIS plugin has been released" data-listing-filename-sort="2025-12-22-new-qgis-plugin.qmd">
+<tr data-index="2" data-listing-date-sort="1766361600000" data-listing-file-modified-sort="1781006562358" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="537" data-listing-title-sort="New openEO QGIS plugin has been released" data-listing-filename-sort="2025-12-22-new-qgis-plugin.qmd">
 <td>
 <span class="listing-date">Dec 22, 2025</span>
 </td>
 <td>
 <a href="./news/2025-12-22-new-qgis-plugin.html" class="title listing-title">New openEO QGIS plugin has been released</a>
+</td>
+<td>
+<span class="listing-author">Matthias Mohr, Caro Niebl</span>
 </td>
 
 </tr>
@@ -459,10 +483,10 @@ What’s new
       <svg width="16" height="16" viewbox="0 0 22 22" fill="none" style="vertical-align:middle;margin-right:6px;"><circle cx="11" cy="11" r="10" stroke="#7dd9e8" stroke-width="1.5"></circle><path d="M6 11 Q11 5 16 11 Q11 17 6 11Z" fill="#7dd9e8" opacity="0.7"></path></svg>
       openEO
     </div>
-    <p>An open API and ecosystem for Earth observation cloud processing. Governed by the openEO Project Steering Committee.</p>
+    <p>The project maintains the API and process specifications, and an open-source ecosystem with clients and server implementations.</p>
   </div>
   <div>
-    <h4 class="anchored">Documentation</h4>
+    <h4>Documentation</h4>
     <ul>
       <li><a href="#">Introduction</a></li>
       <li><a href="#">Datacubes</a></li>
@@ -473,32 +497,23 @@ What’s new
   </div>
 
   <div>
-    <h4 class="anchored">Clients</h4>
+    <h4>Clients</h4>
     <ul>
-      <li><a href="#">Python</a></li>
-      <li><a href="#">R</a></li>
-      <li><a href="#">JavaScript</a></li>
-      <li><a href="#">QGIS</a></li>
-      <li><a href="#">Julia</a></li>
-    </ul>
-  </div>
-  <div>
-    <h4 class="anchored">Project</h4>
-    <ul>
-      <li><a href="#">About</a></li>
-      <li><a href="#">PSC</a></li>
-      <li><a href="#">GitHub ↗</a></li>
-      <li><a href="#">Contact</a></li>
-      <li><a href="#">openEO Hub ↗</a></li>
+      <li><a href="https://cran.r-project.org/package=openeo">CRAN / R</a></li>
+      <li><a href="https://www.npmjs.com/search?q=%40openeo%2F">npm / JS</a></li>
+      <li><a href="https://pypi.org/project/openeo/">PyPI / Python</a></li>
+      <li><a href="https://anaconda.org/conda-forge/openeo">Conda Forge</a></li>
+      <li><a href="https://github.com/Open-EO/openeo-julia-client">Julia</a></li>
+      <li><a href="https://plugins.qgis.org/plugins/openeo_plugin/">QGIS</a></li>
     </ul>
   </div>
 </footer>
-<div class="footer-bottom">© 2026 openEO — Apache 2.0 License &nbsp;·&nbsp; Built with openEO</div>
+<div class="footer-bottom">© 2026 openEO — Apache 2.0 License &nbsp;·&nbsp; Built with Quarto</div>
 
 
 
 
-</main> <!-- /main -->
+
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
