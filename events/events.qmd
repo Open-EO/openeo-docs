@@ -4,7 +4,7 @@ date:   2024-06-01
 author: openEO maintenance team
 listing: 
   - id: events-listing
-  - type: table
+  - type: grid
     contents:
       - "*.qmd"
     exclude:

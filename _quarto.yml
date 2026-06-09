@@ -6,29 +6,53 @@ website:
   navbar:
     background: "#1a2744"      # dark navy, exact match
     foreground: "#d0dce8"
-    logo: ""
+    tools:
+      - icon: envelope
+        href: mailto:openeo.psc@uni-muenster.de
+      - icon: linkedin
+        href: https://www.linkedin.com/company/openeospec/
+      - icon: bluesky
+        href: https://bsky.app/profile/openeo.org
+      - icon: github
+        href: https://github.com/Open-EO
+      - icon: youtube
+        href: https://www.youtube.com/channel/UCMJQil8j9sHBQkcSlSaEsvQ
+
     left:
       - text: "About"
         href: about.qmd
-      - text: "Documentation"
+      - text: "Applications"
+        href: https://hub.openeo.org/
+      - text: "Services"
         href: 404-not-found.qmd
-      - text: "Software"
-        href: 404-not-found.qmd
-    right:
-      - text: "Latest news"
+      - text: "News"
         href: news/news.qmd
+      - text: "Meetings"
+        href: meetings.qmd
       - text: "Events"
         href: events/events.qmd
-      - text: "Contact"
-        href: 404-not-found.qmd
+      - text: "PSC"
+        href: psc.qmd
+      - sidebar:support
       
   search: true
-
+  sidebar:
+    - id: support 
+      title: "Support"
+      collapse-level: 1
+      contents: 
+          - href: Contact.qmd
+            text: Contact
+          - href: https://forum.dataspace.copernicus.eu/c/openeo/28
+            text: CDSE Forum
+          - href: Examples.qmd
+            text: Notebook examples
+          
 format:
   html:
     theme: flatly          
     css: custom.css
-    toc: false                       
+    toc: true                       
     page-layout: full                
     include-in-header:
       text: |
