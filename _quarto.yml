@@ -53,7 +53,7 @@ website:
             text: Notebook examples
     - id: user_documentation
       title: "Documentation"
-      collapse-level: 0
+      collapse-level: 1
       contents: 
           - section: KEY CONCEPTS
             href: documentation\keyconcepts.qmd
