@@ -183,7 +183,7 @@ For a list of services built on top of openEO, please visit the [openEO Hub](htt
       <div class="card-icon">🔧</div>
       <h3>Cookbook</h3>
       <p>Get started with practical examples and step-by-step guides to use openEO effectively for a specific usecase.</p>
-      <div class="card-arrow">→ software list</div>
+      <div class="card-arrow">→ Step-by-step guide</div>
     </a>
     <a href="software.qmd" class="card">
       <div class="card-icon">🔧</div>

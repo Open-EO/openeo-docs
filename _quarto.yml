@@ -11,20 +11,24 @@ website:
         href: mailto:openeo.psc@uni-muenster.de
       - icon: linkedin
         href: https://www.linkedin.com/company/openeospec/
+        target: _blank
       - icon: bluesky
         href: https://bsky.app/profile/openeo.org
+        target: _blank
       - icon: github
         href: https://github.com/Open-EO
+        target: _blank
       - icon: youtube
         href: https://www.youtube.com/channel/UCMJQil8j9sHBQkcSlSaEsvQ
-
+        target: _blank
+    right: 
+      - sidebar:user_documentation
     left:
       - text: "About"
         href: about.qmd
-      - text: "Guides"
-        href: 404-not-found.qmd
       - text: "Services"
         href: https://hub.openeo.org/
+        target: _blank
       - text: "News"
         href: news/news.qmd
       - text: "Meetings"
@@ -41,12 +45,59 @@ website:
       title: "Support"
       collapse-level: 1
       contents: 
-          - href: Contact.qmd
+          - href: contact.qmd
             text: Contact
           - href: https://forum.dataspace.copernicus.eu/c/openeo/28
             text: CDSE Forum
           - href: Examples.qmd
             text: Notebook examples
+    - id: user_documentation
+      title: "Documentation"
+      collapse-level: 0
+      contents: 
+          - section: KEY CONCEPTS
+            href: documentation\keyconcepts.qmd
+            contents:
+              - href: 404-not-found.qmd
+                text: Backends
+              - href: documentation\keyconcepts\openeo_api.qmd
+                text: Datacube
+              - href: documentation\keyconcepts\processes.qmd
+                text: Processes
+          - section: SETUP
+            href: documentation\setup.qmd
+          - section: DATA DISCOVERY
+            href: documentation\data_discovery.qmd
+            contents: 
+              - href: 404-not-found.qmd
+                text: Collections
+              - href: 404-not-found.qmd
+                text: Load Collections
+              - href: 404-not-found.qmd
+                text: Load STAC metadata
+          - section: CUBE OPERATIONS
+            href: documentation\cube_operations.qmd
+            contents:
+              - href: documentation\cube_operations\preprocessing.qmd
+                text: Preprocessing 
+              - href: documentation\cube_operations\spatial_operations.qmd
+                text: Spatial Operations
+              - href: documentation\cube_operations\temporal_operations.qmd
+                text: Temporal Operations
+              - href: documentation\cube_operations\spectral_operations.qmd
+                text: Spectral Operations
+              - href: documentation\cube_operations\cube_manipulations.qmd
+                text: Cube Manipulations
+              - href: documentation\cube_operations\udf.qmd
+                text: User Defined Functions
+              - href: documentation\cube_operations\machine_learning.qmd
+                text: Machine Learning
+              - href: documentation\cube_operations\udp.qmd
+                text: User Defined Processes
+              - href: documentation\cube_operations\execute_jobs.qmd
+                text: Execute openEO Jobs
+          - href: documentation\export_formats.qmd
+            text: EXPORT FORMATS
           
 format:
   html:

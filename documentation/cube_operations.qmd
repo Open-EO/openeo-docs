@@ -1,0 +1,7 @@
+---
+title: "openEO Cube Operations"
+---
+
+
+This will be a guiding page for user to explore the various operations that can be applied on data cubes, and how to apply them using the openEO API.
+
