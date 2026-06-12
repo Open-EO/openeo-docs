@@ -316,7 +316,117 @@
     "href": "documentation/cube_operations.html",
     "title": "openEO Cube Operations",
     "section": "",
-    "text": "This will be a guiding page for user to explore the various operations that can be applied on data cubes, and how to apply them using the openEO API.",
+    "text": "Before any operation begins, openEO organises satellite imagery into a data cube — a structured, multi-dimensional array where every pixel has a place in space, time, and the electromagnetic spectrum. Think of it as a living archive of the Earth’s surface: each layer a different moment, each band a different wavelength of light.\nOnce your data is loaded, the operations described below are the tools you use to shape, refine, and interrogate that cube.",
+    "crumbs": [
+      "CUBE OPERATIONS"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations.html#the-data-cube-your-starting-point",
+    "href": "documentation/cube_operations.html#the-data-cube-your-starting-point",
+    "title": "openEO Cube Operations",
+    "section": "",
+    "text": "Before any operation begins, openEO organises satellite imagery into a data cube — a structured, multi-dimensional array where every pixel has a place in space, time, and the electromagnetic spectrum. Think of it as a living archive of the Earth’s surface: each layer a different moment, each band a different wavelength of light.\nOnce your data is loaded, the operations described below are the tools you use to shape, refine, and interrogate that cube.",
+    "crumbs": [
+      "CUBE OPERATIONS"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations.html#preprocessing-cleaning-the-canvas",
+    "href": "documentation/cube_operations.html#preprocessing-cleaning-the-canvas",
+    "title": "openEO Cube Operations",
+    "section": "Preprocessing — Cleaning the Canvas",
+    "text": "Preprocessing — Cleaning the Canvas\nEvery analysis begins with good data. Preprocessing is where raw imagery becomes reliable.\nSatellite images arrive with imperfections: clouds blocking the view, atmospheric haze distorting reflectance values, sensor noise introducing artefacts. Before you can draw any conclusions, you need to clean the canvas.\nopenEO’s preprocessing tools allow you to:\n\nMask out clouds and cloud shadows, using quality flag bands (e.g. SCL from Sentinel-2) to set unreliable pixels to nodata.\nApply atmospheric correction to convert top-of-atmosphere radiance into surface reflectance — the physical quantity that actually describes what’s on the ground.\nRescale and normalise raw digital numbers into meaningful physical values.\nFill missing values using spatial or temporal interpolation, so gaps don’t propagate into your analysis.\n\nThe result is a clean, analysis-ready cube that your downstream processes can trust.\n→ Explore Preprocessing",
+    "crumbs": [
+      "CUBE OPERATIONS"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations.html#spatial-operations-working-in-space",
+    "href": "documentation/cube_operations.html#spatial-operations-working-in-space",
+    "title": "openEO Cube Operations",
+    "section": "Spatial Operations — Working in Space",
+    "text": "Spatial Operations — Working in Space\nWhere on Earth are you looking? Spatial operations let you define, transform, and refine the geographic footprint of your analysis.\nEO data doesn’t exist in a vacuum — it exists somewhere. Spatial operations are about manipulating the where: cropping to a region of interest, reprojecting to a different coordinate reference system, resampling to a different spatial resolution, or aggregating pixel values over polygons.\nKey spatial capabilities include:\n\nfilter_bbox / filter_spatial — Crop your cube to a bounding box or vector geometry, focusing computation only where it matters.\nresample_spatial — Change the pixel size of your cube, upsampling or downsampling to match a target resolution or align with another dataset.\naggregate_spatial — Collapse the spatial dimension over vector features (e.g. administrative boundaries, farm parcels, protected areas), computing statistics like mean, sum, or median for each polygon.\napply_neighborhood — Apply a moving window function across the spatial dimensions, enabling convolutions, focal statistics, and custom kernel-based operations.\n\nSpatial operations are often combined: you might first filter to a country boundary, then resample to a coarser resolution for national-scale statistics.\n→ Explore Spatial Operations",
+    "crumbs": [
+      "CUBE OPERATIONS"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations.html#temporal-operations-working-in-time",
+    "href": "documentation/cube_operations.html#temporal-operations-working-in-time",
+    "title": "openEO Cube Operations",
+    "section": "Temporal Operations — Working in Time",
+    "text": "Temporal Operations — Working in Time\nSatellites revisit the same location every few days. Temporal operations let you harness that time dimension.\nOne of EO’s greatest powers is its temporal depth. A Sentinel-2 time series over a field shows the entire growing season; over a forest, it reveals phenological change or disturbance events. Temporal operations let you slice, aggregate, and reason across the time dimension of your cube.\nWith temporal operations you can:\n\nfilter_temporal — Select a specific time window, such as a growing season, a year, or a period around an event.\naggregate_temporal — Reduce irregular time series to regular composites: monthly medians, annual means, or seasonal summaries that smooth out noise and cloud gaps.\napply_dimension over time — Apply any reducer or custom function along the temporal axis, enabling trend detection, anomaly scoring, or time-series smoothing.\nTemporal mosaicking — Combine multiple acquisitions into a single cloud-free image by taking the best available observation per pixel over a time period.\n\nThe time dimension is what separates a snapshot from a story. Temporal operations are how you read that story.\n→ Explore Temporal Operations",
+    "crumbs": [
+      "CUBE OPERATIONS"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations.html#spectral-operations-working-across-bands",
+    "href": "documentation/cube_operations.html#spectral-operations-working-across-bands",
+    "title": "openEO Cube Operations",
+    "section": "Spectral Operations — Working Across Bands",
+    "text": "Spectral Operations — Working Across Bands\nModern satellites capture dozens of wavelengths simultaneously. Spectral operations let you combine them into meaningful signals.\nA satellite’s sensor doesn’t just capture a colour photograph — it measures reflected or emitted energy across many parts of the electromagnetic spectrum simultaneously. Sentinel-2 has 13 bands; hyperspectral sensors can have hundreds. Spectral operations let you combine, transform, and analyse these bands to extract geophysical information that no single band could reveal alone.\nCommon spectral operations include:\n\nBand math and spectral indices — Compute indices like NDVI (Normalized Difference Vegetation Index), NDWI (water), NBR (burn ratio), or EVI using arithmetic combinations of bands. These distil multi-band information into a single interpretable value.\nfilter_bands — Select only the bands you need, reducing data volume and computation.\napply_dimension over bands — Apply custom functions across the band dimension, enabling PCA, spectral unmixing, or band normalisation.\nreduce_dimension over bands — Collapse multiple bands into a single output, for example reducing a hyperspectral cube to a few principal components.\n\nSpectral operations are where physics meets analysis: the absorption of chlorophyll, the reflectance of water, the emissivity of urban surfaces — all detectable through careful band manipulation.\n→ Explore Spectral Operations",
+    "crumbs": [
+      "CUBE OPERATIONS"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations.html#cube-manipulations-reshaping-the-cube-itself",
+    "href": "documentation/cube_operations.html#cube-manipulations-reshaping-the-cube-itself",
+    "title": "openEO Cube Operations",
+    "section": "Cube Manipulations — Reshaping the Cube Itself",
+    "text": "Cube Manipulations — Reshaping the Cube Itself\nSometimes the analysis you need requires reshaping the data structure itself — merging cubes, renaming dimensions, or reorganising axes.\nNot every operation fits neatly into spatial, temporal, or spectral categories. Sometimes you need to change the shape or structure of the cube — merging results from different collections, reordering dimensions, or creating new derived bands. These are the structural operations of openEO.\nCube manipulation tools include:\n\nmerge_cubes — Combine two cubes that may differ in their band content, temporal extent, or spatial coverage into a single unified cube.\nrename_labels / rename_dimension — Give dimensions and band labels meaningful names to keep your process graph readable and self-documenting.\nadd_dimension / drop_dimension — Dynamically add or remove dimensions, for example adding a new band derived from a computation, or dropping a singleton dimension no longer needed.\nflatten_dimensions / unflatten_dimension — Pivot the cube structure, converting multi-dimensional data into formats suited for tabular analysis or machine learning.\n\nCube manipulations are the connective tissue of complex workflows, letting you route, reshape, and recombine data between processing steps.\n→ Explore Cube Manipulations",
+    "crumbs": [
+      "CUBE OPERATIONS"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations.html#user-defined-functions-udfs-bringing-your-own-code",
+    "href": "documentation/cube_operations.html#user-defined-functions-udfs-bringing-your-own-code",
+    "title": "openEO Cube Operations",
+    "section": "User Defined Functions (UDFs) — Bringing Your Own Code",
+    "text": "User Defined Functions (UDFs) — Bringing Your Own Code\nWhen the built-in processes aren’t enough, bring your own Python or R code into the cube.\nopenEO’s standard process library covers a vast range of operations, but science is unpublished and analysis needs are endlessly varied. User Defined Functions (UDFs) are your escape hatch: they let you inject arbitrary Python or R code into the openEO workflow, running it in a vectorised way across your data cube — server-side, at scale, without downloading a byte.\nWith UDFs you can:\n\nApply custom algorithms not available as standard processes — custom filters, domain-specific indices, bespoke statistical models.\nUse third-party Python or R libraries (e.g. scipy, scikit-learn, rasterio) within the openEO execution environment.\nImplement complex pixel-wise or chunk-wise operations that operate on XArray or pandas objects, giving you full programmatic control.\nIntegrate research code directly into a production-ready, scalable EO workflow.\n\nUDFs run within openEO’s execution model, meaning your code benefits from distributed processing infrastructure without requiring you to manage it.\n\n\n\n\n\n\nNote\n\n\n\nUDFs require a runtime environment on the backend that supports them. Check your backend’s capabilities before relying on specific libraries.\n\n\n→ Explore User Defined Functions",
+    "crumbs": [
+      "CUBE OPERATIONS"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations.html#machine-learning-scaling-intelligence-across-the-cube",
+    "href": "documentation/cube_operations.html#machine-learning-scaling-intelligence-across-the-cube",
+    "title": "openEO Cube Operations",
+    "section": "Machine Learning — Scaling Intelligence Across the Cube",
+    "text": "Machine Learning — Scaling Intelligence Across the Cube\nTrain a model locally. Run it globally. openEO bridges the gap between ML workflows and planetary-scale EO data.\nMachine learning has transformed Earth Observation: from crop type mapping to flood detection, from land cover classification to forest biomass estimation. openEO’s machine learning capabilities let you apply trained models directly inside the cube processing pipeline.\nThe workflow typically follows three phases:\n1. Feature preparation — Use the operations described above (spectral indices, temporal composites, spatial aggregations) to assemble a feature cube that your model can learn from.\n2. Model training or import — Train a model using fit_regressor_random_forest, fit_class_random_forest, or import an externally trained ONNX model.\n3. Inference at scale — Apply predict_random_forest or predict_ml_model to run inference across the full spatial and temporal extent of your cube, producing a classified or regressed output layer.\nThis tight integration between EO processing and ML inference removes the need to export data for external modelling, keeping the full workflow reproducible, versioned, and scalable.\n→ Explore Machine Learning",
+    "crumbs": [
+      "CUBE OPERATIONS"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations.html#user-defined-processes-udps-reusable-workflow-building-blocks",
+    "href": "documentation/cube_operations.html#user-defined-processes-udps-reusable-workflow-building-blocks",
+    "title": "openEO Cube Operations",
+    "section": "User Defined Processes (UDPs) — Reusable Workflow Building Blocks",
+    "text": "User Defined Processes (UDPs) — Reusable Workflow Building Blocks\nCompose your own named processes. Share them. Build on them.\nAs your openEO workflows grow more sophisticated, you’ll find yourself repeating the same sequences of operations: a cloud masking routine, a vegetation index pipeline, a temporal compositing strategy. User Defined Processes (UDPs) let you encapsulate these patterns into named, reusable building blocks — treating your own workflows as first-class processes.\nUDPs allow you to:\n\nEncapsulate complexity — Wrap a multi-step process graph into a single named process with clean inputs and outputs.\nParameterise workflows — Expose configurable parameters so the same UDP can be applied to different sensors, date ranges, or thresholds.\nShare and collaborate — Publish UDPs to a backend so colleagues or community members can reuse your workflows without needing to understand their internals.\nBuild process libraries — Compose higher-level analytical tools from lower-level openEO primitives.\n\nUDPs are the mechanism by which openEO workflows become modular, composable, and community-shareable.\n→ Explore User Defined Processes",
+    "crumbs": [
+      "CUBE OPERATIONS"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations.html#execute-openeo-jobs-putting-it-all-together",
+    "href": "documentation/cube_operations.html#execute-openeo-jobs-putting-it-all-together",
+    "title": "openEO Cube Operations",
+    "section": "Execute openEO Jobs — Putting It All Together",
+    "text": "Execute openEO Jobs — Putting It All Together\nBuild your process graph. Submit it. Scale it. Retrieve the results.\nEverything described on this page — preprocessing, spatial and temporal operations, spectral analysis, ML inference — is assembled into a process graph: a directed acyclic graph (DAG) that describes exactly the computations to be performed. When you’re ready, you submit that graph as a batch job to an openEO backend, which executes it at scale.\nExecution options include:\n\nSynchronous processing — For small areas or quick explorations, get results immediately in your Python or R session.\nBatch jobs — For large-scale processing (full countries, multi-year time series), submit a job that runs asynchronously and stores results to cloud storage or your backend account.\nSecondary services — Expose a process graph as a live OGC Web Map Service (WMS) or other tile-based endpoint.\n\nThe batch job system supports monitoring, logging, and result retrieval, giving you full visibility into the processing lifecycle — from submission to download.\n→ Explore Job Execution",
+    "crumbs": [
+      "CUBE OPERATIONS"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations.html#where-to-go-next",
+    "href": "documentation/cube_operations.html#where-to-go-next",
+    "title": "openEO Cube Operations",
+    "section": "Where to Go Next",
+    "text": "Where to Go Next\nThe operations above are meant to be combined. A typical EO analysis workflow might look like this:\nLoad Collection\n    → load_collection (select collection)\n    → filter_temporal (select season)\n    → filter_bbox (clip to region)\n    → mask_scl (remove clouds)\n    → reduce_dimension (compute NDVI)\n    → aggregate_temporal (monthly median)\n    → aggregate_spatial (mean per polygon)\n    → save_result (export as CSV or GeoTIFF)\nEach link in this chain is an openEO process. Each process is documented, versioned, and backend-agnostic. That’s the promise of openEO: portable, reproducible, scalable Earth Observation analysis.\nExplore each operation category in the sidebar to dive deeper.",
     "crumbs": [
       "CUBE OPERATIONS"
     ]
@@ -492,6 +602,61 @@
     "text": "This page will include information about:\n\nAvailable Backends in openEO\nDatacube\nGlossary\nArchitecture",
     "crumbs": [
       "KEY CONCEPTS"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/preprocessing.html",
+    "href": "documentation/cube_operations/preprocessing.html",
+    "title": "Preprocessing",
+    "section": "",
+    "text": "openEO exposes two flagship preprocessing workflows: Atmospheric Correction for optical sensors, and SAR Backscatter computation for radar sensors. Both are available in standard and CEOS CARD4L-compliant variants.",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Preprocessing"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/preprocessing.html#atmospheric-correction",
+    "href": "documentation/cube_operations/preprocessing.html#atmospheric-correction",
+    "title": "Preprocessing",
+    "section": "Atmospheric Correction",
+    "text": "Atmospheric Correction\n\nSentinel Hub VITO EODC CARD4L\n\nWhen a satellite captures light reflected from the Earth’s surface, that signal has passed through the atmosphere twice — once on the way down, once on the way back up. Scattering, absorption, and haze all distort what the sensor actually records. Atmospheric correction reverses those distortions, converting top-of-atmosphere (TOA) radiance into surface reflectance — the physical quantity that characterises what’s actually on the ground, independent of sun angle, viewing geometry, and atmospheric state.\nWithout atmospheric correction, multi-temporal comparisons are unreliable: a pixel that looks “brighter” in July might just be reflecting a clearer sky, not a healthier crop. Corrected data makes time series meaningful.\n\nStandard process: atmospheric_correction() CARD4L variant: ard_surface_reflectance()\n\n\n\n\n\n\n\nImportantLoad L1C data first\n\n\n\nAtmospheric correction must be applied directly to uncorrected L1C data. The preprocessing algorithm is tightly coupled to the raw sensor metadata — applying other processes (band maths, filtering) before correction may produce incorrect or unsupported results on some backends.\n\n\n\n\n\n\n\n\nNoteCARD4L: more than just correction\n\n\n\nard_surface_reflectance() follows CEOS CARD4L specifications and includes additional steps not available as separate processes — such as BRDF correction and standardised metadata output. Use this variant when interoperability and data product compliance matter.\n\n\n\nKey parameters\n\n\n\n\n\n\n\n\nParameter\nDescription\nExample values\n\n\n\n\nmethod\nThe correction algorithm to apply. Backend-dependent.\n“iCor”, “SMAC”, “FORCE”\n\n\nelevation_model\nDEM used for topographic correction (optional)\n“COPERNICUS_30”\n\n\natmospheric_correction_options\nMethod-specific parameters passed as a dictionary\n{“adjacency_effect”: true}\n\n\n\n\n\nSupported backends & methods\n\n\n\n\n\n\n\n\nBackend\nMethod(s)\nNotes\n\n\n\n\nVITO\niCor, SMAC\nTested with Sentinel-2. Angle bands must be selected manually.\n\n\nEODC\nFORCE\nard_surface_reflectance() via davidfrantz/force\n\n\nSentinel Hub\nBackend default\nVia VITO Geotrellis driver\n\n\n\n\n\nCode examples\n\n🐍 Python🇷 R🌐 JavaScript\n\n\nimport openeo\n\nconnection = openeo.connect(\"https://openeo.vito.be\").authenticate_oidc()\n\n# Load raw L1C Sentinel-2 — include angle bands required by iCor\nl1c = connection.load_collection(\n    \"SENTINEL2_L1C_SENTINELHUB\",\n    spatial_extent={\n        \"west\": 3.758, \"east\": 4.088,\n        \"south\": 51.292, \"north\": 51.393\n    },\n    temporal_extent=[\"2017-03-07\", \"2017-03-07\"],\n    bands=[\n        \"B04\", \"B03\", \"B02\",          # RGB\n        \"B09\", \"B8A\", \"B11\",          # SWIR / water vapour\n        \"sunAzimuthAngles\", \"sunZenithAngles\",\n        \"viewAzimuthMean\", \"viewZenithMean\"\n    ]\n)\n\n# Apply atmospheric correction with iCor\nl2a = l1c.atmospheric_correction(method=\"iCor\")\n\nl2a.download(\"sentinel2_icor.tif\", format=\"GTiff\")\n\n\nlibrary(openeo)\n\ncon &lt;- connect(\"https://openeo.vito.be\")\nlogin()\n\np &lt;- processes()\n\n# Load raw L1C collection with required angle bands\nl1c &lt;- p$load_collection(\n  id = \"SENTINEL2_L1C_SENTINELHUB\",\n  spatial_extent = list(west=3.758, east=4.088, south=51.292, north=51.393),\n  temporal_extent = c(\"2017-03-07\", \"2017-03-07\"),\n  bands = c(\n    \"B04\", \"B03\", \"B02\",\n    \"B09\", \"B8A\", \"B11\",\n    \"sunAzimuthAngles\", \"sunZenithAngles\",\n    \"viewAzimuthMean\", \"viewZenithMean\"\n  )\n)\n\n# Apply iCor atmospheric correction\nl2a &lt;- p$atmospheric_correction(data = l1c, method = \"iCor\")\n\ncompute_result(graph = l2a, format = \"GTiff\", output_file = \"sentinel2_icor.tif\")\n\n\nimport { Connection, authenticate } from \"@openeo/js-client\";\n\nconst con = await Connection.connect(\"https://openeo.vito.be\");\nawait con.authenticateOIDC();\n\nconst builder = await con.buildProcess();\n\n// Load raw L1C collection\nconst l1c = builder.load_collection(\n  \"SENTINEL2_L1C_SENTINELHUB\",\n  { west: 3.758, east: 4.088, south: 51.292, north: 51.393 },\n  [\"2017-03-07\", \"2017-03-07\"],\n  [\"B04\",\"B03\",\"B02\",\"B09\",\"B8A\",\"B11\",\n   \"sunAzimuthAngles\",\"sunZenithAngles\",\"viewAzimuthMean\",\"viewZenithMean\"]\n);\n\n// Apply atmospheric correction\nconst l2a = builder.atmospheric_correction(l1c, { method: \"iCor\" });\n\nconst result = builder.save_result(l2a, \"GTiff\");\nawait con.computeResult(result, { filename: \"sentinel2_icor.tif\" });",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Preprocessing"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/preprocessing.html#sar-backscatter",
+    "href": "documentation/cube_operations/preprocessing.html#sar-backscatter",
+    "title": "Preprocessing",
+    "section": "SAR Backscatter",
+    "text": "SAR Backscatter\n\nSentinel Hub EODC Orfeo Toolbox CARD4L experimental\n\nSynthetic Aperture Radar sensors like Sentinel-1 see through clouds and work day and night — but the raw data they produce (GRD, SLC) is not directly interpretable as a surface measurement. It must be calibrated, terrain-corrected, and normalised before it can be used analytically. This pipeline is collectively called backscatter computation.\nThe process converts the raw radar signal into a physically meaningful quantity — typically sigma0 (surface scattering cross-section) or gamma0 (terrain-flattened reflectivity) — in either linear or decibel scale. Terrain flattening is essential for hilly regions: without it, slopes facing the sensor appear artificially brighter than flat terrain, corrupting any analysis based on backscatter magnitude.\n\nStandard process: sar_backscatter() CARD4L variant: ard_normalized_radar_backscatter()\n\n\n\n\n\n\n\nImportantApply before other processes\n\n\n\nLike atmospheric correction, SAR backscatter processes are tightly coupled to raw sensor metadata. Only spatial and temporal filters (filter_bbox, filter_temporal) should be applied before calling sar_backscatter(). Applying band maths or other transformations first will fail or produce incorrect results.\n\n\n\n\n\n\n\n\nTipChoosing sigma0 vs gamma0\n\n\n\nUse gamma0 (terrain-flattened) when comparing backscatter across varying terrain — it removes slope-induced radiometric bias. Use sigma0 for flat terrain or when CARD4L compliance is not required. The ard_normalized_radar_backscatter() process always produces gamma0 by CARD4L specification.\n\n\n\nKey parameters\n\n\n\n\n\n\n\n\nParameter\nDescription\nExample values\n\n\n\n\ncoefficient\nThe radiometric quantity to compute\n“gamma0-terrain”, “sigma0-ellipsoid”, “beta0”\n\n\nelevation_model\nDEM used for terrain correction (optional —\n\n\n\nbackend default otherwise)\n“COPERNICUS_30”, “MAPZEN”\n\n\n\nnoise_removal\nApply thermal noise removal (recommended)\ntrue / false\n\n\noptions\nBackend-specific processing options as a dictionary\n{“orthorectify”: true}\n\n\n\n\n\nSupported backends & implementations\n\n\n\n\n\n\n\n\n\nBackend\nProcess(es)\nImplementation\nNotes\n\n\n\n\nSentinel Hub via VITO\nsar_backscatter, ard_normalized_radar_backscatter\nSentinel Hub SAR\nFull CARD4L support\n\n\nEODC\nsar_backscatter\nSentinel-1 Toolbox\nSentinel-1 GRD only\n\n\nOrfeo Toolbox via VITO\nsar_backscatter\nopeneo-geopyspark-driver\nsigma0 only; not CARD4L compliant\n\n\n\n\n\nCode examples\n\n🐍 Python🇷 R🌐 JavaScript\n\n\nimport openeo\n\nconnection = openeo.connect(\"https://openeo.vito.be\").authenticate_oidc()\n\n# Load Sentinel-1 GRD — spatial/temporal filters are fine before backscatter\ns1grd = (\n    connection.load_collection(\n        \"SENTINEL1_GRD\",\n        bands=[\"VH\", \"VV\"]\n    )\n    .filter_bbox(west=2.590, east=2.895, north=51.221, south=51.069)\n    .filter_temporal(extent=[\"2019-10-10\", \"2019-10-10\"])\n)\n\n# CARD4L-compliant normalised radar backscatter (gamma0, terrain-flattened)\nnrb = s1grd.ard_normalized_radar_backscatter()\n\n# Submit as batch job and download results\njob = nrb.execute_batch()\njob.get_results().download_files(\"./output/\")\n\n\n\n\n\n\nNoteStandard sar_backscatter() with explicit parameters\n\n\n\n\n\n# More control: use sar_backscatter() directly\nbackscatter = s1grd.sar_backscatter(\n    coefficient=\"gamma0-terrain\",\n    elevation_model=\"COPERNICUS_30\",\n    noise_removal=True\n)\njob = backscatter.execute_batch(\n    title=\"S1 Backscatter Test\",\n    description=\"gamma0 terrain-flattened over Belgium\"\n)\n\n\n\n\n\nlibrary(openeo)\n\ncon &lt;- connect(\"https://openeo.vito.be\")\nlogin()\n\np &lt;- processes()\n\n# Load Sentinel-1 GRD with spatial and temporal filters\ns1grd &lt;- p$load_collection(\n  id = \"SENTINEL1_GRD\",\n  bands = c(\"VH\", \"VV\")\n)\n\ns1grd &lt;- p$filter_bbox(\n  data = s1grd,\n  extent = list(west=2.590, east=2.895, south=51.069, north=51.221)\n)\n\ns1grd &lt;- p$filter_temporal(\n  data = s1grd,\n  extent = c(\"2019-10-10\", \"2019-10-10\")\n)\n\n# Apply CARD4L-compliant normalised radar backscatter\nnrb &lt;- p$ard_normalized_radar_backscatter(data = s1grd)\n\n# Submit batch job\njob &lt;- create_job(\n  graph = nrb,\n  title = \"S1 CARD4L NRB\"\n)\nstart_job(job)\n\n# Monitor and download when complete\njob_status &lt;- describe_job(job)\ndownload_results(job, folder = \"./output/\")\n\n\nimport { Connection } from \"@openeo/js-client\";\n\nconst con = await Connection.connect(\"https://openeo.vito.be\");\nawait con.authenticateOIDC();\n\nconst builder = await con.buildProcess();\n\n// Load Sentinel-1 GRD\nlet s1grd = builder.load_collection(\n  \"SENTINEL1_GRD\",\n  null, null,\n  [\"VH\", \"VV\"]\n);\n\n// Apply spatial and temporal filters first\ns1grd = builder.filter_bbox(s1grd, {\n  west: 2.590, east: 2.895,\n  south: 51.069, north: 51.221\n});\n\ns1grd = builder.filter_temporal(s1grd, [\"2019-10-10\", \"2019-10-10\"]);\n\n// CARD4L normalised radar backscatter\nconst nrb = builder.ard_normalized_radar_backscatter(s1grd);\n\nconst result = builder.save_result(nrb, \"GTiff\");\n\n// Submit as batch job\nconst job = await con.createJob(result, { title: \"S1 NRB Belgium\" });\nawait job.startJob();\n\n// Poll until done, then download\nconst results = await job.getResults();\nfor (const asset of Object.values(results.assets)) {\n  console.log(\"Download:\", asset.href);\n}",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Preprocessing"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/preprocessing.html#performance-considerations",
+    "href": "documentation/cube_operations/preprocessing.html#performance-considerations",
+    "title": "Preprocessing",
+    "section": "Performance considerations",
+    "text": "Performance considerations\nBoth atmospheric_correction and sar_backscatter are among the most computationally expensive operations in openEO. Before including them in your workflow, consider:\n\nUse batch jobs — synchronous execution will time out for anything beyond a small test area.\nFilter early — always apply filter_bbox and filter_temporal before calling these processes to minimise the data volume processed.\nPre-corrected collections — many openEO backends offer analysis-ready collections (e.g. Sentinel-2 L2A, Sentinel-1 backscatter products) that have already been corrected. Check your backend’s collection catalogue before computing from raw data.\nCost awareness — backends may charge more for preprocessing-heavy workflows. Profile on a small tile before scaling up.\n\n\n\n\n\n\n\nTipWhen to skip preprocessing\n\n\n\nIf your backend offers a collection like SENTINEL2_L2A or SENTINEL1_BACKSCATTER, use it directly — it is the output of these processes, pre-computed and stored at much lower retrieval cost.",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Preprocessing"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/preprocessing.html#related-processes",
+    "href": "documentation/cube_operations/preprocessing.html#related-processes",
+    "title": "Preprocessing",
+    "section": "Related processes",
+    "text": "Related processes\n\n\n\n\n\n\n\nProcess\nDescription\n\n\n\n\nload_collection()\nEntry point — load a raw L1C or GRD collection\n\n\nfilter_bbox()\nSpatial filter — always apply before preprocessing\n\n\nfilter_temporal()\nTemporal filter — always apply before preprocessing\n\n\nmask_scl_dilation()\nCloud masking on corrected optical data\n\n\nsave_result()\nExport your processed cube to file\n\n\n\n\nNext: Spatial Operations →",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Preprocessing"
     ]
   },
   {

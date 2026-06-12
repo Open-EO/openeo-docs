@@ -42,7 +42,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-e199741f1aac39f7a8ac46de762c37ac.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-ca3bdab7997e2f7e57fb676d26260d17.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -70,6 +70,7 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<style>html{ scroll-behavior: smooth; }</style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&amp;family=Source+Code+Pro:wght@400;500&amp;display=swap" rel="stylesheet">
 
@@ -240,7 +241,7 @@ ul.task-list li input[type="checkbox"] {
   </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="sidebar-menu-container"> 
@@ -249,11 +250,11 @@ ul.task-list li input[type="checkbox"] {
       <div class="sidebar-item-container"> 
             <a href="../documentation/keyconcepts.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">KEY CONCEPTS</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../404-not-found.html" class="sidebar-item-text sidebar-link">
@@ -282,11 +283,11 @@ ul.task-list li input[type="checkbox"] {
       <div class="sidebar-item-container"> 
             <a href="../documentation/data_discovery.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">DATA DISCOVERY</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../404-not-found.html" class="sidebar-item-text sidebar-link">
@@ -383,20 +384,37 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">What’s in this Page?</h2>
+   
+  <ul class="collapse">
+  <li><a href="#the-data-cube-your-starting-point" id="toc-the-data-cube-your-starting-point" class="nav-link active" data-scroll-target="#the-data-cube-your-starting-point">The Data Cube: Your Starting Point</a></li>
+  <li><a href="#preprocessing-cleaning-the-canvas" id="toc-preprocessing-cleaning-the-canvas" class="nav-link" data-scroll-target="#preprocessing-cleaning-the-canvas">Preprocessing — Cleaning the Canvas</a></li>
+  <li><a href="#spatial-operations-working-in-space" id="toc-spatial-operations-working-in-space" class="nav-link" data-scroll-target="#spatial-operations-working-in-space">Spatial Operations — Working in Space</a></li>
+  <li><a href="#temporal-operations-working-in-time" id="toc-temporal-operations-working-in-time" class="nav-link" data-scroll-target="#temporal-operations-working-in-time">Temporal Operations — Working in Time</a></li>
+  <li><a href="#spectral-operations-working-across-bands" id="toc-spectral-operations-working-across-bands" class="nav-link" data-scroll-target="#spectral-operations-working-across-bands">Spectral Operations — Working Across Bands</a></li>
+  <li><a href="#cube-manipulations-reshaping-the-cube-itself" id="toc-cube-manipulations-reshaping-the-cube-itself" class="nav-link" data-scroll-target="#cube-manipulations-reshaping-the-cube-itself">Cube Manipulations — Reshaping the Cube Itself</a></li>
+  <li><a href="#user-defined-functions-udfs-bringing-your-own-code" id="toc-user-defined-functions-udfs-bringing-your-own-code" class="nav-link" data-scroll-target="#user-defined-functions-udfs-bringing-your-own-code">User Defined Functions (UDFs) — Bringing Your Own Code</a></li>
+  <li><a href="#machine-learning-scaling-intelligence-across-the-cube" id="toc-machine-learning-scaling-intelligence-across-the-cube" class="nav-link" data-scroll-target="#machine-learning-scaling-intelligence-across-the-cube">Machine Learning — Scaling Intelligence Across the Cube</a></li>
+  <li><a href="#user-defined-processes-udps-reusable-workflow-building-blocks" id="toc-user-defined-processes-udps-reusable-workflow-building-blocks" class="nav-link" data-scroll-target="#user-defined-processes-udps-reusable-workflow-building-blocks">User Defined Processes (UDPs) — Reusable Workflow Building Blocks</a></li>
+  <li><a href="#execute-openeo-jobs-putting-it-all-together" id="toc-execute-openeo-jobs-putting-it-all-together" class="nav-link" data-scroll-target="#execute-openeo-jobs-putting-it-all-together">Execute openEO Jobs — Putting It All Together</a></li>
+  <li><a href="#where-to-go-next" id="toc-where-to-go-next" class="nav-link" data-scroll-target="#where-to-go-next">Where to Go Next</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
-<main class="content column-page-right" id="quarto-document-content">
+<main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
 <h1 class="title">openEO Cube Operations</h1>
+<p class="subtitle lead">A journey through the tools that transform Earth Observation data into insight</p>
 </div>
 
 
 
-<div class="quarto-title-meta column-page-right">
+<div class="quarto-title-meta">
 
     
   
@@ -408,9 +426,173 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>This will be a guiding page for user to explore the various operations that can be applied on data cubes, and how to apply them using the openEO API.</p>
+<section id="the-data-cube-your-starting-point" class="level2">
+<h2 class="anchored" data-anchor-id="the-data-cube-your-starting-point">The Data Cube: Your Starting Point</h2>
+<p>Before any operation begins, openEO organises satellite imagery into a <strong>data cube</strong> — a structured, multi-dimensional array where every pixel has a place in space, time, and the electromagnetic spectrum. Think of it as a living archive of the Earth’s surface: each layer a different moment, each band a different wavelength of light.</p>
+<p>Once your data is loaded, the operations described below are the tools you use to shape, refine, and interrogate that cube.</p>
+<hr>
+</section>
+<section id="preprocessing-cleaning-the-canvas" class="level2">
+<h2 class="anchored" data-anchor-id="preprocessing-cleaning-the-canvas">Preprocessing — Cleaning the Canvas</h2>
+<p><em>Every analysis begins with good data. Preprocessing is where raw imagery becomes reliable.</em></p>
+<p>Satellite images arrive with imperfections: clouds blocking the view, atmospheric haze distorting reflectance values, sensor noise introducing artefacts. Before you can draw any conclusions, you need to clean the canvas.</p>
+<p>openEO’s preprocessing tools allow you to:</p>
+<ul>
+<li><strong>Mask out clouds and cloud shadows</strong>, using quality flag bands (e.g.&nbsp;SCL from Sentinel-2) to set unreliable pixels to <code>nodata</code>.</li>
+<li><strong>Apply atmospheric correction</strong> to convert top-of-atmosphere radiance into surface reflectance — the physical quantity that actually describes what’s on the ground.</li>
+<li><strong>Rescale and normalise</strong> raw digital numbers into meaningful physical values.</li>
+<li><strong>Fill missing values</strong> using spatial or temporal interpolation, so gaps don’t propagate into your analysis.</li>
+</ul>
+<p>The result is a clean, analysis-ready cube that your downstream processes can trust.</p>
+<p><a href="cube_operations/preprocessing.html">→ Explore Preprocessing</a></p>
+<hr>
+</section>
+<section id="spatial-operations-working-in-space" class="level2">
+<h2 class="anchored" data-anchor-id="spatial-operations-working-in-space">Spatial Operations — Working in Space</h2>
+<p><em>Where on Earth are you looking? Spatial operations let you define, transform, and refine the geographic footprint of your analysis.</em></p>
+<p>EO data doesn’t exist in a vacuum — it exists somewhere. Spatial operations are about manipulating the <strong>where</strong>: cropping to a region of interest, reprojecting to a different coordinate reference system, resampling to a different spatial resolution, or aggregating pixel values over polygons.</p>
+<p>Key spatial capabilities include:</p>
+<ul>
+<li><strong><code>filter_bbox</code> / <code>filter_spatial</code></strong> — Crop your cube to a bounding box or vector geometry, focusing computation only where it matters.</li>
+<li><strong><code>resample_spatial</code></strong> — Change the pixel size of your cube, upsampling or downsampling to match a target resolution or align with another dataset.</li>
+<li><strong><code>aggregate_spatial</code></strong> — Collapse the spatial dimension over vector features (e.g.&nbsp;administrative boundaries, farm parcels, protected areas), computing statistics like mean, sum, or median for each polygon.</li>
+<li><strong><code>apply_neighborhood</code></strong> — Apply a moving window function across the spatial dimensions, enabling convolutions, focal statistics, and custom kernel-based operations.</li>
+</ul>
+<p>Spatial operations are often combined: you might first filter to a country boundary, then resample to a coarser resolution for national-scale statistics.</p>
+<p><a href="cube_operations/spatial_operations.html">→ Explore Spatial Operations</a></p>
+<hr>
+</section>
+<section id="temporal-operations-working-in-time" class="level2">
+<h2 class="anchored" data-anchor-id="temporal-operations-working-in-time">Temporal Operations — Working in Time</h2>
+<p><em>Satellites revisit the same location every few days. Temporal operations let you harness that time dimension.</em></p>
+<p>One of EO’s greatest powers is its temporal depth. A Sentinel-2 time series over a field shows the entire growing season; over a forest, it reveals phenological change or disturbance events. Temporal operations let you slice, aggregate, and reason across the time dimension of your cube.</p>
+<p>With temporal operations you can:</p>
+<ul>
+<li><strong><code>filter_temporal</code></strong> — Select a specific time window, such as a growing season, a year, or a period around an event.</li>
+<li><strong><code>aggregate_temporal</code></strong> — Reduce irregular time series to regular composites: monthly medians, annual means, or seasonal summaries that smooth out noise and cloud gaps.</li>
+<li><strong><code>apply_dimension</code> over time</strong> — Apply any reducer or custom function along the temporal axis, enabling trend detection, anomaly scoring, or time-series smoothing.</li>
+<li><strong>Temporal mosaicking</strong> — Combine multiple acquisitions into a single cloud-free image by taking the best available observation per pixel over a time period.</li>
+</ul>
+<p>The time dimension is what separates a snapshot from a story. Temporal operations are how you read that story.</p>
+<p><a href="cube_operations/temporal_operations.html">→ Explore Temporal Operations</a></p>
+<hr>
+</section>
+<section id="spectral-operations-working-across-bands" class="level2">
+<h2 class="anchored" data-anchor-id="spectral-operations-working-across-bands">Spectral Operations — Working Across Bands</h2>
+<p><em>Modern satellites capture dozens of wavelengths simultaneously. Spectral operations let you combine them into meaningful signals.</em></p>
+<p>A satellite’s sensor doesn’t just capture a colour photograph — it measures reflected or emitted energy across many parts of the electromagnetic spectrum simultaneously. Sentinel-2 has 13 bands; hyperspectral sensors can have hundreds. Spectral operations let you combine, transform, and analyse these bands to extract geophysical information that no single band could reveal alone.</p>
+<p>Common spectral operations include:</p>
+<ul>
+<li><strong>Band math and spectral indices</strong> — Compute indices like NDVI (Normalized Difference Vegetation Index), NDWI (water), NBR (burn ratio), or EVI using arithmetic combinations of bands. These distil multi-band information into a single interpretable value.</li>
+<li><strong><code>filter_bands</code></strong> — Select only the bands you need, reducing data volume and computation.</li>
+<li><strong><code>apply_dimension</code> over bands</strong> — Apply custom functions across the band dimension, enabling PCA, spectral unmixing, or band normalisation.</li>
+<li><strong><code>reduce_dimension</code> over bands</strong> — Collapse multiple bands into a single output, for example reducing a hyperspectral cube to a few principal components.</li>
+</ul>
+<p>Spectral operations are where physics meets analysis: the absorption of chlorophyll, the reflectance of water, the emissivity of urban surfaces — all detectable through careful band manipulation.</p>
+<p><a href="cube_operations/spectral_operations.html">→ Explore Spectral Operations</a></p>
+<hr>
+</section>
+<section id="cube-manipulations-reshaping-the-cube-itself" class="level2">
+<h2 class="anchored" data-anchor-id="cube-manipulations-reshaping-the-cube-itself">Cube Manipulations — Reshaping the Cube Itself</h2>
+<p><em>Sometimes the analysis you need requires reshaping the data structure itself — merging cubes, renaming dimensions, or reorganising axes.</em></p>
+<p>Not every operation fits neatly into spatial, temporal, or spectral categories. Sometimes you need to change the shape or structure of the cube — merging results from different collections, reordering dimensions, or creating new derived bands. These are the <strong>structural</strong> operations of openEO.</p>
+<p>Cube manipulation tools include:</p>
+<ul>
+<li><strong><code>merge_cubes</code></strong> — Combine two cubes that may differ in their band content, temporal extent, or spatial coverage into a single unified cube.</li>
+<li><strong><code>rename_labels</code></strong> / <strong><code>rename_dimension</code></strong> — Give dimensions and band labels meaningful names to keep your process graph readable and self-documenting.</li>
+<li><strong><code>add_dimension</code></strong> / <strong><code>drop_dimension</code></strong> — Dynamically add or remove dimensions, for example adding a new band derived from a computation, or dropping a singleton dimension no longer needed.</li>
+<li><strong><code>flatten_dimensions</code></strong> / <strong><code>unflatten_dimension</code></strong> — Pivot the cube structure, converting multi-dimensional data into formats suited for tabular analysis or machine learning.</li>
+</ul>
+<p>Cube manipulations are the connective tissue of complex workflows, letting you route, reshape, and recombine data between processing steps.</p>
+<p><a href="cube_operations/cube_manipulations.html">→ Explore Cube Manipulations</a></p>
+<hr>
+</section>
+<section id="user-defined-functions-udfs-bringing-your-own-code" class="level2">
+<h2 class="anchored" data-anchor-id="user-defined-functions-udfs-bringing-your-own-code">User Defined Functions (UDFs) — Bringing Your Own Code</h2>
+<p><em>When the built-in processes aren’t enough, bring your own Python or R code into the cube.</em></p>
+<p>openEO’s standard process library covers a vast range of operations, but science is unpublished and analysis needs are endlessly varied. <strong>User Defined Functions (UDFs)</strong> are your escape hatch: they let you inject arbitrary Python or R code into the openEO workflow, running it in a vectorised way across your data cube — server-side, at scale, without downloading a byte.</p>
+<p>With UDFs you can:</p>
+<ul>
+<li>Apply <strong>custom algorithms</strong> not available as standard processes — custom filters, domain-specific indices, bespoke statistical models.</li>
+<li>Use <strong>third-party Python or R libraries</strong> (e.g.&nbsp;<code>scipy</code>, <code>scikit-learn</code>, <code>rasterio</code>) within the openEO execution environment.</li>
+<li>Implement <strong>complex pixel-wise or chunk-wise operations</strong> that operate on <code>XArray</code> or <code>pandas</code> objects, giving you full programmatic control.</li>
+<li>Integrate <strong>research code</strong> directly into a production-ready, scalable EO workflow.</li>
+</ul>
+<p>UDFs run within openEO’s execution model, meaning your code benefits from distributed processing infrastructure without requiring you to manage it.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>UDFs require a runtime environment on the backend that supports them. Check your backend’s capabilities before relying on specific libraries.</p>
+</div>
+</div>
+<p><a href="cube_operations/udf.html">→ Explore User Defined Functions</a></p>
+<hr>
+</section>
+<section id="machine-learning-scaling-intelligence-across-the-cube" class="level2">
+<h2 class="anchored" data-anchor-id="machine-learning-scaling-intelligence-across-the-cube">Machine Learning — Scaling Intelligence Across the Cube</h2>
+<p><em>Train a model locally. Run it globally. openEO bridges the gap between ML workflows and planetary-scale EO data.</em></p>
+<p>Machine learning has transformed Earth Observation: from crop type mapping to flood detection, from land cover classification to forest biomass estimation. openEO’s machine learning capabilities let you apply trained models directly inside the cube processing pipeline.</p>
+<p>The workflow typically follows three phases:</p>
+<p><strong>1. Feature preparation</strong> — Use the operations described above (spectral indices, temporal composites, spatial aggregations) to assemble a feature cube that your model can learn from.</p>
+<p><strong>2. Model training or import</strong> — Train a model using <code>fit_regressor_random_forest</code>, <code>fit_class_random_forest</code>, or import an externally trained ONNX model.</p>
+<p><strong>3. Inference at scale</strong> — Apply <code>predict_random_forest</code> or <code>predict_ml_model</code> to run inference across the full spatial and temporal extent of your cube, producing a classified or regressed output layer.</p>
+<p>This tight integration between EO processing and ML inference removes the need to export data for external modelling, keeping the full workflow reproducible, versioned, and scalable.</p>
+<p><a href="cube_operations/machine_learning.html">→ Explore Machine Learning</a></p>
+<hr>
+</section>
+<section id="user-defined-processes-udps-reusable-workflow-building-blocks" class="level2">
+<h2 class="anchored" data-anchor-id="user-defined-processes-udps-reusable-workflow-building-blocks">User Defined Processes (UDPs) — Reusable Workflow Building Blocks</h2>
+<p><em>Compose your own named processes. Share them. Build on them.</em></p>
+<p>As your openEO workflows grow more sophisticated, you’ll find yourself repeating the same sequences of operations: a cloud masking routine, a vegetation index pipeline, a temporal compositing strategy. <strong>User Defined Processes (UDPs)</strong> let you encapsulate these patterns into named, reusable building blocks — treating your own workflows as first-class processes.</p>
+<p>UDPs allow you to:</p>
+<ul>
+<li><strong>Encapsulate complexity</strong> — Wrap a multi-step process graph into a single named process with clean inputs and outputs.</li>
+<li><strong>Parameterise workflows</strong> — Expose configurable parameters so the same UDP can be applied to different sensors, date ranges, or thresholds.</li>
+<li><strong>Share and collaborate</strong> — Publish UDPs to a backend so colleagues or community members can reuse your workflows without needing to understand their internals.</li>
+<li><strong>Build process libraries</strong> — Compose higher-level analytical tools from lower-level openEO primitives.</li>
+</ul>
+<p>UDPs are the mechanism by which openEO workflows become modular, composable, and community-shareable.</p>
+<p><a href="cube_operations/udp.html">→ Explore User Defined Processes</a></p>
+<hr>
+</section>
+<section id="execute-openeo-jobs-putting-it-all-together" class="level2">
+<h2 class="anchored" data-anchor-id="execute-openeo-jobs-putting-it-all-together">Execute openEO Jobs — Putting It All Together</h2>
+<p><em>Build your process graph. Submit it. Scale it. Retrieve the results.</em></p>
+<p>Everything described on this page — preprocessing, spatial and temporal operations, spectral analysis, ML inference — is assembled into a <strong>process graph</strong>: a directed acyclic graph (DAG) that describes exactly the computations to be performed. When you’re ready, you submit that graph as a <strong>batch job</strong> to an openEO backend, which executes it at scale.</p>
+<p>Execution options include:</p>
+<ul>
+<li><strong>Synchronous processing</strong> — For small areas or quick explorations, get results immediately in your Python or R session.</li>
+<li><strong>Batch jobs</strong> — For large-scale processing (full countries, multi-year time series), submit a job that runs asynchronously and stores results to cloud storage or your backend account.</li>
+<li><strong>Secondary services</strong> — Expose a process graph as a live OGC Web Map Service (WMS) or other tile-based endpoint.</li>
+</ul>
+<p>The batch job system supports monitoring, logging, and result retrieval, giving you full visibility into the processing lifecycle — from submission to download.</p>
+<p><a href="cube_operations/execute_jobs.html">→ Explore Job Execution</a></p>
+<hr>
+</section>
+<section id="where-to-go-next" class="level2">
+<h2 class="anchored" data-anchor-id="where-to-go-next">Where to Go Next</h2>
+<p>The operations above are meant to be combined. A typical EO analysis workflow might look like this:</p>
+<pre><code>Load Collection
+    → load_collection (select collection)
+    → filter_temporal (select season)
+    → filter_bbox (clip to region)
+    → mask_scl (remove clouds)
+    → reduce_dimension (compute NDVI)
+    → aggregate_temporal (monthly median)
+    → aggregate_spatial (mean per polygon)
+    → save_result (export as CSV or GeoTIFF)</code></pre>
+<p>Each link in this chain is an openEO process. Each process is documented, versioned, and backend-agnostic. That’s the promise of openEO: <strong>portable, reproducible, scalable Earth Observation analysis</strong>.</p>
+<p>Explore each operation category in the sidebar to dive deeper.</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -818,4 +1000,5 @@ ul.task-list li input[type="checkbox"] {
 
 
 
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>
