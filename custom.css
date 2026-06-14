@@ -27,14 +27,23 @@ body.fullcontent {
   overflow-x: hidden;
 }
 
-/* ─── ANNOUNCEMENT BAR ─── */
+/* ─── ANNOUNCEMENT BAR ───
 body.fullcontent .announce-bar {
   background: var(--accent-light); border-bottom: 1px solid #b2d8e0;
   padding: 8px 2rem; text-align: center; font-size: 0.85rem;
   color: var(--accent); margin-top: var(--nav-h);
 }
-body.fullcontent .announce-bar a { color: var(--accent); font-weight: 600; }
+body.fullcontent .announce-bar a { color: var(--accent); font-weight: 600; } */
+body.fullcontent .announce-bar {
+  background: var(--accent-light);
+  border-bottom: 1px solid #b2d8e0;
+  padding: 8px 2rem;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--accent);
 
+  margin-top: 0;      /* or remove entirely */
+}
 /* ─── HERO ─── */
 body.fullcontent .hero {
   background: linear-gradient(160deg, #1a2744 0%, #0e3a56 55%, #0a7d91 100%);
