@@ -24,7 +24,7 @@ listing:
 <section class="hero">
   <div class="hero-content">
     <div class="hero-badge">🌍 v1.3.0 now available</div>
-    <h1>Open-Source API<br>for <em>Earth Observation Analysis</em></h1>
+    <h1>Open- Standard<br>for <em>Earth Observation Analysis</em></h1>
     <p><b>The openEO API</b> allows users to connect to Earth observation cloud back-ends in a simple and unified way.</p>
     <div class="hero-actions">
       <a href="#get-started-section" class="btn-primary">Get Started →</a>

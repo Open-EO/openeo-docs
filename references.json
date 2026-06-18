@@ -1,0 +1,35 @@
+{
+    "backends": {
+        "Terrascope": {
+            "title": "Terrascope",
+            "description": "The Terrascope backend provides access to a wide range of Earth observation data, including Sentinel-1, Sentinel-2, and Landsat imagery. It supports various processing capabilities such as filtering, aggregation, and analysis of geospatial data.",
+            "url": "https://openeo.terrascope.be"
+        },
+        "CDSE": {
+            "title": "Copernicus Data Space Ecosystem (CDSE)",
+            "description": "The CDSE backend offers access to Copernicus satellite data, including Sentinel-1, Sentinel-2, and Sentinel-3 imagery. It provides tools for data processing, analysis, and visualization, enabling users to derive insights from Earth observation data.",
+            "url": "https://openeo.dataspace.copernicus.eu"
+        },
+        "openeofed": {
+            "title": "openEO Federated Cloud",
+            "description": "The openEO Federated Cloud backend allows users to access and process Earth observation data from multiple sources in a unified manner. It supports various data formats and processing workflows, enabling seamless integration of geospatial data for analysis and decision-making.",
+            "url": "https://openeofed.dataspace.copernicus.eu"
+        },
+        "EODC": {
+            "title": "Earth Observation Data Centre (EODC)",
+            "description": "The EODC backend provides access to a wide range of Earth observation data, including Sentinel-1, Sentinel-2, and Landsat imagery. It offers advanced processing capabilities for geospatial data analysis, enabling users to derive insights and make informed decisions based on satellite observations.",
+            "url": "https://openeo.eodc.eu"
+        },
+        "EURAC": {
+            "title": "EURAC",
+            "description": "The EURAC backend offers access to Earth observation data and processing capabilities for geospatial analysis. It supports various data formats and provides tools for filtering, aggregation, and visualization of satellite imagery, enabling users to derive insights from geospatial data.",
+            "url": "https://openeo.eurac.edu"
+        },
+        "SentinelHub": {
+            "title": "Sentinel Hub",
+            "description": "The Sentinel Hub backend provides access to a wide range of Earth observation data, including Sentinel-1, Sentinel-2, and Landsat imagery. It offers advanced processing capabilities for geospatial data analysis, enabling users to derive insights and make informed decisions based on satellite observations.",
+            "url": "https://openeo.sentinel-hub.com"
+        }
+
+    }
+}

@@ -504,3 +504,50 @@ body.fullcontent .footer-bottom {
 @media (max-width: 600px) {
   .psc-grid { grid-template-columns: 1fr; }
 }
+
+/* for clickable backends */
+.tag-filter-ui {
+  margin: 1rem 0 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  flex-wrap: wrap;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.tag-filter-badge {
+  padding: 0.35rem 0.75rem;
+  border: 2px solid;
+  border-radius: 20px;
+  background: transparent;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.tag-filter-badge.inactive {
+  color: #aaa;
+  border-color: #ddd;
+  opacity: 0.5;
+}
+
+.tag-filter-badge.inactive:hover {
+  opacity: 0.7;
+}
+
+.tag-filter-badge.active {
+  color: #006b96;
+  border-color: #006b96;
+  background-color: #e8f4f8;
+  font-weight: 600;
+}
+
+.tag-filter-badge.active:hover {
+  background-color: #d0e8f0;
+}
