@@ -107,7 +107,92 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 <style>html{ scroll-behavior: smooth; }</style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&amp;family=Source+Code+Pro:wght@400;500&amp;display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css?family=Roboto+Mono|Source+Sans+Pro:300,400,600" rel="stylesheet">
+<meta name="zd-site-verification" content="xj9koofr1crilmoclgxsjd">
+
+<script type="text/javascript">
+
+
+    function setActiveClassForCurrentUrl() {
+        // Find all links in the navbarCollapse div where the href attribute is set to the current URL
+        let anchorTag = document.querySelector('#navbarCollapse a[href="' + window.location.href + '"]');
+
+        if (anchorTag) {
+
+            // Find the closest parent of the navigation
+            let parentUl = anchorTag.closest('li.nav-item')?.querySelector('a.nav-link');
+
+            if (parentUl) {
+                // Add active class to both the anchor tag and the parent ul
+                anchorTag.classList.add('active');
+                parentUl.classList.add('active');
+            }
+        }
+    }
+
+    window.addEventListener('popstate', setActiveClassForCurrentUrl);
+    window.addEventListener('hashchange', setActiveClassForCurrentUrl);
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const badges = Array.from(document.querySelectorAll(".tag-filter-badge"));
+        const items = Array.from(document.querySelectorAll(".tag-filter-item"));
+        if (badges.length === 0 || items.length === 0) return;
+
+        const getTags = (item) => {
+            const fromDataAttr = (item.getAttribute("data-tags") || "")
+            .toLowerCase()
+            .split(/\s+/)
+            .filter(Boolean);
+
+            if (fromDataAttr.length > 0) {
+            return new Set(fromDataAttr);
+            }
+
+            const fromBadges = Array.from(item.querySelectorAll(".badge"))
+            .flatMap((el) => Array.from(el.classList))
+            .filter((cls) => cls.startsWith("badge-"))
+            .map((cls) => cls.replace("badge-", "").toLowerCase());
+
+            return new Set(fromBadges);
+        };
+
+        const applyFilter = () => {
+            const activeBadges = badges.filter((b) => b.classList.contains("active"));
+            const selectedTags = new Set(activeBadges.map((b) => b.getAttribute("data-tag")));
+
+            items.forEach((item) => {
+            const tags = getTags(item);
+            const visible = Array.from(selectedTags).some((tag) => tags.has(tag));
+            item.hidden = !visible;
+            });
+        };
+
+        badges.forEach((badge) => {
+            badge.addEventListener("click", function (e) {
+            e.preventDefault();
+            this.classList.toggle("active");
+            this.classList.toggle("inactive");
+            applyFilter();
+            });
+        });
+
+        applyFilter();
+        });
+
+
+
+    window.onload = () => {
+        const elems = document.getElementsByClassName('navbar-title');
+        if (elems.length > 0) {
+            const title = elems[0];
+            title.parentElement.href = '/index.html'
+        }
+        setActiveClassForCurrentUrl();
+    }
+
+ 
+</script>
 
 
 <link rel="stylesheet" href="../../custom.css">
@@ -426,18 +511,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#atmospheric-correction" id="toc-atmospheric-correction" class="nav-link active" data-scroll-target="#atmospheric-correction">Atmospheric Correction</a>
   <ul class="collapse">
-  <li><a href="#key-parameters" id="toc-key-parameters" class="nav-link" data-scroll-target="#key-parameters">Key parameters</a></li>
-  <li><a href="#supported-backends-methods" id="toc-supported-backends-methods" class="nav-link" data-scroll-target="#supported-backends-methods">Supported backends &amp; methods</a></li>
   <li><a href="#code-examples" id="toc-code-examples" class="nav-link" data-scroll-target="#code-examples">Code examples</a></li>
   </ul></li>
-  <li><a href="#sar-backscatter" id="toc-sar-backscatter" class="nav-link" data-scroll-target="#sar-backscatter">SAR Backscatter</a>
-  <ul class="collapse">
-  <li><a href="#key-parameters-1" id="toc-key-parameters-1" class="nav-link" data-scroll-target="#key-parameters-1">Key parameters</a></li>
-  <li><a href="#supported-backends-implementations" id="toc-supported-backends-implementations" class="nav-link" data-scroll-target="#supported-backends-implementations">Supported backends &amp; implementations</a></li>
-  <li><a href="#code-examples-1" id="toc-code-examples-1" class="nav-link" data-scroll-target="#code-examples-1">Code examples</a></li>
-  </ul></li>
+  <li><a href="#sar-backscatter" id="toc-sar-backscatter" class="nav-link" data-scroll-target="#sar-backscatter">SAR Backscatter</a></li>
   <li><a href="#performance-considerations" id="toc-performance-considerations" class="nav-link" data-scroll-target="#performance-considerations">Performance considerations</a></li>
-  <li><a href="#related-processes" id="toc-related-processes" class="nav-link" data-scroll-target="#related-processes">Related processes</a></li>
   </ul>
 </nav>
     </div>
@@ -467,110 +544,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="lead">
 <p>openEO exposes two flagship preprocessing workflows: <strong>Atmospheric Correction</strong> for optical sensors, and <strong>SAR Backscatter</strong> computation for radar sensors. Both are available in standard and CEOS CARD4L-compliant variants.</p>
 </div>
-<section id="atmospheric-correction" class="level2">
-<h2 class="anchored" data-anchor-id="atmospheric-correction">Atmospheric Correction</h2>
-<div class="section-badges">
-<p><span class="badge badge-sentinelhub">Sentinel Hub</span> <span class="badge badge-vito">VITO</span> <span class="badge badge-eodc">EODC</span> <span class="badge badge-card4l">CARD4L</span></p>
+
+<div class="tag-filter-ui" id="tag-filter-ui">
+  <button class="tag-filter-badge active" data-tag="vito">VITO</button>
+  <button class="tag-filter-badge inactive" data-tag="sentinelhub">Sentinel Hub</button>
+  <button class="tag-filter-badge inactive" data-tag="eodc">EODC</button>
+  <button class="tag-filter-badge inactive" data-tag="orfeo">Orfeo Toolbox</button>
+  <button class="tag-filter-badge inactive" data-tag="card4l">CARD4L</button>
+  <button class="tag-filter-badge inactive" data-tag="experimental">Experimental</button>
 </div>
+<section id="atmospheric-correction" class="level2 tag-filter-item" data-tags="sentinelhub eodc">
+<h2 class="anchored" data-anchor-id="atmospheric-correction">Atmospheric Correction</h2>
 <p>When a satellite captures light reflected from the Earth’s surface, that signal has passed through the atmosphere twice — once on the way down, once on the way back up. Scattering, absorption, and haze all distort what the sensor actually records. <strong>Atmospheric correction</strong> reverses those distortions, converting top-of-atmosphere (TOA) radiance into <strong>surface reflectance</strong> — the physical quantity that characterises what’s actually on the ground, independent of sun angle, viewing geometry, and atmospheric state.</p>
 <p>Without atmospheric correction, multi-temporal comparisons are unreliable: a pixel that looks “brighter” in July might just be reflecting a clearer sky, not a healthier crop. Corrected data makes time series meaningful.</p>
-<div class="process-box">
-<p>Standard process: <span class="proc-name">atmospheric_correction()</span><br> CARD4L variant: <span class="proc-card4l">ard_surface_reflectance()</span></p>
-</div>
-<div class="callout callout-style-default callout-important callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Important</span>Load L1C data first
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Atmospheric correction must be applied directly to <strong>uncorrected L1C data</strong>. The preprocessing algorithm is tightly coupled to the raw sensor metadata — applying other processes (band maths, filtering) <em>before</em> correction may produce incorrect or unsupported results on some backends.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>CARD4L: more than just correction
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><code>ard_surface_reflectance()</code> follows <a href="https://ceos.org/ard/">CEOS CARD4L specifications</a> and includes additional steps not available as separate processes — such as <strong>BRDF correction</strong> and standardised metadata output. Use this variant when interoperability and data product compliance matter.</p>
-</div>
-</div>
-<section id="key-parameters" class="level3">
-<h3 class="anchored" data-anchor-id="key-parameters">Key parameters</h3>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 27%">
-<col style="width: 32%">
-<col style="width: 40%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Parameter</th>
-<th>Description</th>
-<th>Example values</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>method</code></td>
-<td>The correction algorithm to apply. Backend-dependent.</td>
-<td><code>“iCor”</code>, <code>“SMAC”</code>, <code>“FORCE”</code></td>
-</tr>
-<tr class="even">
-<td><code>elevation_model</code></td>
-<td>DEM used for topographic correction (optional)</td>
-<td><code>“COPERNICUS_30”</code></td>
-</tr>
-<tr class="odd">
-<td><code>atmospheric_correction_options</code></td>
-<td>Method-specific parameters passed as a dictionary</td>
-<td><code>{“adjacency_effect”: true}</code></td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="supported-backends-methods" class="level3">
-<h3 class="anchored" data-anchor-id="supported-backends-methods">Supported backends &amp; methods</h3>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 22%">
-<col style="width: 22%">
-<col style="width: 56%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Backend</th>
-<th>Method(s)</th>
-<th>Notes</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><span class="badge badge-vito">VITO</span></td>
-<td><code>iCor</code>, <code>SMAC</code></td>
-<td>Tested with Sentinel-2. Angle bands must be selected manually.</td>
-</tr>
-<tr class="even">
-<td><span class="badge badge-eodc">EODC</span></td>
-<td><code>FORCE</code></td>
-<td><code>ard_surface_reflectance()</code> via <a href="https://github.com/davidfrantz/force">davidfrantz/force</a></td>
-</tr>
-<tr class="odd">
-<td><span class="badge badge-sentinelhub">Sentinel Hub</span></td>
-<td>Backend default</td>
-<td>Via VITO Geotrellis driver</td>
-</tr>
-</tbody>
-</table>
-</section>
 <section id="code-examples" class="level3">
 <h3 class="anchored" data-anchor-id="code-examples">Code examples</h3>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
@@ -653,130 +639,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
+</section>
+</section>
 <hr>
-</section>
-</section>
-<section id="sar-backscatter" class="level2">
+<section id="sar-backscatter" class="level2 tag-filter-item" data-tags="vito sentinelhub">
 <h2 class="anchored" data-anchor-id="sar-backscatter">SAR Backscatter</h2>
-<div class="section-badges">
-<p><span class="badge badge-sentinelhub">Sentinel Hub</span> <span class="badge badge-eodc">EODC</span> <span class="badge badge-orfeo">Orfeo Toolbox</span> <span class="badge badge-card4l">CARD4L</span> <span class="badge badge-experimental">experimental</span></p>
-</div>
 <p>Synthetic Aperture Radar sensors like Sentinel-1 see through clouds and work day and night — but the raw data they produce (GRD, SLC) is not directly interpretable as a surface measurement. It must be <strong>calibrated</strong>, <strong>terrain-corrected</strong>, and <strong>normalised</strong> before it can be used analytically. This pipeline is collectively called <strong>backscatter computation</strong>.</p>
-<p>The process converts the raw radar signal into a physically meaningful quantity — typically <strong>sigma0</strong> (surface scattering cross-section) or <strong>gamma0</strong> (terrain-flattened reflectivity) — in either linear or decibel scale. Terrain flattening is essential for hilly regions: without it, slopes facing the sensor appear artificially brighter than flat terrain, corrupting any analysis based on backscatter magnitude.</p>
-<div class="process-box">
-<p>Standard process: <span class="proc-name">sar_backscatter()</span><br> CARD4L variant: <span class="proc-card4l">ard_normalized_radar_backscatter()</span></p>
-</div>
-<div class="callout callout-style-default callout-important callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Important</span>Apply before other processes
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Like atmospheric correction, SAR backscatter processes are tightly coupled to raw sensor metadata. Only <strong>spatial and temporal filters</strong> (<code>filter_bbox</code>, <code>filter_temporal</code>) should be applied before calling <code>sar_backscatter()</code>. Applying band maths or other transformations first will fail or produce incorrect results.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Choosing sigma0 vs gamma0
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Use <strong>gamma0</strong> (terrain-flattened) when comparing backscatter across varying terrain — it removes slope-induced radiometric bias. Use <strong>sigma0</strong> for flat terrain or when CARD4L compliance is not required. The <code>ard_normalized_radar_backscatter()</code> process always produces gamma0 by CARD4L specification.</p>
-</div>
-</div>
-<section id="key-parameters-1" class="level3">
-<h3 class="anchored" data-anchor-id="key-parameters-1">Key parameters</h3>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 27%">
-<col style="width: 32%">
-<col style="width: 40%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Parameter</th>
-<th>Description</th>
-<th>Example values</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>coefficient</code></td>
-<td>The radiometric quantity to compute</td>
-<td><code>“gamma0-terrain”</code>, <code>“sigma0-ellipsoid”</code>, <code>“beta0”</code></td>
-</tr>
-<tr class="even">
-<td><code>elevation_model</code></td>
-<td>DEM used for terrain correction (optional —</td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>backend default otherwise)</td>
-<td><code>“COPERNICUS_30”</code>, <code>“MAPZEN”</code></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><code>noise_removal</code></td>
-<td>Apply thermal noise removal (recommended)</td>
-<td><code>true</code> / <code>false</code></td>
-</tr>
-<tr class="odd">
-<td><code>options</code></td>
-<td>Backend-specific processing options as a dictionary</td>
-<td><code>{“orthorectify”: true}</code></td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="supported-backends-implementations" class="level3">
-<h3 class="anchored" data-anchor-id="supported-backends-implementations">Supported backends &amp; implementations</h3>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 22%">
-<col style="width: 26%">
-<col style="width: 30%">
-<col style="width: 22%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Backend</th>
-<th>Process(es)</th>
-<th>Implementation</th>
-<th>Notes</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><span class="badge badge-sentinelhub">Sentinel Hub</span> via VITO</td>
-<td><code>sar_backscatter</code>, <code>ard_normalized_radar_backscatter</code></td>
-<td><a href="https://docs.sentinel-hub.com/api/latest/data/sentinel-1-grd/#processing-options">Sentinel Hub SAR</a></td>
-<td>Full CARD4L support</td>
-</tr>
-<tr class="even">
-<td><span class="badge badge-eodc">EODC</span></td>
-<td><code>sar_backscatter</code></td>
-<td><a href="https://sentinel.esa.int/web/sentinel/toolboxes/sentinel-1">Sentinel-1 Toolbox</a></td>
-<td>Sentinel-1 GRD only</td>
-</tr>
-<tr class="odd">
-<td><span class="badge badge-orfeo">Orfeo Toolbox</span> via VITO</td>
-<td><code>sar_backscatter</code></td>
-<td><a href="https://github.com/Open-EO/openeo-geopyspark-driver/blob/master/openeogeotrellis/collections/s1backscatter_orfeo.py">openeo-geopyspark-driver</a></td>
-<td>sigma0 only; not CARD4L compliant</td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="code-examples-1" class="level3">
-<h3 class="anchored" data-anchor-id="code-examples-1">Code examples</h3>
+<p>The process converts the raw radar signal into a physically meaningful quantity — typically <strong>sigma0</strong> (surface scattering cross-section) or <strong>gamma0</strong> (terrain-flattened reflectivity) — in either linear or decibel scale. Terrain flattening is essential for hilly regions: without it, slopes facing the sensor appear artificially brighter than flat terrain, corrupting any analysis based on backscatter magnitude. ### Code examples</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">🐍 Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">🇷 R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false" href="">🌐 JavaScript</a></li></ul>
 <div class="tab-content">
@@ -802,7 +671,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>job <span class="op">=</span> nrb.execute_batch()</span>
 <span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>job.get_results().download_files(<span class="st">"./output/"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -811,7 +680,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># More control: use sar_backscatter() directly</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>backscatter <span class="op">=</span> s1grd.sar_backscatter(</span>
@@ -905,9 +774,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
+</section>
 <hr>
-</section>
-</section>
 <section id="performance-considerations" class="level2">
 <h2 class="anchored" data-anchor-id="performance-considerations">Performance considerations</h2>
 <p>Both <code>atmospheric_correction</code> and <code>sar_backscatter</code> are among the most <strong>computationally expensive</strong> operations in openEO. Before including them in your workflow, consider:</p>
@@ -930,46 +798,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>If your backend offers a collection like <code>SENTINEL2_L2A</code> or <code>SENTINEL1_BACKSCATTER</code>, use it directly — it is the output of these processes, pre-computed and stored at much lower retrieval cost.</p>
 </div>
 </div>
-<hr>
-</section>
-<section id="related-processes" class="level2">
-<h2 class="anchored" data-anchor-id="related-processes">Related processes</h2>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 35%">
-<col style="width: 65%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Process</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><a href="https://processes.openeo.org/#load_collection"><code>load_collection()</code></a></td>
-<td>Entry point — load a raw L1C or GRD collection</td>
-</tr>
-<tr class="even">
-<td><a href="https://processes.openeo.org/#filter_bbox"><code>filter_bbox()</code></a></td>
-<td>Spatial filter — always apply before preprocessing</td>
-</tr>
-<tr class="odd">
-<td><a href="https://processes.openeo.org/#filter_temporal"><code>filter_temporal()</code></a></td>
-<td>Temporal filter — always apply before preprocessing</td>
-</tr>
-<tr class="even">
-<td><a href="https://processes.openeo.org/#mask_scl_dilation"><code>mask_scl_dilation()</code></a></td>
-<td>Cloud masking on corrected optical data</td>
-</tr>
-<tr class="odd">
-<td><a href="https://processes.openeo.org/#save_result"><code>save_result()</code></a></td>
-<td>Export your processed cube to file</td>
-</tr>
-</tbody>
-</table>
-<hr>
-<p><em>Next: <a href="spatial_operations.html">Spatial Operations →</a></em></p>
 
 
 </section>

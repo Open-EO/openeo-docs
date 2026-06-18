@@ -102,7 +102,92 @@ ul.task-list li input[type="checkbox"] {
   })
   </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&amp;family=Source+Code+Pro:wght@400;500&amp;display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css?family=Roboto+Mono|Source+Sans+Pro:300,400,600" rel="stylesheet">
+<meta name="zd-site-verification" content="xj9koofr1crilmoclgxsjd">
+
+<script type="text/javascript">
+
+
+    function setActiveClassForCurrentUrl() {
+        // Find all links in the navbarCollapse div where the href attribute is set to the current URL
+        let anchorTag = document.querySelector('#navbarCollapse a[href="' + window.location.href + '"]');
+
+        if (anchorTag) {
+
+            // Find the closest parent of the navigation
+            let parentUl = anchorTag.closest('li.nav-item')?.querySelector('a.nav-link');
+
+            if (parentUl) {
+                // Add active class to both the anchor tag and the parent ul
+                anchorTag.classList.add('active');
+                parentUl.classList.add('active');
+            }
+        }
+    }
+
+    window.addEventListener('popstate', setActiveClassForCurrentUrl);
+    window.addEventListener('hashchange', setActiveClassForCurrentUrl);
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const badges = Array.from(document.querySelectorAll(".tag-filter-badge"));
+        const items = Array.from(document.querySelectorAll(".tag-filter-item"));
+        if (badges.length === 0 || items.length === 0) return;
+
+        const getTags = (item) => {
+            const fromDataAttr = (item.getAttribute("data-tags") || "")
+            .toLowerCase()
+            .split(/\s+/)
+            .filter(Boolean);
+
+            if (fromDataAttr.length > 0) {
+            return new Set(fromDataAttr);
+            }
+
+            const fromBadges = Array.from(item.querySelectorAll(".badge"))
+            .flatMap((el) => Array.from(el.classList))
+            .filter((cls) => cls.startsWith("badge-"))
+            .map((cls) => cls.replace("badge-", "").toLowerCase());
+
+            return new Set(fromBadges);
+        };
+
+        const applyFilter = () => {
+            const activeBadges = badges.filter((b) => b.classList.contains("active"));
+            const selectedTags = new Set(activeBadges.map((b) => b.getAttribute("data-tag")));
+
+            items.forEach((item) => {
+            const tags = getTags(item);
+            const visible = Array.from(selectedTags).some((tag) => tags.has(tag));
+            item.hidden = !visible;
+            });
+        };
+
+        badges.forEach((badge) => {
+            badge.addEventListener("click", function (e) {
+            e.preventDefault();
+            this.classList.toggle("active");
+            this.classList.toggle("inactive");
+            applyFilter();
+            });
+        });
+
+        applyFilter();
+        });
+
+
+
+    window.onload = () => {
+        const elems = document.getElementsByClassName('navbar-title');
+        if (elems.length > 0) {
+            const title = elems[0];
+            title.parentElement.href = '/index.html'
+        }
+        setActiveClassForCurrentUrl();
+    }
+
+ 
+</script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -307,7 +392,7 @@ window.Quarto = {
 <section class="hero">
   <div class="hero-content">
     <div class="hero-badge">🌍 v1.3.0 now available</div>
-    <h1>Open-Source API<br>for <em>Earth Observation Analysis</em></h1>
+    <h1>Open- Standard<br>for <em>Earth Observation Analysis</em></h1>
     <p><b>The openEO API</b> allows users to connect to Earth observation cloud back-ends in a simple and unified way.</p>
     <div class="hero-actions">
       <a href="#get-started-section" class="btn-primary">Get Started →</a>
@@ -540,7 +625,7 @@ What’s new
 </thead>
 <tbody class="list">
 
-<tr data-index="0" data-listing-date-sort="1778716800000" data-listing-file-modified-sort="1781424547123" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="148" data-listing-title-sort="OGC publishes openEO as a new Community Standard" data-listing-filename-sort="2026-05-14-openeo-is-an-ogc-community-standard.qmd">
+<tr data-index="0" data-listing-date-sort="1778716800000" data-listing-file-modified-sort="1781776968640" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="148" data-listing-title-sort="OGC publishes openEO as a new Community Standard" data-listing-filename-sort="2026-05-14-openeo-is-an-ogc-community-standard.qmd">
 <td>
 <span class="listing-date">May 14, 2026</span>
 </td>
@@ -553,7 +638,7 @@ What’s new
 
 </tr>
 
-<tr data-index="1" data-listing-date-sort="1770076800000" data-listing-file-modified-sort="1781424547123" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="479" data-listing-title-sort="openEO API 1.3.0 and openEO Processes 2.0.0 RC2 released" data-listing-filename-sort="2026-02-03-new-openeo-versions-130-200rc2.qmd">
+<tr data-index="1" data-listing-date-sort="1770076800000" data-listing-file-modified-sort="1781776968640" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="479" data-listing-title-sort="openEO API 1.3.0 and openEO Processes 2.0.0 RC2 released" data-listing-filename-sort="2026-02-03-new-openeo-versions-130-200rc2.qmd">
 <td>
 <span class="listing-date">Feb 3, 2026</span>
 </td>
@@ -566,7 +651,7 @@ What’s new
 
 </tr>
 
-<tr data-index="2" data-listing-date-sort="1766361600000" data-listing-file-modified-sort="1781424547123" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="537" data-listing-title-sort="New openEO QGIS plugin has been released" data-listing-filename-sort="2025-12-22-new-qgis-plugin.qmd">
+<tr data-index="2" data-listing-date-sort="1766361600000" data-listing-file-modified-sort="1781776968640" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="537" data-listing-title-sort="New openEO QGIS plugin has been released" data-listing-filename-sort="2025-12-22-new-qgis-plugin.qmd">
 <td>
 <span class="listing-date">Dec 22, 2025</span>
 </td>
