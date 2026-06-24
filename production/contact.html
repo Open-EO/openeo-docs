@@ -225,10 +225,15 @@ ul.task-list li input[type="checkbox"] {
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-documentation" role="link" data-bs-toggle="dropdown" aria-expanded="false">
- <span class="menu-text">Documentation</span>
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-user-documentation" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">User Documentation</span>
     </a>
-    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-documentation">    
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-user-documentation">    
+        <li>
+    <a class="dropdown-item" href="./documentation/cookbook.html">
+ <span class="dropdown-text">COOKBOOK</span></a>
+  </li>  
+        <li><hr class="dropdown-divider"></li>
         <li class="dropdown-header">KEY CONCEPTS</li>
         <li>
     <a class="dropdown-item" href="./404-not-found.html">
@@ -318,25 +323,26 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
-   
-  <ul>
-  <li><a href="#contact" id="toc-contact" class="nav-link active" data-scroll-target="#contact">Contact</a></li>
-  </ul>
-</nav>
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
     </div>
 <!-- main -->
-<main class="content column-page-left" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content column-page" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
 
 
 
 
-<section id="contact" class="level1">
-<h1>Contact</h1>
-<p>University of Münster<br> Institute for Geoinformatics<br> c/o Edzer Pebesma<br> Heisenbergstraße 2<br> 48149 Münster<br> Germany<br></p>
-<p>::: tip Note</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Contact
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>University of Münster<br> Heisenbergstraße 2<br> 48149 Münster<br> Germany<br></p>
 <p>The email address below is meant for general topics around the openEO project, openEO PSC, openEO API specification, or openEO process specification. The email address below is <strong>NOT</strong> meant for technical support regarding specific service providers or client implementations.</p>
 <ul>
 <li>If you need help with specific service providers (e.g.&nbsp;openEO Platform or CDSE), please use their support channels.
@@ -353,11 +359,10 @@ ul.task-list li input[type="checkbox"] {
 </ul></li>
 <li>If you have general questions or want to get in touch with the community, we recommend to join the chat (see below) and/or <a href="news/2022-07-07-monthly-dev-calls.md">join the monthly community calls</a>.</li>
 </ul>
-<p>:::</p>
-<p>&lt;Channels :youtube=“false” :code=“false” /&gt;</p>
+</div>
+</div>
 
 
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
