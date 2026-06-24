@@ -52,9 +52,11 @@ website:
           - href: Examples.qmd
             text: Notebook examples
     - id: user_documentation
-      title: "Documentation"
+      title: "User Documentation"
       collapse-level: 1
       contents: 
+          - href: documentation\cookbook.qmd
+            text: COOKBOOK
           - section: KEY CONCEPTS
             href: documentation\keyconcepts.qmd
             contents:
