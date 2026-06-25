@@ -57,21 +57,21 @@ website:
       title: "User Documentation"
       collapse-level: 1
       contents: 
-          - href: documentation\cookbook.qmd
+          - href: documentation/cookbook.qmd
             text: COOKBOOK
           - section: KEY CONCEPTS
-            href: documentation\keyconcepts.qmd
+            href: documentation/keyconcepts.qmd
             contents:
               - href: 404-not-found.qmd
                 text: Backends
-              - href: documentation\keyconcepts\openeo_api.qmd
+              - href: documentation/keyconcepts/openeo_api.qmd
                 text: Datacube
-              - href: documentation\keyconcepts\processes.qmd
+              - href: documentation/keyconcepts/processes.qmd
                 text: Processes
           - section: SETUP
-            href: documentation\setup.qmd
+            href: documentation/setup.qmd
           - section: DATA DISCOVERY
-            href: documentation\data_discovery.qmd
+            href: documentation/data_discovery.qmd
             contents: 
               - href: 404-not-found.qmd
                 text: Collections
@@ -80,27 +80,27 @@ website:
               - href: 404-not-found.qmd
                 text: Load STAC metadata
           - section: CUBE OPERATIONS
-            href: documentation\cube_operations.qmd
+            href: documentation/cube_operations.qmd
             contents:
-              - href: documentation\cube_operations\preprocessing.qmd
+              - href: documentation/cube_operations/preprocessing.qmd
                 text: Preprocessing 
-              - href: documentation\cube_operations\spatial_operations.qmd
+              - href: documentation/cube_operations/spatial_operations.qmd
                 text: Spatial Operations
-              - href: documentation\cube_operations\temporal_operations.qmd
+              - href: documentation/cube_operations/temporal_operations.qmd
                 text: Temporal Operations
-              - href: documentation\cube_operations\spectral_operations.qmd
+              - href: documentation/cube_operations/spectral_operations.qmd
                 text: Spectral Operations
-              - href: documentation\cube_operations\cube_manipulations.qmd
+              - href: documentation/cube_operations/cube_manipulations.qmd
                 text: Cube Manipulations
-              - href: documentation\cube_operations\udf.qmd
+              - href: documentation/cube_operations/udf.qmd
                 text: User Defined Functions
-              - href: documentation\cube_operations\machine_learning.qmd
+              - href: documentation/cube_operations/machine_learning.qmd
                 text: Machine Learning
-              - href: documentation\cube_operations\udp.qmd
+              - href: documentation/cube_operations/udp.qmd
                 text: User Defined Processes
-              - href: documentation\cube_operations\execute_jobs.qmd
+              - href: documentation/cube_operations/execute_jobs.qmd
                 text: Execute openEO Jobs
-          - href: documentation\export_formats.qmd
+          - href: documentation/export_formats.qmd
             text: EXPORT FORMATS
     - id: developers
       title: "Developers"

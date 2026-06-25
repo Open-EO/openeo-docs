@@ -2,6 +2,7 @@ pandas
 openeo
 tabulate
 bs4
-pandas
 matplotlib
 rasterio
+jupyter
+ipykernel
