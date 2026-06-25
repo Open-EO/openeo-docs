@@ -1,5 +1,11 @@
 project:
   type: website
+  render:
+    - "*.qmd"
+    - "*.md"
+    - "*.ipynb"
+    - "!*.rmd"
+    - "!*.Rmd"
 
 website:
   title: "openEO"
