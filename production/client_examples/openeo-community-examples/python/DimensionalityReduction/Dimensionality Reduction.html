@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Dimensionality reduction using Sentinel-2 (PCA) – openEO</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../../">
+<script src="../../../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../../site_libs/bootstrap/bootstrap-e199741f1aac39f7a8ac46de762c37ac.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css?family=Roboto+Mono|Source+Sans+Pro:300,400,600" rel="stylesheet">
+<meta name="zd-site-verification" content="xj9koofr1crilmoclgxsjd">
+
+<script type="text/javascript">
+
+
+    function setActiveClassForCurrentUrl() {
+        // Find all links in the navbarCollapse div where the href attribute is set to the current URL
+        let anchorTag = document.querySelector('#navbarCollapse a[href="' + window.location.href + '"]');
+
+        if (anchorTag) {
+
+            // Find the closest parent of the navigation
+            let parentUl = anchorTag.closest('li.nav-item')?.querySelector('a.nav-link');
+
+            if (parentUl) {
+                // Add active class to both the anchor tag and the parent ul
+                anchorTag.classList.add('active');
+                parentUl.classList.add('active');
+            }
+        }
+    }
+
+    window.addEventListener('popstate', setActiveClassForCurrentUrl);
+    window.addEventListener('hashchange', setActiveClassForCurrentUrl);
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const badges = Array.from(document.querySelectorAll(".tag-filter-badge"));
+        const items = Array.from(document.querySelectorAll(".tag-filter-item"));
+        if (badges.length === 0 || items.length === 0) return;
+
+        const getTags = (item) => {
+            const fromDataAttr = (item.getAttribute("data-tags") || "")
+            .toLowerCase()
+            .split(/\s+/)
+            .filter(Boolean);
+
+            if (fromDataAttr.length > 0) {
+            return new Set(fromDataAttr);
+            }
+
+            const fromBadges = Array.from(item.querySelectorAll(".badge"))
+            .flatMap((el) => Array.from(el.classList))
+            .filter((cls) => cls.startsWith("badge-"))
+            .map((cls) => cls.replace("badge-", "").toLowerCase());
+
+            return new Set(fromBadges);
+        };
+
+        const applyFilter = () => {
+            const activeBadges = badges.filter((b) => b.classList.contains("active"));
+            const selectedTags = new Set(activeBadges.map((b) => b.getAttribute("data-tag")));
+
+            items.forEach((item) => {
+            const tags = getTags(item);
+            const visible = Array.from(selectedTags).some((tag) => tags.has(tag));
+            item.hidden = !visible;
+            });
+        };
+
+        badges.forEach((badge) => {
+            badge.addEventListener("click", function (e) {
+            e.preventDefault();
+            this.classList.toggle("active");
+            this.classList.toggle("inactive");
+            applyFilter();
+            });
+        });
+
+        applyFilter();
+        });
+
+
+
+    window.onload = () => {
+        const elems = document.getElementsByClassName('navbar-title');
+        if (elems.length > 0) {
+            const title = elems[0];
+            title.parentElement.href = '/index.html'
+        }
+        setActiveClassForCurrentUrl();
+    }
+
+ 
+</script>
+
+
+<link rel="stylesheet" href="../../../../custom.css">
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../../../index.html">
+    <span class="navbar-title">openEO</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../../../about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://hub.openeo.org/" target="_blank"> 
+<span class="menu-text">Services</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../../news/news.html"> 
+<span class="menu-text">News</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../../meetings.html"> 
+<span class="menu-text">Meetings</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../../events/events.html"> 
+<span class="menu-text">Events</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../../psc.html"> 
+<span class="menu-text">PSC</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-user-documentation" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">User Documentation</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-user-documentation">    
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/cookbook.html">
+ <span class="dropdown-text">COOKBOOK</span></a>
+  </li>  
+        <li><hr class="dropdown-divider"></li>
+        <li class="dropdown-header">KEY CONCEPTS</li>
+        <li>
+    <a class="dropdown-item" href="../../../../404-not-found.html">
+ <span class="dropdown-text">Backends</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/keyconcepts/openeo_api.qmd">
+ <span class="dropdown-text">Datacube</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/keyconcepts/processes.qmd">
+ <span class="dropdown-text">Processes</span></a>
+  </li>  
+        <li><hr class="dropdown-divider"></li>
+        <li class="dropdown-header">SETUP</li>
+        <li><hr class="dropdown-divider"></li>
+        <li class="dropdown-header">DATA DISCOVERY</li>
+        <li>
+    <a class="dropdown-item" href="../../../../404-not-found.html">
+ <span class="dropdown-text">Collections</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../404-not-found.html">
+ <span class="dropdown-text">Load Collections</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../404-not-found.html">
+ <span class="dropdown-text">Load STAC metadata</span></a>
+  </li>  
+        <li><hr class="dropdown-divider"></li>
+        <li class="dropdown-header">CUBE OPERATIONS</li>
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/cube_operations/preprocessing.html">
+ <span class="dropdown-text">Preprocessing</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/cube_operations/spatial_operations.html">
+ <span class="dropdown-text">Spatial Operations</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/cube_operations/temporal_operations.html">
+ <span class="dropdown-text">Temporal Operations</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/cube_operations/spectral_operations.html">
+ <span class="dropdown-text">Spectral Operations</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/cube_operations/cube_manipulations.html">
+ <span class="dropdown-text">Cube Manipulations</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/cube_operations/udf.html">
+ <span class="dropdown-text">User Defined Functions</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/cube_operations/machine_learning.html">
+ <span class="dropdown-text">Machine Learning</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/cube_operations/udp.html">
+ <span class="dropdown-text">User Defined Processes</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/cube_operations/execute_jobs.html">
+ <span class="dropdown-text">Execute openEO Jobs</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/export_formats.html">
+ <span class="dropdown-text">EXPORT FORMATS</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-developers" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Developers</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-developers">    
+        <li>
+    <a class="dropdown-item" href="https://api.openeo.org/">
+ <span class="dropdown-text">REST API Reference</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../404-not-found.html">
+ <span class="dropdown-text">Xarray/Dask Guide</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../404-not-found.html">
+ <span class="dropdown-text">Backend Development</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-support" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Support</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-support">    
+        <li>
+    <a class="dropdown-item" href="../../../../contact.html">
+ <span class="dropdown-text">Contact</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://forum.dataspace.copernicus.eu/c/openeo/28">
+ <span class="dropdown-text">CDSE Forum</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../Examples.qmd">
+ <span class="dropdown-text">Notebook examples</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools tools-wide">
+    <a href="mailto:openeo.psc@uni-muenster.de" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-envelope"></i></a>
+    <a href="https://www.linkedin.com/company/openeospec/" title="" class="quarto-navigation-tool px-1" aria-label="" target="_blank"><i class="bi bi-linkedin"></i></a>
+    <a href="https://bsky.app/profile/openeo.org" title="" class="quarto-navigation-tool px-1" aria-label="" target="_blank"><i class="bi bi-bluesky"></i></a>
+    <a href="https://github.com/Open-EO" title="" class="quarto-navigation-tool px-1" aria-label="" target="_blank"><i class="bi bi-github"></i></a>
+    <a href="https://www.youtube.com/channel/UCMJQil8j9sHBQkcSlSaEsvQ" title="" class="quarto-navigation-tool px-1" aria-label="" target="_blank"><i class="bi bi-youtube"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a>
+  <ul class="collapse">
+  <li><a href="#authentication" id="toc-authentication" class="nav-link" data-scroll-target="#authentication">Authentication</a></li>
+  <li><a href="#jobs-whithin-the-notebook" id="toc-jobs-whithin-the-notebook" class="nav-link" data-scroll-target="#jobs-whithin-the-notebook">Jobs whithin the notebook</a></li>
+  <li><a href="#load-collection" id="toc-load-collection" class="nav-link" data-scroll-target="#load-collection">Load collection</a></li>
+  <li><a href="#visualise-rgb-to-get-a-view-of-the-area" id="toc-visualise-rgb-to-get-a-view-of-the-area" class="nav-link" data-scroll-target="#visualise-rgb-to-get-a-view-of-the-area">Visualise RGB to get a view of the area</a></li>
+  <li><a href="#pca-model-execution" id="toc-pca-model-execution" class="nav-link" data-scroll-target="#pca-model-execution">PCA model execution</a>
+  <ul class="collapse">
+  <li><a href="#exploration-of-the-data-and-the-model" id="toc-exploration-of-the-data-and-the-model" class="nav-link" data-scroll-target="#exploration-of-the-data-and-the-model">Exploration of the data and the model</a></li>
+  <li><a href="#udf-execution" id="toc-udf-execution" class="nav-link" data-scroll-target="#udf-execution">UDF execution</a></li>
+  </ul></li>
+  <li><a href="#visualise-output" id="toc-visualise-output" class="nav-link" data-scroll-target="#visualise-output">Visualise Output</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content column-page-left" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Dimensionality reduction using Sentinel-2 (PCA)</h1>
+</div>
+
+
+
+<div class="quarto-title-meta column-page-left">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Authors:</p>
+<ul>
+<li>Jeroen Wannijn</li>
+</ul>
+<p>Import dependencies</p>
+<div id="4b696e31" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;pycharm&quot;,&quot;value&quot;:{&quot;is_executing&quot;:true}}" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> openeo</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> openeo.processes <span class="im">as</span> eop</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> eo_processing.utils.helper <span class="im">import</span> getUDFpath</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rasterio</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> xarray <span class="im">as</span> xr</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># openeo version</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>openeo.client_version()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>'0.45.0'</code></pre>
+</div>
+</div>
+<p>Creates a output directory if it doesn’t exist.</p>
+<div id="84244e02" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>base_path <span class="op">=</span> Path(<span class="st">"results"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="kw">not</span> base_path.is_dir():</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    base_path.mkdir()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p>In this notebook, we perform dimensionality reduction on a full data cube of preprocessed Sentinel-2 satellite data. This data can quickly have many dimensions, consisting of many spectral bands, derived indexes and possibly other features, leading to very high-dimensional and heavy datasets. Working directly with such high-dimensional data presents several challenges:</p>
+<ol type="1">
+<li><p>Computational Efficiency: Lower-dimensional data requires less storage and speeds up downstream tasks like classification, clustering, or further processing.</p></li>
+<li><p>Improved Visualization and Interpretation: By reducing dimensionality, we can visualize complex datasets in 2D or 3D plots, making it easier to understand underlying structures, patterns, or anomalies.</p></li>
+<li><p>Curse of Dimensionality: As the number of features grows, the data becomes sparse in the feature space, making it harder to find meaningful patterns or clusters. Many machine learning algorithms also suffer performance drops or overfitting in very high dimensions.</p></li>
+</ol>
+<section id="authentication" class="level2">
+<h2 class="anchored" data-anchor-id="authentication">Authentication</h2>
+<p>We first need to connect to an openEO provider. Most providers require you to register an account, and provide you with a basic amount of processing credits. In this notebook we will use the Copernicus Data Space Ecosystem as openEO provider.</p>
+<p>All the known openEO providers and their services: https://hub.openeo.org/</p>
+<p>More info on authentication: https://open-eo.github.io/openeo-python-client/auth.html</p>
+<p>Run the <code>authenticate_oidc()</code> method again in case you can no longer connect. The token expires after a certain time.</p>
+<div id="b0b816c7" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>backend_url <span class="op">=</span> <span class="st">"openeo.dataspace.copernicus.eu/"</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>eoconn <span class="op">=</span> openeo.<span class="ex">connect</span>(backend_url)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>eoconn.authenticate_oidc()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Authenticated using refresh token.</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<pre><code>&lt;Connection to 'https://openeo.dataspace.copernicus.eu/openeo/1.2/' with OidcBearerAuth&gt;</code></pre>
+</div>
+</div>
+<div id="bfba19b0" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>models_url <span class="op">=</span> <span class="st">"https://s3.waw3-1.cloudferro.com/swift/v1/ecdc-waw3-1-ekqouvq3otv8hmw0njzuvo0g4dy0ys8r985n7dggjis3erkpn5o/tests/JeroenW/DimReduction/onnx_reduction_models.zip"</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>dependencies_url <span class="op">=</span> (</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://s3.waw3-1.cloudferro.com/swift/v1/project_dependencies/onnx_deps_python311.zip"</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>job_options <span class="op">=</span> {</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'driver-memory'</span>: <span class="st">'2G'</span>,</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">'driver-memoryOverhead'</span>: <span class="st">'512m'</span>,</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">'executor-memory'</span>: <span class="st">'2G'</span>,</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">'executor-memoryOverhead'</span>: <span class="st">'512m'</span>,</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">'python-memory'</span>: <span class="st">'4G'</span>,</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">'max-executors'</span>: <span class="dv">20</span>,</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"executor-cores"</span>: <span class="dv">1</span>,</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"logging-threshold"</span>: <span class="st">"info"</span>,</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">'udf-dependency-archives'</span>: [</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"</span><span class="sc">{</span>models_url<span class="sc">}</span><span class="ss">#onnx_models"</span>,</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"</span><span class="sc">{</span>dependencies_url<span class="sc">}</span><span class="ss">#onnx_deps"</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>        ],</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="jobs-whithin-the-notebook" class="level2">
+<h2 class="anchored" data-anchor-id="jobs-whithin-the-notebook">Jobs whithin the notebook</h2>
+<p>This notebook will run two jobs: - One that select the significant raw bands from the dimensionality reduction model - One that executes the dimensionality reduction model</p>
+<p>One model is applied, from scikit-learn, PCA. It is pre-trained with the same data we use in this notebook, to reduce all bands to 3 components.</p>
+<p>It is recommended to zip your dependencies for scikit-learn, joblib &amp; onnx since they differ vastly over the versions.</p>
+<p>More info on scikit-learn PCA analysis: https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.PCA.html</p>
+</section>
+<section id="load-collection" class="level2">
+<h2 class="anchored" data-anchor-id="load-collection">Load collection</h2>
+<p>We start off by loading in a collection. In this case, we are loading in Sentinel-2 L2A. More information on the collections available can be displayed with <code>eoconn.list_collections()</code>. Use <code>eoconn.describe_collection("SENTINEL2_L2A")</code> for example to get the description of a specific collection.</p>
+<p>More information on finding and loading data: https://open-eo.github.io/openeo-python-client/data_access.html</p>
+<p><em>Select spatial &amp; temporal extent</em></p>
+<div id="51b00b88" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>BBOX <span class="op">=</span> {<span class="st">"east"</span>: <span class="dv">4878500</span>, <span class="st">"south"</span>: <span class="dv">2897000</span>, <span class="st">"west"</span>: <span class="dv">4877000</span>, <span class="st">"north"</span>: <span class="dv">2898500</span>, <span class="st">'crs'</span>: <span class="st">'EPSG:3035'</span>} <span class="co"># 1.5x1.5km bbox in Germany</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>DATE_START <span class="op">=</span> <span class="st">"2021-01-01"</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>DATE_END <span class="op">=</span> <span class="st">"2022-01-01"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><em>Select usable observations</em>:</p>
+<p>For this exercise we use the derivatives of the 13 Sentinel-2 bands + NDVI by applying a spatial reduction - mean - median - max - min - q5 - q25 - q75 - q95</p>
+<p>This leads to 112 (14x8) dimension to reduce in a dimensionality reduction model.</p>
+<p>NDVI is added to indicate that either the source bands, B04 and B08 OR the NDVI will be used to determine significant bands by PCA loadings. It indicates that adding duplicate information has no effect in Dimensionality Reduction.</p>
+<p>Load collection</p>
+<div id="cf0d8661" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>data_cube <span class="op">=</span> eoconn.load_collection(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"SENTINEL2_L2A"</span>,  <span class="co"># or your collection id</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    spatial_extent<span class="op">=</span>BBOX,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    temporal_extent<span class="op">=</span>[DATE_START, DATE_END],</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    bands<span class="op">=</span>[<span class="st">'B01'</span>,<span class="st">'B02'</span>,<span class="st">'B03'</span>,<span class="st">'B04'</span>,<span class="st">'B05'</span>,<span class="st">'B06'</span>,<span class="st">'B07'</span>,<span class="st">'B08'</span>,<span class="st">'B8A'</span>,<span class="st">'B09'</span>,<span class="st">'B11'</span>,<span class="st">'B12'</span>],</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    max_cloud_cover<span class="op">=</span><span class="dv">10</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Mask cloud data</p>
+<div id="4af2c01b" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>scl <span class="op">=</span> eoconn.load_collection(</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"SENTINEL2_L2A"</span>,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    temporal_extent<span class="op">=</span>[DATE_START, DATE_END],</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    spatial_extent<span class="op">=</span>BBOX,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    bands<span class="op">=</span>[<span class="st">"SCL"</span>],</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    max_cloud_cover<span class="op">=</span><span class="dv">10</span>,</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>cloud_mask <span class="op">=</span> scl.process(</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"to_scl_dilation_mask"</span>,</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    data<span class="op">=</span>scl,</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    kernel1_size<span class="op">=</span><span class="dv">17</span>, kernel2_size<span class="op">=</span><span class="dv">77</span>,</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    mask1_values<span class="op">=</span>[<span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">7</span>],</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    mask2_values<span class="op">=</span>[<span class="dv">3</span>, <span class="dv">8</span>, <span class="dv">9</span>, <span class="dv">10</span>, <span class="dv">11</span>],</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    erosion_kernel_size<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>data_cube_masked <span class="op">=</span> data_cube.mask(cloud_mask)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Calculate NDVI</p>
+<div id="d00c8a04" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>data_cube_masked <span class="op">=</span> data_cube_masked.ndvi(red<span class="op">=</span><span class="st">"B04"</span>, nir<span class="op">=</span><span class="st">"B08"</span>, target_band<span class="op">=</span><span class="st">'NDVI'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Temporally reduce data cube with different statistics</p>
+<div id="18391a77" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get original band labels</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>band_labels <span class="op">=</span> data_cube_masked.metadata.band_names</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Temporal reduce and prefix new band names</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> combined_reducer(t_array):</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co">    Combined EO processes to reduce temporal resolution of an array</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Define every eo process</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    mean <span class="op">=</span> eop.mean(t_array)</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    median <span class="op">=</span> eop.median(t_array)</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">min</span> <span class="op">=</span> eop.<span class="bu">min</span>(t_array)</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    <span class="bu">max</span> <span class="op">=</span> eop.<span class="bu">max</span>(t_array)</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>    q05 <span class="op">=</span> eop.quantiles(t_array, probabilities<span class="op">=</span>[<span class="fl">0.05</span>])</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>    q25 <span class="op">=</span> eop.quantiles(t_array, probabilities<span class="op">=</span>[<span class="fl">0.25</span>])</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>    q75 <span class="op">=</span> eop.quantiles(t_array, probabilities<span class="op">=</span>[<span class="fl">0.75</span>])</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>    q95 <span class="op">=</span> eop.quantiles(t_array, probabilities<span class="op">=</span>[<span class="fl">0.95</span>])</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Stack eo processes into array</span></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> eop.array_create([mean, median, <span class="bu">min</span>, <span class="bu">max</span>, q05, q25, q75, q95])</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Now rename bands accordingly:</span></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>target_bands <span class="op">=</span> []</span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> b <span class="kw">in</span> band_labels:</span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>    target_bands.extend([</span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"</span><span class="sc">{</span>b<span class="sc">}</span><span class="ss">_mean"</span>, <span class="ss">f"</span><span class="sc">{</span>b<span class="sc">}</span><span class="ss">_median"</span>, <span class="ss">f"</span><span class="sc">{</span>b<span class="sc">}</span><span class="ss">_min"</span>, <span class="ss">f"</span><span class="sc">{</span>b<span class="sc">}</span><span class="ss">_max"</span>,</span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"</span><span class="sc">{</span>b<span class="sc">}</span><span class="ss">_q05"</span>, <span class="ss">f"</span><span class="sc">{</span>b<span class="sc">}</span><span class="ss">_q25"</span>, <span class="ss">f"</span><span class="sc">{</span>b<span class="sc">}</span><span class="ss">_q75"</span>, <span class="ss">f"</span><span class="sc">{</span>b<span class="sc">}</span><span class="ss">_q95"</span></span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>    ])</span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Temporally reduce cube with combined reducer and rename bands accordingly</span></span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>sentinel_master_cube <span class="op">=</span> data_cube_masked.apply_dimension(</span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a>    process<span class="op">=</span>combined_reducer,</span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a>    dimension<span class="op">=</span><span class="st">"t"</span>,</span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a>    target_dimension<span class="op">=</span><span class="st">"bands"</span></span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a>).rename_labels(<span class="st">"bands"</span>, target<span class="op">=</span>target_bands)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Download to view offline</p>
+<div id="19d7914c" class="cell" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>job <span class="op">=</span> sentinel_master_cube.create_job(</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">"building_S2_cube"</span>, out_format<span class="op">=</span><span class="st">"NetCDF"</span>, job_options<span class="op">=</span>job_options)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>job.start_and_wait()</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>job.download_result(base_path <span class="op">/</span> <span class="st">"master_S2_cube.nc"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>0:00:00 Job 'j-2510311647084ee1834d19df4f1fbbb5': send 'start'
+0:00:15 Job 'j-2510311647084ee1834d19df4f1fbbb5': created (progress 0%)
+0:00:21 Job 'j-2510311647084ee1834d19df4f1fbbb5': created (progress 0%)
+0:00:28 Job 'j-2510311647084ee1834d19df4f1fbbb5': created (progress 0%)
+0:00:36 Job 'j-2510311647084ee1834d19df4f1fbbb5': created (progress 0%)
+0:00:46 Job 'j-2510311647084ee1834d19df4f1fbbb5': created (progress 0%)
+0:00:58 Job 'j-2510311647084ee1834d19df4f1fbbb5': created (progress 0%)
+0:01:14 Job 'j-2510311647084ee1834d19df4f1fbbb5': queued (progress 0%)
+0:01:33 Job 'j-2510311647084ee1834d19df4f1fbbb5': queued (progress 0%)
+0:01:57 Job 'j-2510311647084ee1834d19df4f1fbbb5': queued (progress 0%)
+0:02:27 Job 'j-2510311647084ee1834d19df4f1fbbb5': queued (progress 0%)
+0:03:05 Job 'j-2510311647084ee1834d19df4f1fbbb5': queued (progress 0%)
+0:03:52 Job 'j-2510311647084ee1834d19df4f1fbbb5': queued (progress 0%)
+0:04:50 Job 'j-2510311647084ee1834d19df4f1fbbb5': queued (progress 0%)
+0:05:50 Job 'j-2510311647084ee1834d19df4f1fbbb5': queued (progress 0%)
+0:06:50 Job 'j-2510311647084ee1834d19df4f1fbbb5': queued (progress 0%)
+0:07:50 Job 'j-2510311647084ee1834d19df4f1fbbb5': queued (progress 0%)
+0:08:51 Job 'j-2510311647084ee1834d19df4f1fbbb5': running (progress N/A)
+0:09:51 Job 'j-2510311647084ee1834d19df4f1fbbb5': running (progress N/A)
+0:10:51 Job 'j-2510311647084ee1834d19df4f1fbbb5': running (progress N/A)
+0:11:51 Job 'j-2510311647084ee1834d19df4f1fbbb5': running (progress N/A)
+0:12:52 Job 'j-2510311647084ee1834d19df4f1fbbb5': finished (progress 100%)</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="10">
+<pre><code>WindowsPath('results/master_S2_cube.nc')</code></pre>
+</div>
+</div>
+</section>
+<section id="visualise-rgb-to-get-a-view-of-the-area" class="level2">
+<h2 class="anchored" data-anchor-id="visualise-rgb-to-get-a-view-of-the-area">Visualise RGB to get a view of the area</h2>
+<p>Download RGB data from Sentinel-2 collection (mean value over spatial extent) to view</p>
+<div id="9eed3036" class="cell" data-execution_count="11">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>mean_bands <span class="op">=</span> [b <span class="cf">for</span> b <span class="kw">in</span> sentinel_master_cube.metadata.band_names <span class="cf">if</span> b.endswith(<span class="st">'_mean'</span>)]</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>sentinel_mean_cube <span class="op">=</span> sentinel_master_cube.filter_bands(mean_bands)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>sentinel_mean_cube.download(base_path <span class="op">/</span> <span class="st">"mean_bands_cube.tiff"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Visualize RGB data</p>
+<div id="d3a16811" class="cell" data-execution_count="12">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(base_path <span class="op">/</span> <span class="st">"mean_bands_cube.tiff"</span>) <span class="im">as</span> src:</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    pixel_size_x <span class="op">=</span> src.transform.a</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    pixel_size_y <span class="op">=</span> <span class="op">-</span>src.transform.e</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Pixel Size: </span><span class="sc">{</span>pixel_size_x<span class="sc">}</span><span class="ss"> x </span><span class="sc">{</span>pixel_size_y<span class="sc">}</span><span class="ss"> units"</span>)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> src.read(<span class="dv">4</span>)  <span class="co"># Band 3</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    g <span class="op">=</span> src.read(<span class="dv">3</span>)  <span class="co"># Band 2</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    b <span class="op">=</span> src.read(<span class="dv">2</span>)  <span class="co"># Band 1</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>rgb <span class="op">=</span> np.stack([r, g, b], axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>rgb_img <span class="op">=</span> np.transpose(rgb, (<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">0</span>))</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Normalize using percentiles</span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> normalize_percentile(img, lower<span class="op">=</span><span class="dv">2</span>, upper<span class="op">=</span><span class="dv">98</span>):</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>    p_low, p_high <span class="op">=</span> np.percentile(img, (lower, upper))</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>    img_clipped <span class="op">=</span> np.clip(img, p_low, p_high)</span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (img_clipped <span class="op">-</span> p_low) <span class="op">/</span> (p_high <span class="op">-</span> p_low)</span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>rgb_norm <span class="op">=</span> normalize_percentile(rgb_img)</span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">5</span>, <span class="dv">5</span>))</span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>plt.imshow(rgb_norm)</span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Sentinel-2 RGB Image"</span>)</span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">"off"</span>)</span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Pixel Size: 10.0 x 10.0 units</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Dimensionality Reduction_files/figure-html/cell-13-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="pca-model-execution" class="level2">
+<h2 class="anchored" data-anchor-id="pca-model-execution">PCA model execution</h2>
+<section id="exploration-of-the-data-and-the-model" class="level3">
+<h3 class="anchored" data-anchor-id="exploration-of-the-data-and-the-model">Exploration of the data and the model</h3>
+<p><em>PCA characteristics</em>: - <strong>Type</strong>: Linear - <strong>Objective</strong>: Find directions (principal components) that capture the <strong>maximum variance</strong> in the data. - <strong>Method</strong>: Eigen-decomposition of the covariance matrix. - <strong>Captures</strong>: <strong>Global structure</strong> in the data. - <strong>Output</strong>: Linear combinations of original features. - <strong>Interpretability</strong>: High (components are based on feature contributions). - <strong>Best for</strong>: Linearly structured data, noise reduction, feature compression, preprocessing for regression or classification.</p>
+<p>When performing <strong>PCA</strong>, one of the key outputs is the <strong>Explained Variance Ratio</strong>. This metric tells us how much of the total variance in the original data is captured by each principal component. In other words, it helps us understand:</p>
+<ul>
+<li><p>How many components are needed to retain most of the information (variance) in the data.</p></li>
+<li><p>Which components are most informative, allowing us to reduce dimensionality effectively without losing essential structure.</p></li>
+<li><p>Whether dimensionality reduction introduces significant information loss.</p></li>
+</ul>
+<p>This makes the explained variance ratio a crucial diagnostic tool in PCA-based workflows, especially when deciding how many components to retain for visualization or modeling. Below you can find some model visualizations.</p>
+<section id="explained-variance-ratio" class="level5">
+<h5 class="anchored" data-anchor-id="explained-variance-ratio">Explained Variance Ratio</h5>
+<p>This visualization helps understand how many principal components are needed to capture most of the variance in the data.<br>
+If the first few bars are tall and the rest are small, it means those components explain most of the variance, and dimensionality reduction can be effective.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="ExplainedVarianceRatio.png" class="img-fluid figure-img"></p>
+<figcaption>ExplainedVarianceRatio.png</figcaption>
+</figure>
+</div>
+</section>
+<section id="cumulative-explained-variance" class="level5">
+<h5 class="anchored" data-anchor-id="cumulative-explained-variance">Cumulative Explained Variance</h5>
+<p>This plot helps you decide how many principal components to keep in your analysis by showing the cumulative amount of variance explained.<br>
+For example, if the curve reaches 90% explained variance at the 4th component, you might choose to keep only the first 4 components for dimensionality reduction, but this is now already reached with 3 components.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="CumulativeExplainedVariance.png" class="img-fluid figure-img"></p>
+<figcaption>CumulativeExplainedVariance.png</figcaption>
+</figure>
+</div>
+</section>
+<section id="band-significance-curve" class="level5">
+<h5 class="anchored" data-anchor-id="band-significance-curve">Band Significance curve</h5>
+<p>This code helps identify which original spectral bands (features) are most influential in the PCA model by examining the loadings.<br>
+It filters out bands with insignificant contributions and visually ranks bands by their maximum contribution to any principal component.<br>
+This can guide to feature extraction, interpretation, or further analysis by focusing on the most important spectral bands.</p>
+<p>Only bands with a loading of at least 0.01 are shown. You can see here while NDVI doesn’t reach this threshold, that its soucres bands B04 &amp; B08 reach very high loadings.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="BandSignificanceCurve.png" class="img-fluid figure-img"></p>
+<figcaption>BandSignificanceCurve.png</figcaption>
+</figure>
+</div>
+</section>
+<section id="significant-band-loadings-heatmap" class="level5">
+<h5 class="anchored" data-anchor-id="significant-band-loadings-heatmap">Significant Band Loadings Heatmap</h5>
+<p>This heatmap visually summarizes which spectral bands contribute strongly to which principal components and whether the contribution is positive or negative.<br>
+By filtering for significant bands, the plot focuses on the most meaningful relationships (weight &gt; 0.20 for at least one of the components) in the PCA,<br>
+helping you interpret how each component is formed by combinations of original bands.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="AbsoluteSignificantBandLoadingsHeatmap.png" class="img-fluid figure-img"></p>
+<figcaption>AbsoluteSignificantBandLoadingsHeatmap.png</figcaption>
+</figure>
+</div>
+</section>
+</section>
+<section id="udf-execution" class="level3">
+<h3 class="anchored" data-anchor-id="udf-execution">UDF execution</h3>
+<section id="udf-select-significant-bands-by-pca-loadings" class="level4">
+<h4 class="anchored" data-anchor-id="udf-select-significant-bands-by-pca-loadings">UDF: select significant bands by pca loadings</h4>
+<p>Based on the previous curves we decide to only keep 18 bands (weight &gt; 0.20 on the heatmap). The underlying UDF selects those features based on our PCA model.<br>
+In case you want to keep bands based on the loading, you can also give a threshold betweeen 0 and 1 of how big the loading needs to be.</p>
+<p>e.g.<em>context={“threshold”: 0.20}</em></p>
+<div id="1fdf5246" class="cell" data-execution_count="13">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>siginificant_band_extraction_udf_obj <span class="op">=</span> openeo.UDF.from_file(<span class="st">"udf_select_significant_bands_by_pca_loadings.py"</span>,</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>                                   context<span class="op">=</span>{<span class="st">"top_k"</span>: <span class="dv">18</span>, <span class="st">"model_id"</span>: <span class="st">"dim_reduction_pca"</span>})</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>significant_bands_cube <span class="op">=</span> sentinel_master_cube.<span class="bu">apply</span>(</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    process<span class="op">=</span>siginificant_band_extraction_udf_obj,</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="327a09f7" class="cell" data-execution_count="14">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>extraction_job <span class="op">=</span> significant_bands_cube.create_job(</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">"significant_band_extraction_job"</span>, out_format<span class="op">=</span><span class="st">"NetCDF"</span>, job_options<span class="op">=</span>job_options</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>extraction_job.start_and_wait()</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>extraction_job.download_result(<span class="st">"results/significant_bands.nc"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>0:00:00 Job 'j-25103117010540ffb02e0fdc90b9eed0': send 'start'
+0:00:15 Job 'j-25103117010540ffb02e0fdc90b9eed0': queued (progress 0%)
+0:00:22 Job 'j-25103117010540ffb02e0fdc90b9eed0': queued (progress 0%)
+0:00:28 Job 'j-25103117010540ffb02e0fdc90b9eed0': queued (progress 0%)
+0:00:36 Job 'j-25103117010540ffb02e0fdc90b9eed0': queued (progress 0%)
+0:00:46 Job 'j-25103117010540ffb02e0fdc90b9eed0': queued (progress 0%)
+0:00:58 Job 'j-25103117010540ffb02e0fdc90b9eed0': queued (progress 0%)
+0:01:14 Job 'j-25103117010540ffb02e0fdc90b9eed0': running (progress N/A)
+0:01:33 Job 'j-25103117010540ffb02e0fdc90b9eed0': running (progress N/A)</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Failed to parse API error response: [503] 'no available server\n' (headers: {'Content-Type': 'text/plain; charset=utf-8', 'X-Content-Type-Options': 'nosniff', 'Date': 'Fri, 31 Oct 2025 17:03:03 GMT', 'Content-Length': '20'})</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>0:01:57 Job 'j-25103117010540ffb02e0fdc90b9eed0': Service availability error while polling job status: [503] no available server
+
+0:02:28 Job 'j-25103117010540ffb02e0fdc90b9eed0': running (progress N/A)
+0:03:00 Job 'j-25103117010540ffb02e0fdc90b9eed0': running (progress N/A)
+0:03:37 Job 'j-25103117010540ffb02e0fdc90b9eed0': running (progress N/A)
+0:04:24 Job 'j-25103117010540ffb02e0fdc90b9eed0': running (progress N/A)
+0:05:23 Job 'j-25103117010540ffb02e0fdc90b9eed0': finished (progress 100%)</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="14">
+<pre><code>WindowsPath('results/significant_bands.nc')</code></pre>
+</div>
+</div>
+<p>Check how many of the bands are reduced and left</p>
+<div id="b57395f3" class="cell" data-execution_count="15">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Open the NetCDF file</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>ds <span class="op">=</span> xr.open_dataset(<span class="st">"results/significant_bands.nc"</span>)</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract band variables, excluding 'crs'</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>bands <span class="op">=</span> [var <span class="cf">for</span> var <span class="kw">in</span> ds.data_vars <span class="cf">if</span> var <span class="op">!=</span> <span class="st">"crs"</span>]</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Print total count</span></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span><span class="bu">len</span>(bands)<span class="sc">}</span><span class="ss"> bands left:</span><span class="ch">\n</span><span class="ss">"</span>)</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Print bands in a numbered list</span></span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, band <span class="kw">in</span> <span class="bu">enumerate</span>(bands, start<span class="op">=</span><span class="dv">1</span>):</span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">. </span><span class="sc">{</span>band<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>18 bands left:
+
+1. B8A_max
+2. B07_max
+3. B08_max
+4. B8A_q95
+5. B07_q95
+6. B08_q95
+7. B09_max
+8. B8A_median
+9. B09_median
+10. B08_median
+11. B08_q75
+12. B09_q95
+13. B8A_q75
+14. B11_max
+15. B06_max
+16. B09_q75
+17. B11_q95
+18. B07_q75</code></pre>
+</div>
+</div>
+</section>
+<section id="udf-apply-pca-dimensionality-reduction" class="level4">
+<h4 class="anchored" data-anchor-id="udf-apply-pca-dimensionality-reduction">UDF: apply PCA dimensionality reduction</h4>
+<p>Apply the Dimensionality Reduction UDF with PCA within a neighbourhood of 512x512 pixels.</p>
+<div id="bd4078a1" class="cell" data-execution_count="16">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>pca_udf_obj <span class="op">=</span> openeo.UDF.from_file(<span class="st">"udf_apply_pca.py"</span>,</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>                                   context<span class="op">=</span>{<span class="st">"model_id"</span>: <span class="st">"dim_reduction_pca"</span>}</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>                                   )</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>components <span class="op">=</span> sentinel_master_cube.apply_neighborhood(</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>    process<span class="op">=</span>pca_udf_obj,</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>    size<span class="op">=</span>[</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"dimension"</span>: <span class="st">"x"</span>, <span class="st">"value"</span>: <span class="dv">384</span>, <span class="st">"unit"</span>: <span class="st">"px"</span>},</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"dimension"</span>: <span class="st">"y"</span>, <span class="st">"value"</span>: <span class="dv">384</span>, <span class="st">"unit"</span>: <span class="st">"px"</span>},</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>    overlap<span class="op">=</span>[</span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"dimension"</span>: <span class="st">"x"</span>, <span class="st">"value"</span>: <span class="dv">64</span>, <span class="st">"unit"</span>: <span class="st">"px"</span>},</span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"dimension"</span>: <span class="st">"y"</span>, <span class="st">"value"</span>: <span class="dv">64</span>, <span class="st">"unit"</span>: <span class="st">"px"</span>},</span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>pca_job <span class="op">=</span> components.create_job(</span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">"apply_pca_job"</span>, out_format<span class="op">=</span><span class="st">"NetCDF"</span>, job_options<span class="op">=</span>job_options</span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a>pca_job.start_and_wait()</span>
+<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a>pca_job.download_result(<span class="st">"results/results_pca.nc"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>0:00:00 Job 'j-251031170636400886673a0adda9fe16': send 'start'
+0:00:16 Job 'j-251031170636400886673a0adda9fe16': created (progress 0%)
+0:00:21 Job 'j-251031170636400886673a0adda9fe16': created (progress 0%)
+0:00:27 Job 'j-251031170636400886673a0adda9fe16': created (progress 0%)
+0:00:35 Job 'j-251031170636400886673a0adda9fe16': queued (progress 0%)
+0:00:45 Job 'j-251031170636400886673a0adda9fe16': queued (progress 0%)
+0:00:57 Job 'j-251031170636400886673a0adda9fe16': queued (progress 0%)
+0:01:13 Job 'j-251031170636400886673a0adda9fe16': queued (progress 0%)
+0:01:32 Job 'j-251031170636400886673a0adda9fe16': queued (progress 0%)
+0:01:56 Job 'j-251031170636400886673a0adda9fe16': queued (progress 0%)
+0:02:26 Job 'j-251031170636400886673a0adda9fe16': queued (progress 0%)
+0:03:04 Job 'j-251031170636400886673a0adda9fe16': queued (progress 0%)
+0:03:50 Job 'j-251031170636400886673a0adda9fe16': queued (progress 0%)
+0:04:53 Job 'j-251031170636400886673a0adda9fe16': queued (progress 0%)
+0:05:54 Job 'j-251031170636400886673a0adda9fe16': queued (progress 0%)
+0:06:54 Job 'j-251031170636400886673a0adda9fe16': queued (progress 0%)
+0:07:54 Job 'j-251031170636400886673a0adda9fe16': queued (progress 0%)
+0:08:55 Job 'j-251031170636400886673a0adda9fe16': queued (progress 0%)
+0:09:55 Job 'j-251031170636400886673a0adda9fe16': queued (progress 0%)
+0:10:55 Job 'j-251031170636400886673a0adda9fe16': queued (progress 0%)
+0:11:58 Job 'j-251031170636400886673a0adda9fe16': queued (progress 0%)
+0:13:01 Job 'j-251031170636400886673a0adda9fe16': queued (progress 0%)
+0:14:01 Job 'j-251031170636400886673a0adda9fe16': queued (progress 0%)
+0:15:02 Job 'j-251031170636400886673a0adda9fe16': queued (progress 0%)
+0:16:02 Job 'j-251031170636400886673a0adda9fe16': queued (progress 0%)
+0:17:02 Job 'j-251031170636400886673a0adda9fe16': queued (progress 0%)
+0:18:04 Job 'j-251031170636400886673a0adda9fe16': queued (progress 0%)
+0:19:04 Job 'j-251031170636400886673a0adda9fe16': queued (progress 0%)
+0:20:04 Job 'j-251031170636400886673a0adda9fe16': queued (progress 0%)
+0:21:07 Job 'j-251031170636400886673a0adda9fe16': queued (progress 0%)
+0:22:07 Job 'j-251031170636400886673a0adda9fe16': queued (progress 0%)
+0:23:11 Job 'j-251031170636400886673a0adda9fe16': queued (progress 0%)
+0:24:11 Job 'j-251031170636400886673a0adda9fe16': queued (progress 0%)
+0:25:11 Job 'j-251031170636400886673a0adda9fe16': queued (progress 0%)
+0:26:11 Job 'j-251031170636400886673a0adda9fe16': queued (progress 0%)
+0:27:11 Job 'j-251031170636400886673a0adda9fe16': queued (progress 0%)
+0:28:12 Job 'j-251031170636400886673a0adda9fe16': queued (progress 0%)
+0:29:12 Job 'j-251031170636400886673a0adda9fe16': queued (progress 0%)
+0:30:12 Job 'j-251031170636400886673a0adda9fe16': queued (progress 0%)
+0:31:12 Job 'j-251031170636400886673a0adda9fe16': running (progress N/A)
+0:32:18 Job 'j-251031170636400886673a0adda9fe16': running (progress N/A)
+0:33:18 Job 'j-251031170636400886673a0adda9fe16': running (progress N/A)
+0:34:18 Job 'j-251031170636400886673a0adda9fe16': running (progress N/A)
+0:35:18 Job 'j-251031170636400886673a0adda9fe16': finished (progress 100%)</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="16">
+<pre><code>WindowsPath('results/results_pca.nc')</code></pre>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="visualise-output" class="level2">
+<h2 class="anchored" data-anchor-id="visualise-output">Visualise Output</h2>
+<p>When performing dimensionality reduction on spatial data, the output components represent key underlying patterns or features extracted from the original dataset. Visualizing these components side-by-side helps reveal how different spatial structures contribute to the overall variability. By examining subtle variations in each component, we can better understand dominant spatial trends, detect anomalies, or identify meaningful features that may not be obvious in the raw data. Effective visualization with appropriate color scaling ensures these differences are clear and interpretable, aiding in model validation, feature extraction, and communication of results.</p>
+<p>These new bands with the most important information, are not only easier easier to visualize and analyze, imaging plotting 141 bands, they could also be used in Machine-learning models as input bands.</p>
+<div id="a395e73a" class="cell" data-execution_count="17">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>pca_job_data <span class="op">=</span> xr.open_dataset(base_path <span class="op">/</span> <span class="st">"results_pca.nc"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="577d5fd2" class="cell" data-execution_count="18">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> concat_features_to_bands_dim(ds: xr.DataArray):</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># List band variables</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>    band_vars <span class="op">=</span> [var <span class="cf">for</span> var <span class="kw">in</span> ds.data_vars <span class="cf">if</span> ds[var].dtype.kind <span class="kw">in</span> <span class="st">'fc'</span> <span class="kw">and</span> <span class="bu">set</span>(ds[var].dims) <span class="op">==</span> {<span class="st">'y'</span>, <span class="st">'x'</span>}]</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>    cube <span class="op">=</span> xr.concat([ds[var] <span class="cf">for</span> var <span class="kw">in</span> band_vars], dim<span class="op">=</span><span class="st">"bands"</span>)</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>    cube <span class="op">=</span> cube.assign_coords(bands<span class="op">=</span>band_vars)  <span class="co"># name the bands</span></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> cube.rename(<span class="st">'__xarray_dataarray_variable__'</span>)</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> plot_components(data_array: xr.DataArray, model_name: <span class="bu">str</span>):</span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>    fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">20</span>, <span class="dv">5</span>))</span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="bu">type</span>(data_array))</span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i, ax <span class="kw">in</span> <span class="bu">enumerate</span>(axes):</span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>        comp_data <span class="op">=</span> np.<span class="bu">abs</span>(data_array.isel(bands<span class="op">=</span>i))  <span class="co"># take absolute value here</span></span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Use percentiles to plot as vmin &amp; vmax to highlight differences</span></span>
+<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a>        vmin <span class="op">=</span> comp_data.quantile(<span class="fl">0.05</span>).item()</span>
+<span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a>        vmax <span class="op">=</span> comp_data.quantile(<span class="fl">0.95</span>).item()</span>
+<span id="cb31-19"><a href="#cb31-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-20"><a href="#cb31-20" aria-hidden="true" tabindex="-1"></a>        im <span class="op">=</span> ax.imshow(comp_data, vmin<span class="op">=</span>vmin, vmax<span class="op">=</span>vmax)</span>
+<span id="cb31-21"><a href="#cb31-21" aria-hidden="true" tabindex="-1"></a>        ax.set_title(<span class="ss">f'COMP</span><span class="sc">{</span>i<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb31-22"><a href="#cb31-22" aria-hidden="true" tabindex="-1"></a>        ax.axis(<span class="st">'off'</span>)</span>
+<span id="cb31-23"><a href="#cb31-23" aria-hidden="true" tabindex="-1"></a>        fig.colorbar(im, ax<span class="op">=</span>ax, fraction<span class="op">=</span><span class="fl">0.046</span>, pad<span class="op">=</span><span class="fl">0.04</span>)</span>
+<span id="cb31-24"><a href="#cb31-24" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb31-25"><a href="#cb31-25" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Add a general title</span></span>
+<span id="cb31-26"><a href="#cb31-26" aria-hidden="true" tabindex="-1"></a>    fig.suptitle(<span class="ss">f"</span><span class="sc">{</span>model_name<span class="sc">}</span><span class="ss"> Components"</span>, fontsize<span class="op">=</span><span class="dv">16</span>)</span>
+<span id="cb31-27"><a href="#cb31-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-28"><a href="#cb31-28" aria-hidden="true" tabindex="-1"></a>    plt.tight_layout()</span>
+<span id="cb31-29"><a href="#cb31-29" aria-hidden="true" tabindex="-1"></a>    plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="294b4453" class="cell" data-execution_count="19">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>pca_job_data_array<span class="op">=</span> concat_features_to_bands_dim(pca_job_data)</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>plot_components(pca_job_data_array, <span class="st">"PCA"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;class 'xarray.core.dataarray.DataArray'&gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Dimensionality Reduction_files/figure-html/cell-20-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
