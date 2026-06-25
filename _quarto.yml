@@ -6,6 +6,7 @@ website:
   navbar:
     background: "#1a2744"      # dark navy, exact match
     foreground: "#d0dce8"
+    href: index.qmd
     tools:
       - icon: envelope
         href: mailto:openeo.psc@uni-muenster.de
@@ -23,6 +24,8 @@ website:
         target: _blank
     right: 
       - sidebar:user_documentation
+      - sidebar:developers
+      - sidebar:support
     left:
       - text: "About"
         href: about.qmd
@@ -37,7 +40,6 @@ website:
         href: events/events.qmd
       - text: "PSC"
         href: psc.qmd
-      - sidebar:support
       
   search: true
   sidebar:
@@ -100,6 +102,18 @@ website:
                 text: Execute openEO Jobs
           - href: documentation\export_formats.qmd
             text: EXPORT FORMATS
+    - id: developers
+      title: "Developers"
+      collapse-level: 1
+      contents:
+          - href: "https://api.openeo.org/"
+            text: REST API Reference
+            target: "_blank"
+          - href: 404-not-found.qmd
+            text: Xarray/Dask Guide
+          - href: 404-not-found.qmd
+            text: Backend Development
+      
           
 format:
   html:

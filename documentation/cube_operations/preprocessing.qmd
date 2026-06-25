@@ -25,14 +25,19 @@ openEO exposes two flagship preprocessing workflows: **Atmospheric Correction** 
   <button class="tag-filter-badge active" data-tag="vito">VITO</button>
   <button class="tag-filter-badge inactive" data-tag="sentinelhub">Sentinel Hub</button>
   <button class="tag-filter-badge inactive" data-tag="eodc">EODC</button>
-  <button class="tag-filter-badge inactive" data-tag="orfeo">Orfeo Toolbox</button>
-  <button class="tag-filter-badge inactive" data-tag="card4l">CARD4L</button>
-  <button class="tag-filter-badge inactive" data-tag="experimental">Experimental</button>
+  <button class="tag-filter-badge inactive" data-tag="cdse">CDSE</button>
+  <button class="tag-filter-badge inactive" data-tag="federation">Federation</button>
+  <button class="tag-filter-badge inactive" data-tag="eurac">EURAC</button>
+  <button class="tag-filter-badge inactive" data-tag="gee">Google Earth Engine</button>
+  <button class="tag-filter-badge inactive" data-tag="openeo">openEO Platform</button>
+
+
+
 </div>
 ```
 
 
-::: {.tag-filter-item data-tags="sentinelhub eodc"}
+::: {.tag-filter-item data-tags="eodc cdse sentinelhub"}
 ## Atmospheric Correction
 
 When a satellite captures light reflected from the Earth's surface, that signal has passed through the atmosphere twice — once on the way down, once on the way back up. Scattering, absorption, and haze all distort what the sensor actually records. **Atmospheric correction** reverses those distortions, converting top-of-atmosphere (TOA) radiance into **surface reflectance** — the physical quantity that characterises what's actually on the ground, independent of sun angle, viewing geometry, and atmospheric state.
@@ -44,12 +49,12 @@ Without atmospheric correction, multi-temporal comparisons are unreliable: a pix
 
 ::: {.panel-tabset}
 
-#### 🐍 Python
+#### Python
 
 ```python
 import openeo
 
-connection = openeo.connect("https://openeo.vito.be").authenticate_oidc()
+connection = openeo.connect("https://openeo.eodc.eu").authenticate_oidc()
 
 # Load raw L1C Sentinel-2 — include angle bands required by iCor
 l1c = connection.load_collection(
@@ -73,12 +78,12 @@ l2a = l1c.atmospheric_correction(method="iCor")
 l2a.download("sentinel2_icor.tif", format="GTiff")
 ```
 
-#### 🇷 R
+#### R
 
 ```r
 library(openeo)
 
-con <- connect("https://openeo.vito.be")
+con <- connect("https://openeo.eodc.eu")
 login()
 
 p <- processes()
@@ -102,12 +107,12 @@ l2a <- p$atmospheric_correction(data = l1c, method = "iCor")
 compute_result(graph = l2a, format = "GTiff", output_file = "sentinel2_icor.tif")
 ```
 
-#### 🌐 JavaScript
+#### JavaScript
 
 ```javascript
 import { Connection, authenticate } from "@openeo/js-client";
 
-const con = await Connection.connect("https://openeo.vito.be");
+const con = await Connection.connect("https://openeo.eodc.eu");
 await con.authenticateOIDC();
 
 const builder = await con.buildProcess();
@@ -134,7 +139,7 @@ await con.computeResult(result, { filename: "sentinel2_icor.tif" });
 
 ---
 
-::: {.tag-filter-item data-tags="vito sentinelhub"}
+::: {.tag-filter-item data-tags="vito"}
 ## SAR Backscatter
 
 Synthetic Aperture Radar sensors like Sentinel-1 see through clouds and work day and night — but the raw data they produce (GRD, SLC) is not directly interpretable as a surface measurement. It must be **calibrated**, **terrain-corrected**, and **normalised** before it can be used analytically. This pipeline is collectively called **backscatter computation**.
@@ -144,7 +149,7 @@ The process converts the raw radar signal into a physically meaningful quantity 
 
 ::: {.panel-tabset}
 
-#### 🐍 Python
+#### Python
 
 ```python
 import openeo
@@ -186,7 +191,7 @@ job = backscatter.execute_batch(
 ```
 :::
 
-#### 🇷 R
+#### R
 
 ```r
 library(openeo)
@@ -227,7 +232,7 @@ job_status <- describe_job(job)
 download_results(job, folder = "./output/")
 ```
 
-#### 🌐 JavaScript
+#### JavaScript
 
 ```javascript
 import { Connection } from "@openeo/js-client";
@@ -269,6 +274,10 @@ for (const asset of Object.values(results.assets)) {
 ```
 
 :::
+
+:::
+
+::: {.tag-filter-item data-tags="CDSE"}
 
 :::
 

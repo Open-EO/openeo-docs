@@ -1,6 +1,7 @@
 ---
 title: "openEO Cookbook"
 toc: true
+jupyter: python3
 ---
 
 This is the openEO cookbook that you can refer to to get a first idea on how to solve problems with openEO in the three client languages Python, R and JavaScript. It describes how to implement simple use cases in a pragmatic way.
@@ -121,7 +122,7 @@ Once we are sure on the backend we want to use, we can connect to it using the o
 
 #### Python
 
-```python
+``` {python}
 import openeo
 connection = openeo.connect("https://openeofed.dataspace.copernicus.eu")
 ```
@@ -196,10 +197,13 @@ EO data in openEO are available as collections, which serve as the input for you
 
 #### Python
 
-```python
-# List all available collection IDs
-connection.list_collection_ids()
+```{python}
+#| echo: true
+connection.list_collections()
+```
 
+Similarly, you can get detailed metadata for a specific collection using the `describe_collection` method. For example, to get metadata for the Sentinel-2 Level 2A collection:
+```python
 # Get detailed metadata for a specific collection
 connection.describe_collection("SENTINEL2_L2A")
 ```
@@ -284,7 +288,7 @@ var builder = await con.buildProcess();
 
 #### Python
 
-```python
+```{python}
 # List all available processes with metadata
 connection.list_processes()
 ```
@@ -336,7 +340,7 @@ The openEO API supports a variety of output formats for saving the results of pr
 
 #### Python
 
-```python
+```{python}
 connection.list_file_formats()
 ```
 
@@ -457,8 +461,8 @@ Sentinel-2 L2A includes a Scene Classification Layer (SCL) band that can be used
 ```python
 scl = connection.load_collection(
     "SENTINEL2_L2A",
-    temporal_extent=date,
-    spatial_extent=aoi,
+    temporal_extent=temporal_extent,
+    spatial_extent=bbox,
     bands=["SCL"],
     max_cloud_cover=85,
 )
@@ -619,66 +623,52 @@ let stopFn = job.monitorJob(async (job, logs) => {
 
 :::
 
----
+::: {.no-scrollable}
+::: {.callout-tip collapse="true"}
+# Visualise the RGB composite
 
-### 2.5 Download quicklook
+```{python}
+#| echo: false
 
-To create a PNG output, we need to scale the satellite data we have down to the 8bit range of a PNG image. For this, the scale range of our imagery has to be known. 
+import rasterio
+import numpy as np
+import matplotlib.pyplot as plt
 
+with rasterio.open("output/cookbook_rgb.tiff") as src:
+    rgb = src.read([1, 2, 3]).astype(np.float32)
 
-::: {.panel-tabset}
+rgb = np.transpose(rgb, (1, 2, 0))
 
-#### Python
+valid = np.any(rgb > 0, axis=2)
 
-```python
-# Scale pixel values to 8-bit range for PNG output
-from openeo.processes import linear_scale_range
+rgb_stretched = np.zeros_like(rgb)
 
-s2_png = s2_composite.apply(
-    lambda x: linear_scale_range(x, 0, 2500, 0, 255)
-)
-s2_png.download("s2-rgb-quicklook.png")
+for i in range(3):
+    band = rgb[:, :, i]
+
+    p2 = np.percentile(band[valid], 2)
+    p98 = np.percentile(band[valid], 98)
+
+    rgb_stretched[:, :, i] = np.clip(
+        (band - p2) / (p98 - p2),
+        0,
+        1
+    )
+
+# Set NoData pixels to white
+rgb_stretched[~valid] = [1, 1, 1]
+
+plt.figure(figsize=(10, 10))
+plt.imshow(rgb_stretched)
+plt.axis("off")
+plt.show()
+
 ```
-
-#### R
-
-```r
-rescaled <- p$apply(
-  data = s2_composite,
-  process = function(data, context) {
-    p$linear_scale_range(x = data, inputMin = 0, inputMax = 2500, outputMin = 0, outputMax = 255)
-  }
-)
-
-result_png <- p$save_result(
-  data = rescaled,
-  format = formats$output$PNG,
-  options = list(red = "B04", green = "B03", blue = "B02")
-)
-
-job <- create_job(graph = result_png, title = "S2 RGB Quicklook PNG")
-start_job(job = job)
-```
-
-#### JavaScript
-
-```js
-const { Formula } = require('@openeo/js-client');
-
-var s2_scaled = builder.apply(s2_composite, new Formula("linear_scale_range(x, 0, 2500, 0, 255)"));
-
-var result_png = builder.save_result(s2_scaled, "PNG", {
-    red: "B04",
-    green: "B03",
-    blue: "B02"
-});
-
-await con.downloadResult(result_png, "s2-rgb-quicklook.png");
-```
-
+:::
 :::
 
 ---
+
 
 
 ## 3. Calculate NDVI time series

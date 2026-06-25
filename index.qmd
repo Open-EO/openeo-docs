@@ -27,7 +27,7 @@ listing:
     <h1>Open- Standard<br>for <em>Earth Observation Analysis</em></h1>
     <p><b>The openEO API</b> allows users to connect to Earth observation cloud back-ends in a simple and unified way.</p>
     <div class="hero-actions">
-      <a href="#get-started-section" class="btn-primary">Get Started →</a>
+      <a href="documentation/cookbook.qmd" class="btn-primary">Get Started →</a>
     </div>
   </div>
 </section>
@@ -157,7 +157,7 @@ For a list of services built on top of openEO, please visit the [openEO Hub](htt
       <p>Process and analyze large volumes of Earth observation data efficiently using openEO's scalable infrastructure.</p>
       <div class="card-arrow">→ Scalability</div>
     </a>
-    <a href="#" class="card">
+    <a href="client_examples/openeo-community-examples/python/RandomForest-ForestFire/RandomForestModelTraining.ipynb" class="card">
       <div class="card-icon">🗺️</div>
       <h3>Using Random Forest</h3>
       <p>Apply machine learning algorithms like Random Forest to classify and analyze Earth observation data.</p>
