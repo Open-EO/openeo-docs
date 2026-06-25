@@ -551,3 +551,20 @@ body.fullcontent .footer-bottom {
 .tag-filter-badge.active:hover {
   background-color: #d0e8f0;
 }
+
+.cell-output {
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  padding: 0.5rem;
+  font-size: 0.85em;
+}
+
+/* Override for specific chunks */
+.no-scrollable .cell-output {
+  max-height: none;
+  overflow-y: visible;
+  border: none;
+  padding: 0;
+}

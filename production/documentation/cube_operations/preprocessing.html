@@ -239,25 +239,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="nav-link" href="../../psc.html"> 
 <span class="menu-text">PSC</span></a>
   </li>  
-  <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-support" role="link" data-bs-toggle="dropdown" aria-expanded="false">
- <span class="menu-text">Support</span>
-    </a>
-    <ul class="dropdown-menu" aria-labelledby="nav-menu-support">    
-        <li>
-    <a class="dropdown-item" href="../../contact.html">
- <span class="dropdown-text">Contact</span></a>
-  </li>  
-        <li>
-    <a class="dropdown-item" href="https://forum.dataspace.copernicus.eu/c/openeo/28">
- <span class="dropdown-text">CDSE Forum</span></a>
-  </li>  
-        <li>
-    <a class="dropdown-item" href="../../Examples.qmd">
- <span class="dropdown-text">Notebook examples</span></a>
-  </li>  
-    </ul>
-  </li>
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item dropdown ">
@@ -276,11 +257,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="dropdown-text">Backends</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../../documentation_api.qmd">
+    <a class="dropdown-item" href="../../documentation/keyconcepts/openeo_api.qmd">
  <span class="dropdown-text">Datacube</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../../documentation.qmd">
+    <a class="dropdown-item" href="../../documentation/keyconcepts/processes.qmd">
  <span class="dropdown-text">Processes</span></a>
   </li>  
         <li><hr class="dropdown-divider"></li>
@@ -343,6 +324,44 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
     </ul>
   </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-developers" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Developers</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-developers">    
+        <li>
+    <a class="dropdown-item" href="https://api.openeo.org/">
+ <span class="dropdown-text">REST API Reference</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../404-not-found.html">
+ <span class="dropdown-text">Xarray/Dask Guide</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../404-not-found.html">
+ <span class="dropdown-text">Backend Development</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-support" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Support</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-support">    
+        <li>
+    <a class="dropdown-item" href="../../contact.html">
+ <span class="dropdown-text">Contact</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://forum.dataspace.copernicus.eu/c/openeo/28">
+ <span class="dropdown-text">CDSE Forum</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Examples.qmd">
+ <span class="dropdown-text">Notebook examples</span></a>
+  </li>  
+    </ul>
+  </li>
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools tools-wide">
@@ -394,13 +413,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../documentation\keyconcepts\openeo_api.qmd" class="sidebar-item-text sidebar-link">
+  <a href="../../documentation/keyconcepts/openeo_api.qmd" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Datacube</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../documentation\keyconcepts\processes.qmd" class="sidebar-item-text sidebar-link">
+  <a href="../../documentation/keyconcepts/processes.qmd" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Processes</span></a>
   </div>
 </li>
@@ -560,23 +579,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <button class="tag-filter-badge active" data-tag="vito">VITO</button>
   <button class="tag-filter-badge inactive" data-tag="sentinelhub">Sentinel Hub</button>
   <button class="tag-filter-badge inactive" data-tag="eodc">EODC</button>
-  <button class="tag-filter-badge inactive" data-tag="orfeo">Orfeo Toolbox</button>
-  <button class="tag-filter-badge inactive" data-tag="card4l">CARD4L</button>
-  <button class="tag-filter-badge inactive" data-tag="experimental">Experimental</button>
+  <button class="tag-filter-badge inactive" data-tag="cdse">CDSE</button>
+  <button class="tag-filter-badge inactive" data-tag="federation">Federation</button>
+  <button class="tag-filter-badge inactive" data-tag="eurac">EURAC</button>
+  <button class="tag-filter-badge inactive" data-tag="gee">Google Earth Engine</button>
+  <button class="tag-filter-badge inactive" data-tag="openeo">openEO Platform</button>
+
+
+
 </div>
-<section id="atmospheric-correction" class="level2 tag-filter-item" data-tags="sentinelhub eodc">
+<section id="atmospheric-correction" class="level2 tag-filter-item" data-tags="eodc cdse sentinelhub">
 <h2 class="anchored" data-anchor-id="atmospheric-correction">Atmospheric Correction</h2>
 <p>When a satellite captures light reflected from the Earth’s surface, that signal has passed through the atmosphere twice — once on the way down, once on the way back up. Scattering, absorption, and haze all distort what the sensor actually records. <strong>Atmospheric correction</strong> reverses those distortions, converting top-of-atmosphere (TOA) radiance into <strong>surface reflectance</strong> — the physical quantity that characterises what’s actually on the ground, independent of sun angle, viewing geometry, and atmospheric state.</p>
 <p>Without atmospheric correction, multi-temporal comparisons are unreliable: a pixel that looks “brighter” in July might just be reflecting a clearer sky, not a healthier crop. Corrected data makes time series meaningful.</p>
 <section id="code-examples" class="level3">
 <h3 class="anchored" data-anchor-id="code-examples">Code examples</h3>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">🐍 Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">🇷 R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">🌐 JavaScript</a></li></ul>
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">JavaScript</a></li></ul>
 <div class="tab-content">
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> openeo</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>connection <span class="op">=</span> openeo.<span class="ex">connect</span>(<span class="st">"https://openeo.vito.be"</span>).authenticate_oidc()</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>connection <span class="op">=</span> openeo.<span class="ex">connect</span>(<span class="st">"https://openeo.eodc.eu"</span>).authenticate_oidc()</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Load raw L1C Sentinel-2 — include angle bands required by iCor</span></span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>l1c <span class="op">=</span> connection.load_collection(</span>
@@ -602,7 +626,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(openeo)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>con <span class="ot">&lt;-</span> <span class="fu">connect</span>(<span class="st">"https://openeo.vito.be"</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>con <span class="ot">&lt;-</span> <span class="fu">connect</span>(<span class="st">"https://openeo.eodc.eu"</span>)</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">login</span>()</span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">processes</span>()</span>
@@ -628,7 +652,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { Connection<span class="op">,</span> authenticate } <span class="im">from</span> <span class="st">"@openeo/js-client"</span><span class="op">;</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> con <span class="op">=</span> <span class="cf">await</span> Connection<span class="op">.</span><span class="fu">connect</span>(<span class="st">"https://openeo.vito.be"</span>)<span class="op">;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> con <span class="op">=</span> <span class="cf">await</span> Connection<span class="op">.</span><span class="fu">connect</span>(<span class="st">"https://openeo.eodc.eu"</span>)<span class="op">;</span></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> con<span class="op">.</span><span class="fu">authenticateOIDC</span>()<span class="op">;</span></span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> builder <span class="op">=</span> <span class="cf">await</span> con<span class="op">.</span><span class="fu">buildProcess</span>()<span class="op">;</span></span>
@@ -653,12 +677,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 </section>
 <hr>
-<section id="sar-backscatter" class="level2 tag-filter-item" data-tags="vito sentinelhub">
+<section id="sar-backscatter" class="level2 tag-filter-item" data-tags="vito">
 <h2 class="anchored" data-anchor-id="sar-backscatter">SAR Backscatter</h2>
 <p>Synthetic Aperture Radar sensors like Sentinel-1 see through clouds and work day and night — but the raw data they produce (GRD, SLC) is not directly interpretable as a surface measurement. It must be <strong>calibrated</strong>, <strong>terrain-corrected</strong>, and <strong>normalised</strong> before it can be used analytically. This pipeline is collectively called <strong>backscatter computation</strong>.</p>
 <p>The process converts the raw radar signal into a physically meaningful quantity — typically <strong>sigma0</strong> (surface scattering cross-section) or <strong>gamma0</strong> (terrain-flattened reflectivity) — in either linear or decibel scale. Terrain flattening is essential for hilly regions: without it, slopes facing the sensor appear artificially brighter than flat terrain, corrupting any analysis based on backscatter magnitude. ### Code examples</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">🐍 Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">🇷 R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false" href="">🌐 JavaScript</a></li></ul>
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false" href="">JavaScript</a></li></ul>
 <div class="tab-content">
 <div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> openeo</span>
@@ -786,6 +810,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
+<div class="tag-filter-item" data-tags="CDSE">
+
+</div>
 <hr>
 <section id="performance-considerations" class="level2">
 <h2 class="anchored" data-anchor-id="performance-considerations">Performance considerations</h2>
