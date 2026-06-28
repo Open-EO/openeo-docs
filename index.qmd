@@ -127,31 +127,31 @@ For a list of services built on top of openEO, please visit the [openEO Hub](htt
   <h2 class="section-title">Are you interested in...</h2>
   <p class="section-sub">openEO can be used to process and analyze Earth observation data from diverse sources in a unified and efficient manner.</p>
   <div class="cards-grid">
-    <a href="docs_light.html" class="card">
+    <a href="documentation/cookbook.html#load-sentinel2-rgb-composite" class="card">
       <div class="card-icon">📖</div>
       <h3>Downloading RGB image</h3>
       <p>Learn how to download and visualize RGB images from Earth observation data.</p>
       <div class="card-arrow">→ docs_light.html</div>
     </a>
-        <a href="software.qmd" class="card">
+        <a href="documentation/cookbook.html#evi-calculation" class="card">
       <div class="card-icon">🔧</div>
       <h3>Performing Band Math</h3>
       <p>Perform mathematical operations on different spectral bands to derive new insights from Earth observation data.</p>
       <div class="card-arrow">→ evi calculation</div>
     </a>
-    <a href="python_light.html" class="card">
+    <a href="documentation/cookbook.html#cookbook-udfs" class="card">
       <div class="card-icon">🐍</div>
       <h3>Bringing your own functions</h3>
       <p>Define and use your own functions to process Earth observation data within openEO workflows.</p>
       <div class="card-arrow">→ User-Defined-Function</div>
     </a>
-    <a href="#" class="card">
+    <a href="client_examples/openeo-community-examples/python/RandomForest-ForestFire/RandomForestModelInference_AsUDP.ipynb" class="card">
       <div class="card-icon">📊</div>
       <h3>Share EO workflow as Service</h3>
       <p>Deploy and manage your Earth observation workflows as a service, enabling automated processing and analysis.</p>
       <div class="card-arrow">→ User-defined-process</div>
     </a>
-    <a href="#" class="card">
+    <a href="client_examples/openeo-community-examples/python/ManagingMultipleLargeScaleJobs/ManagingMultipleLargeScaleJobs.ipynb" class="card">
       <div class="card-icon">⚡</div>
       <h3>Large-scale Processing</h3>
       <p>Process and analyze large volumes of Earth observation data efficiently using openEO's scalable infrastructure.</p>

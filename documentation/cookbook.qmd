@@ -362,7 +362,7 @@ console.log(formats);
 
 ---
 
-## 2. Load Sentinel-2 RGB composite
+## 2. Load Sentinel-2 RGB composite {#load-sentinel2-rgb-composite}
 
 In this chapter, we download a GeoTIFF and a quicklook RGB image from Sentinel-2 data for the region of Antwerp, Belgium. We load the data from the openEO federation backend, apply cloud masking, reduce the time dimension to a single image, and save the results.
 
@@ -949,7 +949,7 @@ var datacube = builder.load_collection(
 
 :::
 
-### 4.2 Compute EVI
+### 4.2 Compute EVI {#evi-calculation}
 
 ::: {.panel-tabset}
 
@@ -1111,7 +1111,7 @@ await con.downloadResult(result, "evi-composite.tiff");
 
 ---
 
-## 5. User-Defined Functions (UDFs)
+## 5. User-Defined Functions (UDFs) {#cookbook-udfs}
 
 If your use case cannot be accomplished with the default openEO processes, you can define a **User-Defined Function (UDF)**. UDFs are Python or R scripts that run on the backend as part of your processing graph.
 
