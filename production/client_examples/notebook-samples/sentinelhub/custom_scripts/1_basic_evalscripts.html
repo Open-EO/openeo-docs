@@ -1,0 +1,1664 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Basic Evalscripts – openEO</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../../">
+<script src="../../../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../../site_libs/bootstrap/bootstrap-e199741f1aac39f7a8ac46de762c37ac.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css?family=Roboto+Mono|Source+Sans+Pro:300,400,600" rel="stylesheet">
+<meta name="zd-site-verification" content="xj9koofr1crilmoclgxsjd">
+
+<script type="text/javascript">
+
+
+    function setActiveClassForCurrentUrl() {
+        // Find all links in the navbarCollapse div where the href attribute is set to the current URL
+        let anchorTag = document.querySelector('#navbarCollapse a[href="' + window.location.href + '"]');
+
+        if (anchorTag) {
+
+            // Find the closest parent of the navigation
+            let parentUl = anchorTag.closest('li.nav-item')?.querySelector('a.nav-link');
+
+            if (parentUl) {
+                // Add active class to both the anchor tag and the parent ul
+                anchorTag.classList.add('active');
+                parentUl.classList.add('active');
+            }
+        }
+    }
+
+    window.addEventListener('popstate', setActiveClassForCurrentUrl);
+    window.addEventListener('hashchange', setActiveClassForCurrentUrl);
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const badges = Array.from(document.querySelectorAll(".tag-filter-badge"));
+        const items = Array.from(document.querySelectorAll(".tag-filter-item"));
+        if (badges.length === 0 || items.length === 0) return;
+
+        const getTags = (item) => {
+            const fromDataAttr = (item.getAttribute("data-tags") || "")
+            .toLowerCase()
+            .split(/\s+/)
+            .filter(Boolean);
+
+            if (fromDataAttr.length > 0) {
+            return new Set(fromDataAttr);
+            }
+
+            const fromBadges = Array.from(item.querySelectorAll(".badge"))
+            .flatMap((el) => Array.from(el.classList))
+            .filter((cls) => cls.startsWith("badge-"))
+            .map((cls) => cls.replace("badge-", "").toLowerCase());
+
+            return new Set(fromBadges);
+        };
+
+        const applyFilter = () => {
+            const activeBadges = badges.filter((b) => b.classList.contains("active"));
+            const selectedTags = new Set(activeBadges.map((b) => b.getAttribute("data-tag")));
+
+            items.forEach((item) => {
+            const tags = getTags(item);
+            const visible = Array.from(selectedTags).some((tag) => tags.has(tag));
+            item.hidden = !visible;
+            });
+        };
+
+        badges.forEach((badge) => {
+            badge.addEventListener("click", function (e) {
+            e.preventDefault();
+            this.classList.toggle("active");
+            this.classList.toggle("inactive");
+            applyFilter();
+            });
+        });
+
+        applyFilter();
+        });
+
+
+
+    window.onload = () => {
+        const elems = document.getElementsByClassName('navbar-title');
+        if (elems.length > 0) {
+            const title = elems[0];
+            title.parentElement.href = '/index.html'
+        }
+        setActiveClassForCurrentUrl();
+    }
+
+ 
+</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../../../custom.css">
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../../../index.html">
+    <span class="navbar-title">openEO</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../../../about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://hub.openeo.org/" target="_blank"> 
+<span class="menu-text">Services</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../../news/news.html"> 
+<span class="menu-text">News</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../../meetings.html"> 
+<span class="menu-text">Meetings</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../../events/events.html"> 
+<span class="menu-text">Events</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../../psc.html"> 
+<span class="menu-text">PSC</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-user-documentation" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">User Documentation</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-user-documentation">    
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/cookbook.html">
+ <span class="dropdown-text">COOKBOOK</span></a>
+  </li>  
+        <li><hr class="dropdown-divider"></li>
+        <li class="dropdown-header">KEY CONCEPTS</li>
+        <li>
+    <a class="dropdown-item" href="../../../../404-not-found.html">
+ <span class="dropdown-text">Backends</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/keyconcepts/openeo_api.qmd">
+ <span class="dropdown-text">Datacube</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/keyconcepts/processes.qmd">
+ <span class="dropdown-text">Processes</span></a>
+  </li>  
+        <li><hr class="dropdown-divider"></li>
+        <li class="dropdown-header">SETUP</li>
+        <li><hr class="dropdown-divider"></li>
+        <li class="dropdown-header">DATA DISCOVERY</li>
+        <li>
+    <a class="dropdown-item" href="../../../../404-not-found.html">
+ <span class="dropdown-text">Collections</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../404-not-found.html">
+ <span class="dropdown-text">Load Collections</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../404-not-found.html">
+ <span class="dropdown-text">Load STAC metadata</span></a>
+  </li>  
+        <li><hr class="dropdown-divider"></li>
+        <li class="dropdown-header">CUBE OPERATIONS</li>
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/cube_operations/preprocessing.html">
+ <span class="dropdown-text">Preprocessing</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/cube_operations/spatial_operations.html">
+ <span class="dropdown-text">Spatial Operations</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/cube_operations/temporal_operations.html">
+ <span class="dropdown-text">Temporal Operations</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/cube_operations/spectral_operations.html">
+ <span class="dropdown-text">Spectral Operations</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/cube_operations/cube_manipulations.html">
+ <span class="dropdown-text">Cube Manipulations</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/cube_operations/udf.html">
+ <span class="dropdown-text">User Defined Functions</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/cube_operations/machine_learning.html">
+ <span class="dropdown-text">Machine Learning</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/cube_operations/udp.html">
+ <span class="dropdown-text">User Defined Processes</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/cube_operations/execute_jobs.html">
+ <span class="dropdown-text">Execute openEO Jobs</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/export_formats.html">
+ <span class="dropdown-text">EXPORT FORMATS</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-developers" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Developers</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-developers">    
+        <li>
+    <a class="dropdown-item" href="https://api.openeo.org/">
+ <span class="dropdown-text">REST API Reference</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../404-not-found.html">
+ <span class="dropdown-text">Xarray/Dask Guide</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../404-not-found.html">
+ <span class="dropdown-text">Backend Development</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-support" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Support</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-support">    
+        <li>
+    <a class="dropdown-item" href="../../../../contact.html">
+ <span class="dropdown-text">Contact</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://forum.dataspace.copernicus.eu/c/openeo/28">
+ <span class="dropdown-text">CDSE Forum</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../Examples.qmd">
+ <span class="dropdown-text">Notebook examples</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools tools-wide">
+    <a href="mailto:openeo.psc@uni-muenster.de" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-envelope"></i></a>
+    <a href="https://www.linkedin.com/company/openeospec/" title="" class="quarto-navigation-tool px-1" aria-label="" target="_blank"><i class="bi bi-linkedin"></i></a>
+    <a href="https://bsky.app/profile/openeo.org" title="" class="quarto-navigation-tool px-1" aria-label="" target="_blank"><i class="bi bi-bluesky"></i></a>
+    <a href="https://github.com/Open-EO" title="" class="quarto-navigation-tool px-1" aria-label="" target="_blank"><i class="bi bi-github"></i></a>
+    <a href="https://www.youtube.com/channel/UCMJQil8j9sHBQkcSlSaEsvQ" title="" class="quarto-navigation-tool px-1" aria-label="" target="_blank"><i class="bi bi-youtube"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#table-of-contents" id="toc-table-of-contents" class="nav-link active" data-scroll-target="#table-of-contents">Table of Contents</a></li>
+  <li><a href="#prerequisites" id="toc-prerequisites" class="nav-link" data-scroll-target="#prerequisites">Prerequisites</a></li>
+  <li><a href="#introduction-to-evalscripts" id="toc-introduction-to-evalscripts" class="nav-link" data-scroll-target="#introduction-to-evalscripts">Introduction to Evalscripts</a></li>
+  <li><a href="#when-to-use-evalscripts" id="toc-when-to-use-evalscripts" class="nav-link" data-scroll-target="#when-to-use-evalscripts">When to use evalscripts</a></li>
+  <li><a href="#when-not-to-use-evalscripts" id="toc-when-not-to-use-evalscripts" class="nav-link" data-scroll-target="#when-not-to-use-evalscripts">When not to use evalscripts</a></li>
+  <li><a href="#structure-of-an-evalscript" id="toc-structure-of-an-evalscript" class="nav-link" data-scroll-target="#structure-of-an-evalscript">Structure of an evalscript</a></li>
+  <li><a href="#learning-objectives" id="toc-learning-objectives" class="nav-link" data-scroll-target="#learning-objectives">Learning Objectives</a></li>
+  <li><a href="#sample-type" id="toc-sample-type" class="nav-link" data-scroll-target="#sample-type">Sample Type</a>
+  <ul class="collapse">
+  <li><a href="#exercise-returning-raw-values" id="toc-exercise-returning-raw-values" class="nav-link" data-scroll-target="#exercise-returning-raw-values">Exercise: Returning raw values</a></li>
+  </ul></li>
+  <li><a href="#computation-in-evalscripts" id="toc-computation-in-evalscripts" class="nav-link" data-scroll-target="#computation-in-evalscripts">Computation in evalscripts</a></li>
+  <li><a href="#streaming-results-with-evalscripts" id="toc-streaming-results-with-evalscripts" class="nav-link" data-scroll-target="#streaming-results-with-evalscripts">Streaming results with evalscripts</a>
+  <ul class="collapse">
+  <li><a href="#visualizing" id="toc-visualizing" class="nav-link" data-scroll-target="#visualizing">Visualizing</a></li>
+  <li><a href="#exercise" id="toc-exercise" class="nav-link" data-scroll-target="#exercise">Exercise</a></li>
+  </ul></li>
+  <li><a href="#dealing-with-clouds-and-missing-data" id="toc-dealing-with-clouds-and-missing-data" class="nav-link" data-scroll-target="#dealing-with-clouds-and-missing-data">Dealing with clouds and missing data</a>
+  <ul class="collapse">
+  <li><a href="#visualizing-clouds-with-scl" id="toc-visualizing-clouds-with-scl" class="nav-link" data-scroll-target="#visualizing-clouds-with-scl">Visualizing clouds with SCL</a>
+  <ul class="collapse">
+  <li><a href="#hiding-clouds-with-an-alpha-channel-rgba" id="toc-hiding-clouds-with-an-alpha-channel-rgba" class="nav-link" data-scroll-target="#hiding-clouds-with-an-alpha-channel-rgba">Hiding clouds with an alpha channel (RGBA)</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a>
+  <ul class="collapse">
+  <li><a href="#further-reading" id="toc-further-reading" class="nav-link" data-scroll-target="#further-reading">Further reading</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content column-page-left" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Basic Evalscripts</h1>
+</div>
+
+
+
+<div class="quarto-title-meta column-page-left">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>This notebook will give you an interactive overview of how to use evalscripts. It should give you all the tools to make your own evalscripts.</p>
+<section id="table-of-contents" class="level2">
+<h2 class="anchored" data-anchor-id="table-of-contents">Table of Contents</h2>
+<ol type="1">
+<li><a href="#prerequisites">Prerequisites</a></li>
+<li><a href="#introduction-to-evalscripts">Introduction to Evalscripts</a></li>
+<li><a href="#structure-of-an-evalscript">Structure of an Evalscript</a></li>
+<li><a href="#sample-types-and-visualization">Sample Types and Visualization</a></li>
+<li><a href="#exercises">Exercises</a></li>
+<li><a href="#common-evalscript-issues">Common Issues</a></li>
+<li><a href="#computation-in-evalscripts">Computing Indices (NDVI, NDWI)</a></li>
+<li><a href="#dealing-with-clouds-and-missing-data">Dealing with Clouds and Missing Data</a></li>
+<li><a href="#summary">Summary and Further Reading</a></li>
+</ol>
+</section>
+<section id="prerequisites" class="level2">
+<h2 class="anchored" data-anchor-id="prerequisites">Prerequisites</h2>
+<p>To go through this notebook you will need some prior knowledge.</p>
+<ul>
+<li><a href="https://business.esa.int/newcomers-earth-observation-guide">Basic Knowledge of Remote Sensing</a>
+<ul>
+<li>Sensors</li>
+<li>Spectral Bands</li>
+<li>Indices</li>
+</ul></li>
+<li><a href="https://www.sentinel-hub.com/explore/education/webinars/">Basic Familiarity with Sentinel Hub</a>
+<ul>
+<li>Collections</li>
+<li>Processing API</li>
+<li>Statistical API</li>
+</ul></li>
+<li>Basic knowledge of programming concepts
+<ul>
+<li><a href="https://www.w3schools.com/js/js_functions.asp">functions</a></li>
+<li><a href="https://www.w3schools.com/js/js_variables.asp">variables</a></li>
+<li><a href="https://www.w3schools.com/js/js_arrays.asp">arrays</a></li>
+<li><a href="https://www.w3schools.com/js/js_objects.asp">objects</a></li>
+</ul></li>
+</ul>
+<p>If you are aware of the basics of all of these topics you are well equipped to tackle this notebook. First let’s dive in to some basics about evalscripts.</p>
+</section>
+<section id="introduction-to-evalscripts" class="level2">
+<h2 class="anchored" data-anchor-id="introduction-to-evalscripts">Introduction to Evalscripts</h2>
+<p>An <strong>evalscript (also called a custom script)</strong> is JavaScript that defines how satellite data should be processed by Sentinel Hub and what values the service should return. It is part of every Process/Batch/OGC request.</p>
+<p>If you think about a multispectral collection, it contains several spectral bands such as <code>blue</code>, <code>green</code>, <code>red</code> and <code>nir</code>. There are many ways this data can be displayed or returned: for example, you could return the raw values of a single band, generate a true-color image, or calculate an index like NDVI and return that. Together with the request body of a Processing API request, the evalscript is the key component that defines exactly what should be returned.</p>
+</section>
+<section id="when-to-use-evalscripts" class="level2">
+<h2 class="anchored" data-anchor-id="when-to-use-evalscripts">When to use evalscripts</h2>
+<p>Evalscripts make computations on your data in the cloud possible. This makes data handling much more efficient since only the data you truly need will be returned to you. Evalscripts are often used to:</p>
+<ul>
+<li>Visualize a band or composite with specific colormaps</li>
+<li>Perform complex band calculations</li>
+<li>Combine multiple data sources into new insights</li>
+<li>Create cloud free composites</li>
+<li>Carry out multi-temporal analysis</li>
+</ul>
+</section>
+<section id="when-not-to-use-evalscripts" class="level2">
+<h2 class="anchored" data-anchor-id="when-not-to-use-evalscripts">When not to use evalscripts</h2>
+<p>There’s not many things that evalscripts can’t do, since they support the full javascript language. However due to how evalscripts are structured it is only possible to do calculations on a per pixel basis. So if you need to return data which takes the neighboring pixels into account like calculating the Slope of a DEM, this unfortunately is not possible using an evalscript.</p>
+<p>You also can’t train machine learning models directly in an evalscript. However you can bring some Machine Learning models to an evalscript and predict values directly in the evalscript. <a href="https://custom-scripts.sentinel-hub.com/custom-scripts/sentinel-2/bare_soil_detector/">See here for an example</a>.</p>
+</section>
+<section id="structure-of-an-evalscript" class="level2">
+<h2 class="anchored" data-anchor-id="structure-of-an-evalscript">Structure of an evalscript</h2>
+<p>The most basic structure of an evalscript is made up of two functions <code>setup()</code> and <code>evaluatePixel()</code>. Let’s see how those two functions look like:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">setup</span>() {</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>   <span class="cf">return</span> {</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>       <span class="dt">input</span><span class="op">:</span> [<span class="st">"B04"</span><span class="op">,</span> <span class="st">"B03"</span><span class="op">,</span> <span class="st">"B02"</span>]<span class="op">,</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>       <span class="dt">output</span><span class="op">:</span> {<span class="dt">bands</span><span class="op">:</span> <span class="dv">3</span>}</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>   }<span class="op">;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">evaluatePixel</span>(samples) {</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>   <span class="cf">return</span> [samples<span class="op">.</span><span class="at">B04</span><span class="op">,</span> samples<span class="op">.</span><span class="at">B03</span><span class="op">,</span> samples<span class="op">.</span><span class="at">B02</span>]</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The setup function takes care of supplying some of the necessary metadata on what kind of data will be requested and returned. Here we can see that it specifies which spectral bands should be requested. These are the bands you need in the <code>evaluatePixel</code> function to carry out your computation. In the setup function it is also specified how many bands will be returned by the <code>evaluatePixel</code> function. The setup function is implicitly called before any calcuations are taking place.</p>
+<p>The <code>evaluatePixel</code> function will get values passed into it. The first parameter of the function holds the actual values of the data in the raw data store that you are requesting. In this case it is a <a href="https://www.w3schools.com/js/js_objects.asp">javascript object</a> which has the requested bands as keys and the corresponding data as values. It is important to note that <code>samples</code> will only ever hold the values for a single Pixel. So the <code>evaluatePixel</code> function has to be specified in such a way that it works for every pixel which will be requested. In this example the samples object could look like this:</p>
+<pre><code>{"B04": 9864, "B03": 9536, "B02": 9472}</code></pre>
+<p>Here, we return red, green, and blue for a true-color visualization. Let’s try this evalscript out and see what it returns:</p>
+<div id="cell-2" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sentinelhub <span class="im">import</span> (</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    CRS,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    DataCollection,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    Geometry,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    MimeType,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    SentinelHubRequest,</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    SHConfig,</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>config <span class="op">=</span> SHConfig()</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>config.sh_client_id <span class="op">=</span> <span class="st">"&lt;your_client_id&gt;"</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>config.sh_client_secret <span class="op">=</span> <span class="st">"&lt;your_client_secret&gt;"</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>config.sh_base_url <span class="op">=</span> <span class="st">"https://sh.dataspace.copernicus.eu"</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>config.sh_token_url <span class="op">=</span> <span class="st">"https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="learning-objectives" class="level2">
+<h2 class="anchored" data-anchor-id="learning-objectives">Learning Objectives</h2>
+<p>By the end of this notebook, you will be able to:</p>
+<p>✅ <strong>Understand evalscript structure</strong> - Know the key components of <code>setup()</code> and <code>evaluatePixel()</code> functions<br>
+✅ <strong>Work with sample types</strong> - Choose appropriate sample types (AUTO, UINT8, UINT16, FLOAT32) for different use cases<br>
+✅ <strong>Handle band data</strong> - Request and process spectral bands correctly<br>
+✅ <strong>Calculate indices</strong> - Compute vegetation (NDVI) and water (NDWI) indices<br>
+✅ <strong>Visualize data</strong> - Create both analytical outputs and visual representations<br>
+✅ <strong>Handle clouds and missing data</strong> - Use SCL and dataMask for data quality control<br>
+✅ <strong>Debug evalscripts</strong> - Identify and fix common evalscript errors</p>
+<p>Let’s start by setting up our environment:</p>
+<p>Since we will be doing quite a few requests where only the evalscript is different we will define a small helper function that takes in an evalscript as a parameter and returns the output of the request:</p>
+<div id="cell-5" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> request_helper(evalscript, date<span class="op">=</span><span class="st">"2024-04-26"</span>):</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Helper function to make requests with evalscripts.</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">        evalscript (str): JavaScript evalscript code</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">        date (str): Date for the request in YYYY-MM-DD format</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns:</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co">        list: Response data from Sentinel Hub</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> evalscript.strip():</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Evalscript cannot be empty. Please provide a valid JavaScript evalscript."</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    aoi <span class="op">=</span> Geometry(</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>        {</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>            <span class="st">"type"</span>: <span class="st">"Polygon"</span>,</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>            <span class="st">"coordinates"</span>: [</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>                [</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>                    [<span class="op">-</span><span class="fl">52.307067</span>, <span class="op">-</span><span class="fl">27.262221</span>],</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>                    [<span class="op">-</span><span class="fl">52.307067</span>, <span class="op">-</span><span class="fl">27.238987</span>],</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>                    [<span class="op">-</span><span class="fl">52.280803</span>, <span class="op">-</span><span class="fl">27.238987</span>],</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>                    [<span class="op">-</span><span class="fl">52.280803</span>, <span class="op">-</span><span class="fl">27.262221</span>],</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>                    [<span class="op">-</span><span class="fl">52.307067</span>, <span class="op">-</span><span class="fl">27.262221</span>],</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>                ]</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>            ],</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>        },</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>        CRS.WGS84,</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>    request <span class="op">=</span> SentinelHubRequest(</span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>        evalscript<span class="op">=</span>evalscript,</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>        input_data<span class="op">=</span>[</span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>            SentinelHubRequest.input_data(</span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>                data_collection<span class="op">=</span>DataCollection.SENTINEL2_L2A.define_from(</span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>                    name<span class="op">=</span><span class="st">"s2l2a"</span>, service_url<span class="op">=</span><span class="st">"https://sh.dataspace.copernicus.eu"</span></span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>                ),</span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>                time_interval<span class="op">=</span>(date, date),</span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>        ],</span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>        responses<span class="op">=</span>[SentinelHubRequest.output_response(<span class="st">"default"</span>, MimeType.TIFF)],</span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>        geometry<span class="op">=</span>aoi,</span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>        size<span class="op">=</span>[<span class="dv">1000</span>, <span class="dv">1000</span>],</span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>        config<span class="op">=</span>config,</span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> request.get_data()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Now we can request data with our evalscript:</p>
+<div id="cell-7" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>true_color_evalscript <span class="op">=</span> <span class="st">"""</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="st">//VERSION=3</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="st">function setup() {</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="st">    return {</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="st">        input: ["B04", "B03", "B02"],</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="st">        output: </span><span class="sc">{bands: 3}</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="st">    };</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="st">function evaluatePixel(samples) {</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="st">    return [samples.B04, samples.B03, samples.B02]</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>tc_output <span class="op">=</span> request_helper(true_color_evalscript)</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>plt.imshow(tc_output[<span class="dv">0</span>])<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="1_basic_evalscripts_files/figure-html/cell-4-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The image looks dark because Sentinel-2 stores reflectance values on a 0–10 000 scale, which is much lower than the 0–255 range used for display.</p>
+<div id="cell-9" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Min value: "</span>, np.<span class="bu">min</span>(tc_output[<span class="dv">0</span>]), <span class="st">"</span><span class="ch">\n</span><span class="st">Max value: "</span>, np.<span class="bu">max</span>(tc_output[<span class="dv">0</span>]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Min value:  1 
+Max value:  124</code></pre>
+</div>
+</div>
+<p>This is a very common gotcha when using evalscripts. It has to do with the default values which are set in the <code>setup</code> function. So to clarify what just happened here let’s have a look at the default value for <code>sampleType</code>:</p>
+</section>
+<section id="sample-type" class="level2">
+<h2 class="anchored" data-anchor-id="sample-type">Sample Type</h2>
+<p>Aside from the number of returned bands, the setup function also specifies which sample type the returned values should have. The variable <code>sampleType</code> is defined under output:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">setup</span>() {</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> {</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">input</span><span class="op">:</span> [<span class="st">"B04"</span><span class="op">,</span> <span class="st">"B03"</span><span class="op">,</span> <span class="st">"B02"</span>]<span class="op">,</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">output</span><span class="op">:</span> {</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>      <span class="dt">bands</span><span class="op">:</span> <span class="dv">3</span><span class="op">,</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>      <span class="dt">sampleType</span><span class="op">:</span> <span class="st">"AUTO"</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  }<span class="op">;</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The requested sample type can be the standard types, like INT8, INT16 or FLOAT32. But the default value is <code>AUTO</code>. This custom sample type stretches reflectances (float numbers between 0-1) to UINT8 numbers (0-255) which are necessary to build images like PNGs and JPEGs. If you would like an introduction to sample types and more detail, have a look at <a href="https://medium.com/sentinel-hub/sampletype-whats-all-the-fuss-about-d7348b4de647">this</a> blog post.</p>
+<p>The <code>AUTO</code> sample type is useful when your data are already in reflectance values (0–1) and you just want to visualize them, for example via a WMS service. Sentinel-2 L2A, however, is delivered as digital numbers (DN). With <code>AUTO</code>, any value above 1 is capped at the display maximum (255), which can result in dark or flat images.</p>
+<p>To fix this while using <code>AUTO</code> as sample type, we can scale the values to bring them into a better range for visualization:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">evaluatePixel</span>(samples) {</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>   <span class="kw">let</span> scale <span class="op">=</span> <span class="fl">2.5</span><span class="op">;</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>   <span class="cf">return</span> [samples<span class="op">.</span><span class="at">B04</span><span class="op">*</span>scale<span class="op">,</span> samples<span class="op">.</span><span class="at">B03</span><span class="op">*</span>scale<span class="op">,</span> samples<span class="op">.</span><span class="at">B02</span><span class="op">*</span>scale]</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>So let’s try what this looks like:</p>
+<div id="cell-11" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>scaled_evalscript <span class="op">=</span> <span class="st">"""</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="st">//VERSION=3</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="st">function setup() {</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="st">   return {</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="st">       input: ["B04", "B03", "B02"],</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="st">       output: {</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="st">          bands: 3,</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="st">          sampleType: "AUTO"</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="st">       }</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="st">   };</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="st">function evaluatePixel(samples) {</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="st">   let scale = 2.5;</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="st">   return [samples.B04*scale, samples.B03*scale, samples.B02*scale]</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>scaled_output <span class="op">=</span> request_helper(scaled_evalscript)</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>plt.imshow(scaled_output[<span class="dv">0</span>])<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="1_basic_evalscripts_files/figure-html/cell-6-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Much better! We can now actually see some details, however the whole image is still quite dark. To fix that we can apply a gain to brighten up the image. A <code>gain</code> is usually applied by multiplying the values by some factor. In our case, since the reflectance is already in the 0–1 range, multiplying by a <code>gain</code> greater than 1 increases brightness without manual scaling. Try different values for the <code>gain</code> variable in the next cell and observe how the image changes.</p>
+<div id="cell-13" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>gain_evalscript <span class="op">=</span> <span class="st">"""</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="st">//VERSION=3</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="st">function setup() {</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="st">   return {</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="st">       input: ["B04", "B03", "B02"],</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="st">       output: {</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="st">          bands: 3,</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="st">          sampleType: "AUTO"</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="st">       }</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="st">   };</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="st">function evaluatePixel(samples) {</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="st">   let gain = 3;</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="st">   let scale = 2.5*gain;</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a><span class="st">   return [samples.B04*scale, samples.B03*scale, samples.B02*scale]</span></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>gain_output <span class="op">=</span> request_helper(gain_evalscript)</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>plt.imshow(gain_output[<span class="dv">0</span>])<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="1_basic_evalscripts_files/figure-html/cell-7-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="exercise-returning-raw-values" class="level3">
+<h3 class="anchored" data-anchor-id="exercise-returning-raw-values">Exercise: Returning raw values</h3>
+<p>Now you get to write an evalscript yourself. Rather than visualizing the data as RGB values in the 0–255 display range, let’s return the raw digital numbers (DN) for the three bands. Sentinel‑2 L2A stores reflectance as DN = 10,000 × reflectance, typically in a <code>UINT16</code> format. In your evalscript, make sure to specify appropriate units: “DN” and <code>sampleType</code>, such as <code>UINT16</code>, so you receive the raw values.</p>
+<p>If you are stuck you can also have a look at the solution below.</p>
+<section id="excursion-common-evalscript-issues" class="level4">
+<h4 class="anchored" data-anchor-id="excursion-common-evalscript-issues">Excursion: Common evalscript issues</h4>
+<p>Since in these exercises you might run into issues, here’s a list of common issues to check:</p>
+<table>
+<thead>
+<tr>
+<th style="width:15%">
+To check
+</th>
+<th style="width:15%">
+Symptoms
+</th>
+<th>
+Problem
+</th>
+<th>
+Fix
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Do you return an array in the <code>evaluatePixel</code> function?
+</td>
+<td>
+<ul>
+<li>Failure to evaluate the script</li>
+<li>Can in some cases be a cryptic error</li>
+</ul>
+</td>
+<td>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">evaluatePixel</span>(samples) {</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> samples<span class="op">.</span><span class="at">B04</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</td>
+<td>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">evaluatePixel</span>(samples) {</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> [samples<span class="op">.</span><span class="at">B04</span>]</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</td>
+</tr>
+<tr>
+<td>
+Are all bands which you use in <code>evaluatePixel</code> also requested in the input of the setup function?
+</td>
+<td>
+<ul>
+<li>All black output</li>
+<li>Colors are completely off</li>
+<li>Result of calculated index is all NaN</li>
+</ul>
+</td>
+<td>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">setup</span>() {</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>   <span class="cf">return</span> {</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>       <span class="dt">input</span><span class="op">:</span> [<span class="st">"B04"</span><span class="op">,</span> <span class="st">"B03"</span>]<span class="op">,</span> <span class="co">// Issue!</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>       <span class="dt">output</span><span class="op">:</span> {<span class="dt">bands</span><span class="op">:</span> <span class="dv">3</span>}</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>   }<span class="op">;</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">evaluatePixel</span>(samples) {</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>   <span class="cf">return</span> [samples<span class="op">.</span><span class="at">B04</span><span class="op">,</span> samples<span class="op">.</span><span class="at">B03</span><span class="op">,</span> samples<span class="op">.</span><span class="at">B02</span>]</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</td>
+<td>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">setup</span>() {</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>   <span class="cf">return</span> {</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>       <span class="dt">input</span><span class="op">:</span> [<span class="st">"B04"</span><span class="op">,</span> <span class="st">"B03"</span><span class="op">,</span> <span class="st">"B02"</span>]<span class="op">,</span> <span class="co">// Add all bands</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>       <span class="dt">output</span><span class="op">:</span> {<span class="dt">bands</span><span class="op">:</span> <span class="dv">3</span>}</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>   }<span class="op">;</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">evaluatePixel</span>(samples) {</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>   <span class="cf">return</span> [samples<span class="op">.</span><span class="at">B04</span><span class="op">,</span> samples<span class="op">.</span><span class="at">B03</span><span class="op">,</span> samples<span class="op">.</span><span class="at">B02</span>]</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</td>
+</tr>
+<tr>
+<td>
+Does the length of the array returned in <code>evaluatePixel</code> match the number of bands specified in the output of the setup function?
+</td>
+<td>
+<ul>
+<li>Image is grayscale instead of in color</li>
+<li>Returned tiff does not have all the bands it should have</li>
+</ul>
+</td>
+<td>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">setup</span>() {</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>   <span class="cf">return</span> {</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>       <span class="dt">input</span><span class="op">:</span> [<span class="st">"B04"</span><span class="op">,</span> <span class="st">"B03"</span><span class="op">,</span> <span class="st">"B02"</span>]<span class="op">,</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>       <span class="dt">output</span><span class="op">:</span> {<span class="dt">bands</span><span class="op">:</span> <span class="dv">1</span>} <span class="co">// Issue!</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>   }<span class="op">;</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">evaluatePixel</span>(samples) {</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>   <span class="cf">return</span> [samples<span class="op">.</span><span class="at">B04</span><span class="op">,</span> samples<span class="op">.</span><span class="at">B03</span><span class="op">,</span> samples<span class="op">.</span><span class="at">B02</span>]</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</td>
+<td>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">setup</span>() {</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>   <span class="cf">return</span> {</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>       <span class="dt">input</span><span class="op">:</span> [<span class="st">"B04"</span><span class="op">,</span> <span class="st">"B03"</span><span class="op">,</span> <span class="st">"B02"</span>]<span class="op">,</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>       <span class="co">// Config number of output bands</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>       <span class="dt">output</span><span class="op">:</span> {<span class="dt">bands</span><span class="op">:</span> <span class="dv">3</span>} </span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>   }<span class="op">;</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">evaluatePixel</span>(samples) {</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>   <span class="cf">return</span> [samples<span class="op">.</span><span class="at">B04</span><span class="op">,</span> samples<span class="op">.</span><span class="at">B03</span><span class="op">,</span> samples<span class="op">.</span><span class="at">B02</span>]</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</td>
+</tr>
+<tr>
+<td>
+Does the <code>sampleType</code> fit the data you are returning?
+</td>
+<td>
+<ul>
+<li>Image is all white (255) or all black (0)</li>
+<li>Values are not scaled how you expect them to be</li>
+</ul>
+</td>
+<td>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">setup</span>() {</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>   <span class="cf">return</span> {</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>       <span class="dt">input</span><span class="op">:</span> [<span class="st">"B04"</span><span class="op">,</span> <span class="st">"B08"</span>]<span class="op">,</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>       <span class="co">// Issue, no sampleType specified!</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>       <span class="dt">output</span><span class="op">:</span> {<span class="dt">bands</span><span class="op">:</span> <span class="dv">1</span>} </span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>   }<span class="op">;</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">evaluatePixel</span>(samples) {</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>   <span class="cf">return</span> [<span class="fu">index</span>(samples<span class="op">.</span><span class="at">B08</span><span class="op">,</span> sample<span class="op">.</span><span class="at">B04</span>)]</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</td>
+<td>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">setup</span>() {</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>   <span class="cf">return</span> {</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>       <span class="dt">input</span><span class="op">:</span> [<span class="st">"B04"</span><span class="op">,</span> <span class="st">"B08"</span>]<span class="op">,</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>       <span class="dt">output</span><span class="op">:</span> {</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>         <span class="dt">bands</span><span class="op">:</span> <span class="dv">1</span><span class="op">,</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>         <span class="co">// Correct sampleType for index (-1,1)</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>         <span class="dt">sampleType</span><span class="op">:</span> <span class="st">"FLOAT32"</span> </span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>      } </span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>   }<span class="op">;</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">evaluatePixel</span>(samples) {</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>   <span class="cf">return</span> [<span class="fu">index</span>(samples<span class="op">.</span><span class="at">B08</span><span class="op">,</span> sample<span class="op">.</span><span class="at">B04</span>)]</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</td>
+</tr>
+</tbody>
+</table>
+<p>You can also return values during the processing by using <code>throw new Error()</code>. For example</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">evaluatePixel</span>(samples) {</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>   <span class="cf">throw</span> <span class="kw">new</span> <span class="bu">Error</span>(<span class="bu">JSON</span><span class="op">.</span><span class="fu">stringify</span>(samples))</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>will return the passed in samples in the error statement of the request.</p>
+<div id="cell-15" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>raw_evalscript <span class="op">=</span> <span class="st">"""</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>raw_output <span class="op">=</span> request_helper(raw_evalscript)</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Max:"</span>, raw_output[<span class="dv">0</span>].<span class="bu">max</span>())</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Min:"</span>, raw_output[<span class="dv">0</span>].<span class="bu">min</span>())</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Simple scaled visualization for quick check</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>plt.imshow((raw_output[<span class="dv">0</span>] <span class="op">/</span> <span class="dv">3000</span>).clip(<span class="dv">0</span>, <span class="dv">1</span>))</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">"off"</span>)<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Max: 4852
+Min: 31</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="1_basic_evalscripts_files/figure-html/cell-8-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<details>
+<summary>
+See solution
+</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co">//VERSION=3</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">setup</span>() {</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> {</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">input</span><span class="op">:</span> [{</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>      <span class="dt">bands</span><span class="op">:</span> [<span class="st">"B04"</span><span class="op">,</span> <span class="st">"B03"</span><span class="op">,</span> <span class="st">"B02"</span>]<span class="op">,</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>      <span class="dt">units</span><span class="op">:</span> <span class="st">"DN"</span>          <span class="co">// ask for digital numbers</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>    }]<span class="op">,</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">output</span><span class="op">:</span> { <span class="dt">bands</span><span class="op">:</span> <span class="dv">3</span><span class="op">,</span> <span class="dt">sampleType</span><span class="op">:</span> <span class="st">"UINT16"</span> }</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>  }<span class="op">;</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">evaluatePixel</span>(samples) {</span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> [samples<span class="op">.</span><span class="at">B04</span><span class="op">,</span> samples<span class="op">.</span><span class="at">B03</span><span class="op">,</span> samples<span class="op">.</span><span class="at">B02</span>]<span class="op">;</span></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</section>
+</section>
+</section>
+<section id="computation-in-evalscripts" class="level2">
+<h2 class="anchored" data-anchor-id="computation-in-evalscripts">Computation in evalscripts</h2>
+<p>We’ve already done some light computations in earlier evalscripts, such as applying scale factors and gain. Another very common calculation in remote sensing is computing an index like the Normalized Difference Vegetation Index (NDVI). Here’s how you can do it in an evalscript.</p>
+<p>The first step is to request all the necessary bands. In our case this is B08 (NIR) and B04 (Red). We also need to update our output dictionary, the number of bands has to be one and the sample type FLOAT32, since raw NDVI data is saved as a floating point number. The set up should then look like this:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">setup</span>() {</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>   <span class="cf">return</span> {</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>       <span class="dt">input</span><span class="op">:</span> [<span class="st">"B04"</span><span class="op">,</span> <span class="st">"B08"</span>]<span class="op">,</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>       <span class="dt">output</span><span class="op">:</span> {</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>          <span class="dt">bands</span><span class="op">:</span> <span class="dv">1</span><span class="op">,</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>          <span class="dt">sampleType</span><span class="op">:</span> <span class="st">"FLOAT32"</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>       }</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>   }<span class="op">;</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Now in the <code>evaluatePixel</code> function we need to calculate the NDVI and return it. For this we have two options. The first one is to write down the formula ourselves:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> ndvi <span class="op">=</span> (samples<span class="op">.</span><span class="at">B08</span> <span class="op">-</span> samples<span class="op">.</span><span class="at">B04</span>) <span class="op">/</span> (samples<span class="op">.</span><span class="at">B08</span> <span class="op">+</span> samples<span class="op">.</span><span class="at">B04</span>)<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The other option is to use the helper function available called <code>index()</code>. This has two advantages, it makes the code a bit simpler and also takes care of the edge case, where the NIR and red values equal 0 in the dividend, which might lead to errors.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> ndvi <span class="op">=</span> <span class="fu">index</span>(samples<span class="op">.</span><span class="at">B08</span><span class="op">,</span> samples<span class="op">.</span><span class="at">B04</span>)<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Let’s try it:</p>
+<div id="cell-18" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>ndvi_raw_evalscript <span class="op">=</span> <span class="st">"""</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="st">//VERSION=3</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="st">function setup() {</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="st">   return {</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="st">       input: ["B04", "B08"],</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="st">       output: {</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a><span class="st">          bands: 1,</span></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a><span class="st">          sampleType: "FLOAT32"</span></span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a><span class="st">       }</span></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a><span class="st">   };</span></span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a><span class="st">function evaluatePixel(samples) {</span></span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a><span class="st">   const ndvi = index(samples.B08, samples.B04);</span></span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a><span class="st">   return [ndvi]</span></span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span></span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a>ndvi_raw <span class="op">=</span> request_helper(ndvi_raw_evalscript)</span>
+<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a>plt.imshow(ndvi_raw[<span class="dv">0</span>], cmap<span class="op">=</span><span class="st">"Greens"</span>)<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="1_basic_evalscripts_files/figure-html/cell-9-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This gives us a nice output of raw NDVI values.</p>
+<p>However what we have also seen in the previous section, is that there are often two use cases which require a bit of a different approach in the evalscript. There is the need for requesting analytical data, so getting the raw values. Another very frequent use cases is the need to visualize results on the fly using WMS services or similar.</p>
+</section>
+<section id="streaming-results-with-evalscripts" class="level2">
+<h2 class="anchored" data-anchor-id="streaming-results-with-evalscripts">Streaming results with evalscripts</h2>
+<p>To stream data, Sentinel Hub offers WMS/WMTS services. WMS and WMTS can only return pictures of data, but not the raw data itself. This means, that most often the output type is PNG or JPG with 3 bands corresponding to RGB. The RGB bands have to be in UINT8 (from 0-255).</p>
+<p>In our case we return only one band (NDVI) that can not be interpreted as an RGB color as is. It also isn’t in UINT8 but FLOAT32 and it doesn’t range from 0-255, but from -1 to 1.</p>
+<p>Because of this, if we want to visualize our NDVI using WMS services, we need to color encode our raw single band data.</p>
+<section id="visualizing" class="level3">
+<h3 class="anchored" data-anchor-id="visualizing">Visualizing</h3>
+<p>This can easily be done with the helper functions <code>ColorRampVisualizer</code> and <code>ColorMapVisualizer</code>. Both use a color map, which maps raw values to RGB colors. The Ramp Visualizer interpolates between those colors, basically creating a continuous gradient between the defined colors. This is used for continuous variables, like our NDVI. The color map visualizer does not do any interpolation and is used mainly for discrete values, like classifications.</p>
+<p>So in our case, let’s visualize NDVI going from purple at -1, over white at 0, to green at +1:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> colorMap <span class="op">=</span> [</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  [<span class="op">-</span><span class="dv">1</span><span class="op">,</span> <span class="bn">0x8e0152</span>]<span class="op">,</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">0</span><span class="op">,</span> <span class="bn">0xffffff</span>]<span class="op">,</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">1</span><span class="op">,</span> <span class="bn">0x276419</span>]<span class="op">,</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>]<span class="op">;</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> visualizer <span class="op">=</span> <span class="kw">new</span> <span class="fu">ColorRampVisualizer</span>(colorMap)<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>We can then use this visualizer to visualize our raw values:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>visualizer<span class="op">.</span><span class="fu">process</span>(ndvi)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This will return 3 values between 0-1 which can be stretched to UINT8 RGB values using the <code>AUTO</code> sampleType. Also notice that in the setup function we have to change the number of output bands from 1 to 3. Let’s test it:</p>
+<div id="cell-20" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>ndvi_visualized_evalscript <span class="op">=</span> <span class="st">"""</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="st">//VERSION=3</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="st">function setup() {</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="st">   return {</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="st">       input: ["B04", "B08"],</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="st">       output: {</span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="st">          bands: 3,</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a><span class="st">          sampleType: "AUTO"</span></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a><span class="st">       }</span></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a><span class="st">   };</span></span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a><span class="st">const ramp = [</span></span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a><span class="st">  [-1, 0x8e0152],</span></span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a><span class="st">  [0, 0xffffff],</span></span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a><span class="st">  [1, 0x276419],</span></span>
+<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a><span class="st">];</span></span>
+<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a><span class="st">const visualizer = new ColorRampVisualizer(ramp);</span></span>
+<span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-21"><a href="#cb30-21" aria-hidden="true" tabindex="-1"></a><span class="st">function evaluatePixel(samples) {</span></span>
+<span id="cb30-22"><a href="#cb30-22" aria-hidden="true" tabindex="-1"></a><span class="st">   const ndvi = index(samples.B08, samples.B04);</span></span>
+<span id="cb30-23"><a href="#cb30-23" aria-hidden="true" tabindex="-1"></a><span class="st">   return visualizer.process(ndvi)</span></span>
+<span id="cb30-24"><a href="#cb30-24" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb30-25"><a href="#cb30-25" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span></span>
+<span id="cb30-26"><a href="#cb30-26" aria-hidden="true" tabindex="-1"></a>ndvi_vis <span class="op">=</span> request_helper(ndvi_visualized_evalscript)</span>
+<span id="cb30-27"><a href="#cb30-27" aria-hidden="true" tabindex="-1"></a>plt.imshow(ndvi_vis[<span class="dv">0</span>])<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="1_basic_evalscripts_files/figure-html/cell-10-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>In the end this looks very similar to what we had before, however this script can be used for streaming data with WMS, while the other can not be used for that.</p>
+<p>To summarize: When requesting raw data, use an appropriate <code>sampleType</code> and return the data directly. When using an WMS service to stream data you need to visualize the data using one of the available visualizers.</p>
+</section>
+<section id="exercise" class="level3">
+<h3 class="anchored" data-anchor-id="exercise">Exercise</h3>
+<p>For an exercise you can try this yourself now. Try to adjust the evalscript, so that it returns the Normalized Difference Water Index (NDWI). It is defined as <span class="math inline">\(\frac{green-nir}{green+nir}\)</span>. Also adjust the visualization so that it returns everything larger than 0.5 as blue and everything smaller than 0.5 as red. You can use <a href="https://colorbrewer2.org/#type=diverging&amp;scheme=RdBu&amp;n=11">colorbrewer</a> to get a good color ramp.</p>
+<details>
+<summary>
+See solution
+</summary>
+<p>Raw:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co">//VERSION=3</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">setup</span>() {</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>   <span class="cf">return</span> {</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>       <span class="dt">input</span><span class="op">:</span> [<span class="st">"B03"</span><span class="op">,</span> <span class="st">"B08"</span>]<span class="op">,</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>       <span class="dt">output</span><span class="op">:</span> {</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>          <span class="dt">bands</span><span class="op">:</span> <span class="dv">1</span><span class="op">,</span></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>          <span class="dt">sampleType</span><span class="op">:</span> <span class="st">"FLOAT32"</span></span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>       }</span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>   }<span class="op">;</span></span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">evaluatePixel</span>(samples) {</span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>   <span class="kw">const</span> ndwi <span class="op">=</span> <span class="fu">index</span>(samples<span class="op">.</span><span class="at">B03</span><span class="op">,</span> samples<span class="op">.</span><span class="at">B08</span>)<span class="op">;</span></span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>   <span class="cf">return</span> [ndwi]</span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Vis:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co">//VERSION=3</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">setup</span>() {</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>   <span class="cf">return</span> {</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>       <span class="dt">input</span><span class="op">:</span> [<span class="st">"B03"</span><span class="op">,</span> <span class="st">"B08"</span>]<span class="op">,</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>       <span class="dt">output</span><span class="op">:</span> {</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>          <span class="dt">bands</span><span class="op">:</span> <span class="dv">3</span><span class="op">,</span></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>          <span class="dt">sampleType</span><span class="op">:</span> <span class="st">"AUTO"</span></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>       }</span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>   }<span class="op">;</span></span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> ramp <span class="op">=</span> [</span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>  [<span class="op">-</span><span class="dv">1</span><span class="op">,</span> <span class="bn">0x67001f</span>]<span class="op">,</span></span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">0</span><span class="op">,</span> <span class="bn">0xffffff</span>]<span class="op">,</span></span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">1</span><span class="op">,</span> <span class="bn">0x053061</span>]<span class="op">,</span></span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a>]<span class="op">;</span></span>
+<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> visualizer <span class="op">=</span> <span class="kw">new</span> <span class="fu">ColorRampVisualizer</span>(ramp)<span class="op">;</span></span>
+<span id="cb32-19"><a href="#cb32-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-20"><a href="#cb32-20" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">evaluatePixel</span>(samples) {</span>
+<span id="cb32-21"><a href="#cb32-21" aria-hidden="true" tabindex="-1"></a>   <span class="kw">const</span> ndwi <span class="op">=</span> <span class="fu">index</span>(samples<span class="op">.</span><span class="at">B03</span><span class="op">,</span> samples<span class="op">.</span><span class="at">B08</span>)<span class="op">;</span></span>
+<span id="cb32-22"><a href="#cb32-22" aria-hidden="true" tabindex="-1"></a>   <span class="cf">return</span> visualizer<span class="op">.</span><span class="fu">process</span>(ndwi)</span>
+<span id="cb32-23"><a href="#cb32-23" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="cell-22" class="cell" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>ndwi_raw_evalscript <span class="op">=</span> <span class="st">"""</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>ndwi_raw <span class="op">=</span> request_helper(ndwi_raw_evalscript)</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>plt.imshow(ndwi_raw[<span class="dv">0</span>], cmap<span class="op">=</span><span class="st">"Blues"</span>)<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="1_basic_evalscripts_files/figure-html/cell-11-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="cell-23" class="cell" data-execution_count="11">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>ndwi_visualized_evalscript <span class="op">=</span> <span class="st">"""</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>ndwi_vis <span class="op">=</span> request_helper(ndwi_visualized_evalscript)</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>plt.imshow(ndwi_vis[<span class="dv">0</span>])<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="1_basic_evalscripts_files/figure-html/cell-12-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Now, let’s change the date and have a look at an image which shows some common inconveniences when working with optical satellite data in general.</p>
+</section>
+</section>
+<section id="dealing-with-clouds-and-missing-data" class="level1">
+<h1>Dealing with clouds and missing data</h1>
+<div id="cell-25" class="cell" data-execution_count="12">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>true_color_evalscript <span class="op">=</span> <span class="st">"""</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="st">//VERSION=3</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="st">function setup() {</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="st">   return {</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a><span class="st">       input: ["B04", "B03", "B02"],</span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a><span class="st">       output: {</span></span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a><span class="st">          bands: 3,</span></span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a><span class="st">          sampleType: "AUTO"</span></span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a><span class="st">       }</span></span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a><span class="st">   };</span></span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a><span class="st">function evaluatePixel(samples) {</span></span>
+<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a><span class="st">   let gain = 3;</span></span>
+<span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a><span class="st">   let scale = 2.5*gain;</span></span>
+<span id="cb35-16"><a href="#cb35-16" aria-hidden="true" tabindex="-1"></a><span class="st">   return [samples.B04*scale, samples.B03*scale, samples.B02*scale]</span></span>
+<span id="cb35-17"><a href="#cb35-17" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb35-18"><a href="#cb35-18" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span></span>
+<span id="cb35-19"><a href="#cb35-19" aria-hidden="true" tabindex="-1"></a>tc_output <span class="op">=</span> request_helper(true_color_evalscript, date<span class="op">=</span><span class="st">"2024-10-03"</span>)</span>
+<span id="cb35-20"><a href="#cb35-20" aria-hidden="true" tabindex="-1"></a>plt.imshow(tc_output[<span class="dv">0</span>])<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="1_basic_evalscripts_files/figure-html/cell-13-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Here we can see bright areas caused by clouds covering our area of interest. This is a common challenge when working with optical satellite imagery. Some regions may also contain missing data, which appear as empty or transparent areas in the output.</p>
+<section id="visualizing-clouds-with-scl" class="level2">
+<h2 class="anchored" data-anchor-id="visualizing-clouds-with-scl">Visualizing clouds with SCL</h2>
+<p>This example uses the Sentinel‑2 Scene Classification Layer (SCL) to visually flag cloudy pixels. We treat SCL classes {3, 7, 8, 9, 10} (cloud shadow, unclassified, medium/high‑probability cloud, thin cirrus) as “cloudy/obscuring.” If a pixel falls in these classes, we return a brightened, reddish tint (0.75 + B04, B03, B02) so clouds pop out; otherwise we render true color with a modest brightness boost (3.5 ×). This approach highlights clouds in-place and doesn’t require <code>dataMask</code>. If you later want to hide clouds instead of highlighting them, you can return [0,0,0] (or use a transparency channel) for those SCL classes.</p>
+<div id="cell-27" class="cell" data-execution_count="13">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>datamask_evalscript <span class="op">=</span> <span class="st">"""</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="st">//VERSION=3</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="st">function setup() {</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="st">  return {</span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="st">    input: ["B02", "B03", "B04", "SCL"],</span></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a><span class="st">    output: { bands: 3 }</span></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a><span class="st">  }</span></span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a><span class="st">function evaluatePixel(sample) {</span></span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a><span class="st">  if (sample.SCL == 8 || sample.SCL == 9) {</span></span>
+<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a><span class="st">    return [0.75 + sample.B04, sample.B03, sample.B02]</span></span>
+<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a><span class="st">  }</span></span>
+<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a><span class="st">  return [3.5*sample.B04, 3.5*sample.B03, 3.5*sample.B02];</span></span>
+<span id="cb36-15"><a href="#cb36-15" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb36-16"><a href="#cb36-16" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span></span>
+<span id="cb36-17"><a href="#cb36-17" aria-hidden="true" tabindex="-1"></a>datamask_output <span class="op">=</span> request_helper(datamask_evalscript, date<span class="op">=</span><span class="st">"2024-10-03"</span>)</span>
+<span id="cb36-18"><a href="#cb36-18" aria-hidden="true" tabindex="-1"></a>plt.imshow(datamask_output[<span class="dv">0</span>], cmap<span class="op">=</span><span class="st">"Greys"</span>)<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="1_basic_evalscripts_files/figure-html/cell-14-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="hiding-clouds-with-an-alpha-channel-rgba" class="level3">
+<h3 class="anchored" data-anchor-id="hiding-clouds-with-an-alpha-channel-rgba">Hiding clouds with an alpha channel (RGBA)</h3>
+<p>This version makes cloudy pixels transparent. We use SCL classes {3, 7, 8, 9, 10} as cloudy and set the alpha channel to 0 for those pixels, 1 otherwise. True color is rendered with a small brightness gain.</p>
+<div id="cell-29" class="cell" data-execution_count="14">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>evalscript_cloud_alpha <span class="op">=</span> <span class="st">"""</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="st">//VERSION=3</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="st">function setup() {</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="st">  return {</span></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a><span class="st">    input: ["B04","B03","B02","SCL"],</span></span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a><span class="st">    output: { bands: 4, sampleType: "AUTO" } // RGB + Alpha</span></span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a><span class="st">  };</span></span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a><span class="st">const CLOUDY = [3,7,8,9,10];</span></span>
+<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a><span class="st">function evaluatePixel(samples) {</span></span>
+<span id="cb37-13"><a href="#cb37-13" aria-hidden="true" tabindex="-1"></a><span class="st">  var gain = 3.0;</span></span>
+<span id="cb37-14"><a href="#cb37-14" aria-hidden="true" tabindex="-1"></a><span class="st">  var rgb = [samples.B04*gain, samples.B03*gain, samples.B02*gain];</span></span>
+<span id="cb37-15"><a href="#cb37-15" aria-hidden="true" tabindex="-1"></a><span class="st">  var isCloud = CLOUDY.includes(samples.SCL);</span></span>
+<span id="cb37-16"><a href="#cb37-16" aria-hidden="true" tabindex="-1"></a><span class="st">  var alpha = isCloud ? 0 : 1;     // hide clouds</span></span>
+<span id="cb37-17"><a href="#cb37-17" aria-hidden="true" tabindex="-1"></a><span class="st">  return rgb.concat(alpha);         // [R,G,B,A]</span></span>
+<span id="cb37-18"><a href="#cb37-18" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb37-19"><a href="#cb37-19" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span></span>
+<span id="cb37-20"><a href="#cb37-20" aria-hidden="true" tabindex="-1"></a>alpha_output <span class="op">=</span> request_helper(evalscript_cloud_alpha, date<span class="op">=</span><span class="st">"2024-10-03"</span>)</span>
+<span id="cb37-21"><a href="#cb37-21" aria-hidden="true" tabindex="-1"></a>plt.imshow(alpha_output[<span class="dv">0</span>])</span>
+<span id="cb37-22"><a href="#cb37-22" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">"off"</span>)<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="1_basic_evalscripts_files/figure-html/cell-15-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="summary" class="level1">
+<h1>Summary</h1>
+<p>In this notebook, we explored how to write basic non-temporal evalscripts using the setup and <code>evaluatePixel</code> functions. We looked at different <code>sampleTypes</code> and saw how the structure of an evalscript depends on the use case.</p>
+<p>For streaming visualizations, the script should return RGB(A) images, while for analytics, it can return raw values directly.</p>
+<p>We learned how to use the Sentinel-2 Scene Classification Layer (SCL) to detect and visualize clouds, including approaches for highlighting them in place or making them transparent with an alpha channel. You can also check the <code>dataMask</code> — a special band provided by Sentinel Hub that indicates which pixels contain valid data. Pixels with a value of 1 are valid (including cloudy pixels), and pixels with a value of 0 represent no data areas, such as regions outside the satellite tile or gaps in coverage. This can be used to filter out invalid pixels in analytics or to set transparency for visualizations. <a href="https://documentation.dataspace.copernicus.eu/APIs/SentinelHub/Evalscript.html#data-mask">Learn more about <code>dataMask</code></a>.</p>
+<p>We also reviewed common issues to check when evalscripts don’t produce the expected output and how to use errors to help with debugging.</p>
+<p>Do keep in mind that this intro does not cover a few other conecepts, like <a href="https://documentation.dataspace.copernicus.eu/APIs/SentinelHub/Statistical.html">evalscripts for statistical API</a>, multiple outputs in evalscripts or <a href="https://documentation.dataspace.copernicus.eu/APIs/SentinelHub/Evalscript/Functions.html#updateoutputmetadata-function-optional">returning custom userdata</a> in the script. See the full documentation which covers everything for these concepts.</p>
+<p>Next, we can learn about how multi-temporal evalscripts work on Sentinel Hub.</p>
+<section id="further-reading" class="level2">
+<h2 class="anchored" data-anchor-id="further-reading">Further reading</h2>
+<ul>
+<li><a href="https://medium.com/sentinel-hub/custom-scripts-faster-cheaper-better-83f73894658a">Optimizing evalscripts</a></li>
+<li><a href="https://custom-scripts.sentinel-hub.com/">Collection of evalscripts</a></li>
+<li><a href="https://medium.com/sentinel-hub/multi-temporal-processing-6a80e5c84188">Multi-temporal evalscripts</a></li>
+<li><a href="https://medium.com/sentinel-hub/color-correction-with-javascript-d721e12a919">Color correction with JavaScript</a></li>
+<li><a href="https://medium.com/sentinel-hub/sampletype-whats-all-the-fuss-about-d7348b4de647">Blog post about Sample Types</a></li>
+</ul>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

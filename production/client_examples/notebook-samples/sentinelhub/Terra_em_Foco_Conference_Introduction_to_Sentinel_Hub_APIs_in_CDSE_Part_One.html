@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Terra em Foco Conference: Introduction to Sentinel Hub APIs in CDSE: Part One – openEO</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<script src="../../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap-e199741f1aac39f7a8ac46de762c37ac.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css?family=Roboto+Mono|Source+Sans+Pro:300,400,600" rel="stylesheet">
+<meta name="zd-site-verification" content="xj9koofr1crilmoclgxsjd">
+
+<script type="text/javascript">
+
+
+    function setActiveClassForCurrentUrl() {
+        // Find all links in the navbarCollapse div where the href attribute is set to the current URL
+        let anchorTag = document.querySelector('#navbarCollapse a[href="' + window.location.href + '"]');
+
+        if (anchorTag) {
+
+            // Find the closest parent of the navigation
+            let parentUl = anchorTag.closest('li.nav-item')?.querySelector('a.nav-link');
+
+            if (parentUl) {
+                // Add active class to both the anchor tag and the parent ul
+                anchorTag.classList.add('active');
+                parentUl.classList.add('active');
+            }
+        }
+    }
+
+    window.addEventListener('popstate', setActiveClassForCurrentUrl);
+    window.addEventListener('hashchange', setActiveClassForCurrentUrl);
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const badges = Array.from(document.querySelectorAll(".tag-filter-badge"));
+        const items = Array.from(document.querySelectorAll(".tag-filter-item"));
+        if (badges.length === 0 || items.length === 0) return;
+
+        const getTags = (item) => {
+            const fromDataAttr = (item.getAttribute("data-tags") || "")
+            .toLowerCase()
+            .split(/\s+/)
+            .filter(Boolean);
+
+            if (fromDataAttr.length > 0) {
+            return new Set(fromDataAttr);
+            }
+
+            const fromBadges = Array.from(item.querySelectorAll(".badge"))
+            .flatMap((el) => Array.from(el.classList))
+            .filter((cls) => cls.startsWith("badge-"))
+            .map((cls) => cls.replace("badge-", "").toLowerCase());
+
+            return new Set(fromBadges);
+        };
+
+        const applyFilter = () => {
+            const activeBadges = badges.filter((b) => b.classList.contains("active"));
+            const selectedTags = new Set(activeBadges.map((b) => b.getAttribute("data-tag")));
+
+            items.forEach((item) => {
+            const tags = getTags(item);
+            const visible = Array.from(selectedTags).some((tag) => tags.has(tag));
+            item.hidden = !visible;
+            });
+        };
+
+        badges.forEach((badge) => {
+            badge.addEventListener("click", function (e) {
+            e.preventDefault();
+            this.classList.toggle("active");
+            this.classList.toggle("inactive");
+            applyFilter();
+            });
+        });
+
+        applyFilter();
+        });
+
+
+
+    window.onload = () => {
+        const elems = document.getElementsByClassName('navbar-title');
+        if (elems.length > 0) {
+            const title = elems[0];
+            title.parentElement.href = '/index.html'
+        }
+        setActiveClassForCurrentUrl();
+    }
+
+ 
+</script>
+
+
+<link rel="stylesheet" href="../../../custom.css">
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../../index.html">
+    <span class="navbar-title">openEO</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../../about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://hub.openeo.org/" target="_blank"> 
+<span class="menu-text">Services</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../news/news.html"> 
+<span class="menu-text">News</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../meetings.html"> 
+<span class="menu-text">Meetings</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../events/events.html"> 
+<span class="menu-text">Events</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../psc.html"> 
+<span class="menu-text">PSC</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-user-documentation" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">User Documentation</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-user-documentation">    
+        <li>
+    <a class="dropdown-item" href="../../../documentation/cookbook.html">
+ <span class="dropdown-text">COOKBOOK</span></a>
+  </li>  
+        <li><hr class="dropdown-divider"></li>
+        <li class="dropdown-header">KEY CONCEPTS</li>
+        <li>
+    <a class="dropdown-item" href="../../../404-not-found.html">
+ <span class="dropdown-text">Backends</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../documentation/keyconcepts/openeo_api.qmd">
+ <span class="dropdown-text">Datacube</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../documentation/keyconcepts/processes.qmd">
+ <span class="dropdown-text">Processes</span></a>
+  </li>  
+        <li><hr class="dropdown-divider"></li>
+        <li class="dropdown-header">SETUP</li>
+        <li><hr class="dropdown-divider"></li>
+        <li class="dropdown-header">DATA DISCOVERY</li>
+        <li>
+    <a class="dropdown-item" href="../../../404-not-found.html">
+ <span class="dropdown-text">Collections</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../404-not-found.html">
+ <span class="dropdown-text">Load Collections</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../404-not-found.html">
+ <span class="dropdown-text">Load STAC metadata</span></a>
+  </li>  
+        <li><hr class="dropdown-divider"></li>
+        <li class="dropdown-header">CUBE OPERATIONS</li>
+        <li>
+    <a class="dropdown-item" href="../../../documentation/cube_operations/preprocessing.html">
+ <span class="dropdown-text">Preprocessing</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../documentation/cube_operations/spatial_operations.html">
+ <span class="dropdown-text">Spatial Operations</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../documentation/cube_operations/temporal_operations.html">
+ <span class="dropdown-text">Temporal Operations</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../documentation/cube_operations/spectral_operations.html">
+ <span class="dropdown-text">Spectral Operations</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../documentation/cube_operations/cube_manipulations.html">
+ <span class="dropdown-text">Cube Manipulations</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../documentation/cube_operations/udf.html">
+ <span class="dropdown-text">User Defined Functions</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../documentation/cube_operations/machine_learning.html">
+ <span class="dropdown-text">Machine Learning</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../documentation/cube_operations/udp.html">
+ <span class="dropdown-text">User Defined Processes</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../documentation/cube_operations/execute_jobs.html">
+ <span class="dropdown-text">Execute openEO Jobs</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../documentation/export_formats.html">
+ <span class="dropdown-text">EXPORT FORMATS</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-developers" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Developers</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-developers">    
+        <li>
+    <a class="dropdown-item" href="https://api.openeo.org/">
+ <span class="dropdown-text">REST API Reference</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../404-not-found.html">
+ <span class="dropdown-text">Xarray/Dask Guide</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../404-not-found.html">
+ <span class="dropdown-text">Backend Development</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-support" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Support</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-support">    
+        <li>
+    <a class="dropdown-item" href="../../../contact.html">
+ <span class="dropdown-text">Contact</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://forum.dataspace.copernicus.eu/c/openeo/28">
+ <span class="dropdown-text">CDSE Forum</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../Examples.qmd">
+ <span class="dropdown-text">Notebook examples</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools tools-wide">
+    <a href="mailto:openeo.psc@uni-muenster.de" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-envelope"></i></a>
+    <a href="https://www.linkedin.com/company/openeospec/" title="" class="quarto-navigation-tool px-1" aria-label="" target="_blank"><i class="bi bi-linkedin"></i></a>
+    <a href="https://bsky.app/profile/openeo.org" title="" class="quarto-navigation-tool px-1" aria-label="" target="_blank"><i class="bi bi-bluesky"></i></a>
+    <a href="https://github.com/Open-EO" title="" class="quarto-navigation-tool px-1" aria-label="" target="_blank"><i class="bi bi-github"></i></a>
+    <a href="https://www.youtube.com/channel/UCMJQil8j9sHBQkcSlSaEsvQ" title="" class="quarto-navigation-tool px-1" aria-label="" target="_blank"><i class="bi bi-youtube"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#authentication" id="toc-authentication" class="nav-link active" data-scroll-target="#authentication">Authentication</a></li>
+  <li><a href="#forest-fire-detection-across-south-west-portugal-utilising-sentinel-3-slstr" id="toc-forest-fire-detection-across-south-west-portugal-utilising-sentinel-3-slstr" class="nav-link" data-scroll-target="#forest-fire-detection-across-south-west-portugal-utilising-sentinel-3-slstr">1: Forest fire detection across south west Portugal utilising Sentinel-3 SLSTR</a>
+  <ul class="collapse">
+  <li><a href="#processing-api" id="toc-processing-api" class="nav-link" data-scroll-target="#processing-api">Processing API</a></li>
+  <li><a href="#write-an-evalscript" id="toc-write-an-evalscript" class="nav-link" data-scroll-target="#write-an-evalscript">Write an Evalscript</a></li>
+  <li><a href="#build-the-request" id="toc-build-the-request" class="nav-link" data-scroll-target="#build-the-request">Build the request</a></li>
+  </ul></li>
+  <li><a href="#visualising-forest-fires-using-sentinel-2-imagery" id="toc-visualising-forest-fires-using-sentinel-2-imagery" class="nav-link" data-scroll-target="#visualising-forest-fires-using-sentinel-2-imagery">2: Visualising forest fires using Sentinel-2 imagery</a>
+  <ul class="collapse">
+  <li><a href="#write-an-evalscript-1" id="toc-write-an-evalscript-1" class="nav-link" data-scroll-target="#write-an-evalscript-1">Write an Evalscript</a></li>
+  <li><a href="#build-the-request-1" id="toc-build-the-request-1" class="nav-link" data-scroll-target="#build-the-request-1">Build the request</a></li>
+  </ul></li>
+  <li><a href="#mapping-and-measuring-the-area-of-burn-scars" id="toc-mapping-and-measuring-the-area-of-burn-scars" class="nav-link" data-scroll-target="#mapping-and-measuring-the-area-of-burn-scars">3: Mapping and measuring the area of burn scars</a>
+  <ul class="collapse">
+  <li><a href="#write-an-evalscript-build-the-request" id="toc-write-an-evalscript-build-the-request" class="nav-link" data-scroll-target="#write-an-evalscript-build-the-request">Write an Evalscript &amp; Build the Request</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content column-page-left" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Terra em Foco Conference: Introduction to Sentinel Hub APIs in CDSE: Part One</h1>
+</div>
+
+
+
+<div class="quarto-title-meta column-page-left">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><em>This notebook was written for a two hour training session at the Terra em Foco, the Portuguese Earth Observation National Conference held in Braga, Portugal 12-13th September 2024.</em></p>
+<p>The Copernicus Data Space Ecosystem offers immediate access to large amounts of open and free Earth observation data from the Copernicus Sentinel satellites, including both new and historical Sentinel images, as well as Copernicus Contributing Missions. As the effects of climate change intensifies, the use of earth observation data will become ever more important to monitor wildfires in the southern Europe including Portugal. These two notebooks will show how you can utilise Copernicus data to do just this.</p>
+<p>The Copernicus Data Space Ecosystem supports users in accessing, viewing, using, downloading, and analyzing data. The Copernicus Data Space Ecosystem is set up to further improve access and exploitation of the EU’s Copernicus satellites data. The service aims to support users in building various applications needed to provide accurate, timely and objective information which are crucial to create a more sustainable future.</p>
+<p>The Copernicus Data Space Ecosystem offers multiple Application Programming Interfaces (APIs) ranging from catalogue, product download, visualization over processing web services such as STAC, openEO and Sentinel Hub APIs. This Jupyter notebook focuses on the Sentinel Hub APIs The Sentinel Hub API is a RESTful API interface that provides access to various satellite imagery archives. It allows you to access raw satellite data, rendered images, statistical analysis, and other features.</p>
+<p>This notebook contains three examples:</p>
+<ol type="1">
+<li>Forest fire detection across south west Portugal utilising Sentinel-3 SLSTR</li>
+<li>Visualisation of the forest fire during the event using Sentinel-2</li>
+<li>Detection and mapping of the burned area post event</li>
+</ol>
+<p><strong>Note:</strong> You do not need any prior experience of Sentinel Hub APIs to be able to follow the functions in this notebook. However, it is advised that you should have some basic knowledge of python and its data science libraries.</p>
+<p>Firstly, before getting started we should import some libraries. In addition, to common data science libraries we will be utilising the <a href="https://sentinelhub-py.readthedocs.io/en/latest/index.html">Sentinel Hub Python package</a>. This comes preinstalled in the Copernicus Data Space Ecosystem Jupyter Lab.</p>
+<div id="8eef2c05-e174-461b-9d0d-6f937799d00a" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># General utilities</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> warnings</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> typing <span class="im">import</span> Any, Optional, Tuple</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Plotting</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> geopandas <span class="im">as</span> gpd</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.patches <span class="im">as</span> mpatches</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Sentinel Hub services</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sentinelhub <span class="im">import</span> (</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    CRS,</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    DataCollection,</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    Geometry,</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    MimeType,</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    SentinelHubRequest,</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    SHConfig,</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> shapely.geometry <span class="im">import</span> shape</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>warnings.filterwarnings(<span class="st">"ignore"</span>)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>matplotlib inline</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>In the following cell, we have defined a python function to help us process and visualise the data later on in the notebook:</p>
+<div id="5a0c5099-f7d8-43ca-9e50-a52b39b19909" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> plot_image(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    image: np.ndarray,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    factor: <span class="bu">float</span> <span class="op">=</span> <span class="fl">1.0</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    clip_range: Optional[Tuple[<span class="bu">float</span>, <span class="bu">float</span>]] <span class="op">=</span> <span class="va">None</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>kwargs: Any</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Utility function for plotting RGB images."""</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    fig, ax <span class="op">=</span> plt.subplots(nrows<span class="op">=</span><span class="dv">1</span>, ncols<span class="op">=</span><span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">15</span>, <span class="dv">15</span>))</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> clip_range <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>        ax.imshow(np.clip(image <span class="op">*</span> factor, <span class="op">*</span>clip_range), <span class="op">**</span>kwargs)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>        ax.imshow(image <span class="op">*</span> factor, <span class="op">**</span>kwargs)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    ax.set_xticks([])</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    ax.set_yticks([])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="authentication" class="level2">
+<h2 class="anchored" data-anchor-id="authentication">Authentication</h2>
+<p>You can obtain the credentials for the Sentinel Hub services (<code>client_id</code> &amp; <code>client_secret</code>) in your <a href="https://shapps.dataspace.copernicus.eu/dashboard/#/">Dashboard</a>. In the user settings, you can create a new OAuth client to generate these credentials. You can find more detailed instructions on the corresponding <a href="https://documentation.dataspace.copernicus.eu/APIs/SentinelHub/Overview/Authentication.html">documentation page</a>.</p>
+<p>Now that you have your <code>client_id</code> &amp; <code>client_secret</code>, it is recommended to configure a new profile in your Sentinel Hub Python package. Instructions for configuring your Sentinel Hub Python package can be found <a href="https://sentinelhub-py.readthedocs.io/en/latest/configure.html">here</a>. Using these instructions, you can create a profile specifically tailored to use the package to access the Copernicus Data Space Ecosystem data collections. This is useful because changes to the Config class in your notebook are usually only temporary. If you save the configuration in your profile, you do not have to generate new credentials or overwrite/change the default profile every time you start or write a new Jupyter notebook.</p>
+<p>If you are using the Sentinel Hub Python package for the Copernicus Data Space Ecosystem for the first time, you should create a profile specifically for the Copernicus Data Space Ecosystem. You can do this in the following cell:</p>
+<div id="d88cef5a-2fa1-49f7-9b0d-7caecd9b98b1" class="cell" data-tags="[]">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Only run this cell if you have not created a configuration.</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>config <span class="op">=</span> SHConfig()</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># config.sh_client_id = getpass.getpass("Enter your SentinelHub client id")</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># config.sh_client_secret = getpass.getpass("Enter your SentinelHub client secret")</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>config.sh_token_url <span class="op">=</span> <span class="st">"https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token"</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>config.sh_base_url <span class="op">=</span> <span class="st">"https://sh.dataspace.copernicus.eu"</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># config.save("cdse")</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>However, if you have already configured a profile in Sentinel Hub Python for the Copernicus Data Space Ecosystem, then you can run the below cell entering the profile name as a string replacing <code>&lt;profile_name&gt;</code>.</p>
+<div id="735d5ffb-c793-4e2e-b171-02dffed2b601" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># config = SHConfig("cdse")</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="forest-fire-detection-across-south-west-portugal-utilising-sentinel-3-slstr" class="level2">
+<h2 class="anchored" data-anchor-id="forest-fire-detection-across-south-west-portugal-utilising-sentinel-3-slstr">1: Forest fire detection across south west Portugal utilising Sentinel-3 SLSTR</h2>
+<p>In this first example, we will make a processing API request to visualise hotspots using Sentinel-3 SLSTR.</p>
+<p>Firstly, some information about the AOI and the case study that we will be using for this training. The AOI is located in south west Portugal and was the site of a wildfire in August 2023. Located near the town of Odemira, over 7000 hectares was burnt resulting in the evacuation of 1400 people as over 1000 firefighters were drafted in to fight and control the spread of the fire. <a href="https://www.theguardian.com/world/2023/aug/08/firefighters-tackling-blaze-raging-in-southern-portugal-fire">1</a> <a href="https://www.reuters.com/world/europe/more-than-1000-evacuated-portugal-wildfire-spreads-2023-08-08/">2</a></p>
+<div id="72eeb579-0d77-480f-a1e7-d4ddb05a735f" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>area_of_interest <span class="op">=</span> <span class="st">"""{</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="st">  "type": "Polygon",</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="st">  "coordinates": [</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="st">    [</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="st">      [</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="st">        -8.920627,</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="st">        37.274053</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="st">      ],</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="st">      [</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="st">        -8.178291,</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="st">        37.274053</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="st">      ],</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="st">      [</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="st">        -8.178291,</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="st">        37.810869</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="st">      ],</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="st">      [</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="st">        -8.920627,</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="st">        37.810869</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="st">      ],</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="st">      [</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="st">        -8.920627,</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="st">        37.274053</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="st">      ]</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="st">    ]</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="st">  ]</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>aoi <span class="op">=</span> gpd.read_file(area_of_interest)</span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>aoi[<span class="st">"geometry"</span>] <span class="op">=</span> aoi</span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>aoi[<span class="st">"area"</span>] <span class="op">=</span> aoi.area</span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>aoi.explore(<span class="st">"area"</span>, color<span class="op">=</span><span class="st">"Green"</span>, legend<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>If you wish to make your own area of interest you can use the <a href="https://shapps.dataspace.copernicus.eu/requests-builder/">Request Builder</a> application and draw and AOI using the interface before exporting it into your directory. You can then copy and paste the <code>geojson</code> contents into the <code>area_of_interest</code> variable in the cell above.</p>
+<div id="6cdf8d18-5afc-4854-93e6-a6ee8d8ffd01" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>full_geometry <span class="op">=</span> Geometry(aoi.to_crs(<span class="dv">32630</span>).geometry.values[<span class="dv">0</span>], crs<span class="op">=</span>CRS.UTM_30N)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="processing-api" class="level3">
+<h3 class="anchored" data-anchor-id="processing-api">Processing API</h3>
+<p>The <a href="https://documentation.dataspace.copernicus.eu/APIs/SentinelHub/Process.html">Processing API</a> (or shortly “Process API”) is the most commonly used API in Sentinel Hub as it provides images based on satellite data. Users can request raw satellite data, simple band combinations such as false colour composites, calculations of simple remote sensing indices like NDVI, or more advanced processing such as calculation of Leaf area index (LAI).</p>
+<p>Even though satellite imagery data are often distributed in “tiles”, we do not want users to be limited to these. Tiles are an artificially introduced entity to make data distribution easier to handle. However, users should not have to care about whether their AOI is on one tile or another, or perhaps on the border of two tiles. This is why Sentinel Hub API hides this complexity and simply makes the data available over chosen area of interest and temporal period of interest. Tiles are therefore automatically stitched together based on defined parameters (AOI, time period, cloud coverage, priority, etc., depending on the data type).</p>
+</section>
+<section id="write-an-evalscript" class="level3">
+<h3 class="anchored" data-anchor-id="write-an-evalscript">Write an Evalscript</h3>
+<p>An <a href="https://documentation.dataspace.copernicus.eu/APIs/SentinelHub/Evalscript.html">evalscript</a> (or “custom script”) is a piece of Javascript code which defines how the satellite data shall be processed by Sentinel Hub and what values the service shall return. It is a required part of any process, batch processing or OGC request.</p>
+<p>In the following Evalscript we will perform all the processing steps that we performed in the “traditional” approach.</p>
+<div id="0f1b8c6c-ef81-4896-b7d2-636581a634ca" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>evalscript_fire_detection <span class="op">=</span> <span class="st">"""</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="st">// high accuracy Detect active fire points </span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="st">//Sentinel-3 SLSTR</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="st">//by Tiznger startup co</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="st">//www.tiznegar.com</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="st">var SAHM= ((S6 - S5) / (S6 + S5));</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="st">if(SAHM&gt;.05 &amp;&amp; S1&lt;.23){</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="st">  return[5*S3, 1*S2, 1*S1]</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="st">else {</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="st"> return [S6,S3,S2]</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="st">//Red color indicates active fire areas and points</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="build-the-request" class="level3">
+<h3 class="anchored" data-anchor-id="build-the-request">Build the request</h3>
+<p>We build the request according to the <a href="https://documentation.dataspace.copernicus.eu/APIs/SentinelHub/ApiReference.html">API Reference</a>, using the <code>SentinelHubRequest</code> class. Each Process API request also needs an <a href="https://documentation.dataspace.copernicus.eu/APIs/SentinelHub/Evalscript.html">evalscript</a>. An evalscript (or “custom script”) is a piece of Javascript code which defines how the satellite data shall be processed by Sentinel Hub and what values the service shall return. It is a required part of any <a href="https://documentation.dataspace.copernicus.eu/APIs/SentinelHub/Process.html">process</a>, <a href="https://documentation.dataspace.copernicus.eu/APIs/SentinelHub/Batch.html">batch processing</a> or <a href="https://documentation.dataspace.copernicus.eu/APIs/SentinelHub/OGC.html">OGC request</a>.</p>
+<p>The information that we specify in the <code>SentinelHubRequest</code> object is: - an evalscript, - a list of input data collections with time interval, - a format of the response, - a bounding box and its size (size or resolution). - <code>mosaickingOrder</code> (optional): in this example we have used <code>leastRecent</code> which will return pixels from the least recent acquisition in the specified time period.</p>
+<div id="92e82f02-5754-46b3-8c4e-e4e6548748a6" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>request_true_color <span class="op">=</span> SentinelHubRequest(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    evalscript<span class="op">=</span>evalscript_fire_detection,</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    input_data<span class="op">=</span>[</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>        SentinelHubRequest.input_data(</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>            data_collection<span class="op">=</span>DataCollection.SENTINEL3_SLSTR.define_from(</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>                name<span class="op">=</span><span class="st">"s3"</span>, service_url<span class="op">=</span><span class="st">"https://sh.dataspace.copernicus.eu"</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>            ),</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>            time_interval<span class="op">=</span>(<span class="st">"2023-08-06"</span>, <span class="st">"2023-08-06"</span>),</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>            other_args<span class="op">=</span>{<span class="st">"dataFilter"</span>: {<span class="st">"mosaickingOrder"</span>: <span class="st">"leastRecent"</span>}},</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    responses<span class="op">=</span>[SentinelHubRequest.output_response(<span class="st">"default"</span>, MimeType.PNG)],</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    geometry<span class="op">=</span>full_geometry,</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    size<span class="op">=</span>[<span class="dv">1000</span>, <span class="dv">920</span>],</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    config<span class="op">=</span>config,</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The method <code>get_data()</code> will always return a list of length 1 with the available image from the requested time interval in the form of numpy arrays.</p>
+<div id="47dff8dd-4e9e-4f9b-a821-550358b2b21e" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>true_color_imgs <span class="op">=</span> request_true_color.get_data()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="8ce09318-c3b6-4b62-9c17-6c8d00d5f0d7" class="cell" data-scrolled="true">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f"Returned data is of type = </span><span class="sc">{</span><span class="bu">type</span>(true_color_imgs)<span class="sc">}</span><span class="ss"> and length </span><span class="sc">{</span><span class="bu">len</span>(true_color_imgs)<span class="sc">}</span><span class="ss">."</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f"Single element in the list is of type </span><span class="sc">{</span><span class="bu">type</span>(true_color_imgs[<span class="op">-</span><span class="dv">1</span>])<span class="sc">}</span><span class="ss"> and has shape </span><span class="sc">{</span>true_color_imgs[<span class="op">-</span><span class="dv">1</span>]<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="5c56d96f-119d-4c51-b97c-049abd1aa0d0" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>image <span class="op">=</span> true_color_imgs[<span class="dv">0</span>]</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Image type: </span><span class="sc">{</span>image<span class="sc">.</span>dtype<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># plot function</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>plot_image(image, factor<span class="op">=</span><span class="fl">1.5</span> <span class="op">/</span> <span class="dv">255</span>, clip_range<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+</section>
+<section id="visualising-forest-fires-using-sentinel-2-imagery" class="level2">
+<h2 class="anchored" data-anchor-id="visualising-forest-fires-using-sentinel-2-imagery">2: Visualising forest fires using Sentinel-2 imagery</h2>
+<p>In this second example, we will visualise the wildfire we detected using Sentinel-2 imagery.</p>
+<section id="write-an-evalscript-1" class="level3">
+<h3 class="anchored" data-anchor-id="write-an-evalscript-1">Write an Evalscript</h3>
+<p>An <a href="https://documentation.dataspace.copernicus.eu/APIs/SentinelHub/Evalscript.html">evalscript</a> (or “custom script”) is a piece of Javascript code which defines how the satellite data shall be processed by Sentinel Hub and what values the service shall return. It is a required part of any process, batch processing or OGC request.</p>
+<p>In the following Evalscript we will visualise the forest fire using the SWIR bands that Sentinel-2 offers. It’s important to note this is just a visualisation to illustrate the forest fire.</p>
+<div id="c2db87cb-822b-4809-8e16-69936a160b57" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>evalscript_wildfire_visualisation <span class="op">=</span> <span class="st">"""</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="st">// VERSION=3</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="st">// QuickFire V1.0.0 by Pierre Markuse (https://twitter.com/Pierre_Markuse)</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="st">// Adjusted for use in the Copernicus Browser (https://dataspace.copernicus.eu/browser/)</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="st">// CC BY 4.0 International (https://creativecommons.org/licenses/by/4.0/)</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="st">// Copernicus Browser does not have the band CLP, this was replaced with the isCloud() function</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="st">// but do try to turn off cloudAvoidance if results aren't as expected.</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="st">function setup() {</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="st">    return {</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="st">        input: ["B02", "B03", "B04", "B08", "B8A", "B11", "B12", "dataMask"],</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="st">        output: { bands: 4 }</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="st">    };</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a><span class="st">function isCloud(samples) {</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a><span class="st">    const NGDR = index(samples.B03, samples.B04);</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a><span class="st">    const bRatio = (samples.B03 - 0.175) / (0.39 - 0.175);</span></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a><span class="st">    return bRatio &gt; 1 || (bRatio &gt; 0 &amp;&amp; NGDR &gt; 0);</span></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a><span class="st">function stretch(val, min, max) { return (val - min) / (max - min); }</span></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a><span class="st">function satEnh(arr, s) {</span></span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a><span class="st">    var avg = arr.reduce((a, b) =&gt; a + b, 0) / arr.length;</span></span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a><span class="st">    return arr.map(a =&gt; avg * (1 - s) + a * s);</span></span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a><span class="st">function layerBlend(lay1, lay2, lay3, op1, op2, op3) {</span></span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a><span class="st">    return lay1.map(function (num, index) {</span></span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a><span class="st">        return (num / 100 * op1 + (lay2[index] / 100 * op2) + (lay3[index] / 100 * op3));</span></span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a><span class="st">    });</span></span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a><span class="st">function evaluatePixel(sample) {</span></span>
+<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a><span class="st">    const hsThreshold = [2.0, 1.5, 1.25, 1.0];</span></span>
+<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a><span class="st">    const hotspot = 1;</span></span>
+<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a><span class="st">    const style = 1;</span></span>
+<span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a><span class="st">    const hsSensitivity = 1.0;</span></span>
+<span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a><span class="st">    const boost = 1.2;</span></span>
+<span id="cb12-42"><a href="#cb12-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-43"><a href="#cb12-43" aria-hidden="true" tabindex="-1"></a><span class="st">    const cloudAvoidance = 1;</span></span>
+<span id="cb12-44"><a href="#cb12-44" aria-hidden="true" tabindex="-1"></a><span class="st">    const avoidanceHelper = 0.8;</span></span>
+<span id="cb12-45"><a href="#cb12-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-46"><a href="#cb12-46" aria-hidden="true" tabindex="-1"></a><span class="st">    const offset = -0.007;</span></span>
+<span id="cb12-47"><a href="#cb12-47" aria-hidden="true" tabindex="-1"></a><span class="st">    const saturation = 1.10;</span></span>
+<span id="cb12-48"><a href="#cb12-48" aria-hidden="true" tabindex="-1"></a><span class="st">    const brightness = 1.40;</span></span>
+<span id="cb12-49"><a href="#cb12-49" aria-hidden="true" tabindex="-1"></a><span class="st">    const sMin = 0.15;</span></span>
+<span id="cb12-50"><a href="#cb12-50" aria-hidden="true" tabindex="-1"></a><span class="st">    const sMax = 0.99;</span></span>
+<span id="cb12-51"><a href="#cb12-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-52"><a href="#cb12-52" aria-hidden="true" tabindex="-1"></a><span class="st">    const showBurnscars = 0;</span></span>
+<span id="cb12-53"><a href="#cb12-53" aria-hidden="true" tabindex="-1"></a><span class="st">    const burnscarThreshold = -0.25;</span></span>
+<span id="cb12-54"><a href="#cb12-54" aria-hidden="true" tabindex="-1"></a><span class="st">    const burnscarStrength = 0.3;</span></span>
+<span id="cb12-55"><a href="#cb12-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-56"><a href="#cb12-56" aria-hidden="true" tabindex="-1"></a><span class="st">    const NDWI = (sample.B03 - sample.B08) / (sample.B03 + sample.B08);</span></span>
+<span id="cb12-57"><a href="#cb12-57" aria-hidden="true" tabindex="-1"></a><span class="st">    const NDVI = (sample.B08 - sample.B04) / (sample.B08 + sample.B04);</span></span>
+<span id="cb12-58"><a href="#cb12-58" aria-hidden="true" tabindex="-1"></a><span class="st">    const waterHighlight = 0;</span></span>
+<span id="cb12-59"><a href="#cb12-59" aria-hidden="true" tabindex="-1"></a><span class="st">    const waterBoost = 2.0;</span></span>
+<span id="cb12-60"><a href="#cb12-60" aria-hidden="true" tabindex="-1"></a><span class="st">    const NDVI_threshold = 0.05;</span></span>
+<span id="cb12-61"><a href="#cb12-61" aria-hidden="true" tabindex="-1"></a><span class="st">    const NDWI_threshold = 0.0;</span></span>
+<span id="cb12-62"><a href="#cb12-62" aria-hidden="true" tabindex="-1"></a><span class="st">    const waterHelper = 0.1;</span></span>
+<span id="cb12-63"><a href="#cb12-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-64"><a href="#cb12-64" aria-hidden="true" tabindex="-1"></a><span class="st">    const Black = [0, 0, 0];</span></span>
+<span id="cb12-65"><a href="#cb12-65" aria-hidden="true" tabindex="-1"></a><span class="st">    const NBRindex = (sample.B08 - sample.B12) / (sample.B08 + sample.B12);</span></span>
+<span id="cb12-66"><a href="#cb12-66" aria-hidden="true" tabindex="-1"></a><span class="st">    const naturalColorsCC = [Math.sqrt(brightness * sample.B04 + offset), Math.sqrt(brightness * sample.B03 + offset), Math.sqrt(brightness * sample.B02 + offset)];</span></span>
+<span id="cb12-67"><a href="#cb12-67" aria-hidden="true" tabindex="-1"></a><span class="st">    const naturalColors = [(2.5 * brightness * sample.B04 + offset), (2.5 * brightness * sample.B03 + offset), (2.5 * brightness * sample.B02 + offset)];</span></span>
+<span id="cb12-68"><a href="#cb12-68" aria-hidden="true" tabindex="-1"></a><span class="st">    const URBAN = [Math.sqrt(brightness * sample.B12 * 1.2 + offset), Math.sqrt(brightness * sample.B11 * 1.4 + offset), Math.sqrt(brightness * sample.B04 + offset)];</span></span>
+<span id="cb12-69"><a href="#cb12-69" aria-hidden="true" tabindex="-1"></a><span class="st">    const SWIR = [Math.sqrt(brightness * sample.B12 + offset), Math.sqrt(brightness * sample.B8A + offset), Math.sqrt(brightness * sample.B04 + offset)];</span></span>
+<span id="cb12-70"><a href="#cb12-70" aria-hidden="true" tabindex="-1"></a><span class="st">    const NIRblue = colorBlend(sample.B08, [0, 0.25, 1], [[0 / 255, 0 / 255, 0 / 255], [0 / 255, 100 / 255, 175 / 255], [150 / 255, 230 / 255, 255 / 255]]);</span></span>
+<span id="cb12-71"><a href="#cb12-71" aria-hidden="true" tabindex="-1"></a><span class="st">    const classicFalse = [sample.B08 * brightness, sample.B04 * brightness, sample.B03 * brightness];</span></span>
+<span id="cb12-72"><a href="#cb12-72" aria-hidden="true" tabindex="-1"></a><span class="st">    const NIR = [sample.B08 * brightness, sample.B08 * brightness, sample.B08 * brightness];</span></span>
+<span id="cb12-73"><a href="#cb12-73" aria-hidden="true" tabindex="-1"></a><span class="st">    const atmoPen = [sample.B12 * brightness, sample.B11 * brightness, sample.B08 * brightness];</span></span>
+<span id="cb12-74"><a href="#cb12-74" aria-hidden="true" tabindex="-1"></a><span class="st">    var enhNaturalColors = [0, 0, 0];</span></span>
+<span id="cb12-75"><a href="#cb12-75" aria-hidden="true" tabindex="-1"></a><span class="st">    for (let i = 0; i &lt; 3; i += 1) { enhNaturalColors[i] = (brightness * ((naturalColors[i] + naturalColorsCC[i]) / 2) + (URBAN[i] / 10)); }</span></span>
+<span id="cb12-76"><a href="#cb12-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-77"><a href="#cb12-77" aria-hidden="true" tabindex="-1"></a><span class="st">    const manualCorrection = [0.04, 0.00, -0.05];</span></span>
+<span id="cb12-78"><a href="#cb12-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-79"><a href="#cb12-79" aria-hidden="true" tabindex="-1"></a><span class="st">    var Viz = layerBlend(URBAN, SWIR, naturalColorsCC, 10, 10, 90); // Choose visualization(s) and opacity here</span></span>
+<span id="cb12-80"><a href="#cb12-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-81"><a href="#cb12-81" aria-hidden="true" tabindex="-1"></a><span class="st">    if (waterHighlight) {</span></span>
+<span id="cb12-82"><a href="#cb12-82" aria-hidden="true" tabindex="-1"></a><span class="st">        if ((NDVI &lt; NDVI_threshold) &amp;&amp; (NDWI &gt; NDWI_threshold) &amp;&amp; (sample.B04 &lt; waterHelper)) {</span></span>
+<span id="cb12-83"><a href="#cb12-83" aria-hidden="true" tabindex="-1"></a><span class="st">            Viz[1] = Viz[1] * 1.2 * waterBoost + 0.1;</span></span>
+<span id="cb12-84"><a href="#cb12-84" aria-hidden="true" tabindex="-1"></a><span class="st">            Viz[2] = Viz[2] * 1.5 * waterBoost + 0.2;</span></span>
+<span id="cb12-85"><a href="#cb12-85" aria-hidden="true" tabindex="-1"></a><span class="st">        }</span></span>
+<span id="cb12-86"><a href="#cb12-86" aria-hidden="true" tabindex="-1"></a><span class="st">    }</span></span>
+<span id="cb12-87"><a href="#cb12-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-88"><a href="#cb12-88" aria-hidden="true" tabindex="-1"></a><span class="st">    Viz = satEnh(Viz, saturation);</span></span>
+<span id="cb12-89"><a href="#cb12-89" aria-hidden="true" tabindex="-1"></a><span class="st">    for (let i = 0; i &lt; 3; i += 1) {</span></span>
+<span id="cb12-90"><a href="#cb12-90" aria-hidden="true" tabindex="-1"></a><span class="st">        Viz[i] = stretch(Viz[i], sMin, sMax);</span></span>
+<span id="cb12-91"><a href="#cb12-91" aria-hidden="true" tabindex="-1"></a><span class="st">        Viz[i] += manualCorrection[i];</span></span>
+<span id="cb12-92"><a href="#cb12-92" aria-hidden="true" tabindex="-1"></a><span class="st">    }</span></span>
+<span id="cb12-93"><a href="#cb12-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-94"><a href="#cb12-94" aria-hidden="true" tabindex="-1"></a><span class="st">    if (hotspot) {</span></span>
+<span id="cb12-95"><a href="#cb12-95" aria-hidden="true" tabindex="-1"></a><span class="st">        if ((!cloudAvoidance) || (!isCloud(sample) &amp;&amp; (sample.B02 &lt; avoidanceHelper))) {</span></span>
+<span id="cb12-96"><a href="#cb12-96" aria-hidden="true" tabindex="-1"></a><span class="st">            switch (style) {</span></span>
+<span id="cb12-97"><a href="#cb12-97" aria-hidden="true" tabindex="-1"></a><span class="st">                case 1:</span></span>
+<span id="cb12-98"><a href="#cb12-98" aria-hidden="true" tabindex="-1"></a><span class="st">                    if ((sample.B12 + sample.B11) &gt; (hsThreshold[0] / hsSensitivity)) return [((boost * 0.50 * sample.B12) + Viz[0]), ((boost * 0.50 * sample.B11) + Viz[1]), Viz[2], sample.dataMask];</span></span>
+<span id="cb12-99"><a href="#cb12-99" aria-hidden="true" tabindex="-1"></a><span class="st">                    if ((sample.B12 + sample.B11) &gt; (hsThreshold[1] / hsSensitivity)) return [((boost * 0.50 * sample.B12) + Viz[0]), ((boost * 0.20 * sample.B11) + Viz[1]), Viz[2], sample.dataMask];</span></span>
+<span id="cb12-100"><a href="#cb12-100" aria-hidden="true" tabindex="-1"></a><span class="st">                    if ((sample.B12 + sample.B11) &gt; (hsThreshold[2] / hsSensitivity)) return [((boost * 0.50 * sample.B12) + Viz[0]), ((boost * 0.10 * sample.B11) + Viz[1]), Viz[2], sample.dataMask];</span></span>
+<span id="cb12-101"><a href="#cb12-101" aria-hidden="true" tabindex="-1"></a><span class="st">                    if ((sample.B12 + sample.B11) &gt; (hsThreshold[3] / hsSensitivity)) return [((boost * 0.50 * sample.B12) + Viz[0]), ((boost * 0.00 * sample.B11) + Viz[1]), Viz[2], sample.dataMask];</span></span>
+<span id="cb12-102"><a href="#cb12-102" aria-hidden="true" tabindex="-1"></a><span class="st">                    break;</span></span>
+<span id="cb12-103"><a href="#cb12-103" aria-hidden="true" tabindex="-1"></a><span class="st">                case 2:</span></span>
+<span id="cb12-104"><a href="#cb12-104" aria-hidden="true" tabindex="-1"></a><span class="st">                    if ((sample.B12 + sample.B11) &gt; (hsThreshold[3] / hsSensitivity)) return [1, 0, 0, sample.dataMask];</span></span>
+<span id="cb12-105"><a href="#cb12-105" aria-hidden="true" tabindex="-1"></a><span class="st">                    break;</span></span>
+<span id="cb12-106"><a href="#cb12-106" aria-hidden="true" tabindex="-1"></a><span class="st">                case 3:</span></span>
+<span id="cb12-107"><a href="#cb12-107" aria-hidden="true" tabindex="-1"></a><span class="st">                    if ((sample.B12 + sample.B11) &gt; (hsThreshold[3] / hsSensitivity)) return [1, 1, 0, sample.dataMask];</span></span>
+<span id="cb12-108"><a href="#cb12-108" aria-hidden="true" tabindex="-1"></a><span class="st">                    break;</span></span>
+<span id="cb12-109"><a href="#cb12-109" aria-hidden="true" tabindex="-1"></a><span class="st">                case 4:</span></span>
+<span id="cb12-110"><a href="#cb12-110" aria-hidden="true" tabindex="-1"></a><span class="st">                    if ((sample.B12 + sample.B11) &gt; (hsThreshold[3] / hsSensitivity)) return [Viz[0] + 0.2, Viz[1] - 0.2, Viz[2] - 0.2, sample.dataMask];</span></span>
+<span id="cb12-111"><a href="#cb12-111" aria-hidden="true" tabindex="-1"></a><span class="st">                    break;</span></span>
+<span id="cb12-112"><a href="#cb12-112" aria-hidden="true" tabindex="-1"></a><span class="st">                default:</span></span>
+<span id="cb12-113"><a href="#cb12-113" aria-hidden="true" tabindex="-1"></a><span class="st">            }</span></span>
+<span id="cb12-114"><a href="#cb12-114" aria-hidden="true" tabindex="-1"></a><span class="st">        }</span></span>
+<span id="cb12-115"><a href="#cb12-115" aria-hidden="true" tabindex="-1"></a><span class="st">    }</span></span>
+<span id="cb12-116"><a href="#cb12-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-117"><a href="#cb12-117" aria-hidden="true" tabindex="-1"></a><span class="st">    if (showBurnscars) {</span></span>
+<span id="cb12-118"><a href="#cb12-118" aria-hidden="true" tabindex="-1"></a><span class="st">        if (NBRindex &lt; burnscarThreshold) {</span></span>
+<span id="cb12-119"><a href="#cb12-119" aria-hidden="true" tabindex="-1"></a><span class="st">            Viz[0] = Viz[0] + burnscarStrength;</span></span>
+<span id="cb12-120"><a href="#cb12-120" aria-hidden="true" tabindex="-1"></a><span class="st">            Viz[1] = Viz[1] + burnscarStrength;</span></span>
+<span id="cb12-121"><a href="#cb12-121" aria-hidden="true" tabindex="-1"></a><span class="st">        }</span></span>
+<span id="cb12-122"><a href="#cb12-122" aria-hidden="true" tabindex="-1"></a><span class="st">    }</span></span>
+<span id="cb12-123"><a href="#cb12-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-124"><a href="#cb12-124" aria-hidden="true" tabindex="-1"></a><span class="st">    return [Viz[0], Viz[1], Viz[2], sample.dataMask];</span></span>
+<span id="cb12-125"><a href="#cb12-125" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb12-126"><a href="#cb12-126" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="build-the-request-1" class="level3">
+<h3 class="anchored" data-anchor-id="build-the-request-1">Build the request</h3>
+<p>We build the request according to the <a href="https://documentation.dataspace.copernicus.eu/APIs/SentinelHub/ApiReference.html">API Reference</a>, using the <code>SentinelHubRequest</code> class. Each Process API request also needs an <a href="https://documentation.dataspace.copernicus.eu/APIs/SentinelHub/Evalscript.html">evalscript</a>. An evalscript (or “custom script”) is a piece of Javascript code which defines how the satellite data shall be processed by Sentinel Hub and what values the service shall return. It is a required part of any <a href="https://documentation.dataspace.copernicus.eu/APIs/SentinelHub/Process.html">process</a>, <a href="https://documentation.dataspace.copernicus.eu/APIs/SentinelHub/Batch.html">batch processing</a> or <a href="https://documentation.dataspace.copernicus.eu/APIs/SentinelHub/OGC.html">OGC request</a>.</p>
+<p>The information that we specify in the <code>SentinelHubRequest</code> object is: - an evalscript, - a list of input data collections with time interval, - a format of the response, - a bounding box and its size (size or resolution). - <code>mosaickingOrder</code> (optional): in this example we have used <code>leastRecent</code> which will return pixels from the least recent acquisition in the specified time period.</p>
+<div id="20b8f5f3-0193-49e5-be84-97a4dc7b68ea" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>request_wildfire_visualisation <span class="op">=</span> SentinelHubRequest(</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    evalscript<span class="op">=</span>evalscript_wildfire_visualisation,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    input_data<span class="op">=</span>[</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>        SentinelHubRequest.input_data(</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>            data_collection<span class="op">=</span>DataCollection.SENTINEL2_L2A.define_from(</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>                name<span class="op">=</span><span class="st">"s2"</span>, service_url<span class="op">=</span><span class="st">"https://sh.dataspace.copernicus.eu"</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>            ),</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>            time_interval<span class="op">=</span>(<span class="st">"2023-08-07"</span>, <span class="st">"2023-08-07"</span>),</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>            other_args<span class="op">=</span>{<span class="st">"dataFilter"</span>: {<span class="st">"mosaickingOrder"</span>: <span class="st">"leastRecent"</span>}},</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>    responses<span class="op">=</span>[SentinelHubRequest.output_response(<span class="st">"default"</span>, MimeType.PNG)],</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>    geometry<span class="op">=</span>full_geometry,</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>    size<span class="op">=</span>[<span class="dv">1000</span>, <span class="dv">920</span>],</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>    config<span class="op">=</span>config,</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The method <code>get_data()</code> will always return a list of length 1 with the available image from the requested time interval in the form of numpy arrays.</p>
+<div id="23a2dec4-9ce7-4c1a-952e-62eab6900f8b" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>imgs <span class="op">=</span> request_wildfire_visualisation.get_data()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="f3199b4e-f7fa-43c0-827e-23f5d4f94615" class="cell" data-scrolled="true">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Returned data is of type = </span><span class="sc">{</span><span class="bu">type</span>(imgs)<span class="sc">}</span><span class="ss"> and length </span><span class="sc">{</span><span class="bu">len</span>(imgs)<span class="sc">}</span><span class="ss">."</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f"Single element in the list is of type </span><span class="sc">{</span><span class="bu">type</span>(imgs[<span class="op">-</span><span class="dv">1</span>])<span class="sc">}</span><span class="ss"> and has shape </span><span class="sc">{</span>imgs[<span class="op">-</span><span class="dv">1</span>]<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="df292cbf-82c0-443e-97b1-f44e18f42660" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>image <span class="op">=</span> imgs[<span class="dv">0</span>]</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Image type: </span><span class="sc">{</span>image<span class="sc">.</span>dtype<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co"># plot function</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>plot_image(image, factor<span class="op">=</span><span class="dv">1</span> <span class="op">/</span> <span class="dv">255</span>, clip_range<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+</section>
+<section id="mapping-and-measuring-the-area-of-burn-scars" class="level2">
+<h2 class="anchored" data-anchor-id="mapping-and-measuring-the-area-of-burn-scars">3: Mapping and measuring the area of burn scars</h2>
+<p>Now we will focus on the post event, using the normalised burn ratio we can visualise the extent of the burn scar very easily. Let’s create a more focussed area of interest to map out the burn scar area post event:</p>
+<div id="96c14388-a81c-440f-a0fa-ab04376d12ba" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>area_of_interest <span class="op">=</span> <span class="st">"""{</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="st">  "type": "Polygon",</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="st">  "coordinates": [</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="st">    [</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="st">      [</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="st">        -8.920627,</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="st">        37.362517</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="st">      ],</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="st">      [</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="st">        -8.516631,</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="st">        37.362517</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="st">      ],</span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a><span class="st">      [</span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a><span class="st">        -8.516631,</span></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a><span class="st">        37.628372</span></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a><span class="st">      ],</span></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a><span class="st">      [</span></span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a><span class="st">        -8.920627,</span></span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a><span class="st">        37.628372</span></span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a><span class="st">      ],</span></span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a><span class="st">      [</span></span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a><span class="st">        -8.920627,</span></span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a><span class="st">        37.362517</span></span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a><span class="st">      ]</span></span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a><span class="st">    ]</span></span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a><span class="st">  ]</span></span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span></span>
+<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a>aoi <span class="op">=</span> gpd.read_file(area_of_interest)</span>
+<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a>aoi_simplified <span class="op">=</span> aoi.geometry.simplify(<span class="fl">0.001</span>)</span>
+<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a>aoi[<span class="st">"geometry"</span>] <span class="op">=</span> aoi_simplified</span>
+<span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a>aoi[<span class="st">"area"</span>] <span class="op">=</span> aoi.area</span>
+<span id="cb17-34"><a href="#cb17-34" aria-hidden="true" tabindex="-1"></a>aoi.explore(<span class="st">"area"</span>, color<span class="op">=</span><span class="st">"Green"</span>, legend<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="0d7d5183-15f3-4b7b-b725-a5ff5545f058" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>full_geometry <span class="op">=</span> Geometry(aoi.to_crs(<span class="dv">32630</span>).geometry.values[<span class="dv">0</span>], crs<span class="op">=</span>CRS.UTM_30N)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="write-an-evalscript-build-the-request" class="level3">
+<h3 class="anchored" data-anchor-id="write-an-evalscript-build-the-request">Write an Evalscript &amp; Build the Request</h3>
+<p>This time we have combined the evalscript and the API request into a single cell:</p>
+<div id="da9524bd-8c05-44a4-ada9-d1f0df46c693" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>evalscript_burn_scar_map <span class="op">=</span> <span class="st">"""</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="st">//VERSION=3</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="st">// Burneed area detection</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="st">// Author: Monja B. Šebela</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="st">function setup() {</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="st">    return {</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="st">        input: ["B02", "B03", "B04", "B08", "B11", "B12", "dataMask"],</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="st">        output: { bands: 4 }</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="st">      };</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a><span class="st">function evaluatePixel(samples) {</span></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a><span class="st">    var NDWI=index(samples.B03, samples.B08); </span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a><span class="st">    var NDVI=index(samples.B08, samples.B04);</span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a><span class="st">    var INDEX= ((samples.B11 - samples.B12) / (samples.B11 + samples.B12))+(samples.B08);</span></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a><span class="st">    if((INDEX&gt;0.2)||(samples.B02&gt;0.1)||(samples.B11&lt;0.1)||(NDVI&gt;0.3)||(NDWI &gt; 0.1)){</span></span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a><span class="st">        return[2.5*samples.B04, 2.5*samples.B03, 2.5*samples.B02, samples.dataMask]</span></span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a><span class="st">    }</span></span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a><span class="st">    else {</span></span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a><span class="st">    return [1, 0, 0, samples.dataMask]</span></span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a><span class="st">    }</span></span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span></span>
+<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a>request_burn_scar_map <span class="op">=</span> SentinelHubRequest(</span>
+<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a>    evalscript<span class="op">=</span>evalscript_burn_scar_map,</span>
+<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a>    input_data<span class="op">=</span>[</span>
+<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a>        SentinelHubRequest.input_data(</span>
+<span id="cb19-31"><a href="#cb19-31" aria-hidden="true" tabindex="-1"></a>            data_collection<span class="op">=</span>DataCollection.SENTINEL2_L2A.define_from(</span>
+<span id="cb19-32"><a href="#cb19-32" aria-hidden="true" tabindex="-1"></a>                name<span class="op">=</span><span class="st">"s2"</span>, service_url<span class="op">=</span><span class="st">"https://sh.dataspace.copernicus.eu"</span></span>
+<span id="cb19-33"><a href="#cb19-33" aria-hidden="true" tabindex="-1"></a>            ),</span>
+<span id="cb19-34"><a href="#cb19-34" aria-hidden="true" tabindex="-1"></a>            time_interval<span class="op">=</span>(<span class="st">"2023-08-10"</span>, <span class="st">"2023-08-15"</span>),</span>
+<span id="cb19-35"><a href="#cb19-35" aria-hidden="true" tabindex="-1"></a>            other_args<span class="op">=</span>{<span class="st">"dataFilter"</span>: {<span class="st">"mosaickingOrder"</span>: <span class="st">"leastRecent"</span>}},</span>
+<span id="cb19-36"><a href="#cb19-36" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb19-37"><a href="#cb19-37" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb19-38"><a href="#cb19-38" aria-hidden="true" tabindex="-1"></a>    responses<span class="op">=</span>[SentinelHubRequest.output_response(<span class="st">"default"</span>, MimeType.PNG)],</span>
+<span id="cb19-39"><a href="#cb19-39" aria-hidden="true" tabindex="-1"></a>    geometry<span class="op">=</span>full_geometry,</span>
+<span id="cb19-40"><a href="#cb19-40" aria-hidden="true" tabindex="-1"></a>    size<span class="op">=</span>[<span class="dv">1000</span>, <span class="dv">920</span>],</span>
+<span id="cb19-41"><a href="#cb19-41" aria-hidden="true" tabindex="-1"></a>    config<span class="op">=</span>config,</span>
+<span id="cb19-42"><a href="#cb19-42" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The method <code>get_data()</code> will always return a list of length 1 with the available image from the requested time interval in the form of numpy arrays.</p>
+<div id="5dae52b6-7d58-4e26-b7ec-f0b155eca9f8" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>burn_scar_imgs <span class="op">=</span> request_burn_scar_map.get_data()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="aa0bc5d8-6262-4fa3-9bb0-4c5717a44877" class="cell" data-scrolled="true">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f"Returned data is of type = </span><span class="sc">{</span><span class="bu">type</span>(burn_scar_imgs)<span class="sc">}</span><span class="ss"> and length </span><span class="sc">{</span><span class="bu">len</span>(burn_scar_imgs)<span class="sc">}</span><span class="ss">."</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f"Single element in the list is of type </span><span class="sc">{</span><span class="bu">type</span>(burn_scar_imgs[<span class="op">-</span><span class="dv">1</span>])<span class="sc">}</span><span class="ss"> and has shape </span><span class="sc">{</span>burn_scar_imgs[<span class="op">-</span><span class="dv">1</span>]<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="b57bbffe-aac8-4161-9278-075c804f19be" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>image <span class="op">=</span> burn_scar_imgs[<span class="dv">0</span>]</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Image type: </span><span class="sc">{</span>image<span class="sc">.</span>dtype<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="co"># plot function</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>plot_image(image, factor<span class="op">=</span><span class="fl">1.5</span> <span class="op">/</span> <span class="dv">255</span>, clip_range<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The detection of the burn scar is not perfect, but we can now see the spatial extent using the threshold we defined in the evalscript.</p>
+<section id="exercise" class="level4">
+<h4 class="anchored" data-anchor-id="exercise">Exercise:</h4>
+<ul>
+<li>Can you improve the detection of the burn scar in the above image?
+<ul>
+<li>Hint: Can you find and adjust the parameter in the evalscript that does this or formulate your own method to do this.</li>
+</ul></li>
+<li>If you have time, are you able to find a way to map severely burned and moderately burned areas?</li>
+</ul>
+
+
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

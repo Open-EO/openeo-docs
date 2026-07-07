@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Observing increase in damage done by Wildfires in Greece - from browsing to coding – openEO</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<script src="../../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap-e199741f1aac39f7a8ac46de762c37ac.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css?family=Roboto+Mono|Source+Sans+Pro:300,400,600" rel="stylesheet">
+<meta name="zd-site-verification" content="xj9koofr1crilmoclgxsjd">
+
+<script type="text/javascript">
+
+
+    function setActiveClassForCurrentUrl() {
+        // Find all links in the navbarCollapse div where the href attribute is set to the current URL
+        let anchorTag = document.querySelector('#navbarCollapse a[href="' + window.location.href + '"]');
+
+        if (anchorTag) {
+
+            // Find the closest parent of the navigation
+            let parentUl = anchorTag.closest('li.nav-item')?.querySelector('a.nav-link');
+
+            if (parentUl) {
+                // Add active class to both the anchor tag and the parent ul
+                anchorTag.classList.add('active');
+                parentUl.classList.add('active');
+            }
+        }
+    }
+
+    window.addEventListener('popstate', setActiveClassForCurrentUrl);
+    window.addEventListener('hashchange', setActiveClassForCurrentUrl);
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const badges = Array.from(document.querySelectorAll(".tag-filter-badge"));
+        const items = Array.from(document.querySelectorAll(".tag-filter-item"));
+        if (badges.length === 0 || items.length === 0) return;
+
+        const getTags = (item) => {
+            const fromDataAttr = (item.getAttribute("data-tags") || "")
+            .toLowerCase()
+            .split(/\s+/)
+            .filter(Boolean);
+
+            if (fromDataAttr.length > 0) {
+            return new Set(fromDataAttr);
+            }
+
+            const fromBadges = Array.from(item.querySelectorAll(".badge"))
+            .flatMap((el) => Array.from(el.classList))
+            .filter((cls) => cls.startsWith("badge-"))
+            .map((cls) => cls.replace("badge-", "").toLowerCase());
+
+            return new Set(fromBadges);
+        };
+
+        const applyFilter = () => {
+            const activeBadges = badges.filter((b) => b.classList.contains("active"));
+            const selectedTags = new Set(activeBadges.map((b) => b.getAttribute("data-tag")));
+
+            items.forEach((item) => {
+            const tags = getTags(item);
+            const visible = Array.from(selectedTags).some((tag) => tags.has(tag));
+            item.hidden = !visible;
+            });
+        };
+
+        badges.forEach((badge) => {
+            badge.addEventListener("click", function (e) {
+            e.preventDefault();
+            this.classList.toggle("active");
+            this.classList.toggle("inactive");
+            applyFilter();
+            });
+        });
+
+        applyFilter();
+        });
+
+
+
+    window.onload = () => {
+        const elems = document.getElementsByClassName('navbar-title');
+        if (elems.length > 0) {
+            const title = elems[0];
+            title.parentElement.href = '/index.html'
+        }
+        setActiveClassForCurrentUrl();
+    }
+
+ 
+</script>
+
+
+<link rel="stylesheet" href="../../../custom.css">
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../../index.html">
+    <span class="navbar-title">openEO</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../../about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://hub.openeo.org/" target="_blank"> 
+<span class="menu-text">Services</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../news/news.html"> 
+<span class="menu-text">News</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../meetings.html"> 
+<span class="menu-text">Meetings</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../events/events.html"> 
+<span class="menu-text">Events</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../psc.html"> 
+<span class="menu-text">PSC</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-user-documentation" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">User Documentation</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-user-documentation">    
+        <li>
+    <a class="dropdown-item" href="../../../documentation/cookbook.html">
+ <span class="dropdown-text">COOKBOOK</span></a>
+  </li>  
+        <li><hr class="dropdown-divider"></li>
+        <li class="dropdown-header">KEY CONCEPTS</li>
+        <li>
+    <a class="dropdown-item" href="../../../404-not-found.html">
+ <span class="dropdown-text">Backends</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../documentation/keyconcepts/openeo_api.qmd">
+ <span class="dropdown-text">Datacube</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../documentation/keyconcepts/processes.qmd">
+ <span class="dropdown-text">Processes</span></a>
+  </li>  
+        <li><hr class="dropdown-divider"></li>
+        <li class="dropdown-header">SETUP</li>
+        <li><hr class="dropdown-divider"></li>
+        <li class="dropdown-header">DATA DISCOVERY</li>
+        <li>
+    <a class="dropdown-item" href="../../../404-not-found.html">
+ <span class="dropdown-text">Collections</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../404-not-found.html">
+ <span class="dropdown-text">Load Collections</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../404-not-found.html">
+ <span class="dropdown-text">Load STAC metadata</span></a>
+  </li>  
+        <li><hr class="dropdown-divider"></li>
+        <li class="dropdown-header">CUBE OPERATIONS</li>
+        <li>
+    <a class="dropdown-item" href="../../../documentation/cube_operations/preprocessing.html">
+ <span class="dropdown-text">Preprocessing</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../documentation/cube_operations/spatial_operations.html">
+ <span class="dropdown-text">Spatial Operations</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../documentation/cube_operations/temporal_operations.html">
+ <span class="dropdown-text">Temporal Operations</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../documentation/cube_operations/spectral_operations.html">
+ <span class="dropdown-text">Spectral Operations</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../documentation/cube_operations/cube_manipulations.html">
+ <span class="dropdown-text">Cube Manipulations</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../documentation/cube_operations/udf.html">
+ <span class="dropdown-text">User Defined Functions</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../documentation/cube_operations/machine_learning.html">
+ <span class="dropdown-text">Machine Learning</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../documentation/cube_operations/udp.html">
+ <span class="dropdown-text">User Defined Processes</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../documentation/cube_operations/execute_jobs.html">
+ <span class="dropdown-text">Execute openEO Jobs</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../documentation/export_formats.html">
+ <span class="dropdown-text">EXPORT FORMATS</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-developers" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Developers</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-developers">    
+        <li>
+    <a class="dropdown-item" href="https://api.openeo.org/">
+ <span class="dropdown-text">REST API Reference</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../404-not-found.html">
+ <span class="dropdown-text">Xarray/Dask Guide</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../404-not-found.html">
+ <span class="dropdown-text">Backend Development</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-support" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Support</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-support">    
+        <li>
+    <a class="dropdown-item" href="../../../contact.html">
+ <span class="dropdown-text">Contact</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://forum.dataspace.copernicus.eu/c/openeo/28">
+ <span class="dropdown-text">CDSE Forum</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../Examples.qmd">
+ <span class="dropdown-text">Notebook examples</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools tools-wide">
+    <a href="mailto:openeo.psc@uni-muenster.de" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-envelope"></i></a>
+    <a href="https://www.linkedin.com/company/openeospec/" title="" class="quarto-navigation-tool px-1" aria-label="" target="_blank"><i class="bi bi-linkedin"></i></a>
+    <a href="https://bsky.app/profile/openeo.org" title="" class="quarto-navigation-tool px-1" aria-label="" target="_blank"><i class="bi bi-bluesky"></i></a>
+    <a href="https://github.com/Open-EO" title="" class="quarto-navigation-tool px-1" aria-label="" target="_blank"><i class="bi bi-github"></i></a>
+    <a href="https://www.youtube.com/channel/UCMJQil8j9sHBQkcSlSaEsvQ" title="" class="quarto-navigation-tool px-1" aria-label="" target="_blank"><i class="bi bi-youtube"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#where-to-start---our-use-case" id="toc-where-to-start---our-use-case" class="nav-link" data-scroll-target="#where-to-start---our-use-case">Where to start - our use case</a></li>
+  <li><a href="#step-1-copernicus-browser" id="toc-step-1-copernicus-browser" class="nav-link" data-scroll-target="#step-1-copernicus-browser">Step 1: Copernicus Browser</a>
+  <ul class="collapse">
+  <li><a href="#visualizing-wildfire-effects-with-the-burnt-area-visualization-custom-script" id="toc-visualizing-wildfire-effects-with-the-burnt-area-visualization-custom-script" class="nav-link" data-scroll-target="#visualizing-wildfire-effects-with-the-burnt-area-visualization-custom-script">Visualizing wildfire effects with the Burnt Area Visualization Custom Script</a></li>
+  </ul></li>
+  <li><a href="#step-2-request-builder" id="toc-step-2-request-builder" class="nav-link" data-scroll-target="#step-2-request-builder">Step 2: Request Builder</a></li>
+  <li><a href="#step-3-jupyter-notebooks" id="toc-step-3-jupyter-notebooks" class="nav-link" data-scroll-target="#step-3-jupyter-notebooks">Step 3: Jupyter notebooks</a>
+  <ul class="collapse">
+  <li><a href="#importing-necessary-libraries" id="toc-importing-necessary-libraries" class="nav-link" data-scroll-target="#importing-necessary-libraries">Importing necessary libraries</a></li>
+  <li><a href="#credentials" id="toc-credentials" class="nav-link" data-scroll-target="#credentials">Credentials</a></li>
+  </ul></li>
+  <li><a href="#defining-time-slots" id="toc-defining-time-slots" class="nav-link" data-scroll-target="#defining-time-slots">Defining time slots</a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content column-page-left" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Observing increase in damage done by Wildfires in Greece - from browsing to coding</h1>
+</div>
+
+
+
+<div class="quarto-title-meta column-page-left">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introduction" class="level3">
+<h3 class="anchored" data-anchor-id="introduction">Introduction</h3>
+<p>The Copernicus Data Space Ecosystem supports learning programming for Earth Observation data analysis in series of incremental steps. This notebook takes you from viewing satellite imagery and experimenting with different visualizations through understanding API requests in a graphical interface, to writing and editing your own code in Jupyter Notebooks.</p>
+</section>
+<section id="where-to-start---our-use-case" class="level3">
+<h3 class="anchored" data-anchor-id="where-to-start---our-use-case">Where to start - our use case</h3>
+<p>In our example, we want to analyse the effects of wildfires. Wildfires are becoming more frequent in the wake of climate change, and Earth observation offers far-reaching possibilities for identifying wildfires and quantifying their impact. For this, first we will first look into spectral indices that highlight vegetation fires and burnt areas, then we will find ways to download raster map data of burnt areas, and finally, we will calculate the extent of burnt area the JupyterLab to visualise changes over time.</p>
+</section>
+<section id="step-1-copernicus-browser" class="level2">
+<h2 class="anchored" data-anchor-id="step-1-copernicus-browser">Step 1: Copernicus Browser</h2>
+<p>To get first impression of what wildfires look like on Sentinel-2 imagery, take a look at the extensive forest fires in Canada <a href="https://link.dataspace.copernicus.eu/shk">here</a> - the link will take you directly to the same scene as the image below, in the Copernicus Browser.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./img/copernicus_browser_canada_wildfire.jpg" class="img-fluid figure-img"></p>
+<figcaption>True Color Sentinel-2 image of Wildfires near Lac de la Frégate, Quebec, Canada</figcaption>
+</figure>
+</div>
+<p>You can experiment with different visualizations in the layer list in the sidebar. Which one provides the most intuitive view of the fire activity? Probably the <a href="https://link.dataspace.copernicus.eu/sl6">SWIR visualisation</a>, which is based on bands B12, B8A and B4. It shows the thermal activity of the fire and partly avoids the obscuring effect of the smoke.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./img/copernicus_browser_canada_wildfire_swir.jpg" class="img-fluid figure-img"></p>
+<figcaption>SWIR composite Sentinel-2 image of wildfires near Lac de la Frégate, Quebec, Canada</figcaption>
+</figure>
+</div>
+<p>It is also possible to create new custom visualisations using the Browser’s composite tool: Here you can drag and drop individual image bands onto the Red, Green and Blue channels or the operands of a spectral index.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./img/copernicus_browser_canada_wildfire_swir_drag_and_drop.jpg" class="img-fluid figure-img"></p>
+<figcaption>Here you can test various visualizations in a graphical interface</figcaption>
+</figure>
+</div>
+<p>Finally, you can edit the actual visualisation code in Javascript by using the Custom Script window. Custom scripts - or <a href="https://documentation.dataspace.copernicus.eu/APIs/SentinelHub/Evalscript.html">evalscripts</a> as we call them when editing API requests - are short pieces of code that combine a mathematical operation performed on each pixel of the image (essentially a spectral index) and a visualisation that we perform on the results (a palette). Each visualisation layer has its own custom script that can be read and written directly in the Browser.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./img/copernicus_browser_canada_wildfire_swir_custom_script.jpg" class="img-fluid figure-img"></p>
+<figcaption>Here you can edit the visualization code directly</figcaption>
+</figure>
+</div>
+<p>In addition, there is a large repository of <a href="https://custom-scripts.sentinel-hub.com/">Custom Scripts</a> that contains evalscript code for many different use cases across a range of satellite datasets and application areas.</p>
+<section id="visualizing-wildfire-effects-with-the-burnt-area-visualization-custom-script" class="level3">
+<h3 class="anchored" data-anchor-id="visualizing-wildfire-effects-with-the-burnt-area-visualization-custom-script">Visualizing wildfire effects with the Burnt Area Visualization Custom Script</h3>
+<p>The <a href="https://custom-scripts.sentinel-hub.com/sentinel-2/burned_area_ms/">Burnt Area Visualization Custom Script</a> combines the Normalized Differential Vegetation Index (NDVI), the Normalized Difference Moisture Index (NDMI) and a custom index using bands B12, B11 and B08 to detect burnt areas.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">//VERSION=3</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">// Burned area detection</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">// Author: Monja B. Šebela</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">setup</span>() {</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>        <span class="dt">input</span><span class="op">:</span> [<span class="st">"B02"</span><span class="op">,</span> <span class="st">"B03"</span><span class="op">,</span> <span class="st">"B04"</span><span class="op">,</span> <span class="st">"B08"</span><span class="op">,</span> <span class="st">"B11"</span><span class="op">,</span> <span class="st">"B12"</span><span class="op">,</span> <span class="st">"dataMask"</span>]<span class="op">,</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>        <span class="dt">output</span><span class="op">:</span> { <span class="dt">bands</span><span class="op">:</span> <span class="dv">4</span> }</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>      }<span class="op">;</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">evaluatePixel</span>(samples) {</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> NDWI<span class="op">=</span><span class="fu">index</span>(samples<span class="op">.</span><span class="at">B03</span><span class="op">,</span> samples<span class="op">.</span><span class="at">B08</span>)<span class="op">;</span> </span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> NDVI<span class="op">=</span><span class="fu">index</span>(samples<span class="op">.</span><span class="at">B08</span><span class="op">,</span> samples<span class="op">.</span><span class="at">B04</span>)<span class="op">;</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> INDEX<span class="op">=</span> ((samples<span class="op">.</span><span class="at">B11</span> <span class="op">-</span> samples<span class="op">.</span><span class="at">B12</span>) <span class="op">/</span> (samples<span class="op">.</span><span class="at">B11</span> <span class="op">+</span> samples<span class="op">.</span><span class="at">B12</span>))<span class="op">+</span>(samples<span class="op">.</span><span class="at">B08</span>)<span class="op">;</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>((INDEX<span class="op">&gt;</span><span class="fl">0.1</span>)<span class="op">||</span>(samples<span class="op">.</span><span class="at">B02</span><span class="op">&gt;</span><span class="fl">0.1</span>)<span class="op">||</span>(samples<span class="op">.</span><span class="at">B11</span><span class="op">&lt;</span><span class="fl">0.1</span>)<span class="op">||</span>(NDVI<span class="op">&gt;</span><span class="fl">0.3</span>)<span class="op">||</span>(NDWI <span class="op">&gt;</span> <span class="fl">0.1</span>)){</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span>[<span class="fl">2.5</span><span class="op">*</span>samples<span class="op">.</span><span class="at">B04</span><span class="op">,</span> <span class="fl">2.5</span><span class="op">*</span>samples<span class="op">.</span><span class="at">B03</span><span class="op">,</span> <span class="fl">2.5</span><span class="op">*</span>samples<span class="op">.</span><span class="at">B02</span><span class="op">,</span> samples<span class="op">.</span><span class="at">dataMask</span>]</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span> {</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> [<span class="dv">1</span><span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="dv">0</span><span class="op">,</span> samples<span class="op">.</span><span class="at">dataMask</span>]</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The script creates a small decision tree that combines different thresholds applied to these indices and highlights the areas identified as burnt in red. Copy the script into the Custom Script panel of the Copernicus Browser to see how the burnt areas are highlighted. Try adjusting the individual thresholds to see if you can improve the detection of burnt area!</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./img/copernicus_browser_canada_wildfire_custom_script.jpg" class="img-fluid figure-img"></p>
+<figcaption>Visualization of burnt area in Canada using a custom script</figcaption>
+</figure>
+</div>
+<p>In the next step, you will examine <a href="https://link.dataspace.copernicus.eu/951">this</a> time series of burnt area from the example of the 2023 wildfires near Alexandropouli, Greece:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./img/copernicus_browser_greece_wildfire_custom_script.jpg" class="img-fluid figure-img"></p>
+<figcaption>Visualization of burnt area in Greece using a custom script</figcaption>
+</figure>
+</div>
+<p>Note that the custom script in the Browser has an additional output: in the setup section, besides “default”, “burnMask” is also defined, with the values calculated from the decision tree: 0 if the area is not burned, 1 if it is burnt. This property of the script will be useful when we switch to Requests Builder and Jupyter Notebooks.</p>
+</section>
+</section>
+<section id="step-2-request-builder" class="level2">
+<h2 class="anchored" data-anchor-id="step-2-request-builder">Step 2: Request Builder</h2>
+<p><a href="https://shapps.dataspace.copernicus.eu/requests-builder/">Request Builder</a> is an online graphical interface to the Sentinel Hub API-s. This tool makes it easier to create and debug API requests, and supports the export of the resulting code in various programming languages. In this tutorial, we will create a <a href="https://documentation.dataspace.copernicus.eu/APIs/SentinelHub/Process.html">Process API</a> request for downloading raster images of the burnt area from the location of the wildfire in Greece that we have already examined in the Browser. Just like a <a href="https://github.com/eu-cdse/notebook-samples/blob/main/sentinelhub/introduction_to_SH_APIs.ipynb">Process API request in code</a>, a request created with the Requests Builder consists of 5 main parts: - <code>Data Collection</code> - <code>Time Range</code> - <code>Area of Interest</code> - <code>Output</code> - <code>Evalscript</code></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./img/request_builder_wildfire_script.jpg" class="img-fluid figure-img"></p>
+<figcaption>Screenshot of Requests Builder for the Alexandropouli wildfire test location</figcaption>
+</figure>
+</div>
+<p>These can be set individually in the interface. Use the following settings for the Alexandropouli Wildfire example here:</p>
+<ul>
+<li><code>Data Collection</code>: sentinel-2 l2a</li>
+<li><code>Time Range</code>: From 12.09.2023 to 13.09.2023</li>
+<li><code>Area of Interest</code>: [25.558398, 40.806995, 26.298798, 41.270524]</li>
+</ul>
+<p>Click <code>Parse</code> to parse the area of interest - it should be displayed in the map window and zoom in to the rectangle of interest.</p>
+<ul>
+<li><code>Evalscript</code>: use the evalscript from the previous Copernicus Browser example:</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">setup</span>() {</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>        <span class="dt">input</span><span class="op">:</span> [<span class="st">"B02"</span><span class="op">,</span> <span class="st">"B03"</span><span class="op">,</span> <span class="st">"B04"</span><span class="op">,</span> <span class="st">"B08"</span><span class="op">,</span> <span class="st">"B11"</span><span class="op">,</span> <span class="st">"B12"</span><span class="op">,</span> <span class="st">"dataMask"</span>]<span class="op">,</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>        <span class="dt">output</span><span class="op">:</span> [</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>            { <span class="dt">id</span><span class="op">:</span> <span class="st">"default"</span><span class="op">,</span> <span class="dt">bands</span><span class="op">:</span> <span class="dv">4</span> }<span class="op">,</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>            { <span class="dt">id</span><span class="op">:</span> <span class="st">"burnMask"</span><span class="op">,</span> <span class="dt">bands</span><span class="op">:</span> <span class="dv">1</span><span class="op">,</span> <span class="dt">sampleType</span><span class="op">:</span> <span class="st">"UINT8"</span> }<span class="op">,</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>        ]</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>      }<span class="op">;</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">evaluatePixel</span>(samples) {</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> NDWI<span class="op">=</span><span class="fu">index</span>(samples<span class="op">.</span><span class="at">B03</span><span class="op">,</span> samples<span class="op">.</span><span class="at">B08</span>)<span class="op">;</span> </span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> NDVI<span class="op">=</span><span class="fu">index</span>(samples<span class="op">.</span><span class="at">B08</span><span class="op">,</span> samples<span class="op">.</span><span class="at">B04</span>)<span class="op">;</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> INDEX<span class="op">=</span> ((samples<span class="op">.</span><span class="at">B11</span> <span class="op">-</span> samples<span class="op">.</span><span class="at">B12</span>) <span class="op">/</span> (samples<span class="op">.</span><span class="at">B11</span> <span class="op">+</span> samples<span class="op">.</span><span class="at">B12</span>))<span class="op">+</span>(samples<span class="op">.</span><span class="at">B08</span>)<span class="op">;</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>((INDEX<span class="op">&gt;</span><span class="fl">0.1</span>)<span class="op">||</span>(samples<span class="op">.</span><span class="at">B02</span><span class="op">&gt;</span><span class="fl">0.1</span>)<span class="op">||</span>(samples<span class="op">.</span><span class="at">B11</span><span class="op">&lt;</span><span class="fl">0.1</span>)<span class="op">||</span>(NDVI<span class="op">&gt;</span><span class="fl">0.3</span>)<span class="op">||</span>(NDWI <span class="op">&gt;</span> <span class="fl">0.1</span>)){</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span>{</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>            <span class="cf">default</span><span class="op">:</span>[<span class="fl">2.5</span><span class="op">*</span>samples<span class="op">.</span><span class="at">B04</span><span class="op">,</span> <span class="fl">2.5</span><span class="op">*</span>samples<span class="op">.</span><span class="at">B03</span><span class="op">,</span> <span class="fl">2.5</span><span class="op">*</span>samples<span class="op">.</span><span class="at">B02</span><span class="op">,</span> samples<span class="op">.</span><span class="at">dataMask</span>]<span class="op">,</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>            <span class="dt">burnMask</span><span class="op">:</span>[<span class="dv">0</span>]</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span> {</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">default</span><span class="op">:</span> [<span class="dv">1</span><span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="dv">0</span><span class="op">,</span> samples<span class="op">.</span><span class="at">dataMask</span>]<span class="op">,</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>        <span class="dt">burnMask</span><span class="op">:</span> [<span class="dv">1</span>]}</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><code>Output</code>: Remember, the evalscript has two different outputs, <code>default</code> with 4 bands (Red, Green, Blue and Transparency/Data Mask), and <code>burnMask</code>, which returns 1 where the area is burnt and 0 where it is not. We need to set up the output so that a raster is created from these two outputs for each image. As the area of interest is rather large and the limit for a single request is 2500×2500 pixels, we will reduce the resolution to 40 meters. First click on the <code>resolution</code> tab, then select
+<ul>
+<li><code>Res X in meters</code>: 40</li>
+<li><code>Res Y in meters</code>: 40</li>
+<li><code>Image format</code>: TIFF</li>
+<li><code>Identifier</code>: default</li>
+</ul></li>
+</ul>
+<p>Now you need to click on the <code>Add Response</code> button to create a second output dataset. This should have the same format and be named according to the second output in the evalscript: - <code>Image format</code>: TIFF - <code>Identifier</code>: burnMask</p>
+<p>Finally, you must set the language of the Request Preview to <code>python-requests</code> in the dropdown menu. This will create request code you can later use in the Jupyter Notebook as well.</p>
+<p>If you now click on <code>Send request</code>, you will be prompted to save the request and download the response. The response is a .tar file containing <code>default.tif</code> and <code>burnMask.tif</code>. To download raster datasets of the burnt area for a time series, you only need to change the <code>Time Range</code> parameter and repeat running the request. Possible dates can be the following:</p>
+<ul>
+<li>03.08.2023 - 04.08.2023</li>
+<li>23.08.2023 - 24.08.2023</li>
+<li>28.08.2023 - 29.08.2023</li>
+<li>02.09.2023 - 03.08.2023</li>
+<li>12.08.2023 - 13.08.2023</li>
+</ul>
+<p>The result is a series of TIFF files, including burnt/non-burnt masks, which you can process locally in GIS software to calculate quantitative results. But more importantly, you can copy the code from the Request Preview window and use it in a Jupyter Notebook of the same test case.</p>
+</section>
+<section id="step-3-jupyter-notebooks" class="level2">
+<h2 class="anchored" data-anchor-id="step-3-jupyter-notebooks">Step 3: Jupyter notebooks</h2>
+<section id="importing-necessary-libraries" class="level3">
+<h3 class="anchored" data-anchor-id="importing-necessary-libraries">Importing necessary libraries</h3>
+<p>To run this example, you do not need any additional GIS-specific libraries. You can of course improve the workflow with additional libraries, but for someone new to earth observation coding, this basic notebook could be a good place to start.</p>
+<div id="1c02b7d8" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> oauthlib.oauth2 <span class="im">import</span> BackendApplicationClient</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> requests_oauthlib <span class="im">import</span> OAuth2Session</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sentinelhub <span class="im">import</span> SHConfig</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tarfile</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> getpass</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="credentials" class="level3">
+<h3 class="anchored" data-anchor-id="credentials">Credentials</h3>
+<p>You can obtain credentials for the Sentinel Hub services (<code>client_id</code> &amp; <code>client_secret</code>) by navigating to your <a href="https://shapps.dataspace.copernicus.eu/dashboard/#/">Dashboard</a>. In the User Settings, you can create a new OAuth Client to generate these credentials. More detailed instructions can be found on the corresponding <a href="https://documentation.dataspace.copernicus.eu/APIs/SentinelHub/Overview/Authentication.html">documentation page</a>.</p>
+<p>Once you run the next cell, you will be prompted to enter the <code>client_id</code> and <code>client_secret</code>.</p>
+<div id="0ba35163" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Your client credentials</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>config <span class="op">=</span> SHConfig()</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># config.sh_client_id = getpass.getpass("Enter your SentinelHub client id")</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># config.sh_client_secret = getpass.getpass("Enter your SentinelHub client secret")</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>config.sh_token_url <span class="op">=</span> <span class="st">"https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token"</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>config.sh_base_url <span class="op">=</span> <span class="st">"https://sh.dataspace.copernicus.eu"</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co"># config.save("cdse")</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>If you have the credentials, you will need a session token to make requests. This token is generated in the following function.</p>
+<div id="80a2e9be" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> getauth_token():</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create a session</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    client <span class="op">=</span> BackendApplicationClient(client_id<span class="op">=</span>config.sh_client_id)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    oauth <span class="op">=</span> OAuth2Session(client<span class="op">=</span>client)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get token for the session</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    token <span class="op">=</span> oauth.fetch_token(</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        token_url<span class="op">=</span><span class="st">"https://identity.cloudferro.com/auth/realms/CDSE/protocol/openid-connect/token"</span>,</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        client_id<span class="op">=</span>config.sh_client_id,</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>        client_secret<span class="op">=</span>config.sh_client_secret,</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># All requests using this session will have an access token automatically added</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> oauth</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+</section>
+<section id="defining-time-slots" class="level2">
+<h2 class="anchored" data-anchor-id="defining-time-slots">Defining time slots</h2>
+<p>Using the <a href="https://shapps.dataspace.copernicus.eu/requests-builder/">Requests Builder</a> and the Browser, we can see all the images acquisitions that match our criteria. In the following cell, we enter these time slots to create a time series and understand the extent of the damage caused.</p>
+<div id="3b7dd6d6" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>slots <span class="op">=</span> [</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"2023-08-03"</span>, <span class="st">"2023-08-04"</span>),</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"2023-08-23"</span>, <span class="st">"2023-08-24"</span>),</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"2023-08-28"</span>, <span class="st">"2023-08-29"</span>),</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"2023-09-02"</span>, <span class="st">"2023-09-03"</span>),</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"2023-09-12"</span>, <span class="st">"2023-09-13"</span>),</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Time Slots:</span><span class="ch">\n</span><span class="st">"</span>)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> slot <span class="kw">in</span> slots:</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(slot[<span class="dv">0</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Next, we can enter the evalscript for Burnt Area Mapping that we used earlier in the Browser and Requests Builder - feel free to copy it from the Browser window.</p>
+<div id="921f1586" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>evalscript <span class="op">=</span> <span class="st">"""</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="st">//VERSION=3</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="st">// Burneed area detection</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="st">// Author: Monja B. Šebela</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="st">function setup() {</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="st">    return {</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="st">        input: ["B02", "B03", "B04", "B08", "B11", "B12", "dataMask"],</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="st">        output: [</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="st">            { id: "default", bands: 3 },</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="st">            { id: "burnMask", bands: 1, sampleType: "UINT8" },</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="st">        ]</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="st">      };</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="st">function evaluatePixel(samples) {</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="st">    var NDWI=index(samples.B03, samples.B08); </span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="st">    var NDVI=index(samples.B08, samples.B04);</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="st">    var INDEX= ((samples.B11 - samples.B12) / (samples.B11 + samples.B12))+(samples.B08);</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="st">    if((INDEX&gt;0.15)||(samples.B02&gt;0.1)||(samples.B11&lt;0.1)||(NDVI&gt;0.3)||(NDWI &gt; 0.1)){</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="st">        return{</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a><span class="st">            default:[2.5*samples.B04, 2.5*samples.B03, 2.5*samples.B02, samples.dataMask],</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a><span class="st">            burnMask:[0]</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a><span class="st">        }</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a><span class="st">    }</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a><span class="st">    else {</span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a><span class="st">    return {</span></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a><span class="st">        default: [1, 0, 0],</span></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a><span class="st">        burnMask: [1]}</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a><span class="st">    }</span></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Here, we have defined a function that contains the request code made in the Requests Builder and references the evalscript defined above. Since we are requesting multiple files in the output, we can expect a compressed .tar file containing the files.</p>
+<div id="cb1ebd18" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_request(slot):</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    request <span class="op">=</span> {</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">"input"</span>: {</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>            <span class="st">"bounds"</span>: {</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>                <span class="st">"properties"</span>: {<span class="st">"crs"</span>: <span class="st">"http://www.opengis.net/def/crs/OGC/1.3/CRS84"</span>},</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>                <span class="st">"bbox"</span>: [<span class="fl">25.558398</span>, <span class="fl">40.806995</span>, <span class="fl">26.298798</span>, <span class="fl">41.270524</span>],</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>            },</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>            <span class="st">"data"</span>: [</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>                {</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"dataFilter"</span>: {</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>                        <span class="st">"timeRange"</span>: {</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>                            <span class="st">"from"</span>: slot[<span class="dv">0</span>] <span class="op">+</span> <span class="st">"T00:00:00Z"</span>,</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>                            <span class="st">"to"</span>: slot[<span class="dv">1</span>] <span class="op">+</span> <span class="st">"T00:00:00Z"</span>,</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>                        }</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>                    },</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"type"</span>: <span class="st">"sentinel-2-l2a"</span>,</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>                }</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>            ],</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>        },</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>        <span class="st">"output"</span>: {</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>            <span class="st">"width"</span>: <span class="fl">1247.7098306086236</span>,</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>            <span class="st">"height"</span>: <span class="fl">1031.9962449583074</span>,</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>            <span class="st">"responses"</span>: [</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>                {</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"identifier"</span>: <span class="st">"default"</span>,</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"format"</span>: {<span class="st">"type"</span>: <span class="st">"image/tiff"</span>},</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>                },</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>                {</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"identifier"</span>: <span class="st">"burnMask"</span>,</span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"format"</span>: {<span class="st">"type"</span>: <span class="st">"image/tiff"</span>},</span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>                },</span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>            ],</span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>        },</span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>        <span class="st">"evalscript"</span>: evalscript,</span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a>    url <span class="op">=</span> <span class="st">"https://sh.dataspace.copernicus.eu/api/v1/process"</span></span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>    response <span class="op">=</span> oauth.post(url, json<span class="op">=</span>request, headers<span class="op">=</span>{<span class="st">"Accept"</span>: <span class="st">"application/tar"</span>})</span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a>    <span class="co"># print(response.status_code)</span></span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> response.status_code <span class="kw">in</span> (<span class="dv">200</span>,):</span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a>        <span class="cf">with</span> <span class="bu">open</span>(<span class="ss">f"tarfile_wildfire_</span><span class="sc">{</span>slot[<span class="dv">0</span>]<span class="sc">}</span><span class="ss">.tar"</span>, <span class="st">"wb"</span>) <span class="im">as</span> tarfile:</span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a>            tarfile.write(response.content)</span>
+<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> response</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Now, we are ready to make the request for each of the previously defined time slots. We first get the token created with the OAuth client before making the request and loop through the request for all time slots. This cell might take 10-20 seconds as this is where the requests are actually performed. If it runs successfully, we should see that the compressed .tar files are created in the local folder.</p>
+<div id="4aefdd32" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>oauth <span class="op">=</span> getauth_token()</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>responses <span class="op">=</span> [get_request(slot) <span class="cf">for</span> slot <span class="kw">in</span> slots]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>To further display and analyse the images further, we need to extract the files. This cell does exactly that and we can see the names of the files in the extracted folder as a result.</p>
+<div id="073aa734" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> slot <span class="kw">in</span> slots:</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># open file</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">file</span> <span class="op">=</span> tarfile.<span class="bu">open</span>(<span class="ss">f"tarfile_wildfire_</span><span class="sc">{</span>slot[<span class="dv">0</span>]<span class="sc">}</span><span class="ss">.tar"</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># print file names</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="bu">file</span>.getnames())</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># extract files</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    <span class="bu">file</span>.extractall(<span class="ss">f"./wildfire_</span><span class="sc">{</span>slot[<span class="dv">0</span>]<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># close file</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">file</span>.close()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Now, we create a series of plots to display the images we have requested. If we look at them together, we can see how the damaged area has increased over time.</p>
+<div id="93feaec5" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>ncols <span class="op">=</span> <span class="dv">3</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>nrows <span class="op">=</span> <span class="dv">2</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>aspect_ratio <span class="op">=</span> <span class="dv">1000</span> <span class="op">/</span> <span class="dv">1000</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>subplot_kw <span class="op">=</span> {<span class="st">"xticks"</span>: [], <span class="st">"yticks"</span>: [], <span class="st">"frame_on"</span>: <span class="va">False</span>}</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    ncols<span class="op">=</span>ncols,</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    nrows<span class="op">=</span>nrows,</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    figsize<span class="op">=</span>(<span class="dv">5</span> <span class="op">*</span> ncols <span class="op">*</span> aspect_ratio, <span class="dv">5</span> <span class="op">*</span> nrows),</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    subplot_kw<span class="op">=</span>subplot_kw,</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> idx, slot <span class="kw">in</span> <span class="bu">enumerate</span>(slots):</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>    img <span class="op">=</span> plt.imread(<span class="ss">f"wildfire_</span><span class="sc">{</span>slot[<span class="dv">0</span>]<span class="sc">}</span><span class="ss">/default.tif"</span>)</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>    ax <span class="op">=</span> axs[idx <span class="op">//</span> ncols][idx <span class="op">%</span> ncols]</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>    ax.imshow(img)</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>    ax.set_title(<span class="ss">f"</span><span class="sc">{</span>slot[<span class="dv">0</span>]<span class="sc">}</span><span class="ss">  -  </span><span class="sc">{</span>slot[<span class="dv">1</span>]<span class="sc">}</span><span class="ss">"</span>, fontsize<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>We make a similar visualization with the binary mask that represents the burnt area.</p>
+<div id="0b2bf049" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>ncols <span class="op">=</span> <span class="dv">3</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>nrows <span class="op">=</span> <span class="dv">2</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>aspect_ratio <span class="op">=</span> <span class="dv">1000</span> <span class="op">/</span> <span class="dv">1000</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>subplot_kw <span class="op">=</span> {<span class="st">"xticks"</span>: [], <span class="st">"yticks"</span>: [], <span class="st">"frame_on"</span>: <span class="va">False</span>}</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    ncols<span class="op">=</span>ncols,</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    nrows<span class="op">=</span>nrows,</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    figsize<span class="op">=</span>(<span class="dv">5</span> <span class="op">*</span> ncols <span class="op">*</span> aspect_ratio, <span class="dv">5</span> <span class="op">*</span> nrows),</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    subplot_kw<span class="op">=</span>subplot_kw,</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> idx, slot <span class="kw">in</span> <span class="bu">enumerate</span>(slots):</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>    img <span class="op">=</span> plt.imread(<span class="ss">f"wildfire_</span><span class="sc">{</span>slot[<span class="dv">0</span>]<span class="sc">}</span><span class="ss">/burnMask.tif"</span>)</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>    ax <span class="op">=</span> axs[idx <span class="op">//</span> ncols][idx <span class="op">%</span> ncols]</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>    ax.imshow(img, cmap<span class="op">=</span><span class="st">"gray"</span>)</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>    ax.set_title(<span class="ss">f"</span><span class="sc">{</span>slot[<span class="dv">0</span>]<span class="sc">}</span><span class="ss">  -  </span><span class="sc">{</span>slot[<span class="dv">1</span>]<span class="sc">}</span><span class="ss">"</span>, fontsize<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>To calculate the burnt area in square meters, we perform a simple count of the pixels labelled as burnt area. From the binary burnMask, we can define a function that calculates the number of pixels that have been classified as burnt regions and multiplies this by the resolution to get the area. The next cell runs this function that takes the mask and the resolution (in meters) as the input and outputs the total area for each time slot.</p>
+<div id="1b6440c8" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> burnt_area(burnMask, resolution):</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    burn_pixel_count <span class="op">=</span> np.<span class="bu">sum</span>(burnMask)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    burnt_area <span class="op">=</span> burn_pixel_count <span class="op">*</span> (resolution <span class="op">*</span> resolution) <span class="op">/</span> <span class="dv">1000000</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> burnt_area</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="5c7a5654" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>burnt_area_arr <span class="op">=</span> []</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> idx, slot <span class="kw">in</span> <span class="bu">enumerate</span>(slots):</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    burnMask <span class="op">=</span> plt.imread(<span class="ss">f"wildfire_</span><span class="sc">{</span>slot[<span class="dv">0</span>]<span class="sc">}</span><span class="ss">/burnMask.tif"</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    burnt_area_arr.append(burnt_area(burnMask, resolution<span class="op">=</span><span class="dv">50</span>))</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"The total burnt area is approximately </span><span class="sc">{</span><span class="bu">round</span>(burnt_area(burnMask,resolution <span class="op">=</span> <span class="dv">50</span>),<span class="dv">1</span>)<span class="sc">}</span><span class="ss"> km</span><span class="ch">\u00b2</span><span class="ss">"</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>We can visualise the increasing damaged area by plotting these burnt pixels on a simple line chart as shown below.</p>
+<div id="bcffecc1" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>xlabels <span class="op">=</span> [slot[<span class="dv">0</span>] <span class="cf">for</span> slot <span class="kw">in</span> slots]</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> <span class="bu">range</span>(<span class="bu">len</span>(slots))</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>plt.plot(<span class="bu">range</span>(<span class="bu">len</span>(slots)), burnt_area_arr)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Time Series of area burnt in the wildfires."</span>)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>plt.xticks(np.arange(<span class="dv">0</span>, <span class="dv">5</span>, step<span class="op">=</span><span class="dv">1</span>), xlabels, rotation<span class="op">=</span><span class="dv">30</span>, ha<span class="op">=</span><span class="st">"center"</span>)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Time slots"</span>)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Area burnt (in $km^2$)"</span>)</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="summary" class="level2">
+<h2 class="anchored" data-anchor-id="summary">Summary</h2>
+<p>This was a brief guide on how to go from viewing satellite imagery in the Copernicus Browser using <a href="https://custom-scripts.sentinel-hub.com/custom-scripts/">Custom Scripts</a> and requests from the <a href="https://shapps.dataspace.copernicus.eu/requests-builder/">Requests Builder</a> to preparing a Jupyter Notebook to begin your analysis. From here, you can analyse the pixels, derive statistics and create a workflow that is suitable for your problem. The next step could be to familiarize yourself with various other Sentinel Hub API-s, using <a href="https://github.com/eu-cdse/notebook-samples/blob/main/sentinelhub/introduction_to_SH_APIs.ipynb">this notebook example</a>. You can find more information about the different APIs and various examples in the <a href="https://documentation.dataspace.copernicus.eu/APIs/SentinelHub.html">documentation</a>. Check out the <a href="https://custom-scripts.sentinel-hub.com/custom-scripts/">Custom Scripts Repository</a> for more examples of evalscripts for a wide range of applications.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
