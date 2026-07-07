@@ -2,6 +2,6 @@
 	path = client_examples/openeo-community-examples
 	url = https://github.com/Open-EO/openeo-community-examples.git
 
-[submodule "notebook-samples"]
-	path = notebook-samples
+[submodule "client_examples/notebook-samples"]
+	path = client_examples/notebook-samples
 	url = https://github.com/eu-cdse/notebook-samples.git
