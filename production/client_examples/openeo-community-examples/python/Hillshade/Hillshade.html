@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>load-stac-item-example – openEO</title>
+<title>Hillshade from Copernicus 30_m DEM – openEO</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -193,6 +193,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  
 </script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../../../../custom.css">
 </head>
@@ -382,183 +411,212 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#create-example-gtiff" id="toc-create-example-gtiff" class="nav-link active" data-scroll-target="#create-example-gtiff">1. Create example GTiff</a></li>
-  <li><a href="#create-a-stac-item" id="toc-create-a-stac-item" class="nav-link" data-scroll-target="#create-a-stac-item">2. Create a STAC item</a></li>
-  <li><a href="#load-the-stac-item-in-openeo-as-a-collection" id="toc-load-the-stac-item-in-openeo-as-a-collection" class="nav-link" data-scroll-target="#load-the-stac-item-in-openeo-as-a-collection">3. Load the STAC item in openEO as a collection</a></li>
+  <li><a href="#import-required-python-libraries" id="toc-import-required-python-libraries" class="nav-link active" data-scroll-target="#import-required-python-libraries">Import required Python libraries</a></li>
+  <li><a href="#set-parameters" id="toc-set-parameters" class="nav-link" data-scroll-target="#set-parameters">Set parameters</a></li>
+  <li><a href="#connect-to-the-backend" id="toc-connect-to-the-backend" class="nav-link" data-scroll-target="#connect-to-the-backend">Connect to the backend</a></li>
+  <li><a href="#compute-hillshade" id="toc-compute-hillshade" class="nav-link" data-scroll-target="#compute-hillshade">Compute hillshade</a></li>
+  <li><a href="#execute" id="toc-execute" class="nav-link" data-scroll-target="#execute">Execute</a></li>
+  <li><a href="#visualise" id="toc-visualise" class="nav-link" data-scroll-target="#visualise">Visualise</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content column-page-left" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content column-page-left" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Hillshade from Copernicus 30_m DEM</h1>
+</div>
 
 
 
+<div class="quarto-title-meta column-page-left">
 
-<p>This notebook showcases how to use your own files on openEO by creating a stac item for it.</p>
-<p>It’s content is as follows: 1. Getting an example GTiff file from openEO 2. Creating a stac item for the file 3. Using <code>load_stac</code> to load the file into openEO</p>
-<p><em>Note: This notebook creates a stac item for a result file from openEO for the sake of demonstration. In practice, openEO creates stac items for all files it produces. You can use these results directly in <code>load_stac</code></em></p>
-<section id="create-example-gtiff" class="level2">
-<h2 class="anchored" data-anchor-id="create-example-gtiff">1. Create example GTiff</h2>
-<p>First we download a simple GTiff file containing ndvi data from an openEO provider.</p>
-<p>We calculate the NDVI from the S2 bands for the month of June 2021 and download the result as a GTiff file.<br>
-<em>Note: the <code>temporal_extend</code> can be set as “2021-06” without specifying the days. More info <a href="https://open-eo.github.io/openeo-python-client/data_access.html#single-string-temporal-extents">here</a>.</em></p>
-<div id="cell-2" class="cell" data-execution_count="1">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> openeo</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pystac</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> datetime</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rasterio</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rasterio.warp</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> rasterio.plot <span class="im">import</span> show</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<div id="cell-3" class="cell" data-execution_count="2">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>connection <span class="op">=</span> openeo.<span class="ex">connect</span>(<span class="st">"openeo.dataspace.copernicus.eu"</span>).authenticate_oidc()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Authenticated using refresh token.</code></pre>
-</div>
-</div>
-<div id="cell-4" class="cell" data-execution_count="3">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>scl <span class="op">=</span> connection.load_collection(</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"SENTINEL2_L2A"</span>,</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    spatial_extent<span class="op">=</span>{<span class="st">"west"</span>: <span class="fl">5.0</span>, <span class="st">"south"</span>: <span class="fl">51.2</span>, <span class="st">"east"</span>: <span class="fl">5.1</span>, <span class="st">"north"</span>: <span class="fl">51.3</span>},</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    temporal_extent<span class="op">=</span><span class="st">"2021-06"</span>,</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    bands<span class="op">=</span>[<span class="st">"SCL"</span>],</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    max_cloud_cover<span class="op">=</span><span class="dv">95</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>cloud_mask <span class="op">=</span> scl.process(</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"to_scl_dilation_mask"</span>,</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    data<span class="op">=</span>scl,</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    kernel1_size<span class="op">=</span><span class="dv">17</span>, kernel2_size<span class="op">=</span><span class="dv">77</span>,</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    mask1_values<span class="op">=</span>[<span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">7</span>],</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    mask2_values<span class="op">=</span>[<span class="dv">3</span>, <span class="dv">8</span>, <span class="dv">9</span>, <span class="dv">10</span>, <span class="dv">11</span>],</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    erosion_kernel_size<span class="op">=</span><span class="dv">3</span></span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>collection <span class="op">=</span> connection.load_collection(</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">"SENTINEL2_L2A"</span>,</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    spatial_extent<span class="op">=</span>{<span class="st">"west"</span>: <span class="fl">5.0</span>, <span class="st">"south"</span>: <span class="fl">51.2</span>, <span class="st">"east"</span>: <span class="fl">5.1</span>, <span class="st">"north"</span>: <span class="fl">51.3</span>},</span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    temporal_extent<span class="op">=</span><span class="st">"2021-06"</span>,</span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    bands<span class="op">=</span>[<span class="st">"B04"</span>, <span class="st">"B08"</span>],</span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    max_cloud_cover<span class="op">=</span><span class="dv">95</span></span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>collection <span class="op">=</span> collection.mask(cloud_mask)</span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>collection <span class="op">=</span> collection.ndvi(red<span class="op">=</span><span class="st">"B04"</span>,nir<span class="op">=</span><span class="st">"B08"</span>, target_band<span class="op">=</span><span class="st">"NDVI-band"</span>).filter_bands(<span class="st">"NDVI-band"</span>)</span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>collection <span class="op">=</span> collection.reduce_temporal(<span class="st">"mean"</span>)</span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>ndvi_job <span class="op">=</span> collection.create_job(title<span class="op">=</span><span class="st">"NDVI"</span>, out_format<span class="op">=</span><span class="st">"GTiff"</span>)</span>
-<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>ndvi_job.start_and_wait().get_results().download_file(<span class="st">"ndvi-file.tif"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>0:00:00 Job 'j-240430fa4ef14b43838af02be5686907': send 'start'
-0:00:15 Job 'j-240430fa4ef14b43838af02be5686907': created (progress N/A)
-0:00:20 Job 'j-240430fa4ef14b43838af02be5686907': running (progress N/A)
-0:00:27 Job 'j-240430fa4ef14b43838af02be5686907': running (progress N/A)
-0:00:35 Job 'j-240430fa4ef14b43838af02be5686907': running (progress N/A)
-0:00:45 Job 'j-240430fa4ef14b43838af02be5686907': running (progress N/A)
-0:01:00 Job 'j-240430fa4ef14b43838af02be5686907': running (progress N/A)
-0:01:16 Job 'j-240430fa4ef14b43838af02be5686907': running (progress N/A)
-0:01:35 Job 'j-240430fa4ef14b43838af02be5686907': running (progress N/A)
-0:01:59 Job 'j-240430fa4ef14b43838af02be5686907': running (progress N/A)
-0:02:29 Job 'j-240430fa4ef14b43838af02be5686907': running (progress N/A)
-0:03:07 Job 'j-240430fa4ef14b43838af02be5686907': running (progress N/A)
-0:03:54 Job 'j-240430fa4ef14b43838af02be5686907': running (progress N/A)
-0:04:52 Job 'j-240430fa4ef14b43838af02be5686907': finished (progress N/A)</code></pre>
-</div>
-<div class="cell-output cell-output-display" data-execution_count="3">
-<pre><code>WindowsPath('ndvi-file.tif')</code></pre>
-</div>
-</div>
-<div id="cell-5" class="cell" data-execution_count="4">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(<span class="st">"ndvi-file.tiff"</span>) <span class="im">as</span> src:</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    show(src)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="load-stac-item-example_files/figure-html/cell-5-output-1.png" class="img-fluid figure-img"></p>
-</figure>
-</div>
-</div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Hillshade is a classic terrain visualisation technique: each pixel is assigned a brightness based on how directly its surface faces the sun. Slopes facing the sun are bright; slopes facing away go dark. The result lets the eye read terrain shape immediately, without needing a color scale.</p>
+<p>The brightness <span class="math inline">\(H\)</span> at each pixel follows the Lambert illumination model:</p>
+<p><span class="math display">\[\Large H \;=\; \sin(\text{alt})\cos\beta \;+\; \cos(\text{alt})\sin\beta\cos(\text{az}-(\alpha+\pi))\]</span></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 47%">
+<col style="width: 52%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Symbol</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(H\)</span></td>
+<td>Hillshade brightness — <strong>0</strong> (surface faces away from the sun) to <strong>1</strong> (surface faces directly toward it)</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(\text{alt}\)</span></td>
+<td>Sun altitude — angle above the horizon; 0° = sunrise/sunset, 90° = directly overhead</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(\text{az}\)</span></td>
+<td>Sun azimuth — compass bearing of the sun, clockwise from North</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(\beta\)</span></td>
+<td>Surface slope — how steep the terrain is (radians)</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(\alpha\)</span></td>
+<td>Surface aspect as returned by the backend (radians)</td>
+</tr>
+</tbody>
+</table>
+<p>The <span class="math inline">\(\cos(\text{az}-(\alpha+\pi))\)</span> term drives the lighting: it equals 1 when the slope faces directly toward the sun, 0 when perpendicular, and −1 when facing away. The <span class="math inline">\(+\pi\)</span> offset is required because the backend’s <code>aspect</code> process returns values that are offset by <span class="math inline">\(\pi\)</span> from the downslope direction the formula expects.</p>
+<section id="import-required-python-libraries" class="level2">
+<h2 class="anchored" data-anchor-id="import-required-python-libraries">Import required Python libraries</h2>
+<div id="9aba0564-6773-4fc0-b28f-1ed521201cb3" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math                       <span class="co"># sun angle conversion (degrees → radians)</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np                <span class="co"># array operations for visualisation</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rasterio                   <span class="co"># read the downloaded GeoTIFF</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt   <span class="co"># display the result</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> openeo                     <span class="co"># openEO client</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> openeo.processes <span class="im">as</span> eop    <span class="co"># openEO process wrappers: cos, sin, clip</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
-<section id="create-a-stac-item" class="level2">
-<h2 class="anchored" data-anchor-id="create-a-stac-item">2. Create a STAC item</h2>
-<p>We create a STAC item for the GTiff file using pystac.</p>
-<p>A STAC item is a JSON file that describes a geospatial dataset. It contains metadata about the dataset, such as the spatial extent, the time range, the bands, and the projection. The STAC item also contains links to the data files in assets.</p>
-<p>It is important that the GTiff file is accessible for the openEO backend. This can be done by uploading the file to a cloud storage service like AWS S3 or Google Cloud Storage, or by storing the file in your public directory on a terrascope uservm (when using the openeo.terrascope.be backend).</p>
-<div id="cell-7" class="cell" data-execution_count="3">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># url to the tiff file</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>tiff_url <span class="op">=</span> <span class="st">"https://artifactory.vgt.vito.be/artifactory/auxdata-public/openeo/load-stac-example/ndvi-file.tiff"</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># datetime of the tiff file</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co"># In case your data spans multiple days, you can use the datetime of the first day of the data</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co"># When specifying a temporal range in load_stac later on, the stac item will be filteren only on this datetime</span></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>dt <span class="op">=</span> datetime.fromisoformat(<span class="st">"2021-06-01"</span>)</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co">#desired output path for the stac item</span></span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>output_path <span class="op">=</span> <span class="st">"ndvi-example-stac-item.json"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="set-parameters" class="level2">
+<h2 class="anchored" data-anchor-id="set-parameters">Set parameters</h2>
+<p><strong>Bounding box</strong>: the study area (Crete, Greece) as a rectangle in geographic coordinates (WGS 84 decimal degrees).</p>
+<p><strong>Sun position</strong>: <code>SUN_AZIMUTH = 315</code> places the sun to the north-west; <code>SUN_ALTITUDE = 45</code> puts it halfway up the sky. Both values are in degrees and are converted to radians before use in the hillshade formula.</p>
+<div id="a1000003" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>bbox <span class="op">=</span> {</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"west"</span>:  <span class="fl">23.50</span>,   <span class="co"># western longitude boundary (degrees)</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"south"</span>: <span class="fl">34.80</span>,   <span class="co"># southern latitude boundary (degrees)</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"east"</span>:  <span class="fl">26.40</span>,   <span class="co"># eastern longitude boundary (degrees)</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"north"</span>: <span class="fl">35.70</span>,   <span class="co"># northern latitude boundary (degrees)</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>SUN_AZIMUTH  <span class="op">=</span> <span class="dv">315</span>   <span class="co"># sun compass bearing, clockwise from North (315 = north-west), in degrees</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>SUN_ALTITUDE <span class="op">=</span>  <span class="dv">45</span>   <span class="co"># sun angle above the horizon (45 = halfway up the sky), in degrees</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>OUTPUT <span class="op">=</span> <span class="st">"hillshade.tif"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>Make sure the band names are set correctly in the STAC item. In this case the band name is “NDVI-band”. <strong>These band names are required by openEO to identify the bands in the data and name them.</strong></p>
-<p>The other metadata in the stac item are extracted from the GTiff file using rasterio.</p>
-<div id="cell-9" class="cell" data-execution_count="4">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(tiff_url) <span class="im">as</span> src:</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    proj_bounds <span class="op">=</span> <span class="bu">list</span>(src.bounds)</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    left, bottom, right, top <span class="op">=</span> rasterio.warp.transform_bounds(src.crs, <span class="st">"EPSG:4326"</span>, <span class="op">*</span>src.bounds)</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    item <span class="op">=</span> pystac.Item(</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>        <span class="bu">id</span><span class="op">=</span><span class="st">"ndvi-example-stac-item"</span>,</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>        geometry<span class="op">=</span>{</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>            <span class="st">"type"</span>: <span class="st">"Polygon"</span>,</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>            <span class="st">"coordinates"</span>: [[</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>                [left, bottom],</span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>                [right, bottom],</span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>                [right, top],</span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>                [left, top],</span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>                [left, bottom]</span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>            ]]</span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>        },</span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>        bbox<span class="op">=</span>[left, bottom, right, top],</span>
-<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>        datetime<span class="op">=</span> dt,</span>
-<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>        properties<span class="op">=</span>{ <span class="co"># These properties are optional, but can speed up the loading of the data.</span></span>
-<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>            <span class="st">"proj:epsg"</span>: src.crs.to_epsg(),</span>
-<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>            <span class="st">"proj:shape"</span>: src.shape, <span class="co"># Caveat: this is [height, width] and not [width, height] if you want to set them yourself</span></span>
-<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>            <span class="st">"proj:bbox"</span>: proj_bounds,</span>
-<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>        },</span>
-<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>        stac_extensions<span class="op">=</span>[</span>
-<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>            <span class="st">"https://stac-extensions.github.io/eo/v1.1.0/schema.json"</span>,</span>
-<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>            <span class="st">"https://stac-extensions.github.io/projection/v1.1.0/schema.json"</span>,</span>
-<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>        ],</span>
-<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>        assets<span class="op">=</span>{</span>
-<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>            <span class="st">"ndvi"</span>: pystac.Asset(</span>
-<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>                href<span class="op">=</span>tiff_url,</span>
-<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>                title<span class="op">=</span><span class="st">"Normalized Difference Vegetation Index"</span>,</span>
-<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>                extra_fields<span class="op">=</span>{</span>
-<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"eo:bands"</span>: [ <span class="co"># REQUIRED: define the bands in the eo extension for openEO to be able to load it</span></span>
-<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>                        {</span>
-<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>                            <span class="st">"name"</span>: <span class="st">"NDVI-band"</span>,</span>
-<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>                        }</span>
-<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>                    ],</span>
-<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>                }</span>
-<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>            )</span>
-<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>        }</span>
-<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>    item.validate()</span>
-<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>    item.save_object(dest_href<span class="op">=</span>output_path, include_self_link<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<p>Upload the resulting STAC item to a place where the openEO backend can access it. This can be a cloud storage service or a public directory on a terrascope uservm (when using the openeo.terrascope.be backend).</p>
 </section>
-<section id="load-the-stac-item-in-openeo-as-a-collection" class="level2">
-<h2 class="anchored" data-anchor-id="load-the-stac-item-in-openeo-as-a-collection">3. Load the STAC item in openEO as a collection</h2>
-<p>We load the STAC item in openEO as a collection using <code>load_stac</code> and download the result as a GTiff file. Instead of directly downloading, this datacube can also be further processed or merged with other datacubes.</p>
-<p><strong>IMPORTANT</strong>: Make sure the STAC item and the GTiff are accessible for the openEO backend. This can be done by uploading the STAC item to a cloud storage service like AWS S3 or Google Cloud Storage, or by storing the STAC item in your public directory on a terrascope uservm (when using the openEO.terrascope.be backend).</p>
-<div id="cell-12" class="cell" data-execution_count="5">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>datacube <span class="op">=</span> connection.load_stac(<span class="st">"https://artifactory.vgt.vito.be/artifactory/auxdata-public/openeo/load-stac-example/ndvi-example-stac-item.json"</span>)</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>datacube.download(<span class="st">"ndvi-from-stac.tiff"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="connect-to-the-backend" class="level2">
+<h2 class="anchored" data-anchor-id="connect-to-the-backend">Connect to the backend</h2>
+<p>openEO is a client–server system: your code runs locally but all the heavy computation such as loading the DEM, deriving slope and aspect, and applying the hillshade formula across millions of pixels, happens on a remote cloud backend. <code>connect()</code> points the client at the Copernicus Data Space Ecosystem (CDSE), and <code>authenticate_oidc()</code> logs you in via your Copernicus account.</p>
+<div id="a1000005" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Connect to CDSE and authenticate via browser</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>conn <span class="op">=</span> openeo.<span class="ex">connect</span>(<span class="st">"https://openeo.dataspace.copernicus.eu"</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>conn.authenticate_oidc()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="cell-13" class="cell" data-execution_count="6">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(<span class="st">"ndvi-from-stac.tiff"</span>) <span class="im">as</span> src:</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    show(src)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="load-stac-item-example_files/figure-html/cell-9-output-1.png" class="img-fluid figure-img"></p>
-</figure>
+</section>
+<section id="compute-hillshade" class="level2">
+<h2 class="anchored" data-anchor-id="compute-hillshade">Compute hillshade</h2>
+<p>The hillshade formula needs two terrain properties at each pixel:</p>
+<ul>
+<li><strong>Slope</strong> (<span class="math inline">\(\beta\)</span>): how steep the surface is. Flat ground has slope 0; a vertical cliff has slope 90°.</li>
+<li><strong>Aspect</strong> (<span class="math inline">\(\alpha\)</span>): the direction the slope faces, expressed as a bearing from North.</li>
+</ul>
+<p>Both are computed by the backend using native <code>slope</code> and <code>aspect</code> processes. The hillshade formula is then applied <strong>pixel-by-pixel</strong> using <code>apply</code> and datacube arithmetic.</p>
+<div id="a1000007" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert sun angles from degrees to radians for the trig formula</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>az  <span class="op">=</span> math.radians(SUN_AZIMUTH)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>alt <span class="op">=</span> math.radians(SUN_ALTITUDE)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the Copernicus 30 m DEM</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>dem <span class="op">=</span> conn.load_collection(<span class="st">"COPERNICUS_30"</span>, spatial_extent<span class="op">=</span>bbox)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Collapse the time dimension by keeping the max value per pixel across all acquisitions</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>dem <span class="op">=</span> dem.reduce_dimension(dimension<span class="op">=</span><span class="st">"t"</span>, reducer<span class="op">=</span><span class="st">"max"</span>)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Derive slope (steepness in radians) and aspect</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>slope  <span class="op">=</span> dem.process(<span class="st">"slope"</span>,  data<span class="op">=</span>dem)</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>aspect <span class="op">=</span> dem.process(<span class="st">"aspect"</span>, data<span class="op">=</span>dem)</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply the hillshade formula pixel-by-pixel:</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="co"># First term: sun elevation contribution scaled by slope angle</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Second term: adjustment for how much the slope faces toward or away from the sun</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Adding π converts the backend's aspect to the downslope convention expected by the hillshade formula</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>hillshade <span class="op">=</span> (</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    math.sin(alt) <span class="op">*</span> slope.<span class="bu">apply</span>(eop.cos)                                            <span class="co"># sin(alt)·cos(β)</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> math.cos(alt)</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>      <span class="op">*</span> slope.<span class="bu">apply</span>(eop.sin)                                                         <span class="co"># cos(alt)·sin(β)·...</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>      <span class="op">*</span> aspect.<span class="bu">apply</span>(<span class="kw">lambda</span> x: eop.cos(eop.subtract(az, eop.add(x, math.pi))))      <span class="co">#           ...·cos(az−(α+π))</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Negative values mean the surface faces away from the sun; clamp to black</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>hillshade <span class="op">=</span> hillshade.<span class="bu">apply</span>(<span class="kw">lambda</span> x: eop.clip(x, <span class="fl">0.0</span>, <span class="fl">1.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
+</section>
+<section id="execute" class="level2">
+<h2 class="anchored" data-anchor-id="execute">Execute</h2>
+<p>The process graph built above is <strong>lazy</strong>: nothing has run on the backend yet. This step sends it to CDSE for execution and downloads the result.</p>
+<p>Choose the execution mode based on the size of your bbox:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 18%">
+<col style="width: 39%">
+<col style="width: 42%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Mode</th>
+<th>When to use</th>
+<th>How it works</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Synchronous</strong> (<code>download</code>)</td>
+<td>Small areas — city, valley, ~100 km²</td>
+<td>Runs immediately; blocks until the file is downloaded. Will time out on large areas.</td>
+</tr>
+<tr class="even">
+<td><strong>Batch job</strong> (<code>execute_batch</code>)</td>
+<td>Large areas — island, region, country</td>
+<td>Submits a job to the backend queue; <code>start_and_wait()</code> polls until done, then downloads the result. No timeout risk.</td>
+</tr>
+</tbody>
+</table>
+<p>Run <strong>one</strong> of the two cells below.</p>
+<div id="b77aeed4" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Synchronous (small area) *** SKIP IF USING SMALL AREA AND DO NOT WANT TO DOWNLOAD IMAGE ***</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Runs the process graph immediately and saves the result to disk.</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>hillshade.download(OUTPUT)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
+<div id="518b14ab" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Batch job (large area) ───────────────────────────────────────────────────</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Submits the job to the backend queue and polls until complete.</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>job <span class="op">=</span> hillshade.execute_batch(</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    outputfile<span class="op">=</span>OUTPUT,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">"hillshade"</span>,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    job_options<span class="op">=</span>{<span class="st">"driver-memory"</span>: <span class="st">"4g"</span>},</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>job.start_and_wait()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="visualise" class="level2">
+<h2 class="anchored" data-anchor-id="visualise">Visualise</h2>
+<p>The output is a single-band GeoTIFF with values in [0, 1]. Rendered in greyscale, bright areas face the sun and dark areas face away. Mountain ridges, valleys, and the overall shape of the terrain become immediately readable.</p>
+<div id="a1000009" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Read the single band from the GeoTIFF (values in [0, 1])</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(OUTPUT) <span class="im">as</span> src:</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    h <span class="op">=</span> src.read(<span class="dv">1</span>).astype(np.float32)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>ax.imshow(h, cmap<span class="op">=</span><span class="st">"gray"</span>, vmin<span class="op">=</span><span class="dv">0</span>, vmax<span class="op">=</span><span class="dv">1</span>)   <span class="co"># 0 = black (shadow), 1 = white (full sun)</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="ss">f"Hillshade  (az=</span><span class="sc">{</span>SUN_AZIMUTH<span class="sc">}</span><span class="ss">°, alt=</span><span class="sc">{</span>SUN_ALTITUDE<span class="sc">}</span><span class="ss">°)"</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>ax.axis(<span class="st">"off"</span>)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 
 

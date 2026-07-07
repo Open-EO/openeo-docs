@@ -443,15 +443,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>First, let’s connect to the openEO backend (openeo.vito.be) that has the CORSA processes available.</p>
 <div id="25c5f27a" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> openeo</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>connection <span class="op">=</span> openeo.<span class="ex">connect</span>(<span class="st">"openeo.vito.be"</span>).authenticate_oidc()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display">
-Visit <a href="https://aai.egi.eu/device?user_code=QHSG-AQJS" title="Authenticate at https://aai.egi.eu/device?user_code=QHSG-AQJS" target="_blank" rel="noopener noreferrer">https://aai.egi.eu/device?user_code=QHSG-AQJS</a> <a href="#" onclick="navigator.clipboard.writeText('https://aai.egi.eu/device?user_code=QHSG-AQJS');return false;" title="Copy authentication URL to clipboard">📋</a> to authenticate.
-</div>
-<div class="cell-output cell-output-display">
-✅ Authorized successfully
-</div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>connection <span class="op">=</span> openeo.<span class="ex">connect</span>(<span class="st">"openeo.terrascope.be"</span>).authenticate_oidc()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Authenticated using device code flow.</code></pre>
+<pre><code>Authenticated using refresh token.</code></pre>
 </div>
 </div>
 <p>Let’s also check all the CORSA processes offered by the backend.</p>
@@ -461,7 +455,7 @@ Visit <a href="https://aai.egi.eu/device?user_code=QHSG-AQJS" title="Authenticat
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>corsa_procs <span class="op">=</span> [p[<span class="st">'id'</span>] <span class="cf">for</span> p <span class="kw">in</span> processes <span class="cf">if</span> <span class="st">'corsa'</span> <span class="kw">in</span> p[<span class="st">'id'</span>].lower()]</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Available CORSA processes:"</span>, corsa_procs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Available CORSA processes: ['corsa_compress', 'corsa_decompress']</code></pre>
+<pre><code>Available CORSA processes: ['corsa_compress', 'corsa_compress_v2', 'corsa_decompress', 'corsa_decompress_v2']</code></pre>
 </div>
 </div>
 <p>For more details on these processes, refer to the <a href="https://docs.openeo.cloud/processes/#corsa_compress">openEO process documentation</a>, which explains the <code>corsa_compress</code> process and its parameters. Alternatively, you can run the code below to retrieve the process description directly from the backend.</p>
@@ -588,20 +582,17 @@ Visit <a href="https://aai.egi.eu/device?user_code=QHSG-AQJS" title="Authenticat
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>                        )</span>
 <span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>corsa_job.start_and_wait()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>0:00:00 Job 'j-2604130942154a45a74f7279f5e2809b': send 'start'
-0:00:17 Job 'j-2604130942154a45a74f7279f5e2809b': created (progress 0%)
-0:00:22 Job 'j-2604130942154a45a74f7279f5e2809b': queued (progress 0%)
-0:00:31 Job 'j-2604130942154a45a74f7279f5e2809b': queued (progress 0%)
-0:00:39 Job 'j-2604130942154a45a74f7279f5e2809b': queued (progress 0%)
-0:00:54 Job 'j-2604130942154a45a74f7279f5e2809b': running (progress 5.8%)
-0:01:06 Job 'j-2604130942154a45a74f7279f5e2809b': running (progress 7.7%)
-0:01:21 Job 'j-2604130942154a45a74f7279f5e2809b': running (progress 9.8%)
-0:01:41 Job 'j-2604130942154a45a74f7279f5e2809b': running (progress 12.4%)
-0:02:05 Job 'j-2604130942154a45a74f7279f5e2809b': running (progress 15.3%)
-0:02:35 Job 'j-2604130942154a45a74f7279f5e2809b': running (progress 18.8%)
-0:03:12 Job 'j-2604130942154a45a74f7279f5e2809b': running (progress 22.7%)
-0:03:59 Job 'j-2604130942154a45a74f7279f5e2809b': running (progress 27.1%)
-0:04:57 Job 'j-2604130942154a45a74f7279f5e2809b': finished (progress 100%)</code></pre>
+<pre><code>0:00:00 Job 'j-2606281316134a989c980c50cfdbd029': send 'start'
+0:00:16 Job 'j-2606281316134a989c980c50cfdbd029': queued (progress 0%)
+0:00:21 Job 'j-2606281316134a989c980c50cfdbd029': queued (progress 0%)
+0:00:32 Job 'j-2606281316134a989c980c50cfdbd029': running (progress 2.9%)
+0:00:40 Job 'j-2606281316134a989c980c50cfdbd029': running (progress 4.1%)
+0:00:50 Job 'j-2606281316134a989c980c50cfdbd029': running (progress 5.7%)
+0:01:02 Job 'j-2606281316134a989c980c50cfdbd029': running (progress 7.5%)
+0:01:19 Job 'j-2606281316134a989c980c50cfdbd029': running (progress 9.9%)
+0:01:41 Job 'j-2606281316134a989c980c50cfdbd029': running (progress 12.7%)
+0:02:05 Job 'j-2606281316134a989c980c50cfdbd029': running (progress 15.7%)
+0:02:35 Job 'j-2606281316134a989c980c50cfdbd029': finished (progress 100%)</code></pre>
 </div>
 <div class="cell-output cell-output-display" data-execution_count="11">
 
@@ -620,7 +611,7 @@ Visit <a href="https://aai.egi.eu/device?user_code=QHSG-AQJS" title="Authenticat
     }
     </script>
     <openeo-job>
-        <script type="application/json">{"currency": "credits", "federation": null, "job": {"costs": 4, "created": "2026-04-13T09:42:15Z", "description": "CORSA compression and decompression processes offered by the VITO openeo backend", "id": "j-2604130942154a45a74f7279f5e2809b", "process": {"process_graph": {"corsacompress1": {"arguments": {"data": {"from_node": "loadcollection1"}}, "process_id": "corsa_compress"}, "corsadecompress1": {"arguments": {"data": {"from_node": "corsacompress1"}}, "process_id": "corsa_decompress"}, "filterbands1": {"arguments": {"bands": ["level_1"], "data": {"from_node": "corsacompress1"}}, "process_id": "filter_bands"}, "loadcollection1": {"arguments": {"bands": ["B02", "B03", "B04", "B05", "B06", "B07", "B08", "B8A", "B11", "B12"], "id": "SENTINEL2_L2A", "properties": {"eo:cloud_cover": {"process_graph": {"lte1": {"arguments": {"x": {"from_parameter": "value"}, "y": 10}, "process_id": "lte", "result": true}}}}, "spatial_extent": {"east": 5.225201, "north": 51.302713, "south": 51.263318, "west": 5.107956}, "temporal_extent": ["2025-06-12", "2025-06-12"]}, "process_id": "load_collection"}, "saveresult1": {"arguments": {"data": {"from_node": "loadcollection1"}, "format": "GTiff", "options": {"filename_prefix": "s2_cube"}}, "process_id": "save_result"}, "saveresult2": {"arguments": {"data": {"from_node": "corsacompress1"}, "format": "GTiff", "options": {"filename_prefix": "compress_cube"}}, "process_id": "save_result"}, "saveresult3": {"arguments": {"data": {"from_node": "filterbands1"}, "format": "GTiff", "options": {"filename_prefix": "level1_cube"}}, "process_id": "save_result"}, "saveresult4": {"arguments": {"data": {"from_node": "corsadecompress1"}, "format": "GTiff", "options": {"filename_prefix": "decompress_cube"}}, "process_id": "save_result", "result": true}}}, "progress": 100, "status": "finished", "title": "CORSA process in openEO", "updated": "2026-04-13T09:46:12Z", "usage": {"duration": {"unit": "seconds", "value": 178}, "input_pixel": {"unit": "mega-pixel", "value": 6.875}}}}</script>
+        <script type="application/json">{"currency": "credits", "federation": null, "job": {"costs": 3, "created": "2026-06-28T13:16:13Z", "description": "CORSA compression and decompression processes offered by the VITO openeo backend", "id": "j-2606281316134a989c980c50cfdbd029", "log_level": "info", "process": {"process_graph": {"corsacompress1": {"arguments": {"data": {"from_node": "loadcollection1"}}, "process_id": "corsa_compress"}, "corsadecompress1": {"arguments": {"data": {"from_node": "corsacompress1"}}, "process_id": "corsa_decompress"}, "filterbands1": {"arguments": {"bands": ["level_1"], "data": {"from_node": "corsacompress1"}}, "process_id": "filter_bands"}, "loadcollection1": {"arguments": {"bands": ["B02", "B03", "B04", "B05", "B06", "B07", "B08", "B8A", "B11", "B12"], "id": "SENTINEL2_L2A", "properties": {"eo:cloud_cover": {"process_graph": {"lte1": {"arguments": {"x": {"from_parameter": "value"}, "y": 10}, "process_id": "lte", "result": true}}}}, "spatial_extent": {"east": 5.225201, "north": 51.302713, "south": 51.263318, "west": 5.107956}, "temporal_extent": ["2025-06-12", "2025-06-12"]}, "process_id": "load_collection"}, "saveresult1": {"arguments": {"data": {"from_node": "loadcollection1"}, "format": "GTiff", "options": {"filename_prefix": "s2_cube"}}, "process_id": "save_result"}, "saveresult2": {"arguments": {"data": {"from_node": "corsacompress1"}, "format": "GTiff", "options": {"filename_prefix": "compress_cube"}}, "process_id": "save_result"}, "saveresult3": {"arguments": {"data": {"from_node": "filterbands1"}, "format": "GTiff", "options": {"filename_prefix": "level1_cube"}}, "process_id": "save_result"}, "saveresult4": {"arguments": {"data": {"from_node": "corsadecompress1"}, "format": "GTiff", "options": {"filename_prefix": "decompress_cube"}}, "process_id": "save_result", "result": true}}}, "progress": 100, "status": "finished", "title": "CORSA process in openEO", "updated": "2026-06-28T13:18:48Z", "usage": {"cpu": {"unit": "cpu-seconds", "value": 1958}, "duration": {"unit": "seconds", "value": 134}, "input_pixel": {"unit": "mega-pixel", "value": 9.375}, "memory": {"unit": "mb-seconds", "value": 4666937}}}}</script>
     </openeo-job>
     
 </div>
@@ -629,11 +620,11 @@ Visit <a href="https://aai.egi.eu/device?user_code=QHSG-AQJS" title="Authenticat
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> corsa_job.get_results()</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>result.download_files(<span class="st">"corsa/"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="12">
-<pre><code>[WindowsPath('corsa/compress_cube_2025-06-12Z.tif'),
- WindowsPath('corsa/decompress_cube_2025-06-12Z.tif'),
- WindowsPath('corsa/level1_cube_2025-06-12Z.tif'),
- WindowsPath('corsa/s2_cube_2025-06-12Z.tif'),
- WindowsPath('corsa/job-results.json')]</code></pre>
+<pre><code>[PosixPath('corsa/compress_cube_2025-06-12Z.tif'),
+ PosixPath('corsa/decompress_cube_2025-06-12Z.tif'),
+ PosixPath('corsa/level1_cube_2025-06-12Z.tif'),
+ PosixPath('corsa/s2_cube_2025-06-12Z.tif'),
+ PosixPath('corsa/job-results.json')]</code></pre>
 </div>
 </div>
 </section>
@@ -655,6 +646,11 @@ Visit <a href="https://aai.egi.eu/device?user_code=QHSG-AQJS" title="Authenticat
 <span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Compressed shape:"</span>, compressed.shape)</span>
 <span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Decompressed shape:"</span>, decompressed.shape)</span>
 <span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Level 1 shape:"</span>, level1_cube.shape)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning 1: TIFFReadDirectory:Sum of Photometric type-related color channels and ExtraSamples doesn't match SamplesPerPixel. Defining non-color channels as ExtraSamples.
+Warning 1: TIFFReadDirectory:Sum of Photometric type-related color channels and ExtraSamples doesn't match SamplesPerPixel. Defining non-color channels as ExtraSamples.
+Warning 1: TIFFReadDirectory:Sum of Photometric type-related color channels and ExtraSamples doesn't match SamplesPerPixel. Defining non-color channels as ExtraSamples.</code></pre>
+</div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Original shape: (10, 463, 831)
 Compressed shape: (2, 232, 416)
@@ -662,38 +658,38 @@ Decompressed shape: (10, 463, 831)
 Level 1 shape: (1, 232, 416)</code></pre>
 </div>
 </div>
-<div id="de82b698" class="cell" data-execution_count="23">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>RGB_BANDS <span class="op">=</span> (<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">0</span>)  <span class="co"># B04=R, B03=G, B02=B</span></span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> to_rgb(arr, bands<span class="op">=</span>RGB_BANDS, p_low<span class="op">=</span><span class="dv">2</span>, p_high<span class="op">=</span><span class="dv">98</span>):</span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Extract and percentile-stretch an RGB chip from a (C, H, W) array."""</span></span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>    rgb <span class="op">=</span> arr[<span class="bu">list</span>(bands)].astype(<span class="st">"float32"</span>)          </span>
-<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>    rgb <span class="op">=</span> np.moveaxis(rgb, <span class="dv">0</span>, <span class="op">-</span><span class="dv">1</span>)                     </span>
-<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>    lo, hi <span class="op">=</span> np.percentile(rgb, [p_low, p_high])</span>
-<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>    rgb <span class="op">=</span> (rgb <span class="op">-</span> lo) <span class="op">/</span> (hi <span class="op">-</span> lo <span class="op">+</span> <span class="fl">1e-6</span>)</span>
-<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.clip(rgb, <span class="dv">0</span>, <span class="dv">1</span>)</span>
-<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> plot_results(imgs, titles, cmaps<span class="op">=</span><span class="va">None</span>):</span>
-<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""imgs: list of (H,W,3) or (H,W) arrays, already scaled to [0,1]"""</span></span>
-<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>    cmaps <span class="op">=</span> cmaps <span class="kw">or</span> [<span class="st">"viridis"</span>] <span class="op">*</span> <span class="dv">3</span></span>
-<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>    fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">20</span>),dpi<span class="op">=</span><span class="dv">300</span>)</span>
-<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> ax, img, title, cmap <span class="kw">in</span> <span class="bu">zip</span>(axes, imgs, titles, cmaps):</span>
-<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>        ax.imshow(img, cmap<span class="op">=</span>cmap)</span>
-<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>        ax.set_title(title)</span>
-<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>        ax.axis(<span class="st">"off"</span>)</span>
-<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>    plt.tight_layout()</span>
-<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>    plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="de82b698" class="cell" data-execution_count="15">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>RGB_BANDS <span class="op">=</span> (<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">0</span>)  <span class="co"># B04=R, B03=G, B02=B</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> to_rgb(arr, bands<span class="op">=</span>RGB_BANDS, p_low<span class="op">=</span><span class="dv">2</span>, p_high<span class="op">=</span><span class="dv">98</span>):</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Extract and percentile-stretch an RGB chip from a (C, H, W) array."""</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>    rgb <span class="op">=</span> arr[<span class="bu">list</span>(bands)].astype(<span class="st">"float32"</span>)          </span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>    rgb <span class="op">=</span> np.moveaxis(rgb, <span class="dv">0</span>, <span class="op">-</span><span class="dv">1</span>)                     </span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>    lo, hi <span class="op">=</span> np.percentile(rgb, [p_low, p_high])</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>    rgb <span class="op">=</span> (rgb <span class="op">-</span> lo) <span class="op">/</span> (hi <span class="op">-</span> lo <span class="op">+</span> <span class="fl">1e-6</span>)</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.clip(rgb, <span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> plot_results(imgs, titles, cmaps<span class="op">=</span><span class="va">None</span>):</span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""imgs: list of (H,W,3) or (H,W) arrays, already scaled to [0,1]"""</span></span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>    cmaps <span class="op">=</span> cmaps <span class="kw">or</span> [<span class="st">"viridis"</span>] <span class="op">*</span> <span class="dv">3</span></span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>    fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">20</span>),dpi<span class="op">=</span><span class="dv">300</span>)</span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> ax, img, title, cmap <span class="kw">in</span> <span class="bu">zip</span>(axes, imgs, titles, cmaps):</span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>        ax.imshow(img, cmap<span class="op">=</span>cmap)</span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>        ax.set_title(title)</span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>        ax.axis(<span class="st">"off"</span>)</span>
+<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a>    plt.tight_layout()</span>
+<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a>    plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>By downloading the original Sentinel-2 images, we can compare them with the compressed images.</p>
-<div id="fc33bccb" class="cell" data-execution_count="24">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>plot_results([to_rgb(original), compressed[<span class="dv">0</span>], to_rgb(decompressed)],</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>       [<span class="st">"Original RGB"</span>, <span class="st">"Compressed(Level 0)"</span>, <span class="st">"Decompressed RGB"</span>],</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>       cmaps<span class="op">=</span>[<span class="va">None</span>, <span class="st">"gray"</span>, <span class="va">None</span>])</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="fc33bccb" class="cell" data-execution_count="16">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>plot_results([to_rgb(original), compressed[<span class="dv">0</span>], to_rgb(decompressed)],</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>       [<span class="st">"Original RGB"</span>, <span class="st">"Compressed(Level 0)"</span>, <span class="st">"Decompressed RGB"</span>],</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>       cmaps<span class="op">=</span>[<span class="va">None</span>, <span class="st">"gray"</span>, <span class="va">None</span>])</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -704,22 +700,22 @@ Level 1 shape: (1, 232, 416)</code></pre>
 </div>
 <p>The reconstructed image closely resembles the original input, demonstrating the near-lossless nature of the CORSA compression method. The reconstructed data can then be used for various downstream applications, such as land cover classification, vegetation monitoring, or change detection, without significant loss of information compared to the original Sentinel-2 data.</p>
 <p>Moreover, histograms of pixel values for each band provide a quantitative measure of similarity between original and decompressed images. Comparing the histograms visually reveals any significant differences in spectral distribution across bands.</p>
-<div id="c1abcb68" class="cell" data-execution_count="25">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>colors <span class="op">=</span> {<span class="st">"B02"</span>: <span class="st">"blue"</span>, <span class="st">"B03"</span>: <span class="st">"green"</span>, <span class="st">"B04"</span>: <span class="st">"red"</span>}</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">4</span>))</span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> idx, (name, color) <span class="kw">in</span> <span class="bu">enumerate</span>(colors.items()):</span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    counts, bins <span class="op">=</span> np.histogram(original[idx].ravel(), bins<span class="op">=</span><span class="dv">100</span>)</span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    ax.plot(bins[:<span class="op">-</span><span class="dv">1</span>], counts, color<span class="op">=</span>color, linestyle<span class="op">=</span><span class="st">"-"</span>,  label<span class="op">=</span><span class="ss">f"</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss"> original"</span>)</span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>    counts, bins <span class="op">=</span> np.histogram(decompressed[idx].ravel(), bins<span class="op">=</span><span class="dv">100</span>)</span>
-<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>    ax.plot(bins[:<span class="op">-</span><span class="dv">1</span>], counts, color<span class="op">=</span>color, linestyle<span class="op">=</span><span class="st">"--"</span>, label<span class="op">=</span><span class="ss">f"</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss"> decompressed"</span>)</span>
-<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"Pixel value"</span>)</span>
-<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">"Count"</span>)</span>
-<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>ax.legend()</span>
-<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
-<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="c1abcb68" class="cell" data-execution_count="17">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>colors <span class="op">=</span> {<span class="st">"B02"</span>: <span class="st">"blue"</span>, <span class="st">"B03"</span>: <span class="st">"green"</span>, <span class="st">"B04"</span>: <span class="st">"red"</span>}</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">4</span>))</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> idx, (name, color) <span class="kw">in</span> <span class="bu">enumerate</span>(colors.items()):</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    counts, bins <span class="op">=</span> np.histogram(original[idx].ravel(), bins<span class="op">=</span><span class="dv">100</span>)</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>    ax.plot(bins[:<span class="op">-</span><span class="dv">1</span>], counts, color<span class="op">=</span>color, linestyle<span class="op">=</span><span class="st">"-"</span>,  label<span class="op">=</span><span class="ss">f"</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss"> original"</span>)</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    counts, bins <span class="op">=</span> np.histogram(decompressed[idx].ravel(), bins<span class="op">=</span><span class="dv">100</span>)</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>    ax.plot(bins[:<span class="op">-</span><span class="dv">1</span>], counts, color<span class="op">=</span>color, linestyle<span class="op">=</span><span class="st">"--"</span>, label<span class="op">=</span><span class="ss">f"</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss"> decompressed"</span>)</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"Pixel value"</span>)</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">"Count"</span>)</span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>ax.legend()</span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -730,17 +726,17 @@ Level 1 shape: (1, 232, 416)</code></pre>
 </div>
 <p>Let’s examine the compression ratio achieved by CORSA:</p>
 <div id="9cb2ffe6" class="cell" data-execution_count="18">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate compression ratio</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>original_size <span class="op">=</span> os.path.getsize(<span class="st">"corsa/s2_cube_2025-06-12Z.tif"</span>)</span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>compressed_size <span class="op">=</span> os.path.getsize(<span class="st">"corsa/compress_cube_2025-06-12Z.tif"</span>)</span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>decompressed_size <span class="op">=</span> os.path.getsize(<span class="st">"corsa/decompress_cube_2025-06-12Z.tif"</span>)</span>
-<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Original size (S2 L2A):      </span><span class="sc">{</span><span class="bu">round</span>(original_size<span class="op">/</span><span class="dv">1024</span><span class="op">/</span><span class="dv">1024</span>, <span class="dv">2</span>)<span class="sc">}</span><span class="ss"> MB"</span>)</span>
-<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Compressed size (CORSA):     </span><span class="sc">{</span><span class="bu">round</span>(compressed_size<span class="op">/</span><span class="dv">1024</span><span class="op">/</span><span class="dv">1024</span>, <span class="dv">2</span>)<span class="sc">}</span><span class="ss"> MB"</span>)</span>
-<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>compression_ratio <span class="op">=</span> original_size <span class="op">/</span> compressed_size</span>
-<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Compression ratio:           </span><span class="sc">{</span><span class="bu">round</span>(compression_ratio, <span class="dv">2</span>)<span class="sc">}</span><span class="ss">x smaller"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate compression ratio</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>original_size <span class="op">=</span> os.path.getsize(<span class="st">"corsa/s2_cube_2025-06-12Z.tif"</span>)</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>compressed_size <span class="op">=</span> os.path.getsize(<span class="st">"corsa/compress_cube_2025-06-12Z.tif"</span>)</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>decompressed_size <span class="op">=</span> os.path.getsize(<span class="st">"corsa/decompress_cube_2025-06-12Z.tif"</span>)</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Original size (S2 L2A):      </span><span class="sc">{</span><span class="bu">round</span>(original_size<span class="op">/</span><span class="dv">1024</span><span class="op">/</span><span class="dv">1024</span>, <span class="dv">2</span>)<span class="sc">}</span><span class="ss"> MB"</span>)</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Compressed size (CORSA):     </span><span class="sc">{</span><span class="bu">round</span>(compressed_size<span class="op">/</span><span class="dv">1024</span><span class="op">/</span><span class="dv">1024</span>, <span class="dv">2</span>)<span class="sc">}</span><span class="ss"> MB"</span>)</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>compression_ratio <span class="op">=</span> original_size <span class="op">/</span> compressed_size</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Compression ratio:           </span><span class="sc">{</span><span class="bu">round</span>(compression_ratio, <span class="dv">2</span>)<span class="sc">}</span><span class="ss">x smaller"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Original size (S2 L2A):      3.45 MB
 Compressed size (CORSA):     0.14 MB
