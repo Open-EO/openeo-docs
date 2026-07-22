@@ -1,0 +1,258 @@
+# Preprocessing
+
+Turning raw satellite imagery into Analysis Ready Data
+
+openEO exposes two flagship preprocessing workflows: **Atmospheric Correction** for optical sensors, and **SAR Backscatter** computation for radar sensors. Both are available in standard and CEOS CARD4L-compliant variants.
+
+VITO
+
+Sentinel Hub
+
+EODC
+
+CDSE
+
+Federation
+
+EURAC
+
+Google Earth Engine
+
+openEO Platform
+
+## Atmospheric Correction
+
+When a satellite captures light reflected from the Earth’s surface, that signal has passed through the atmosphere twice — once on the way down, once on the way back up. Scattering, absorption, and haze all distort what the sensor actually records. **Atmospheric correction** reverses those distortions, converting top-of-atmosphere (TOA) radiance into **surface reflectance** — the physical quantity that characterises what’s actually on the ground, independent of sun angle, viewing geometry, and atmospheric state.
+
+Without atmospheric correction, multi-temporal comparisons are unreliable: a pixel that looks “brighter” in July might just be reflecting a clearer sky, not a healthier crop. Corrected data makes time series meaningful.
+
+### Code examples
+
+## Python
+
+``` python
+import openeo
+
+connection = openeo.connect("https://openeo.eodc.eu").authenticate_oidc()
+
+# Load raw L1C Sentinel-2 — include angle bands required by iCor
+l1c = connection.load_collection(
+    "SENTINEL2_L1C_SENTINELHUB",
+    spatial_extent={
+        "west": 3.758, "east": 4.088,
+        "south": 51.292, "north": 51.393
+    },
+    temporal_extent=["2017-03-07", "2017-03-07"],
+    bands=[
+        "B04", "B03", "B02",          # RGB
+        "B09", "B8A", "B11",          # SWIR / water vapour
+        "sunAzimuthAngles", "sunZenithAngles",
+        "viewAzimuthMean", "viewZenithMean"
+    ]
+)
+
+# Apply atmospheric correction with iCor
+l2a = l1c.atmospheric_correction(method="iCor")
+
+l2a.download("sentinel2_icor.tif", format="GTiff")
+```
+
+## R
+
+``` r
+library(openeo)
+
+con <- connect("https://openeo.eodc.eu")
+login()
+
+p <- processes()
+
+# Load raw L1C collection with required angle bands
+l1c <- p$load_collection(
+  id = "SENTINEL2_L1C_SENTINELHUB",
+  spatial_extent = list(west=3.758, east=4.088, south=51.292, north=51.393),
+  temporal_extent = c("2017-03-07", "2017-03-07"),
+  bands = c(
+    "B04", "B03", "B02",
+    "B09", "B8A", "B11",
+    "sunAzimuthAngles", "sunZenithAngles",
+    "viewAzimuthMean", "viewZenithMean"
+  )
+)
+
+# Apply iCor atmospheric correction
+l2a <- p$atmospheric_correction(data = l1c, method = "iCor")
+
+compute_result(graph = l2a, format = "GTiff", output_file = "sentinel2_icor.tif")
+```
+
+## JavaScript
+
+``` javascript
+import { Connection, authenticate } from "@openeo/js-client";
+
+const con = await Connection.connect("https://openeo.eodc.eu");
+await con.authenticateOIDC();
+
+const builder = await con.buildProcess();
+
+// Load raw L1C collection
+const l1c = builder.load_collection(
+  "SENTINEL2_L1C_SENTINELHUB",
+  { west: 3.758, east: 4.088, south: 51.292, north: 51.393 },
+  ["2017-03-07", "2017-03-07"],
+  ["B04","B03","B02","B09","B8A","B11",
+   "sunAzimuthAngles","sunZenithAngles","viewAzimuthMean","viewZenithMean"]
+);
+
+// Apply atmospheric correction
+const l2a = builder.atmospheric_correction(l1c, { method: "iCor" });
+
+const result = builder.save_result(l2a, "GTiff");
+await con.computeResult(result, { filename: "sentinel2_icor.tif" });
+```
+
+------------------------------------------------------------------------
+
+## SAR Backscatter
+
+Synthetic Aperture Radar sensors like Sentinel-1 see through clouds and work day and night — but the raw data they produce (GRD, SLC) is not directly interpretable as a surface measurement. It must be **calibrated**, **terrain-corrected**, and **normalised** before it can be used analytically. This pipeline is collectively called **backscatter computation**.
+
+The process converts the raw radar signal into a physically meaningful quantity — typically **sigma0** (surface scattering cross-section) or **gamma0** (terrain-flattened reflectivity) — in either linear or decibel scale. Terrain flattening is essential for hilly regions: without it, slopes facing the sensor appear artificially brighter than flat terrain, corrupting any analysis based on backscatter magnitude. \### Code examples
+
+## Python
+
+``` python
+import openeo
+
+connection = openeo.connect("https://openeo.vito.be").authenticate_oidc()
+
+# Load Sentinel-1 GRD — spatial/temporal filters are fine before backscatter
+s1grd = (
+    connection.load_collection(
+        "SENTINEL1_GRD",
+        bands=["VH", "VV"]
+    )
+    .filter_bbox(west=2.590, east=2.895, north=51.221, south=51.069)
+    .filter_temporal(extent=["2019-10-10", "2019-10-10"])
+)
+
+# CARD4L-compliant normalised radar backscatter (gamma0, terrain-flattened)
+nrb = s1grd.ard_normalized_radar_backscatter()
+
+# Submit as batch job and download results
+job = nrb.execute_batch()
+job.get_results().download_files("./output/")
+```
+
+> **NOTE:**
+>
+> ``` python
+> # More control: use sar_backscatter() directly
+> backscatter = s1grd.sar_backscatter(
+>     coefficient="gamma0-terrain",
+>     elevation_model="COPERNICUS_30",
+>     noise_removal=True
+> )
+> job = backscatter.execute_batch(
+>     title="S1 Backscatter Test",
+>     description="gamma0 terrain-flattened over Belgium"
+> )
+> ```
+
+## R
+
+``` r
+library(openeo)
+
+con <- connect("https://openeo.vito.be")
+login()
+
+p <- processes()
+
+# Load Sentinel-1 GRD with spatial and temporal filters
+s1grd <- p$load_collection(
+  id = "SENTINEL1_GRD",
+  bands = c("VH", "VV")
+)
+
+s1grd <- p$filter_bbox(
+  data = s1grd,
+  extent = list(west=2.590, east=2.895, south=51.069, north=51.221)
+)
+
+s1grd <- p$filter_temporal(
+  data = s1grd,
+  extent = c("2019-10-10", "2019-10-10")
+)
+
+# Apply CARD4L-compliant normalised radar backscatter
+nrb <- p$ard_normalized_radar_backscatter(data = s1grd)
+
+# Submit batch job
+job <- create_job(
+  graph = nrb,
+  title = "S1 CARD4L NRB"
+)
+start_job(job)
+
+# Monitor and download when complete
+job_status <- describe_job(job)
+download_results(job, folder = "./output/")
+```
+
+## JavaScript
+
+``` javascript
+import { Connection } from "@openeo/js-client";
+
+const con = await Connection.connect("https://openeo.vito.be");
+await con.authenticateOIDC();
+
+const builder = await con.buildProcess();
+
+// Load Sentinel-1 GRD
+let s1grd = builder.load_collection(
+  "SENTINEL1_GRD",
+  null, null,
+  ["VH", "VV"]
+);
+
+// Apply spatial and temporal filters first
+s1grd = builder.filter_bbox(s1grd, {
+  west: 2.590, east: 2.895,
+  south: 51.069, north: 51.221
+});
+
+s1grd = builder.filter_temporal(s1grd, ["2019-10-10", "2019-10-10"]);
+
+// CARD4L normalised radar backscatter
+const nrb = builder.ard_normalized_radar_backscatter(s1grd);
+
+const result = builder.save_result(nrb, "GTiff");
+
+// Submit as batch job
+const job = await con.createJob(result, { title: "S1 NRB Belgium" });
+await job.startJob();
+
+// Poll until done, then download
+const results = await job.getResults();
+for (const asset of Object.values(results.assets)) {
+  console.log("Download:", asset.href);
+}
+```
+
+------------------------------------------------------------------------
+
+## Performance considerations
+
+Both `atmospheric_correction` and `sar_backscatter` are among the most **computationally expensive** operations in openEO. Before including them in your workflow, consider:
+
+- **Use batch jobs** — synchronous execution will time out for anything beyond a small test area.
+- **Filter early** — always apply `filter_bbox` and `filter_temporal` before calling these processes to minimise the data volume processed.
+- **Pre-corrected collections** — many openEO backends offer **analysis-ready collections** (e.g. Sentinel-2 L2A, Sentinel-1 backscatter products) that have already been corrected. Check your backend’s collection catalogue before computing from raw data.
+- **Cost awareness** — backends may charge more for preprocessing-heavy workflows. Profile on a small tile before scaling up.
+
+> **TIP:**
+>
+> If your backend offers a collection like `SENTINEL2_L2A` or `SENTINEL1_BACKSCATTER`, use it directly — it is the output of these processes, pre-computed and stored at much lower retrieval cost.
