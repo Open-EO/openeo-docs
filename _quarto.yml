@@ -1,5 +1,7 @@
 project:
   type: website
+  preview: 
+    port: 5555
   render:
     - "*.qmd"
     - "*.md"
@@ -9,6 +11,7 @@ project:
 
 website:
   title: "openEO"
+  llms-txt: true
   navbar:
     background: "#1a2744"      # dark navy, exact match
     foreground: "#d0dce8"

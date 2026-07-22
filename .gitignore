@@ -1,3 +1,14 @@
+.idea/
+*.iml
 /.quarto/
+_site/*
+test.qmd
+_site/
+.openeo.qmd
+/_*.local
+*_render/
+venv
+.venv
+*.pyc
+
 **/*.quarto_ipynb
-*_site/

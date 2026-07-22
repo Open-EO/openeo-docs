@@ -1,7 +1,3 @@
 [submodule "client_examples/openeo-community-examples"]
 	path = client_examples/openeo-community-examples
 	url = https://github.com/Open-EO/openeo-community-examples.git
-
-[submodule "client_examples/notebook-samples"]
-	path = client_examples/notebook-samples
-	url = https://github.com/eu-cdse/notebook-samples.git
