@@ -19,6 +19,7 @@ project:
 
 website:
   title: "openEO"
+  site-url: "https://open-eo.github.io/openeo-docs/"
   description: >
     openEO is an open source standard that provides a unified solution for processing Earth observation data. It allows users to access and analyze earth observation data from various providers in a standardized and cost-efficient way.
   llms-txt: true
