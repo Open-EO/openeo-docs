@@ -6,3 +6,4 @@ matplotlib
 rasterio
 jupyter
 ipykernel
+requests

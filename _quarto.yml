@@ -2,15 +2,23 @@ project:
   type: website
   preview: 
     port: 5555
+  pre-render:
+    - python py_scripts/update_api_version.py
   render:
     - "*.qmd"
     - "*.md"
     - "*.ipynb"
     - "!*.rmd"
     - "!*.Rmd"
+    - "!client_examples/**"
+    - "!py_scripts/**"
+
+# Load variables from _variables.yml (auto-loaded by Quarto)
 
 website:
   title: "openEO"
+  description: >
+    openEO is an open source standard that provides a unified solution for processing Earth observation data. It allows users to access and analyze earth observation data from various providers in a standardized and cost-efficient way.
   llms-txt: true
   navbar:
     background: "#1a2744"      # dark navy, exact match

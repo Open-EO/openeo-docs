@@ -17,14 +17,14 @@ listing:
 ```{=html}
 <!-- ANNOUNCE BAR -->
 <div class="announce-bar">
-  🎉 openEO API 1.3.0 released — <a href="#">read the release notes →</a>
+  🎉 openEO API {{< var api-version >}} released — <a href="{{< var api-release-url >}}">read the release notes →</a>
 </div>
 
 <!-- HERO -->
 <section class="hero">
   <div class="hero-content">
-    <div class="hero-badge">🌍 v1.3.0 now available</div>
-    <h1>Open- Standard<br>for <em>Earth Observation Analysis</em></h1>
+    <div class="hero-badge">🌍 {{< var api-version >}} now available</div>
+    <h1>Open-<span class="highlight">EO</span> Standard<br>for <em>Earth Observation Analysis</em></h1>
     <p><b>The openEO API</b> allows users to connect to Earth observation cloud back-ends in a simple and unified way.</p>
     <div class="hero-actions">
       <a href="documentation/cookbook.qmd" class="btn-primary">Get Started →</a>
