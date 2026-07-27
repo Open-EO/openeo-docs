@@ -110,7 +110,7 @@ ndvi.<span class="fn">download</span>(<span class="str">"ndvi.nc"</span>)
 ```
 ::: {.callout-caution}
 
-openEO is not to be confused with independant services that implement the specifications such as [openEO Platform](https://openeo.cloud/) or [CDSE](https://dataspace.copernicus.eu/).
+openEO is not to be confused with independant services that implement the specifications such as [CDSE](https://dataspace.copernicus.eu/).
 For a list of services built on top of openEO, please visit the [openEO Hub](https://hub.openeo.org/).
 
 :::
@@ -171,6 +171,12 @@ For a list of services built on top of openEO, please visit the [openEO Hub](htt
   <h2 class="section-title">Choose your path</h2>
   <p class="section-sub">New to openEO? Start with a guide for your preferred language or tool.</p>
   <div class="cards-grid">
+    <a href="https://hub.openeo.org/" class="card" target="_blank" rel="noopener">
+      <div class="card-icon">&#127760;</div>
+      <h3>Explore the openEO Hub</h3>
+      <p>Find an openEO service and start working with Earth observation data.</p>
+      <div class="card-arrow">&#8594; Open the Hub</div>
+    </a>
     <a href="docs_light.html" class="card">
       <div class="card-icon">📖</div>
       <h3>Concepts & Glossary</h3>
