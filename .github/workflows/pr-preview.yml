@@ -35,6 +35,13 @@ jobs:
       - name: Render site
         run: quarto render
 
+      - name: Build JupyterLite
+        run: |
+          pip install -r jupyterlite-requirements.txt
+          mkdir -p jupyterlite/files/notebooks/RandomForest-ForestFire
+          cp client_examples/openeo-community-examples/python/RandomForest-ForestFire/RandomForestModelTraining.ipynb jupyterlite/files/notebooks/RandomForest-ForestFire/
+          jupyter lite build --lite-dir jupyterlite --output-dir _site/jupyterlite --base-url /openeo-docs/previews/pr-${{ github.event.pull_request.number }}/jupyterlite/
+
       # -------------------------
       # ARCHIVE to gh-pages
       # -------------------------
