@@ -5,6 +5,7 @@ project:
     port: 5555
   pre-render:
     - python py_scripts/update_api_version.py
+    - python py_scripts/check_images.py
   render:
     - "*.qmd"
     - "*.md"
