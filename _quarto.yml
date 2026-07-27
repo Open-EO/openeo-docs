@@ -1,5 +1,6 @@
 project:
   type: website
+  # need to remove the port later
   preview: 
     port: 5555
   pre-render:
@@ -24,6 +25,8 @@ website:
     background: "#1a2744"      # dark navy, exact match
     foreground: "#d0dce8"
     href: index.qmd
+    logo: news/images/openeo_logo.png
+    logo-alt: openEO logo
     tools:
       - icon: envelope
         href: mailto:openeo.psc@uni-muenster.de

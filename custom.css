@@ -570,3 +570,5 @@ body.fullcontent .footer-bottom {
   border: none;
   padding: 0;
 }
+/* ─── NAVBAR BRAND ─── */
+.navbar-brand img.navbar-logo { max-height: 50px; width: auto; margin-right: 0.35rem; }
