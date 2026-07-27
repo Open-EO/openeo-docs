@@ -35,8 +35,8 @@ listing:
 <!-- STATS BAR -->
 <div class="stats-bar">
   <div class="stat"><div class="stat-num">100+</div><div class="stat-label">EO Collections</div></div>
-  <div class="stat"><div class="stat-num">100+</div><div class="stat-label">Processes</div></div>
-  <div class="stat"><div class="stat-num">8+</div><div class="stat-label">Backends</div></div>
+  <div class="stat"><div class="stat-num">{{< var hub-processes-count >}}+</div><div class="stat-label">Processes</div></div>
+  <div class="stat"><div class="stat-num">{{< var hub-backends-count >}}+</div><div class="stat-label">Backends</div></div>
 </div>
 
 <!-- WHAT IS OPENEO -->
