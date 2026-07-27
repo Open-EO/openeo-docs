@@ -17,9 +17,6 @@ Clone the repository together with its example-notebook submodule:
 ```powershell
 git clone --recurse-submodules https://github.com/Open-EO/openeo-docs.git
 cd openeo-docs
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
@@ -37,7 +34,7 @@ Run:
 quarto preview
 ```
 
-The local preview is configured to use [http://localhost:5555](http://localhost:5555). Quarto watches the source files and rebuilds the pages when they change. Use `Ctrl+C` to stop it.
+The local preview is configured to use [http://localhost](http://localhost). Quarto watches the source files and rebuilds the pages when they change. Use `Ctrl+C` to stop it.
 
 To produce a complete local build without the preview server, run:
 
