@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.38">
+<meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -12,10 +12,13 @@
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
 */
-code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -41,10 +44,10 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-b48fb47bfd09090af3507e78d4b2c090.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-4fa40bc7739cbd28f413808611451755.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -178,10 +181,13 @@ ul.task-list li input[type="checkbox"] {
 
 
     window.onload = () => {
-        const elems = document.getElementsByClassName('navbar-title');
-        if (elems.length > 0) {
-            const title = elems[0];
-            title.parentElement.href = '/index.html'
+        const brand = document.querySelector('.navbar-brand');
+        if (brand) {
+            // Keep local/preview behavior, but use the GitHub Pages project root in production.
+            const brandHref = window.location.hostname === 'open-eo.github.io'
+                ? '/openeo-docs/'
+                : '/index.html';
+            brand.setAttribute('href', brandHref);
         }
         setActiveClassForCurrentUrl();
     }
@@ -190,7 +196,7 @@ ul.task-list li input[type="checkbox"] {
 </script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -229,6 +235,10 @@ window.Quarto = {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
+    <a href="./index.html" class="navbar-brand navbar-brand-logo">
+    <img src="./news/images/openeo_logo.png" alt="openEO logo" class="navbar-logo light-content">
+    <img src="./news/images/openeo_logo.png" alt="openEO logo" class="navbar-logo dark-content">
+    </a>
     <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">openEO</span>
     </a>
@@ -409,14 +419,14 @@ window.Quarto = {
 
 <!-- ANNOUNCE BAR -->
 <div class="announce-bar">
-  🎉 openEO API 1.3.0 released — <a href="#">read the release notes →</a>
+  🎉 openEO API 1.3.0 released — <a href="https://github.com/Open-EO/openeo-api/releases/tag/1.3.0">read the release notes →</a>
 </div>
 
 <!-- HERO -->
 <section class="hero">
   <div class="hero-content">
-    <div class="hero-badge">🌍 v1.3.0 now available</div>
-    <h1>Open- Standard<br>for <em>Earth Observation Analysis</em></h1>
+    <div class="hero-badge">🌍 1.3.0 now available</div>
+    <h1>Open-<span class="highlight">EO</span> Standard<br>for <em>Earth Observation Analysis</em></h1>
     <p><b>The openEO API</b> allows users to connect to Earth observation cloud back-ends in a simple and unified way.</p>
     <div class="hero-actions">
       <a href="./documentation/cookbook.html" class="btn-primary">Get Started →</a>
@@ -427,8 +437,8 @@ window.Quarto = {
 <!-- STATS BAR -->
 <div class="stats-bar">
   <div class="stat"><div class="stat-num">100+</div><div class="stat-label">EO Collections</div></div>
-  <div class="stat"><div class="stat-num">100+</div><div class="stat-label">Processes</div></div>
-  <div class="stat"><div class="stat-num">8+</div><div class="stat-label">Backends</div></div>
+  <div class="stat"><div class="stat-num">155+</div><div class="stat-label">Processes</div></div>
+  <div class="stat"><div class="stat-num">9+</div><div class="stat-label">Backends</div></div>
 </div>
 
 <!-- WHAT IS OPENEO -->
@@ -509,64 +519,155 @@ Caution
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>openEO is not to be confused with independant services that implement the specifications such as <a href="https://openeo.cloud/">openEO Platform</a> or <a href="https://dataspace.copernicus.eu/">CDSE</a>. For a list of services built on top of openEO, please visit the <a href="https://hub.openeo.org/">openEO Hub</a>.</p>
+<p>openEO is not to be confused with independant services that implement the specifications such as <a href="https://dataspace.copernicus.eu/">CDSE</a>. For a list of services built on top of openEO, please visit the <a href="https://hub.openeo.org/">openEO Hub</a>.</p>
 </div>
 </div>
 </section>
-
-
-
 <!-- GET STARTED CARDS -->
-
- <section class="alt">
-  <span class="section-eyebrow">With openEO</span>
-  <h2 class="section-title">Are you interested in...</h2>
-  <p class="section-sub">openEO can be used to process and analyze Earth observation data from diverse sources in a unified and efficient manner.</p>
-  <div class="cards-grid">
-    <a href="documentation/cookbook.html#load-sentinel2-rgb-composite" class="card">
-      <div class="card-icon">📖</div>
-      <h3>Downloading RGB image</h3>
-      <p>Learn how to download and visualize RGB images from Earth observation data.</p>
-      <div class="card-arrow">→ docs_light.html</div>
-    </a>
-        <a href="documentation/cookbook.html#evi-calculation" class="card">
-      <div class="card-icon">🔧</div>
-      <h3>Performing Band Math</h3>
-      <p>Perform mathematical operations on different spectral bands to derive new insights from Earth observation data.</p>
-      <div class="card-arrow">→ evi calculation</div>
-    </a>
-    <a href="documentation/cookbook.html#cookbook-udfs" class="card">
-      <div class="card-icon">🐍</div>
-      <h3>Bringing your own functions</h3>
-      <p>Define and use your own functions to process Earth observation data within openEO workflows.</p>
-      <div class="card-arrow">→ User-Defined-Function</div>
-    </a>
-    <a href="./client_examples/openeo-community-examples/python/RandomForest-ForestFire/RandomForestModelInference_AsUDP.html" class="card">
-      <div class="card-icon">📊</div>
-      <h3>Share EO workflow as Service</h3>
-      <p>Deploy and manage your Earth observation workflows as a service, enabling automated processing and analysis.</p>
-      <div class="card-arrow">→ User-defined-process</div>
-    </a>
-    <a href="./client_examples/openeo-community-examples/python/ManagingMultipleLargeScaleJobs/ManagingMultipleLargeScaleJobs.html" class="card">
-      <div class="card-icon">⚡</div>
-      <h3>Large-scale Processing</h3>
-      <p>Process and analyze large volumes of Earth observation data efficiently using openEO's scalable infrastructure.</p>
-      <div class="card-arrow">→ Scalability</div>
-    </a>
-    <a href="./client_examples/openeo-community-examples/python/RandomForest-ForestFire/RandomForestModelTraining.html" class="card">
-      <div class="card-icon">🗺️</div>
-      <h3>Using Random Forest</h3>
-      <p>Apply machine learning algorithms like Random Forest to classify and analyze Earth observation data.</p>
-      <div class="card-arrow">→ Random Forest guide</div>
-    </a>
-  </div>
-</section>
+<div class="alt interest-section">
+<span class="section-eyebrow">With openEO</span>
+<h2 class="section-title">
+Are you interested in…
+</h2>
+<p class="section-sub">
+openEO can be used to process and analyze Earth observation data from diverse sources in a unified and efficient manner.
+</p>
+<div class="panel-tabset interest-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">Downloading RGB image</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">Performing Band Math</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">Bringing your own functions</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-4" role="tab" aria-controls="tabset-1-4" aria-selected="false" href="">Share EO workflow as a service</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-5-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-5" role="tab" aria-controls="tabset-1-5" aria-selected="false" href="">Large-scale Processing</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-6-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-6" role="tab" aria-controls="tabset-1-6" aria-selected="false" href="">Using Random Forest</a></li></ul>
+<div class="tab-content interest-tabset">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div class="interest-detail">
+<p>Quickly build true-color composites from Sentinel-2 and export clean visuals for maps, reports, and monitoring dashboards.</p>
+<div class="interest-preview">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/feature-explorer/rgb.png" class="img-fluid figure-img"></p>
+<figcaption>RGB preview</figcaption>
+</figure>
+</div>
+<p>
+True-color Sentinel-2 composite output.
+</p>
+</div>
+<p><strong>Best for:</strong> EO quicklooks, change communication, report-ready imagery<br>
+<strong>Data used:</strong> Sentinel-2 L2A<br>
+<strong>Outcome:</strong> RGB composite image</p>
+<p><a href="documentation/cookbook.html#load-sentinel2-rgb-composite">Explore recipe →</a></p>
+</div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div class="interest-detail">
+<p>Combine spectral bands to derive vegetation and environmental indicators with reusable, cloud-executed openEO pipelines.</p>
+<div class="interest-preview">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/feature-explorer/band-math.png" class="img-fluid figure-img"></p>
+<figcaption>Band math preview</figcaption>
+</figure>
+</div>
+<p>
+Spectral index style output from band combinations.
+</p>
+</div>
+<p><strong>Best for:</strong> index workflows and environmental monitoring<br>
+<strong>Data used:</strong> Sentinel-2 L2A<br>
+<strong>Outcome:</strong> EVI Geotiff image</p>
+<p><a href="documentation/cookbook.html#evi-calculation">Run band math →</a></p>
+</div>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<div class="interest-detail">
+<p>Inject your domain logic with UDFs to extend standard processes while keeping your workflow portable across back-ends.</p>
+<div class="interest-preview">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/feature-explorer/udf.svg" class="img-fluid figure-img"></p>
+<figcaption>UDF preview</figcaption>
+</figure>
+</div>
+<p>
+Workflow extension pattern for custom UDF logic.
+</p>
+</div>
+<p><strong>Best for:</strong> custom algorithms and domain-specific logic<br>
+<strong>Data used:</strong> Sentinel-2 L2A<br>
+<strong>Outcome:</strong> custom UDF process</p>
+<p><a href="documentation/cookbook.html#cookbook-udfs">Build your UDF →</a></p>
+</div>
+</div>
+<div id="tabset-1-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-4-tab">
+<div class="interest-detail">
+<p>Package your workflow as a user-defined process so teams can execute the same analysis at scale with one endpoint.</p>
+<div class="interest-preview">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/feature-explorer/service.png" class="img-fluid figure-img"></p>
+<figcaption>Service preview</figcaption>
+</figure>
+</div>
+<p>
+API-oriented publishing view for reusable services.
+</p>
+</div>
+<p><strong>Best for:</strong> operational teams and repeatable workflows<br>
+<strong>Data used:</strong> Sentinel-2 L2A <strong>Outcome:</strong> reusable UDP service</p>
+<p><a href="client_examples/openeo-community-examples/python/RandomForest-ForestFire/RandomForestModelInference_AsUDP.ipynb">Publish workflow →</a></p>
+</div>
+</div>
+<div id="tabset-1-5" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-5-tab">
+<div class="interest-detail">
+<p>Orchestrate many jobs over large regions and time ranges while preserving reproducibility and runtime efficiency.</p>
+<div class="interest-preview">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/feature-explorer/large-scale.png" class="img-fluid figure-img"></p>
+<figcaption>Large scale preview</figcaption>
+</figure>
+</div>
+<p>
+Batch processing view for multi-job execution.
+</p>
+</div>
+<p><strong>Best for:</strong> regional to continental scale analysis<br>
+<strong>Data used:</strong> Sentinel-2 L2A <strong>Outcome:</strong> batch job results and summaries</p>
+<p><a href="client_examples/openeo-community-examples/python/ManagingMultipleLargeScaleJobs/ManagingMultipleLargeScaleJobs.ipynb">Scale workloads →</a></p>
+</div>
+</div>
+<div id="tabset-1-6" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-6-tab">
+<div class="interest-detail">
+<p>Train and apply machine-learning classifiers directly in your EO workflow to create reproducible land-cover intelligence.</p>
+<div class="interest-preview">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/feature-explorer/random-forest.png" class="img-fluid figure-img"></p>
+<figcaption>Random Forest preview</figcaption>
+</figure>
+</div>
+<p>
+Model training output with classification-ready features.
+</p>
+</div>
+<p><strong>Best for:</strong> classification and model-driven EO analysis<br>
+<strong>Data used:</strong> Sentinel-2 L2A and Sentinel-1 GRD <strong>Outcome:</strong> trained model and inference maps</p>
+<p><a href="client_examples/openeo-community-examples/python/RandomForest-ForestFire/RandomForestModelTraining.ipynb">View notebook →</a><br>
+<a href="jupyterlite/lab/index.html?path=notebooks/RandomForest-ForestFire/RandomForestModelTraining.ipynb" target="_blank" rel="noopener">Run notebook (experimental) →</a></p>
+</div>
+</div>
+</div>
+</div>
+</div>
 
 <section class="alt" id="get-started-section">
   <span class="section-eyebrow">Get started</span>
   <h2 class="section-title">Choose your path</h2>
   <p class="section-sub">New to openEO? Start with a guide for your preferred language or tool.</p>
   <div class="cards-grid">
+    <a href="https://hub.openeo.org/" class="card" target="_blank" rel="noopener">
+      <div class="card-icon">🌐</div>
+      <h3>Explore the openEO Hub</h3>
+      <p>Find an openEO service and start working with Earth observation data.</p>
+      <div class="card-arrow">→ Open the Hub</div>
+    </a>
     <a href="docs_light.html" class="card">
       <div class="card-icon">📖</div>
       <h3>Concepts &amp; Glossary</h3>
@@ -648,7 +749,7 @@ What’s new
 </thead>
 <tbody class="list">
 
-<tr data-index="0" data-listing-date-sort="1778716800000" data-listing-file-modified-sort="1784725561465" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="148" data-listing-title-sort="OGC publishes openEO as a new Community Standard" data-listing-filename-sort="2026-05-14-openeo-is-an-ogc-community-standard.qmd">
+<tr data-index="0" data-listing-date-sort="1778716800000" data-listing-file-modified-sort="1785836882674" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="148" data-listing-title-sort="OGC publishes openEO as a new Community Standard" data-listing-filename-sort="2026-05-14-openeo-is-an-ogc-community-standard.qmd">
 <td>
 <span class="listing-date">May 14, 2026</span>
 </td>
@@ -661,7 +762,7 @@ What’s new
 
 </tr>
 
-<tr data-index="1" data-listing-date-sort="1770076800000" data-listing-file-modified-sort="1784725561465" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="479" data-listing-title-sort="openEO API 1.3.0 and openEO Processes 2.0.0 RC2 released" data-listing-filename-sort="2026-02-03-new-openeo-versions-130-200rc2.qmd">
+<tr data-index="1" data-listing-date-sort="1770076800000" data-listing-file-modified-sort="1785836882674" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="479" data-listing-title-sort="openEO API 1.3.0 and openEO Processes 2.0.0 RC2 released" data-listing-filename-sort="2026-02-03-new-openeo-versions-130-200rc2.qmd">
 <td>
 <span class="listing-date">Feb 3, 2026</span>
 </td>
@@ -674,7 +775,7 @@ What’s new
 
 </tr>
 
-<tr data-index="2" data-listing-date-sort="1766361600000" data-listing-file-modified-sort="1784725561465" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="537" data-listing-title-sort="New openEO QGIS plugin has been released" data-listing-filename-sort="2025-12-22-new-qgis-plugin.qmd">
+<tr data-index="2" data-listing-date-sort="1766361600000" data-listing-file-modified-sort="1785836882674" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="537" data-listing-title-sort="New openEO QGIS plugin has been released" data-listing-filename-sort="2025-12-22-new-qgis-plugin.qmd">
 <td>
 <span class="listing-date">Dec 22, 2025</span>
 </td>
@@ -804,7 +905,7 @@ What’s new
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/open-eo\.github\.io\/openeo-docs\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }

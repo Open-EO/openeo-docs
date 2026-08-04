@@ -26,13 +26,13 @@ An API is an application programming interface. It *defines* a *language* that t
 
 The following figure shows how many interfaces are needed to be able to compare back-ends from different clients, without an openEO API:
 
-![](./images/api.png)
+![](images/api.png)
 
 Structure before openEO
 
 With an openEO API (dark blue), the situation becomes much easier:
 
-![](./images/api2.png)
+![](images/api2.png)
 
 Structure with openEO
 

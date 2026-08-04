@@ -10,16 +10,16 @@ December 22, 2025
 
 We’re excited to announce the availability of a **new and fully rewritten openEO QGIS plugin**, now ready for broader testing by the community.
 
-![](../documentation/1.0/qgis/images/qgis-plugin.jpg)
+![](../images/qgis-plugin.39de9df4.jpg)
 
 QGIS plugin overview in QGIS with GeoTiff visualization
 
 This release represents a major step forward in usability, stability, and feature coverage. The plugin has been redesigned from the ground up and is now **fully integrated into the QGIS Browser**, providing a seamless and intuitive way to access openEO backends and resources directly from QGIS.
 
-- **QGIS plugin repository:**  
+- **QGIS plugin repository:**\
   <https://plugins.qgis.org/plugins/openeo_plugin/>
 
-- **Updated documentation & setup instructions:**  
+- **Updated documentation & setup instructions:**\
   <https://openeo.org/documentation/1.0/qgis/>
 
 The plugin requires **QGIS 3.40.0 or later** and is expected to be compatible with the upcoming **QGIS 4.0**. It can be downloaded from within QGIS, just search for ‘openEO’ in the plugin manager.
@@ -41,12 +41,12 @@ The rewritten plugin introduces a wide range of new features and improvements:
   - Allows for pagination and sorting
 - **Rich visualization capabilities**
   - Visualize batch job results:
-    - GeoTIFF  
-    - netCDF (raster only)  
-    - GeoJSON  
+    - GeoTIFF\
+    - netCDF (raster only)\
+    - GeoJSON\
     - GeoParquet
   - Visualize web services:
-    - XYZ  
+    - XYZ\
     - WMTS
   - Preview collections when supported by the backend (XYZ, WMTS)
 - **STAC integration**
@@ -58,7 +58,7 @@ The rewritten plugin introduces a wide range of new features and improvements:
 
 We consider the current version **stable and ready to be tested by a broader user audience**. Over the coming weeks, we will collect feedback and apply final refinements, with a **final release planned for the end of January or early February**. We also plan to present the QGIS plugin in one of the next openEO community meeting, please keep an eye on the [planned topics](https://openeo.org/meetings.html).
 
-**Your feedback is highly appreciated!**  
+**Your feedback is highly appreciated!**\
 Please share issues, suggestions, or improvements via [**GitHub issues**](https://github.com/Open-EO/openeo-qgis-plugin/issues).
 
 ## Acknowledgements

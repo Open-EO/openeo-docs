@@ -1,8 +1,10 @@
-🎉 openEO API 1.3.0 released — [read the release notes →](#)
+🎉 openEO API 1.3.0 released — [read the release notes →](https://github.com/Open-EO/openeo-api/releases/tag/1.3.0)
 
-🌍 v1.3.0 now available
+🌍 1.3.0 now available
 
-# Open- Standard for *Earth Observation Analysis*
+Open-EO Standard\
+for *Earth Observation Analysis*
+================================
 
 **The openEO API** allows users to connect to Earth observation cloud back-ends in a simple and unified way.
 
@@ -12,17 +14,19 @@
 
 EO Collections
 
-100+
+155+
 
 Processes
 
-8+
+9+
 
 Backends
 
 What is openEO
 
-## One API. Any cloud. Any language.
+One API.\
+Any cloud. Any language.
+------------------------
 
 Whether you're using Python, R , JavaScript or Julia - **openEO** lets you write your analysis once and run it on any compatible back-end. No vendor lock-in. No rewriting code.
 
@@ -52,67 +56,121 @@ import openeo \# Connect to any openEO back-end conn = openeo.connect("BACKEND_U
 
 > **CAUTION:**
 >
-> openEO is not to be confused with independant services that implement the specifications such as [openEO Platform](https://openeo.cloud/) or [CDSE](https://dataspace.copernicus.eu/). For a list of services built on top of openEO, please visit the [openEO Hub](https://hub.openeo.org/).
+> openEO is not to be confused with independant services that implement the specifications such as [CDSE](https://dataspace.copernicus.eu/). For a list of services built on top of openEO, please visit the [openEO Hub](https://hub.openeo.org/).
 
 With openEO
 
-## Are you interested in...
+## Are you interested in…
 
 openEO can be used to process and analyze Earth observation data from diverse sources in a unified and efficient manner.
 
-📖
+## Downloading RGB image
 
-### Downloading RGB image
+Quickly build true-color composites from Sentinel-2 and export clean visuals for maps, reports, and monitoring dashboards.
 
-Learn how to download and visualize RGB images from Earth observation data.
+![](images/feature-explorer/rgb.png)
 
-→ docs_light.html
+RGB preview
 
-🔧
+True-color Sentinel-2 composite output.
 
-### Performing Band Math
+**Best for:** EO quicklooks, change communication, report-ready imagery\
+**Data used:** Sentinel-2 L2A\
+**Outcome:** RGB composite image
 
-Perform mathematical operations on different spectral bands to derive new insights from Earth observation data.
+[Explore recipe →](documentation/cookbook.llms.md#load-sentinel2-rgb-composite)
 
-→ evi calculation
+## Performing Band Math
 
-🐍
+Combine spectral bands to derive vegetation and environmental indicators with reusable, cloud-executed openEO pipelines.
 
-### Bringing your own functions
+![](images/feature-explorer/band-math.png)
 
-Define and use your own functions to process Earth observation data within openEO workflows.
+Band math preview
 
-→ User-Defined-Function
+Spectral index style output from band combinations.
 
-📊
+**Best for:** index workflows and environmental monitoring\
+**Data used:** Sentinel-2 L2A\
+**Outcome:** EVI Geotiff image
 
-### Share EO workflow as Service
+[Run band math →](documentation/cookbook.llms.md#evi-calculation)
 
-Deploy and manage your Earth observation workflows as a service, enabling automated processing and analysis.
+## Bringing your own functions
 
-→ User-defined-process
+Inject your domain logic with UDFs to extend standard processes while keeping your workflow portable across back-ends.
 
-⚡
+![](images/feature-explorer/udf.svg)
 
-### Large-scale Processing
+UDF preview
 
-Process and analyze large volumes of Earth observation data efficiently using openEO's scalable infrastructure.
+Workflow extension pattern for custom UDF logic.
 
-→ Scalability
+**Best for:** custom algorithms and domain-specific logic\
+**Data used:** Sentinel-2 L2A\
+**Outcome:** custom UDF process
 
-🗺️
+[Build your UDF →](documentation/cookbook.llms.md#cookbook-udfs)
 
-### Using Random Forest
+## Share EO workflow as a service
 
-Apply machine learning algorithms like Random Forest to classify and analyze Earth observation data.
+Package your workflow as a user-defined process so teams can execute the same analysis at scale with one endpoint.
 
-→ Random Forest guide
+![](images/feature-explorer/service.png)
+
+Service preview
+
+API-oriented publishing view for reusable services.
+
+**Best for:** operational teams and repeatable workflows\
+**Data used:** Sentinel-2 L2A **Outcome:** reusable UDP service
+
+[Publish workflow →](client_examples/openeo-community-examples/python/RandomForest-ForestFire/RandomForestModelInference_AsUDP.ipynb)
+
+## Large-scale Processing
+
+Orchestrate many jobs over large regions and time ranges while preserving reproducibility and runtime efficiency.
+
+![](images/feature-explorer/large-scale.png)
+
+Large scale preview
+
+Batch processing view for multi-job execution.
+
+**Best for:** regional to continental scale analysis\
+**Data used:** Sentinel-2 L2A **Outcome:** batch job results and summaries
+
+[Scale workloads →](client_examples/openeo-community-examples/python/ManagingMultipleLargeScaleJobs/ManagingMultipleLargeScaleJobs.ipynb)
+
+## Using Random Forest
+
+Train and apply machine-learning classifiers directly in your EO workflow to create reproducible land-cover intelligence.
+
+![](images/feature-explorer/random-forest.png)
+
+Random Forest preview
+
+Model training output with classification-ready features.
+
+**Best for:** classification and model-driven EO analysis\
+**Data used:** Sentinel-2 L2A and Sentinel-1 GRD **Outcome:** trained model and inference maps
+
+[View notebook →](client_examples/openeo-community-examples/python/RandomForest-ForestFire/RandomForestModelTraining.ipynb)\
+[Run notebook (experimental) →](jupyterlite/lab/index.html?path=notebooks/RandomForest-ForestFire/RandomForestModelTraining.ipynb)
 
 Get started
 
 ## Choose your path
 
 New to openEO? Start with a guide for your preferred language or tool.
+
+🌐
+
+### Explore the openEO Hub
+
+Find an openEO service and start working with Earth observation data.
+
+→ Open the Hub
 
 📖
 
