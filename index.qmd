@@ -17,14 +17,14 @@ listing:
 ```{=html}
 <!-- ANNOUNCE BAR -->
 <div class="announce-bar">
-  🎉 openEO API 1.3.0 released — <a href="#">read the release notes →</a>
+  🎉 openEO API {{< var api-version >}} released — <a href="{{< var api-release-url >}}">read the release notes →</a>
 </div>
 
 <!-- HERO -->
 <section class="hero">
   <div class="hero-content">
-    <div class="hero-badge">🌍 v1.3.0 now available</div>
-    <h1>Open- Standard<br>for <em>Earth Observation Analysis</em></h1>
+    <div class="hero-badge">🌍 {{< var api-version >}} now available</div>
+    <h1>Open-<span class="highlight">EO</span> Standard<br>for <em>Earth Observation Analysis</em></h1>
     <p><b>The openEO API</b> allows users to connect to Earth observation cloud back-ends in a simple and unified way.</p>
     <div class="hero-actions">
       <a href="documentation/cookbook.qmd" class="btn-primary">Get Started →</a>
@@ -35,8 +35,8 @@ listing:
 <!-- STATS BAR -->
 <div class="stats-bar">
   <div class="stat"><div class="stat-num">100+</div><div class="stat-label">EO Collections</div></div>
-  <div class="stat"><div class="stat-num">100+</div><div class="stat-label">Processes</div></div>
-  <div class="stat"><div class="stat-num">8+</div><div class="stat-label">Backends</div></div>
+  <div class="stat"><div class="stat-num">{{< var hub-processes-count >}}+</div><div class="stat-label">Processes</div></div>
+  <div class="stat"><div class="stat-num">{{< var hub-backends-count >}}+</div><div class="stat-label">Backends</div></div>
 </div>
 
 <!-- WHAT IS OPENEO -->
@@ -110,67 +110,145 @@ ndvi.<span class="fn">download</span>(<span class="str">"ndvi.nc"</span>)
 ```
 ::: {.callout-caution}
 
-openEO is not to be confused with independant services that implement the specifications such as [openEO Platform](https://openeo.cloud/) or [CDSE](https://dataspace.copernicus.eu/).
+openEO is not to be confused with independant services that implement the specifications such as [CDSE](https://dataspace.copernicus.eu/).
 For a list of services built on top of openEO, please visit the [openEO Hub](https://hub.openeo.org/).
 
 :::
 
 ```{=html}
 </section>
+```
 
 
 
 <!-- GET STARTED CARDS -->
 
- <section class="alt">
-  <span class="section-eyebrow">With openEO</span>
-  <h2 class="section-title">Are you interested in...</h2>
-  <p class="section-sub">openEO can be used to process and analyze Earth observation data from diverse sources in a unified and efficient manner.</p>
-  <div class="cards-grid">
-    <a href="documentation/cookbook.html#load-sentinel2-rgb-composite" class="card">
-      <div class="card-icon">📖</div>
-      <h3>Downloading RGB image</h3>
-      <p>Learn how to download and visualize RGB images from Earth observation data.</p>
-      <div class="card-arrow">→ docs_light.html</div>
-    </a>
-        <a href="documentation/cookbook.html#evi-calculation" class="card">
-      <div class="card-icon">🔧</div>
-      <h3>Performing Band Math</h3>
-      <p>Perform mathematical operations on different spectral bands to derive new insights from Earth observation data.</p>
-      <div class="card-arrow">→ evi calculation</div>
-    </a>
-    <a href="documentation/cookbook.html#cookbook-udfs" class="card">
-      <div class="card-icon">🐍</div>
-      <h3>Bringing your own functions</h3>
-      <p>Define and use your own functions to process Earth observation data within openEO workflows.</p>
-      <div class="card-arrow">→ User-Defined-Function</div>
-    </a>
-    <a href="client_examples/openeo-community-examples/python/RandomForest-ForestFire/RandomForestModelInference_AsUDP.ipynb" class="card">
-      <div class="card-icon">📊</div>
-      <h3>Share EO workflow as Service</h3>
-      <p>Deploy and manage your Earth observation workflows as a service, enabling automated processing and analysis.</p>
-      <div class="card-arrow">→ User-defined-process</div>
-    </a>
-    <a href="client_examples/openeo-community-examples/python/ManagingMultipleLargeScaleJobs/ManagingMultipleLargeScaleJobs.ipynb" class="card">
-      <div class="card-icon">⚡</div>
-      <h3>Large-scale Processing</h3>
-      <p>Process and analyze large volumes of Earth observation data efficiently using openEO's scalable infrastructure.</p>
-      <div class="card-arrow">→ Scalability</div>
-    </a>
-    <a href="client_examples/openeo-community-examples/python/RandomForest-ForestFire/RandomForestModelTraining.ipynb" class="card">
-      <div class="card-icon">🗺️</div>
-      <h3>Using Random Forest</h3>
-      <p>Apply machine learning algorithms like Random Forest to classify and analyze Earth observation data.</p>
-      <div class="card-arrow">→ Random Forest guide</div>
-    </a>
-  </div>
-</section>
+::: {.alt .interest-section}
+<span class="section-eyebrow">With openEO</span>
+<h2 class="section-title">Are you interested in...</h2>
+<p class="section-sub">openEO can be used to process and analyze Earth observation data from diverse sources in a unified and efficient manner.</p>
+
+::: {.panel-tabset .interest-tabset}
+
+## Downloading RGB image
+
+::: {.interest-detail}
+Quickly build true-color composites from Sentinel-2 and export clean visuals for maps, reports, and monitoring dashboards.
+
+::: {.interest-preview}
+![RGB preview](images/feature-explorer/rgb.png)
+<p>True-color Sentinel-2 composite output.</p>
+:::
+
+**Best for:** EO quicklooks, change communication, report-ready imagery  
+**Data used:** Sentinel-2 L2A  
+**Outcome:** RGB composite image
+
+[Explore recipe →](documentation/cookbook.html#load-sentinel2-rgb-composite)
+:::
+
+## Performing Band Math
+
+::: {.interest-detail}
+Combine spectral bands to derive vegetation and environmental indicators with reusable, cloud-executed openEO pipelines.
+
+::: {.interest-preview}
+![Band math preview](images/feature-explorer/band-math.png)
+<p>Spectral index style output from band combinations.</p>
+:::
+
+**Best for:** index workflows and environmental monitoring  
+**Data used:** Sentinel-2 L2A  
+**Outcome:** EVI Geotiff image
+
+[Run band math →](documentation/cookbook.html#evi-calculation)
+:::
+
+## Bringing your own functions
+
+::: {.interest-detail}
+Inject your domain logic with UDFs to extend standard processes while keeping your workflow portable across back-ends.
+
+::: {.interest-preview}
+![UDF preview](images/feature-explorer/udf.svg)
+<p>Workflow extension pattern for custom UDF logic.</p>
+:::
+
+**Best for:** custom algorithms and domain-specific logic  
+**Data used:** Sentinel-2 L2A  
+**Outcome:** custom UDF process
+
+[Build your UDF →](documentation/cookbook.html#cookbook-udfs)
+:::
+
+## Share EO workflow as a service
+
+::: {.interest-detail}
+Package your workflow as a user-defined process so teams can execute the same analysis at scale with one endpoint.
+
+::: {.interest-preview}
+![Service preview](images/feature-explorer/service.png)
+<p>API-oriented publishing view for reusable services.</p>
+:::
+
+**Best for:** operational teams and repeatable workflows  
+**Data used:** Sentinel-2 L2A 
+**Outcome:** reusable UDP service
+
+[Publish workflow →](client_examples/openeo-community-examples/python/RandomForest-ForestFire/RandomForestModelInference_AsUDP.ipynb)
+:::
+
+## Large-scale Processing
+
+::: {.interest-detail}
+Orchestrate many jobs over large regions and time ranges while preserving reproducibility and runtime efficiency.
+
+::: {.interest-preview}
+![Large scale preview](images/feature-explorer/large-scale.png)
+<p>Batch processing view for multi-job execution.</p>
+:::
+
+**Best for:** regional to continental scale analysis  
+**Data used:** Sentinel-2 L2A 
+**Outcome:** batch job results and summaries
+
+[Scale workloads →](client_examples/openeo-community-examples/python/ManagingMultipleLargeScaleJobs/ManagingMultipleLargeScaleJobs.ipynb)
+:::
+
+## Using Random Forest
+
+::: {.interest-detail}
+Train and apply machine-learning classifiers directly in your EO workflow to create reproducible land-cover intelligence.
+
+::: {.interest-preview}
+![Random Forest preview](images/feature-explorer/random-forest.png)
+<p>Model training output with classification-ready features.</p>
+:::
+
+**Best for:** classification and model-driven EO analysis  
+**Data used:** Sentinel-2 L2A and Sentinel-1 GRD
+**Outcome:** trained model and inference maps
+
+[View notebook →](client_examples/openeo-community-examples/python/RandomForest-ForestFire/RandomForestModelTraining.ipynb)  
+[Run notebook (experimental) →](jupyterlite/lab/index.html?path=notebooks/RandomForest-ForestFire/RandomForestModelTraining.ipynb){target="_blank" rel="noopener"}
+:::
+
+:::
+:::
+
+```{=html}
 
 <section class="alt" id="get-started-section">
   <span class="section-eyebrow">Get started</span>
   <h2 class="section-title">Choose your path</h2>
   <p class="section-sub">New to openEO? Start with a guide for your preferred language or tool.</p>
   <div class="cards-grid">
+    <a href="https://hub.openeo.org/" class="card" target="_blank" rel="noopener">
+      <div class="card-icon">&#127760;</div>
+      <h3>Explore the openEO Hub</h3>
+      <p>Find an openEO service and start working with Earth observation data.</p>
+      <div class="card-arrow">&#8594; Open the Hub</div>
+    </a>
     <a href="docs_light.html" class="card">
       <div class="card-icon">📖</div>
       <h3>Concepts & Glossary</h3>

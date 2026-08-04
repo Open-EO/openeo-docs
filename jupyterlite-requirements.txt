@@ -1,0 +1,4 @@
+# Keep the JupyterLite core and Pyodide kernel in the same compatible release series.
+jupyterlite-core==0.7.6
+jupyterlite-pyodide-kernel==0.7.2
+jupyter-server>=2,<3

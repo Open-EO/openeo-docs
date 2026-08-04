@@ -4,6 +4,42 @@ toc: true
 jupyter: python3
 ---
 
+::: {.content-visible when-format="llms-txt"}
+
+## Summary
+
+This page provides executable examples of common openEO workflows.
+
+Main topics:
+
+- Sentinel-2 processing
+- NDVI calculation
+- Temporal aggregation
+- Batch job execution
+- Result download
+
+
+## Page Purpose
+
+The Cookbook contains task-oriented examples.
+
+Common user intents mapped to recipes:
+
+| User asks about | Consult |
+|-----------------|----------|
+| Vegetation monitoring | NDVI examples |
+| Data loading | Collection examples |
+| Large computations | Batch job examples |
+| Exporting outputs | Result download examples |
+
+Important concepts:
+- process graph
+- data cube
+- batch job
+- collection
+
+:::
+
 This is the openEO cookbook that you can refer to to get a first idea on how to solve problems with openEO in the three client languages Python, R and JavaScript. It describes how to implement simple use cases in a pragmatic way.
 
 We recommend exploring this page if you want to use any of the openEO client libraries. It is not a complete reference, but rather a collection of examples that can be used as a starting point for your work.
@@ -114,7 +150,7 @@ import { OpenEO } from '@openeo/js-client';
 
 ---
 
-In this cookbook, we use the openEO federation backend of the Copernicus Data Space Ecosystem, available at `https://openeofed.dataspace.copernicus.eu`. This backend also provides access to partner resources. For more information on different openEO Backends, please refer [here](#).
+In this cookbook, we use the openEO federation backend of the Copernicus Data Space Ecosystem, available at `https://openeofed.dataspace.copernicus.eu`. This backend also provides access to partner resources. For more information on different openEO Backends, please refer [here](https://hub.openeo.org/).
 
 Once we are sure on the backend we want to use, we can connect to it using the openEO client library. 
 
@@ -1113,13 +1149,201 @@ await con.downloadResult(result, "evi-composite.tiff");
 
 ## 5. User-Defined Functions (UDFs) {#cookbook-udfs}
 
-If your use case cannot be accomplished with the default openEO processes, you can define a **User-Defined Function (UDF)**. UDFs are Python or R scripts that run on the backend as part of your processing graph.
+While openEO supports a wide range of pre-defined processes and allows to build more complex user-defined processes from them, you sometimes need operations or algorithms that are not (yet) available or standardized as openEO processes. **User-Defined Functions (UDF)** is an openEO feature (through the [run_udf](https://processes.openeo.org/#run_udf) process) that aims to fill that gap by allowing a user to express (a part of) an algorithm as a Python/R/… script to be run back-end side.
 
-Thank you for reading until the end! I still need to add examples for UDF. Thank you for your patience :smile:
+Though several types of algorithms can be used as UDF applications, in this example, we showcase a simple example of how to work with UDF.
+
+### 5.1 Load and Filter Collection
+
+::: {.panel-tabset}
+
+
+#### Python
+
+```python
+import openeo
+
+connection = openeo.connect("https://openeofed.dataspace.copernicus.eu")
+connection.authenticate_oidc()
+
+datacube = connection.load_collection(
+    "SENTINEL2_L2A",
+    spatial_extent={"west": 5.14, "south": 51.17, "east": 5.17, "north": 51.19},
+    temporal_extent=["2022-05-01", "2022-05-30"],
+    bands=["B04", "B03", "B02"],
+    max_cloud_cover=85,
+)
+```
+
+#### R
+
+```r
+
+library(openeo)
+
+connection <- connect(host = "https://openeofed.dataspace.copernicus.eu")
+login()
+p <- processes()
+
+datacube <- p$load_collection(
+  id = "SENTINEL2_L2A",
+  spatial_extent = list(west = 5.14, south = 51.17, east = 5.17, north = 51.19),
+  temporal_extent = c("2022-05-01", "2022-05-30"),
+  bands = c("B04", "B03", "B02")
+)
+```
+
+#### JavaScript
+
+```js
+const { OpenEO, Formula } = require('@openeo/js-client');
+
+var con = await OpenEO.connect("https://openeofed.dataspace.copernicus.eu");
+await con.authenticateOIDC();
+var builder = await con.buildProcess();
+
+var datacube = builder.load_collection(
+    "SENTINEL2_L2A",
+    {west: 5.14, south: 51.17, east: 5.17, north: 51.19},
+    ["2022-05-01", "2022-05-30"],
+    ["B04", "B03", "B02"]
+);
+```
+
+:::
+
+### 5.2 Reduce the data to a single image
+
+Next, we will reduce the time dimension of the datacube to a single image using the `max` reducer.
+
+::: {.panel-tabset}
+
+#### Python
+
+```python
+datacube = datacube.reduce_dimension(dimension="t", reducer="max")
+```
+
+#### R
+
+```r
+datacube <- p$reduce_dimension(
+  data = datacube,
+  reducer = function(data, context) { p$max(data = data) },
+  dimension = "t"
+)
+
+```
+
+#### JavaScript
+```js
+var max_reducer = function(data) { return this.max(data); };
+var datacube = builder.reduce_dimension(datacube, max_reducer, "t");
+```
+
+:::
+
+### 5.3 Apply a User-Defined Function (UDF)
+
+Here the UDF code shown in the following cell does the value rescaling. 
+
+::: {.panel-tabset}
+
+#### Python
+
+```python
+# Build a UDF object from an inline string with Python source code.
+udf = openeo.UDF(
+    """
+from openeo.udf import XarrayDataCube
+
+def apply_datacube(cube: XarrayDataCube, context: dict) -> XarrayDataCube:
+    array = cube.get_array()
+    array.values = 0.0001 * array.values
+    return cube
+"""
+
+# Apply the UDF to a cube.
+rescaled_cube = datacube.apply(process=udf)
+
+```
+
+#### R
+
+```r
+# Build a UDF object from an inline string with R source code.
+udf <- openeo::UDF(
+  "
+  apply_datacube <- function(cube, context) {
+    array <- cube$get_array()
+    array$values <- 0.0001 * array$values
+    return(cube)
+  }
+  "
+)
+
+rescaled_cube <- p$apply(data = datacube, process = udf)
+```
+
+#### JavaScript
+
+```js
+// Build a UDF object from an inline string with JavaScript source code.
+var udf = new OpenEO.UDF(
+    `
+    function apply_datacube(cube, context) {
+        let array = cube.get_array();
+        array.values = array.values.map(v => 0.0001 * v);
+        return cube;
+    }
+    `
+);
+
+// Apply the UDF to a cube.
+var rescaled_cube = datacube.apply(process=udf);
+
+```
+
+:::
+
+### 5.4 Download the Result as GeoTIFF
+
+Finally, we will download the result as a GeoTIFF file.
+
+::: {.panel-tabset}
+
+#### Python
+
+```python
+rescaled_cube.download("rescaled_cube.tiff")
+```
+
+#### R
+
+```r
+formats <- list_file_formats()
+result <- p$save_result(data = rescaled_cube, format = formats$output$GTIFF)
+job <- create_job(graph = result, title = "Rescaled Cube GeoTIFF")
+job <- start_job(job = job)
+download_results(job = job, folder = "./results")
+```
+
+#### JavaScript
+```js
+var result = builder.save_result(rescaled_cube, "GTiff");
+var job = await con.createJob(result, "Rescaled Cube GeoTIFF");
+await job.startJob();
+// Monitor and download when finished
+await job.downloadResults({ folder: "./results" });
+```
+
+:::
+
+Ideally, it allows you to embed existing Python/R/… implementations in an openEO workflow (with some necessary “glue code”). However, it is recommended to try to do as much pre- or postprocessing with pre-defined processes before blindly copy-pasting source code snippets as UDFs. Pre-defined processes are typically well-optimized by the backend, while UDFs can come with a performance penalty and higher development/debug/maintenance costs. For more information, see the [UDF documentation](https://open-eo.github.io/openeo-python-client/udf.html).
 
 
 
-
+You have feedback or noticed an error? Feel free to open an issue in the [GitHub repository](https://github.com/Open-EO/openeo-docs/issues) or use the other communication channels.
 
 
 ::: {.callout-tip}

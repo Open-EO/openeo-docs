@@ -12,3 +12,8 @@ venv
 *.pyc
 
 **/*.quarto_ipynb
+
+*.html
+
+jupyterlite/files/
+.jupyterlite.doit.db
