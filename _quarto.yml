@@ -50,18 +50,22 @@ website:
       - sidebar:support
     left:
       - text: "About"
-        href: about.qmd
+        menu:
+          - text: "About openEO"
+            href: about.qmd
+          - text: "Project Steering Committee (PSC)"
+            href: psc.qmd
       - text: "Services"
         href: https://hub.openeo.org/
         target: _blank
-      - text: "News"
-        href: news/news.qmd
-      - text: "Meetings"
-        href: meetings.qmd
-      - text: "Events"
-        href: events/events.qmd
-      - text: "PSC"
-        href: psc.qmd
+      - text: "Community"
+        menu:
+          - text: "News"
+            href: news/news.qmd
+          - text: "Meetings"
+            href: meetings.qmd
+          - text: "Events"
+            href: events/events.qmd
       
   search: true
   sidebar:
