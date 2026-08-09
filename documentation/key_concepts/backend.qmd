@@ -6,6 +6,8 @@ An **openEO backend** is a server-side implementation of the openEO API. It expo
 
 In practice, a backend is the system that receives your process graph, validates it, executes it near the data, and returns results or job metadata. This is what makes openEO workflow interoperable.
 
+![openEO backend overview](images/backend-overview.png)
+
 ## What a backend provides
 
 Most openEO backends provide some or all of the following:
@@ -56,6 +58,8 @@ You can explore the live catalogue directly here:
 ```
 
 If the embedded view does not load in your browser, open the hub directly at [https://hub.openeo.org/](https://hub.openeo.org/).
+
+![Backend service discovery example](images/backend-services.png)
 
 ::: {.callout-note}
 ## Note

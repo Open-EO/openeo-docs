@@ -84,11 +84,11 @@ website:
           - section: KEY CONCEPTS
             href: documentation/keyconcepts.qmd
             contents:
-              - href: 404-not-found.qmd
+              - href: documentation/key_concepts/backend.qmd
                 text: Backends
-              - href: documentation/keyconcepts/openeo_api.qmd
+              - href: documentation/key_concepts/datacube.qmd
                 text: Datacube
-              - href: documentation/keyconcepts/processes.qmd
+              - href: documentation/key_concepts/processes.qmd
                 text: Processes
           - section: SETUP
             href: documentation/setup.qmd
