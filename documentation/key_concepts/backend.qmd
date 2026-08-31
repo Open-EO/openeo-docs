@@ -2,9 +2,9 @@
 title: "openEO Backends"
 ---
 
-An **openEO backend** is a server-side implementation of the openEO API. It exposes Earth Observation data, processing capabilities, authentication, and execution infrastructure through a standard interface so that the client-side workflow can run against different providers with minimal changes.
+An **openEO backend** is a server-side implementation of the openEO API. It exposes Earth Observation data, processing capabilities, authentication, and execution infrastructure through a standard interface, enabling the client-side workflow to run across different providers with minimal changes.
 
-In practice, a backend is the system that receives your process graph, validates it, executes it near the data, and returns results or job metadata. This is what makes openEO workflow interoperable.
+In practice, a backend is the system that receives your process graph, validates it, executes it near the data, and returns results or job metadata. This is what makes the openEO workflow interoperable.
 
 ![openEO backend overview](images/backend-overview.png)
 
@@ -14,7 +14,7 @@ Most openEO backends provide some or all of the following:
 
 * **Collection discovery** so users can inspect available datasets and metadata.
 * **Process discovery** so users can see which predefined processes are supported.
-* **Data processing** through synchronous requests for smaller jobs and batch jobs for larger workloads with the available set of processes in the sepecific backend.
+* **Data processing** through synchronous requests for smaller jobs and batch jobs for larger workloads with the available set of processes in the specific backend.
 * **Result export** in one or more output formats such as GeoTIFF, NetCDF, or PNG.
 * **Optional advanced features** such as user-defined functions (UDFs), user-defined processes (UDPs), file storage, etc.
 
@@ -35,16 +35,14 @@ For users, this means that openEO offers a common way of working, while backend 
 Backend availability evolves over time. Always use the hub as the current source of truth for supported services and their exact capabilities.
 
 
-The authoritative live overview of publicly indexed openEO services is the [openEO Hub](https://hub.openeo.org/). The hub crawls backend metadata and lets you compare services based on what they expose.
+The authoritative live overview of publicly indexed openEO services is the [openEO Hub](https://hub.openeo.org/). The hub provides a detailed view on the backend metadata and lets you compare services based on what they expose.
 
 
-openEO Hub is especially useful when you want to answer practical questions such as:
+This interface allows you to answer questions such as:
 
-* Which backends support **basic functionality**, **synchronous processing**, or **batch processing**?
-* Which backends expose a specific **collection** or **process**?
-* Which services support certain **input formats**, **output formats**, or **UDF runtimes**?
-* Which providers offer **file storage**, **additional web services**, **UDPs**, or **cost estimation**?
-* Which backends have a **free plan** or meet other operational constraints?
+* What are the available backends?
+* Which collections and processes are supported by each backend?
+* What are the supported export formats and runtimes?
 
 You can explore the live catalogue directly here:
 
@@ -64,17 +62,19 @@ If the embedded view does not load in your browser, open the hub directly at [ht
 ::: {.callout-note}
 ## Note
 
-The hub data shown in the embedded view is updated on each crawl, which may take a few days. For the most up-to-date information, always check the hub directly.
+The openEO hub data shown in the embedded view above is updated with each crawl, which may take a few days. For the most up-to-date information, always check the openEO hub directly.
 :::
 
 ## Choosing a backend
 
 When selecting a backend for your work, start with these checks:
 
-1. Does it provide the **collections** you need?
-2. Does it support the **processes** and **execution mode** your workflow requires?
-3. Does it offer the right **export formats**, **authentication model**, and **quota or billing model**?
-4. Does it support advanced features you rely on, such as **UDFs**, **web services**, or **federated access**?
+
+1. What are the **collections** and **processes** you need for your workflow?
+2. Does it provide the **collections** you need?
+3. Does it support the **processes** and **execution mode** your workflow requires?
+4. Does it offer the right **export formats**, **authentication model**, and **quota or billing model**?
+5. Does it support advanced features you rely on, such as **UDFs**, **web services**, or **federated access**?
 
 For a hands-on example of connecting to a backend and exploring its capabilities, see the [Setup](../setup.qmd) and [Cookbook](../cookbook.qmd) sections.
 
