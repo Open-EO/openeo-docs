@@ -2,9 +2,9 @@
 title: "openEO Processes"
 ---
 
-An **openEO process** is a named operation that takes one or more inputs, performs a task, and returns a result. In simple terms, processes are the building blocks of an openEO workflow.
+An **openEO process** is an operation that takes one or more inputs, performs a task, and returns a result. In simple terms, processes are the building blocks of an openEO workflow.
 
-Some processes load data, some filter it, some transform it, and others summarize or export it. By combining them, users can describe Earth Observation workflows in a portable way.
+Some processes load data, some filter it, some transform it, or some export it. By combining them, users can describe an Earth Observation (EO) workflow in openEO.
 
 As described in the [Glossary](../glossary.qmd), a process is an operation that performs a specific task on a set of parameters and returns a result.
 
@@ -16,18 +16,17 @@ Examples include:
 * aggregating data over time or space, and
 * exporting the final result as a file.
 
-In openEO, processes are combined into a **process graph**. A process graph is the machine-readable description of your workflow: it tells the backend what to do, in which order, and with which parameters.
+In openEO, processes are combined into a **process graph**. A process graph is the machine-readable description of a workflow: it tells the backend what to do, in which order, and with which parameters.
 
 ![openEO process workflow overview](images/processes-overview.png)
 
 ## What openEO offers
 
-openEO offers a broad catalogue of standardized processes that cover the most common parts of EO analysis. These processes are grouped into categories such as:
+openEO offers a broad catalogue of standardised and a few non-standardised processes that cover most EO analysis tasks. These processes can be further identified as processes for data discovery, for applying operations on the cubes, or for simply exporting the results. Such as:
 
 * **Import** processes to load collections, STAC resources, uploaded files, or URLs.
-* **Filter** processes to limit data by time, space, bands, labels, or metadata.
-* **Cube** processes to manipulate multi-dimensional EO data cubes.
-* **Reducer and aggregate** processes to compute summaries such as mean, median, sum, or zonal statistics.
+* **Filter** processes applied to a datacube to limit data by time, space, bands, labels, or metadata.
+* **Reducer and aggregate** processes to compute summaries such as mean, median, sum, or zonal statistics of a datacube
 * **Math and logic** processes for calculations, conditions, and comparisons.
 * **Reproject and resample** processes to align data spatially or temporally.
 * **Masking** processes to exclude invalid or unwanted data.
@@ -45,8 +44,7 @@ The openEO process reference lists the processes defined by the openEO project. 
 
 ## Embedded process reference
 
-To keep this documentation page useful even as older mirrors are phased out, the maintained process reference is embedded below.
-
+The standardised openEO processes are embedded below:
 ```{=html}
 <iframe
 	src="https://processes.openeo.org/"
@@ -80,12 +78,12 @@ The full reference is extensive, so it helps to know the main families of proces
 
 ## A simple way to think about processes
 
-You can think of an openEO workflow as a chain of questions you ask the system:
+As mentioned earlier, openEO processes are the building blocks of workflows. You can think of an openEO workflow as a chain of processes that implement the questions you ask the system:
 
-1. Which data do I want to use?
-2. Which area and time period do I care about?
+1. Which process do I need to load the data?
+2. How do I filter the data to the relevant spatial and temporal extent?
 3. Which calculations do I want to perform?
-4. How do I want to summarize or export the result?
+4. How do I want to summarise or export the result?
 
 Each of those steps is implemented with one or more processes.
 
@@ -111,20 +109,20 @@ This means:
 
 ## Standardized, but not identical everywhere
 
-One of the strengths of openEO is that the same workflow idea can be used across multiple services. However, process support can differ between backends.
+One of the strengths of openEO is that the same workflow idea can be used across multiple services. However, process support can differ across backends; therefore, it is recommended always to check the capabilities of the specific backend you are using.
 
 Differences may include:
 
-* which standardized processes are implemented,
+* which standardised processes are implemented,
 * whether synchronous processing is supported,
 * which experimental or advanced processes are available,
 * whether UDFs or UDPs are supported,
 * which input and output formats are available, and
 * whether a backend exposes additional provider-specific processes.
 
-This is intentional. openEO standardizes the language of processing, but each backend can implement that language at a different depth and can extend it for its own infrastructure and data services.
+The differences between backends are intentional and expected. Though openEO tries to standardise the processing language, each backend may implement it differently.
 
-If you want more detail about how services differ, see the [Backends](backend.qmd) page.
+If you want more details about how services differ across backends, see the [Backends](backend.qmd) page.
 
 ## Process profiles and support levels
 
@@ -135,32 +133,32 @@ These profiles group capabilities into levels such as:
 * **L1 Minimal** for basic openEO compliance,
 * **L2 Recommended** for practical day-to-day usage,
 * **L3 Advanced** for more demanding workflows, and
-* **L4 Above and Beyond** for specialized and highly advanced use cases.
+* **L4 Above and Beyond** for specialised and highly advanced use cases.
 
-For users, the main benefit of profiles is simple: they help explain why two backends can both be openEO-compatible while still supporting different sets of processes.
+For users, the main benefit of profiles is that they help explain why two backends can both be openEO-compatible yet support different sets of processes.
 
-The main profile levels can be summarized like this:
+The main profile levels can be summarised like this:
 
 | Profile level | What it usually means for users |
 | --- | --- |
 | **L1 Minimal** | Basic openEO compliance and the minimum process set needed for simple workflows. |
 | **L2 Recommended** | A more practical set of processes for everyday EO work, including common filtering, aggregation, and data-cube operations. |
 | **L3 Advanced** | More advanced process support for richer workflows, including broader callback handling, STAC-related functionality, and advanced cube operations. |
-| **L4 Above and Beyond** | Specialized and high-end capabilities for demanding or niche workflows. |
+| **L4 Above and Beyond** | Specialised and high-end capabilities for demanding or niche workflows. |
 
 There are also sub-profiles for particular needs such as raster processing, vector processing, date and time operations, text handling, machine learning, UDFs, climatology, and analysis-ready data.
 
 Some platforms also defined extra requirements on top of the general openEO profiles. A useful example is the former openEO Platform federation guidance, which introduced additional expectation levels often referred to as **L2P**, **L3P**, and **L4P**.
 
-Those platform-specific levels can be summarized as follows:
+Those platform-specific levels can be summarised as follows:
 
 | Additional platform level | Practical meaning |
 | --- | --- |
-| **L2P** | A backend not only supports the recommended process set, but is also expected to handle core raster workflows reliably at meaningful scale. This typically includes common processes such as `load_collection`, `filter_temporal`, `filter_bbox`, `filter_bands`, `apply`, `aggregate_temporal`, `aggregate_spatial`, `mask`, `ndvi`, `reduce_dimension`, `resample_spatial`, and `save_result`. |
-| **L3P** | The backend also supports more advanced capabilities that are important in richer workflows, such as `apply_neighborhood`, `load_stac`, `filter_labels`, `reduce_spatial`, `resample_cube_temporal`, and `run_udf`. |
-| **L4P** | The backend additionally supports more specialized or high-end functionality such as `atmospheric_correction`, `load_uploaded_files`, `load_url`, and `sar_backscatter`. |
+| **L2P** | A backend not only supports the recommended process set, but is also expected to handle core raster workflows reliably at a meaningful scale. This typically includes common processes such as `load_collection`, `filter_temporal`, `filter_bbox`, `filter_bands`, `apply`, `aggregate_temporal`, `aggregate_spatial`, `mask`, `ndvi`, `reduce_dimension`, `resample_spatial`, and `save_result`. |
+| **L3P** | The backend also supports more advanced capabilities important for advanced workflows, such as `apply_neighborhood`, `load_stac`, `filter_labels`, `reduce_spatial`, `resample_cube_temporal`, and `run_udf`. |
+| **L4P** | The backend additionally supports more specialised or high-end functionality such as `atmospheric_correction`, `load_uploaded_files`, `load_url`, and `sar_backscatter`. |
 
-In practice, these extra platform-specific levels were useful because they signaled more than simple endpoint availability: they indicated that important processes were expected to work robustly on larger, realistic Earth Observation workloads.
+In practice, these extra platform-specific levels were useful because they signalled more than simple endpoint availability: they indicated that important processes were expected to work robustly on larger, realistic Earth Observation workloads.
 
 ## How to discover process support in practice
 
@@ -172,7 +170,7 @@ Instead, check support using one or more of these approaches:
 * Use the backend metadata or capability endpoints.
 * Use client-library helpers such as `list_processes` or `describe_process`.
 
-Backends can implement a varying set of processes and may include non-standardized ones.
+Backends can implement a varying set of processes, including non-standardised ones.
 
 ## Where to learn how to use processes
 
