@@ -89,25 +89,26 @@ website:
           - href: documentation/cookbook.qmd
             text: COOKBOOK
           - section: KEY CONCEPTS
-            href: documentation/keyconcepts.qmd
             contents:
+              - href: documentation/key_concepts/glossary.qmd
+                text: Glossary
               - href: documentation/key_concepts/backend.qmd
                 text: Backends
               - href: documentation/key_concepts/datacube.qmd
                 text: Datacube
               - href: documentation/key_concepts/processes.qmd
                 text: Processes
+              - href: documentation/key_concepts/architecture.qmd
+                text: openEO Architecture
           - href: documentation/setup.qmd
             text: SETUP
           - section: DATA DISCOVERY
             href: documentation/data_discovery.qmd
             contents: 
               - href: 404-not-found.qmd
-                text: Collections
-              - href: 404-not-found.qmd
                 text: Load Collections
               - href: 404-not-found.qmd
-                text: Load STAC metadata
+                text: Load STAC 
           - section: CUBE OPERATIONS
             href: documentation/cube_operations.qmd
             contents:

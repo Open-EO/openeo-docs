@@ -6,7 +6,7 @@ An **openEO process** is an operation that takes one or more inputs, performs a 
 
 Some processes load data, some filter it, some transform it, or some export it. By combining them, users can describe an Earth Observation (EO) workflow in openEO.
 
-As described in the [Glossary](../glossary.qmd), a process is an operation that performs a specific task on a set of parameters and returns a result.
+As described in the [Glossary](glossary.qmd), a process is an operation that performs a specific task on a set of parameters and returns a result.
 
 Examples include:
 

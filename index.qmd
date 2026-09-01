@@ -249,7 +249,7 @@ Train and apply machine-learning classifiers directly in your EO workflow to cre
       <p>Find an openEO service and start working with Earth observation data.</p>
       <div class="card-arrow">&#8594; Open the Hub</div>
     </a>
-    <a href="documentation/glossary.qmd" class="card">
+    <a href="documentation/key_concepts/glossary.qmd" class="card">
       <div class="card-icon">📖</div>
       <h3>Concepts & Glossary</h3>
       <p>Understand datacubes, processes, UDFs, and the openEO data model before writing any code.</p>

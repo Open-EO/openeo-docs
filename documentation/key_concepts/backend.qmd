@@ -99,7 +99,7 @@ If your preferred technology does not yet have an existing driver, you can also 
 
 Before you expose endpoints, make sure the conceptual model is clear. At minimum, a backend implementer should be familiar with:
 
-* the [openEO glossary](../glossary.qmd),
+* the [openEO glossary](glossary.qmd),
 * the overall architecture of openEO,
 * the concepts behind processes and process graphs,
 * the [openEO API specification](https://api.openeo.org/), and

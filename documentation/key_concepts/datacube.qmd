@@ -6,7 +6,7 @@ An **openEO datacube** is the main way Earth Observation data is represented in 
 
 That sounds technical, but the idea is straightforward: instead of thinking in terms of separate image files, dates, and bands, you work with a single consistent data object that can be filtered, transformed, combined, and analysed.
 
-As described in the [Glossary](../glossary.qmd), a spatiotemporal datacube is a multidimensional array with one or more spatial or temporal dimensions. In openEO, datacubes can represent both raster and vector-based Earth Observation data.
+As described in the [Glossary](glossary.qmd), a spatiotemporal datacube is a multidimensional array with one or more spatial or temporal dimensions. In openEO, datacubes can represent both raster and vector-based Earth Observation data.
 
 ## What is a datacube?
 
@@ -168,4 +168,4 @@ Depending on what you want to learn next, a useful follow-up is:
 * read [Processes](processes.qmd) to understand the operations that act on datacubes,
 * go to [openEO Cube Operations](../cube_operations.qmd) for workflow-oriented examples,
 * read [Backends](backend.qmd) to understand where data and capability differences come from, or
-* return to the [Glossary](../glossary.qmd) for key terminology.
+* return to the [Glossary](glossary.qmd) for key terminology.
