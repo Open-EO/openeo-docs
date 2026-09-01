@@ -5,7 +5,10 @@ project:
     port: 5555
   pre-render:
     - python py_scripts/update_api_version.py
+    - python py_scripts/update_backend_process_support.py
     - python py_scripts/check_images.py
+  resources:
+    - _data/backend_process_support.json
   render:
     - "*.qmd"
     - "*.md"
@@ -77,7 +80,7 @@ website:
             text: Contact
           - href: https://forum.dataspace.copernicus.eu/c/openeo/28
             text: CDSE Forum
-          - href: Examples.qmd
+          - href: examples.qmd
             text: Notebook examples
     - id: user_documentation
       title: "User Documentation"
@@ -94,8 +97,8 @@ website:
                 text: Datacube
               - href: documentation/key_concepts/processes.qmd
                 text: Processes
-          - section: SETUP
-            href: documentation/setup.qmd
+          - href: documentation/setup.qmd
+            text: SETUP
           - section: DATA DISCOVERY
             href: documentation/data_discovery.qmd
             contents: 
