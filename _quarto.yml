@@ -102,13 +102,8 @@ website:
                 text: openEO Architecture
           - href: documentation/setup.qmd
             text: SETUP
-          - section: DATA DISCOVERY
-            href: documentation/data_discovery.qmd
-            contents: 
-              - href: 404-not-found.qmd
-                text: Load Collections
-              - href: 404-not-found.qmd
-                text: Load STAC 
+          - href: documentation/data_discovery.qmd
+            text: DATA DISCOVERY
           - section: CUBE OPERATIONS
             href: documentation/cube_operations.qmd
             contents:
