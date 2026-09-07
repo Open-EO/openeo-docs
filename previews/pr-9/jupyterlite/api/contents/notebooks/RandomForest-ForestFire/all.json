@@ -1,0 +1,29 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2026-09-07T13:02:35.906825Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-07T13:02:33.577268Z",
+      "mimetype": null,
+      "name": "RandomForestModelTraining.ipynb",
+      "path": "notebooks/RandomForest-ForestFire/RandomForestModelTraining.ipynb",
+      "size": 2000396,
+      "type": "notebook",
+      "writable": true
+    }
+  ],
+  "created": "2026-09-07T13:02:35.906617Z",
+  "format": "json",
+  "hash": null,
+  "hash_algorithm": null,
+  "last_modified": "2026-09-07T13:02:35.906617Z",
+  "mimetype": null,
+  "name": "RandomForest-ForestFire",
+  "path": "notebooks/RandomForest-ForestFire",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}
