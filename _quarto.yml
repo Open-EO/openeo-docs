@@ -5,10 +5,7 @@ project:
     port: 5555
   pre-render:
     - python py_scripts/update_api_version.py
-    - python py_scripts/update_backend_process_support.py
     - python py_scripts/check_images.py
-  resources:
-    - _data/backend_process_support.json
   render:
     - "*.qmd"
     - "*.md"
@@ -53,22 +50,18 @@ website:
       - sidebar:support
     left:
       - text: "About"
-        menu:
-          - text: "About openEO"
-            href: about.qmd
-          - text: "Project Steering Committee (PSC)"
-            href: psc.qmd
+        href: about.qmd
       - text: "Services"
         href: https://hub.openeo.org/
         target: _blank
-      - text: "Community"
-        menu:
-          - text: "News"
-            href: news/news.qmd
-          - text: "Meetings"
-            href: meetings.qmd
-          - text: "Events"
-            href: events/events.qmd
+      - text: "News"
+        href: news/news.qmd
+      - text: "Meetings"
+        href: meetings.qmd
+      - text: "Events"
+        href: events/events.qmd
+      - text: "PSC"
+        href: psc.qmd
       
   search: true
   sidebar:
@@ -80,7 +73,7 @@ website:
             text: Contact
           - href: https://forum.dataspace.copernicus.eu/c/openeo/28
             text: CDSE Forum
-          - href: examples.qmd
+          - href: Examples.qmd
             text: Notebook examples
     - id: user_documentation
       title: "User Documentation"
@@ -89,21 +82,25 @@ website:
           - href: documentation/cookbook.qmd
             text: COOKBOOK
           - section: KEY CONCEPTS
+            href: documentation/keyconcepts.qmd
             contents:
-              - href: documentation/key_concepts/glossary.qmd
-                text: Glossary
-              - href: documentation/key_concepts/backend.qmd
+              - href: 404-not-found.qmd
                 text: Backends
-              - href: documentation/key_concepts/datacube.qmd
+              - href: documentation/keyconcepts/openeo_api.qmd
                 text: Datacube
-              - href: documentation/key_concepts/processes.qmd
+              - href: documentation/keyconcepts/processes.qmd
                 text: Processes
-              - href: documentation/key_concepts/architecture.qmd
-                text: openEO Architecture
-          - href: documentation/setup.qmd
-            text: SETUP
-          - href: documentation/data_discovery.qmd
-            text: DATA DISCOVERY
+          - section: SETUP
+            href: documentation/setup.qmd
+          - section: DATA DISCOVERY
+            href: documentation/data_discovery.qmd
+            contents: 
+              - href: 404-not-found.qmd
+                text: Collections
+              - href: 404-not-found.qmd
+                text: Load Collections
+              - href: 404-not-found.qmd
+                text: Load STAC metadata
           - section: CUBE OPERATIONS
             href: documentation/cube_operations.qmd
             contents:

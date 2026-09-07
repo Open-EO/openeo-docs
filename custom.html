@@ -26,53 +26,54 @@
     window.addEventListener('popstate', setActiveClassForCurrentUrl);
     window.addEventListener('hashchange', setActiveClassForCurrentUrl);
 
-    document.addEventListener("DOMContentLoaded", async function () {
+    document.addEventListener("DOMContentLoaded", function () {
+        const badges = Array.from(document.querySelectorAll(".tag-filter-badge"));
         const items = Array.from(document.querySelectorAll(".tag-filter-item"));
-        const filterUi = document.querySelector(".tag-filter-ui");
-        if (items.length === 0 || !filterUi) return;
-        const staticBadges = Array.from(document.querySelectorAll(".tag-filter-badge"));
-        const hasLiveProcesses = items.some((item) => item.hasAttribute("data-process"));
-        let support = null;
-        if (hasLiveProcesses) {
-            try {
-                const url = new URL("../../_data/backend_process_support.json", window.location.href);
-                const response = await fetch(url);
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                support = await response.json();
-            } catch (error) { console.warn("Could not load backend process support data.", error); }
-        }
+        if (badges.length === 0 || items.length === 0) return;
+
         const getTags = (item) => {
-            if (support && item.hasAttribute("data-process")) {
-                return new Set(item.getAttribute("data-process").split(/[\s,]+/).flatMap((id) => support.processes[id] || []));
+            const fromDataAttr = (item.getAttribute("data-tags") || "")
+            .toLowerCase()
+            .split(/\s+/)
+            .filter(Boolean);
+
+            if (fromDataAttr.length > 0) {
+            return new Set(fromDataAttr);
             }
-            return new Set((item.getAttribute("data-tags") || "").toLowerCase().split(/\s+/).filter(Boolean));
+
+            const fromBadges = Array.from(item.querySelectorAll(".badge"))
+            .flatMap((el) => Array.from(el.classList))
+            .filter((cls) => cls.startsWith("badge-"))
+            .map((cls) => cls.replace("badge-", "").toLowerCase());
+
+            return new Set(fromBadges);
         };
-        let badges = staticBadges;
-        if (support) {
-            const availableTags = [...new Set(items.flatMap((item) => [...getTags(item)]))].sort();
-            filterUi.replaceChildren();
-            badges = availableTags.map((tag) => {
-                const button = document.createElement("button");
-                button.className = "tag-filter-badge active";
-                button.dataset.tag = tag;
-                button.textContent = support.backends[tag]?.label || tag;
-                filterUi.appendChild(button);
-                return button;
-            });
-        }
-        if (badges.length === 0) return;
+
         const applyFilter = () => {
-            const selectedTags = new Set(badges.filter((badge) => badge.classList.contains("active")).map((badge) => badge.dataset.tag));
+            const activeBadges = badges.filter((b) => b.classList.contains("active"));
+            const selectedTags = new Set(activeBadges.map((b) => b.getAttribute("data-tag")));
+
             items.forEach((item) => {
-                const tags = getTags(item);
-                item.hidden = ![...selectedTags].some((tag) => tags.has(tag));
+            const tags = getTags(item);
+            const visible = Array.from(selectedTags).some((tag) => tags.has(tag));
+            item.hidden = !visible;
             });
         };
-        badges.forEach((badge) => badge.addEventListener("click", function (event) {
-            event.preventDefault(); this.classList.toggle("active"); this.classList.toggle("inactive"); applyFilter();
-        }));
+
+        badges.forEach((badge) => {
+            badge.addEventListener("click", function (e) {
+            e.preventDefault();
+            this.classList.toggle("active");
+            this.classList.toggle("inactive");
+            applyFilter();
+            });
+        });
+
         applyFilter();
-    });
+        });
+
+
+
     window.onload = () => {
         const brand = document.querySelector('.navbar-brand');
         if (brand) {

@@ -2,8 +2,6 @@
 title: "openEO Cookbook"
 toc: true
 jupyter: python3
-aliases: 
-  - /cookbook
 ---
 
 ::: {.content-visible when-format="llms-txt"}
@@ -42,18 +40,18 @@ Important concepts:
 
 :::
 
-This is the openEO cookbook that you can refer to for a first idea of how to solve problems with openEO in the three client languages: Python, R, and JavaScript. It describes how to implement simple use cases pragmatically.
+This is the openEO cookbook that you can refer to to get a first idea on how to solve problems with openEO in the three client languages Python, R and JavaScript. It describes how to implement simple use cases in a pragmatic way.
 
-We recommend exploring this page if you want to quickly get started in using openEO for simple usecases. Please note that it is not a complete reference but rather a collection of examples that can serve as a starting point for your work.
+We recommend exploring this page if you want to use any of the openEO client libraries. It is not a complete reference, but rather a collection of examples that can be used as a starting point for your work.
 
-The guide **requires** a basic understanding of remote sensing and programming concepts in the respective client language.
+The guide requires a basic understanding of the Remote Sensing and programming concepts of the respective client language.
 
 
 ## 1. Explore openEO backend
 
 In this chapter, we will explore the openEO backend and its capabilities. We will connect to a backend, explore the available collections and processes, and check the supported output formats.
 
-Before running the code examples, make sure you have installed the openEO client library for your preferred programming language (Python, R, or JavaScript) and have set up the necessary authentication credentials to connect to the backend.
+Prior to running the code examples, make sure you have installed the openEO client library for your preferred programming language (Python, R, or JavaScript) and have set up the necessary authentication credentials to connect to the backend.
 
 ::: {.panel-tabset}
 
@@ -152,9 +150,9 @@ import { OpenEO } from '@openeo/js-client';
 
 ---
 
-Throughout this cookbook, we use the openEO federation backend of the Copernicus Data Space Ecosystem, available at `https://openeofed.dataspace.copernicus.eu`. For more information on different openEO Backends, please refer [here](https://hub.openeo.org/).
+In this cookbook, we use the openEO federation backend of the Copernicus Data Space Ecosystem, available at `https://openeofed.dataspace.copernicus.eu`. This backend also provides access to partner resources. For more information on different openEO Backends, please refer [here](https://hub.openeo.org/).
 
-Once you have installed the client library, you can connect to the backend using the following code snippets.
+Once we are sure on the backend we want to use, we can connect to it using the openEO client library. 
 
 ::: {.panel-tabset}
 
@@ -183,14 +181,14 @@ var connection = await OpenEO.connect("https://openeofed.dataspace.copernicus.eu
 
 :::
 
-The `connection` object can be used to interact with the backend, for example, to list available collections and processes, or to run processing workflows.
+The `Connection` object is the central gateway to interact with the back-end: listing collections and processes, building algorithms, and executing and monitoring batch jobs.
 
 
 ::: {.callout-note collapse="true"}
 
 # Authentication
 
-Please note that basic metadata about collections and processes is publicly available and does not require logging in. However, to download EO data or run processing workflows, you will need to authenticate.
+Please note that basic metadata about collections and processes is publicly available and does not require being logged in. However, for downloading EO data or running processing workflows, you will need to authenticate.
 
 ::: {.panel-tabset}
 
@@ -229,7 +227,7 @@ For more information on Authentication, please refer to the [Authentication](#) 
 
 ### 1.2 Explore available collections {#backend-collections}
 
-EO data in openEO are available as collections, which serve as the input for your processing workflow. Collections can be listed and inspected programmatically, or browsed via the [openEO Web Editor](https://openeofed.dataspace.copernicus.eu){target="_blank"}.
+EO data in openEO are available as collections, which serve as the input for your processing jobs. Collections can be listed and inspected programmatically, or browsed via the [openEO Web Editor](https://openeofed.dataspace.copernicus.eu){target="_blank"}.
 
 ::: {.panel-tabset}
 
@@ -240,9 +238,7 @@ EO data in openEO are available as collections, which serve as the input for you
 connection.list_collections()
 ```
 
-
-Similarly, you can get detailed information about a specific collection using the `describe_collection` method. For example, to get metadata for the Sentinel-2 Level 2A collection:
-
+Similarly, you can get detailed metadata for a specific collection using the `describe_collection` method. For example, to get metadata for the Sentinel-2 Level 2A collection:
 ```python
 # Get detailed metadata for a specific collection
 connection.describe_collection("SENTINEL2_L2A")
@@ -286,10 +282,10 @@ console.log(await con.describeCollection("SENTINEL2_L2A"));
 
 ### 1.3 Explore available processes
 
-Processes in openEO are operations that are applied to EO data. For example, calculating the mean of an array, masking pixels outside a polygon, or computing spatial aggregations. The output of one process can feed into the next, forming a chain of workflows called a *process graph* in openEO.
+Processes in openEO are operations applied to EO data — for example, calculating the mean of an array, masking pixels outside a polygon, or computing spatial aggregations. The output of one process can feed into the next, forming a *process graph*.
 
 ::: {.callout-tip collapse="true"}
-In R and JavaScript, it is useful to assign a process-builder helper object to a variable to access all openEO processes easily. In Python, a helper import is available too.
+In R and JavaScript it is useful to assign a process-builder helper object to a variable to easily access all openEO processes. In Python, a helper import is available too.
 
 ::: {.panel-tabset}
 
@@ -331,10 +327,9 @@ var builder = await con.buildProcess();
 ```{python}
 # List all available processes with metadata
 connection.list_processes()
-
 ```
 
-It is recommended to refer to the [process listing page](https://documentation.dataspace.copernicus.eu/APIs/openEO/Processes.html){target="_blank"} or the [openEO Web Editor](https://openeo.dataspace.copernicus.eu){target="_blank"} sidebar for a more user-friendly overview of available processes.
+It is often easier to consult the [process listing page](https://documentation.dataspace.copernicus.eu/APIs/openEO/Processes.html){target="_blank"} or the [openEO Web Editor](https://openeo.dataspace.copernicus.eu){target="_blank"} sidebar.
 
 #### R
 
@@ -374,7 +369,7 @@ console.log(await con.describeProcess("apply"));
 
 ### 1.4 Explore supported output formats {#backend-output-formats}
 
-User can save the results of their openEO workflow in various output formats, such as GeoTIFF, NetCDF, or CSV. Supported output formats can vary across backends, so it is important to check the available formats before saving results.
+The openEO API supports a variety of output formats for saving the results of processing workflows. 
 
 
 ::: {.panel-tabset}
@@ -409,7 +404,7 @@ In this chapter, we download a GeoTIFF and a quicklook RGB image from Sentinel-2
 
 ### 2.1 Load a collection
 
-Before loading a collection, confirm the collection ID and band names ([see backend collections](#backend-collections)).
+Before loading a collection, confirm the exact collection ID and band names ([see backend collections](#backend-collections)). Band naming can differ subtly between backends (e.g. `B8` vs. `B08`) — always check the collection description.
 
 We will load the green, red and blue bands (B02, B03, B04) from Sentinel-2 Level 2A.
 
@@ -485,7 +480,7 @@ var s2_rgb = builder.load_collection(
 
 ::: {.callout-note collapse="true"}
 # filtering
-Alternatively, it is possible to filter the data once the collection is loaded using the `filter_bbox` and `filter_temporal` processes. However, it is recommended to filter as early as possible; preferably directly in `load_collection` to avoid loading unnecessary data.
+It is possible to filter the data once the collection is loaded, using the `filter_bbox` and `filter_temporal`, processes. However, it is recommended to filter as early as possible; preferably directly in `load_collection` to avoid loading unnecessary data.
 
 :::
 
@@ -493,7 +488,7 @@ Alternatively, it is possible to filter the data once the collection is loaded u
 
 ### 2.2 Apply cloud masking
 
-Sentinel-2 L2A includes a Scene Classification Layer (SCL) band that can be used to mask cloud pixels. We load the SCL band separately, build a mask, resample it to match the spatial resolution of the RGB bands (10 m vs 20 m), and apply it.
+Sentinel-2 L2A includes a Scene Classification Layer (SCL) band that can be used to mask clouds and other non-surface pixels. We load the SCL band separately, build a mask, resample it to match the spatial resolution of the RGB bands (10 m vs 20 m), and apply it.
 
 ::: {.panel-tabset}
 
@@ -570,7 +565,7 @@ var s2_rgb_masked = builder.mask(s2_rgb, mask);
 
 ### 2.3 Reduce the data to a single image
 
-Since here we are interested in a single RGB image, we can reduce the datacube's time dimension to a single image. We will use the `max_time` process to select the maximum value for each pixel over time. Alternatively, we can also use `reduce_dimension` with a `max` reducer to achieve the same result.
+As we are only interested in a single RGB image, we can reduce the time dimension of the datacube to a single image. We will use the `max_time` process to select the maximum value for each pixel over time. Alternatively, we can also use `reduce_dimension` with a `max` reducer to achieve the same result.
 
 ::: {.panel-tabset}
 
@@ -606,16 +601,18 @@ var s2_composite = builder.reduce_dimension(s2_rgb_masked, max_reducer, "t");
 ::: {.callout-tip collapse="true"}
 # Child Processes
 
-Here, we used a child process: A function that is called by (or passed to) another function, and then works on a subset of the datacube (somewhat similar to the concept of callbacks in JavaScript). In this case, we want `reduce_dimension` to use the `max` function to select the maximum value for each pixel over time. 
+Here, we used a child process: A function that is called by (or passed to) another function, and then works on a subset of the datacube (somewhat similar to the concept of callbacks in JavaScript). In this case: We want `reduce_dimension` to use the `max` function to select the maximum value for each pixel over time. Not any function can be used like this, it must be defined by openEO, of course.
 
-**Note:** In Python, the child process can be a string; In R, we can select a child process from the `p` helper object; In JavaScript, arrow functions can be used as child processes.
+All clients have more or less different specifics when defining a child process. As you can observe directly below, one way to define one is to define the function directly inside the parent process.
+
+**Note:** In python, the child process can be a string; In R, we can select a child process from the `p` helper object; In JavaScript, arrow functions can be used as child processes.
 :::
 
 ---
 
 ### 2.4 Save the data to a GeoTIFF
 
-The openEO API supports various output formats as mentioned in [section 1.4](#backend-output-formats). In this example, we will save the GeoTIFF file to a local folder. The openEO workflow is triggered for execution when the method to save the result is called. The result can be downloaded once the job is finished. There are two ways of executing an openEO workflow: either as a synchronous job or as an asynchronous job. For more information on the difference between synchronous and asynchronous jobs, please refer to the [Batch Job Execution](cube_operations/execute_jobs.qmd) page.
+For users who want to download the data for further analysis, we can save the result as a GeoTIFF file. The openEO API supports various output formats as mentioned in [section 1.4](#backend-output-formats). In this example, we will save as the GeoTIFF file.
 
 
 ::: {.panel-tabset}
@@ -766,9 +763,15 @@ var datacube = builder.load_collection(
 
 ### 3.2 Perform NDVI calculation
 
-Band math is a common operation in remote sensing. Using this concept here, calculate NDVI (Normalised Difference Vegetation Index) from the red and near-infrared bands. In openEO, this goes along with using, for example, `reduce_dimension` over the `bands` dimension. In this process, a new pixel value is calculated from the values of different bands using a given formula (the actual bandmath), to eliminate the `bands` dimension. If, e.g. a cube contains a `red` and a `nir` band in its `bands` dimension and we reduce said dimension with a formula for the NDVI, that cube afterwards contains NDVI values, but no `bands` dimension anymore.
+Band math is a common operation in remote sensing, here we calculate NDVI (Normalized Difference Vegetation Index) using the red and near-infrared bands. In other words, it refers to computations that involve multiple bands, like indices (Normalized Difference Vegetation Index, Normalized Burn Ratio etc.). 
 
-Given that it is one of the most common usecase, openEO has predefined processes called `ndvi` that cover the band math. In this example, we will use the `ndvi` process to calculate NDVI for each image in the datacube.
+In openEO, this goes along with using for example `reduce_dimension` over the `bands` dimension. In this process, a new pixel value is calculated from the values of different bands using a given formula (the actual bandmath), to then eliminate the `bands` dimension alltogether. If e.g. a cube contains a `red` and a `nir` band in its `bands` dimension and we reduce said dimension with a formula for the NDVI, that cube afterwards contains NDVI values, but no `bands` dimension anymore.
+
+Given that it is _the_ most common use case, openEO has predefined processes that cover the math for us and only need to be given the correct input. There even is a function `ndvi` that masks all details and only takes a datacube and the bandnames as input. 
+
+In this example, we will use the `ndvi` process to calculate NDVI for each image in the datacube.
+
+The process can detect the red and near-infrared band based on metadata and doesn't need bandname input (but band names can be passed to calculate other normalized differences). Also, by supplying the optional parameter `target_band` we can decide if we want to get a reduced cube with NDVI values and no `bands` dimension as result, or if we want to append the new NDVI band to the existing bands of our input cube. If we choose the latter, we only need to supply a name for that new NDVI band.
 
 ::: {.panel-tabset}
 
@@ -791,21 +794,21 @@ var ndvi_cube = builder.ndvi(datacube, "B08", "B04");
 
 ### 3.3 Apply threshold
 
-In this scenario, we want an image that contains all NDVI values below 0.2 (non-vegetated areas). We will use the `mask` process to apply the threshold.
+In this scenario we want an image that contains all NDVI values below 0.2 (non-vegetated areas). We will use the `mask` process to apply the threshold.
 
 ::: {.panel-tabset}
 
 #### Python
 
 ```python
-ndvi_masked = ndvi_cube.mask(ndvi_cube < 0.2)
+ndvi_masked = ndvi.mask(ndvi < 0.2)
 ```
 
 #### R
 
 ```r
 ndvi_masked <- p$apply(
-  data = ndvi_cube,
+  data = ndvi,
   process = function(data, context) {
     p$if_(
       condition = p$lt(x = data, y = 0.2),
@@ -819,7 +822,7 @@ ndvi_masked <- p$apply(
 #### JavaScript
 
 ```js
-var ndvi_masked = builder.apply(ndvi_cube, function(data) {
+var ndvi_masked = builder.apply(ndvi, function(data) {
     return this.if_(this.lt(data, 0.2), null, data);
 });
 ```
@@ -829,7 +832,7 @@ var ndvi_masked = builder.apply(ndvi_cube, function(data) {
 
 ### 3.4 Spatially aggregate the data
 
-To aggregate over specific geometries, we use the `aggregate_spatial` process. It takes valid GeoJSON as input. We can pass a GeoJSON `FeatureCollection` in Python and JavaScript, but in R, we need to install two packages, `sf` and `geojsonsf`, to convert the `FeatureCollection` `string` to a `simple feature collection`.
+To aggregate over certain geometries, we use the process `aggregate_spatial`. It takes valid GeoJSON as input. We can pass a GeoJSON `FeatureCollection` in Python and JavaScript, but we need to introduce two packages in R, `sf` and `geojsonsf`, to convert the `FeatureCollection` `string` to a `simple feature collection`.
 
 ::: {.panel-tabset}
 
@@ -877,8 +880,7 @@ var ndvi_ts = builder.aggregate_spatial(ndvi_masked, aoi, mean_reducer);
 :::
 
 ### 3.5 Export as JSON or CSV
-
-Next, is to export the results as JSON or CSV. The openEO API supports various output formats as discussed in [section 1.4](#backend-output-formats). In this example, we will save the results as JSON.
+Alternative to directly downloading the result using the `download` method, we can use the `save_result` process to save the result in a specific format. This method gives us more flexibility in terms of output formats and options. In this example, we will save the result as a JSON file.
 
 ::: {.panel-tabset}
 
@@ -920,7 +922,9 @@ await job.downloadResults({ folder: "./results" });
 
 This chapter demonstrates a full end-to-end example: calculating the Enhanced Vegetation Index (EVI) from Sentinel-2 as band math, applying a vegetation-only cloud/class mask, reducing the time dimension, and downloading the result. 
 
-The formula for the Enhanced Vegetation Index is slightly more advanced than the NDVI formula and includes constants. Though we can use `compute_indices()` openEO process, the example below shows a simple band math:
+The formula for the Enhanced Vegetation Index is a bit more complicated than the NDVI one and contains constants. But we also don't necessarily need an openEO defined function and can concentrate on implementing a more complex formula. Here's the most efficient way to do this, per client.
+
+Below we'll observe a thorough explanation of how to calculate an EVI. 
 
 EVI = 2.5 × (NIR − Red) / (NIR + 6 × Red − 7.5 × Blue + 1)
 
@@ -1145,7 +1149,7 @@ await con.downloadResult(result, "evi-composite.tiff");
 
 ## 5. User-Defined Functions (UDFs) {#cookbook-udfs}
 
-While openEO supports a wide range of pre-defined processes and allows building more advanced user-defined-processes from them, you may need to define a custom workflow. These are where the concept of **User-Defined Functions (UDF)** are used as an openEO feature (through the [run_udf](https://processes.openeo.org/#run_udf) process) that aims to fill that gap by allowing a user to express (part of) an algorithm as a Python/R/… script to be run on the backend.
+While openEO supports a wide range of pre-defined processes and allows to build more complex user-defined processes from them, you sometimes need operations or algorithms that are not (yet) available or standardized as openEO processes. **User-Defined Functions (UDF)** is an openEO feature (through the [run_udf](https://processes.openeo.org/#run_udf) process) that aims to fill that gap by allowing a user to express (a part of) an algorithm as a Python/R/… script to be run back-end side.
 
 Though several types of algorithms can be used as UDF applications, in this example, we showcase a simple example of how to work with UDF.
 
@@ -1335,7 +1339,9 @@ await job.downloadResults({ folder: "./results" });
 
 :::
 
-Ideally, it allows you to embed existing Python, R, and other implementations into an openEO workflow. However, it is recommended to perform as much preprocessing and postprocessing as possible using predefined processes before using source code snippets as UDFs. Predefined processes are typically well optimised by the backend, whereas UDFs can incur a performance penalty and higher development/debug/ maintenance costs. For more information, see the [UDF documentation](https://open-eo.github.io/openeo-python-client/udf.html).
+Ideally, it allows you to embed existing Python/R/… implementations in an openEO workflow (with some necessary “glue code”). However, it is recommended to try to do as much pre- or postprocessing with pre-defined processes before blindly copy-pasting source code snippets as UDFs. Pre-defined processes are typically well-optimized by the backend, while UDFs can come with a performance penalty and higher development/debug/maintenance costs. For more information, see the [UDF documentation](https://open-eo.github.io/openeo-python-client/udf.html).
+
+
 
 You have feedback or noticed an error? Feel free to open an issue in the [GitHub repository](https://github.com/Open-EO/openeo-docs/issues) or use the other communication channels.
 
