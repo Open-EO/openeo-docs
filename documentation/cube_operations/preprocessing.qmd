@@ -20,7 +20,6 @@ This page highlights key openEO processes for preprocessing satellite imagery in
   <button class="tag-filter-badge inactive" data-tag="federation">Federation</button>
   <button class="tag-filter-badge inactive" data-tag="eurac">EURAC</button>
   <button class="tag-filter-badge inactive" data-tag="gee">Google Earth Engine</button>
-  <button class="tag-filter-badge inactive" data-tag="openeo">openEO Platform</button>
 
 
 

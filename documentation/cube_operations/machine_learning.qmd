@@ -1,0 +1,133 @@
+---
+title: "Machine Learning"
+subtitle: "Prepare features and run supported models at scale"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    toc-title: "On this page"
+    number-sections: false
+    theme: cosmo
+    smooth-scroll: true
+page-layout: article
+---
+
+::: {.lead}
+
+openEO machine-learning processes keep feature preparation and inference close to the data. Their availability is more backend-specific than core cube processes.
+:::
+
+```{=html}
+<div class="tag-filter-ui" id="tag-filter-ui">
+  <button class="tag-filter-badge active" data-tag="vito">VITO</button>
+  <button class="tag-filter-badge inactive" data-tag="eodc">EODC</button>
+  <button class="tag-filter-badge inactive" data-tag="cdse">CDSE</button>
+</div>
+```
+
+::: {.callout-note}
+## Backend support overview
+
+The buttons on this page are a documentation aid, not a live capability registry. Use the [openEO Hub](https://hub.openeo.org/) for a cross-backend overview: open **Filters**, select a process under **Processes**, and the Hub shows only matching services. The Hub data is crawled and cached.
+:::
+
+::: {.tag-filter-item data-tags="vito"}
+## A typical ML workflow
+
+1. Create a feature cube with processes such as `ndvi`, `aggregate_temporal_period`, and `filter_bands`.
+2. Train a supported model or load an exported model, depending on the backend.
+3. Apply it with a model-prediction process and export the resulting cube.
+
+### Python
+
+```python
+# Feature preparation stays portable across backends.
+features = (
+    cube.filter_bands(["B02", "B03", "B04", "B08"])
+    .aggregate_temporal_period(period="month", reducer="median")
+)
+
+# The available training and prediction methods must be checked per backend.
+processes = connection.list_processes()
+```
+
+::: {.callout-note}
+## Check before building the workflow
+
+Look for processes such as `fit_class_random_forest`, `fit_regr_random_forest`, `predict_random_forest`, `load_ml_model`, or `predict_ml_model` in the connected backend's process listing. Exact names and supported model formats may differ by process specification version.
+:::
+:::
+
+## Machine-learning process details
+
+Each model process is documented separately because training, loading, and prediction support can differ between backends.
+
+::: {.tag-filter-item data-process="fit_class_random_forest"}
+## Train a random-forest classifier
+
+Use `fit_class_random_forest` when labelled training features should be used to classify a feature cube. The backend determines the supported feature layout, label column, and model parameters.
+
+```python
+model = training_data.fit_class_random_forest(target_column="class")
+```
+:::
+
+::: {.tag-filter-item data-process="fit_regr_random_forest"}
+## Train a random-forest regressor
+
+Use `fit_regr_random_forest` when labelled training features contain a continuous target such as biomass or temperature. Check the backend metadata for required training dimensions and parameter names.
+
+```python
+model = training_data.fit_regr_random_forest(target_column="value")
+```
+:::
+
+::: {.tag-filter-item data-process="predict_random_forest"}
+## Predict with a random forest
+
+Use `predict_random_forest` after preparing a feature cube with the same bands and ordering used for training. It returns model predictions aligned with the input features.
+
+```python
+prediction = features.predict_random_forest(model=model)
+```
+:::
+
+::: {.tag-filter-item data-process="load_ml_model"}
+## Load a machine-learning model
+
+Use `load_ml_model` when a model has already been stored in the backend and should be reused by a new workflow. Model identifiers, permissions, and formats are backend-specific.
+
+```python
+model = connection.load_ml_model(model_id="my-model")
+```
+:::
+
+::: {.tag-filter-item data-process="save_ml_model"}
+## Save a machine-learning model
+
+Use `save_ml_model` to persist a trained model for later prediction or sharing within the backend workspace. Confirm retention and access rules before using it in production.
+
+```python
+saved = model.save_ml_model(model_id="my-model")
+```
+:::
+
+::: {.tag-filter-item data-process="predict_ml_model"}
+## Predict with a generic model
+
+Use `predict_ml_model` when the backend supports a generic model format that is not covered by a specialized process. Exact model formats, input schema, and output labels must be checked in backend metadata.
+
+```python
+prediction = features.predict_ml_model(model=model)
+```
+:::
+
+::: {.tag-filter-item data-process="predict_onnx"}
+## Predict with an ONNX model
+
+Use `predict_onnx` to apply a portable ONNX model when the backend advertises ONNX inference. The model input order and tensor shape must match the feature cube.
+
+```python
+prediction = features.predict_onnx(model=model)
+```
+:::

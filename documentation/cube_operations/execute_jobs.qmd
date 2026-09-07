@@ -1,0 +1,59 @@
+---
+title: "Execute openEO Jobs"
+subtitle: "Submit, monitor, and retrieve a process graph"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    toc-title: "On this page"
+    number-sections: false
+    theme: cosmo
+    smooth-scroll: true
+page-layout: article
+---
+
+::: {.lead}
+
+A process graph becomes useful when it is executed. Use synchronous requests for very small explorations and batch jobs for real analyses.
+:::
+
+```{=html}
+<div class="tag-filter-ui" id="tag-filter-ui">
+  <button class="tag-filter-badge active" data-tag="vito">VITO</button>
+  <button class="tag-filter-badge active" data-tag="eodc">EODC</button>
+  <button class="tag-filter-badge active" data-tag="cdse">CDSE</button>
+  <button class="tag-filter-badge active" data-tag="sentinelhub">Sentinel Hub</button>
+</div>
+```
+
+::: {.callout-note}
+## Backend support overview
+
+The buttons on this page are a documentation aid, not a live capability registry. Use the [openEO Hub](https://hub.openeo.org/) for a cross-backend overview: open **Filters**, select a process under **Processes**, and the Hub shows only matching services. The Hub data is crawled and cached.
+:::
+
+::: {.tag-filter-item data-tags="vito eodc cdse sentinelhub"}
+## Run a batch job
+
+Use a batch job for large spatial extents, long time series, UDFs, and preprocessing that may exceed synchronous request limits. The backend records logs and result assets while the job runs, so the workflow can be monitored and retried independently of the client connection.
+
+### Python
+
+```python
+job = result.create_job(
+    out_format="GTiff",
+    title="Monthly NDVI composite",
+    description="A monthly median NDVI workflow",
+)
+job.start_and_wait()
+job.get_results().download_files("./output")
+```
+
+::: {.callout-tip}
+## Make jobs efficient
+
+Filter space, time, and bands before computationally intensive processes. Test a small area first, then submit the final workflow as a batch job. Inspect job logs when a backend reports an error.
+:::
+
+`save_result` defines the output format inside a process graph; job creation controls when and how the backend executes it. Review the backend's supported output formats and job limits before a large run.
+:::
