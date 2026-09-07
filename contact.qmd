@@ -15,7 +15,8 @@ Germany<br />
 The email address below is meant for general topics around the openEO project, openEO PSC, openEO API specification, or openEO process specification.
 The email address below is **NOT** meant for technical support regarding specific service providers or client implementations.
 
-- If you need help with specific service providers (e.g. CDSE), please use their support channels.
+- If you need help with specific service providers (e.g. openEO Platform or CDSE), please use their support channels.
+  - [openEO Platform Support Forum](https://forums.openeo.cloud)
   - [Copernicus Dataspace Ecosystem Support](https://helpcenter.dataspace.copernicus.eu/hc/en-gb/community/topics)
 - If you need help with specific clients, please use the corresponding GitHub issue trackers:
   - [Python client](https://github.com/Open-EO/openeo-python-client/issues)
