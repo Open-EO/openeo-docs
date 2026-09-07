@@ -9,13 +9,13 @@
     "federated_extensions": [
       {
         "extension": "./extension",
-        "load": "static/remoteEntry.633dbd75f801b3bc.js",
+        "load": "static/remoteEntry.69028c30604e6a06.js",
         "name": "@jupyter-notebook/lab-extension",
         "style": "./style"
       },
       {
         "extension": "./extension",
-        "load": "static/remoteEntry.9077b3d2deaffb329dfc.js",
+        "load": "static/remoteEntry.c8c9eed2cdefdeac.js",
         "name": "@jupyter-widgets/jupyterlab-manager"
       },
       {
