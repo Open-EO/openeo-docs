@@ -1,0 +1,1631 @@
+{
+  "backends": {
+    "cdse": {
+      "api_version": "1.3.0",
+      "label": "Copernicus Data Space Ecosystem",
+      "service": "https://openeo.dataspace.copernicus.eu",
+      "source": "hub-cache"
+    },
+    "eo4eu": {
+      "api_version": "1.2.0",
+      "label": "EO4EU Platform",
+      "service": "https://umm-api.apps.eo4eu.eu/EO",
+      "source": "hub-cache"
+    },
+    "eodc": {
+      "api_version": "1.2.0",
+      "label": "EODC",
+      "service": "https://openeo.eodc.eu",
+      "source": "hub-cache"
+    },
+    "eurac": {
+      "api_version": "1.1.0",
+      "label": "EURAC",
+      "service": "https://openeo.eurac.edu",
+      "source": "live"
+    },
+    "federation": {
+      "api_version": "1.3.0",
+      "label": "Copernicus Data Space Ecosystem Federation",
+      "service": "https://openeofed.dataspace.copernicus.eu",
+      "source": "hub-cache"
+    },
+    "gee": {
+      "api_version": "1.2.0",
+      "label": "Google Earth Engine",
+      "service": "https://earthengine.openeo.org",
+      "source": "hub-cache"
+    },
+    "openeo-platform": {
+      "api_version": "1.0.0",
+      "label": "openEO Platform",
+      "service": "https://openeo.cloud",
+      "source": "hub-cache"
+    },
+    "rasdaman": {
+      "api_version": "1.2.0",
+      "label": "rasdaman",
+      "service": "https://openeo.rasdaman.com/rasdaman/openeo",
+      "source": "hub-cache"
+    },
+    "vito": {
+      "api_version": "1.3.0",
+      "label": "Terrascope",
+      "service": "https://openeo.terrascope.be",
+      "source": "hub-cache"
+    }
+  },
+  "generated_at": "2026-09-08T07:17:20.872184+00:00",
+  "processes": {
+    "_cwl_demo_hello": [
+      "cdse"
+    ],
+    "_cwl_dummy_stac": [
+      "cdse"
+    ],
+    "_cwl_dummy_stac_parallel": [
+      "cdse"
+    ],
+    "_cwl_dummy_stac_to_stac": [
+      "cdse"
+    ],
+    "absolute": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "rasdaman",
+      "vito"
+    ],
+    "add": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "rasdaman",
+      "vito"
+    ],
+    "add_dimension": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "vito"
+    ],
+    "aggregate_spatial": [
+      "cdse",
+      "eodc",
+      "eurac",
+      "federation",
+      "openeo-platform",
+      "vito"
+    ],
+    "aggregate_spatial_window": [
+      "cdse",
+      "eodc",
+      "openeo-platform",
+      "vito"
+    ],
+    "aggregate_temporal": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "vito"
+    ],
+    "aggregate_temporal_period": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "vito"
+    ],
+    "all": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "rasdaman",
+      "vito"
+    ],
+    "and": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "rasdaman",
+      "vito"
+    ],
+    "anomaly": [
+      "eo4eu",
+      "gee"
+    ],
+    "any": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "rasdaman",
+      "vito"
+    ],
+    "apply": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "vito"
+    ],
+    "apply_dimension": [
+      "cdse",
+      "eodc",
+      "eurac",
+      "federation",
+      "openeo-platform",
+      "vito"
+    ],
+    "apply_kernel": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "vito"
+    ],
+    "apply_neighborhood": [
+      "cdse",
+      "federation",
+      "vito"
+    ],
+    "apply_neighborhood_intertwin": [
+      "eodc",
+      "eurac"
+    ],
+    "apply_polygon": [
+      "cdse",
+      "eodc",
+      "eurac",
+      "federation",
+      "vito"
+    ],
+    "arccos": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "rasdaman",
+      "vito"
+    ],
+    "arcosh": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "vito"
+    ],
+    "arcsin": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "rasdaman",
+      "vito"
+    ],
+    "arctan": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "rasdaman",
+      "vito"
+    ],
+    "arctan2": [
+      "cdse",
+      "eodc",
+      "eurac",
+      "federation",
+      "openeo-platform",
+      "vito"
+    ],
+    "ard_normalized_radar_backscatter": [
+      "cdse",
+      "eodc",
+      "eurac",
+      "openeo-platform",
+      "vito"
+    ],
+    "ard_surface_reflectance": [
+      "eodc",
+      "eurac",
+      "openeo-platform"
+    ],
+    "array_append": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "vito"
+    ],
+    "array_apply": [
+      "cdse",
+      "eodc",
+      "eurac",
+      "federation",
+      "openeo-platform",
+      "vito"
+    ],
+    "array_concat": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "vito"
+    ],
+    "array_contains": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "vito"
+    ],
+    "array_create": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "vito"
+    ],
+    "array_create_labeled": [
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "gee",
+      "openeo-platform"
+    ],
+    "array_element": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "vito"
+    ],
+    "array_filter": [
+      "cdse",
+      "eodc",
+      "eurac",
+      "federation",
+      "openeo-platform",
+      "vito"
+    ],
+    "array_find": [
+      "cdse",
+      "eodc",
+      "eurac",
+      "federation",
+      "openeo-platform",
+      "vito"
+    ],
+    "array_find_label": [
+      "eodc",
+      "eurac",
+      "openeo-platform"
+    ],
+    "array_interpolate_linear": [
+      "cdse",
+      "eodc",
+      "eurac",
+      "federation",
+      "openeo-platform",
+      "vito"
+    ],
+    "array_labels": [
+      "cdse",
+      "eodc",
+      "eurac",
+      "federation",
+      "openeo-platform",
+      "vito"
+    ],
+    "array_modify": [
+      "eodc",
+      "eurac",
+      "openeo-platform"
+    ],
+    "arsinh": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "vito"
+    ],
+    "artanh": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "vito"
+    ],
+    "aspect": [
+      "cdse",
+      "federation",
+      "vito"
+    ],
+    "atmospheric_correction": [
+      "cdse",
+      "eodc",
+      "eurac",
+      "openeo-platform",
+      "vito"
+    ],
+    "between": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "vito"
+    ],
+    "bit": [
+      "rasdaman"
+    ],
+    "bitwise_and": [
+      "rasdaman"
+    ],
+    "bitwise_not": [
+      "rasdaman"
+    ],
+    "bitwise_or": [
+      "rasdaman"
+    ],
+    "bitwise_xor": [
+      "rasdaman"
+    ],
+    "cab": [
+      "eodc",
+      "eurac",
+      "openeo-platform"
+    ],
+    "cast": [
+      "rasdaman"
+    ],
+    "ceil": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "vito"
+    ],
+    "climatological_normal": [
+      "eo4eu",
+      "gee"
+    ],
+    "clip": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "vito"
+    ],
+    "constant": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "vito"
+    ],
+    "convert_data_type": [
+      "cdse",
+      "federation",
+      "vito"
+    ],
+    "corsa_compress": [
+      "federation",
+      "vito"
+    ],
+    "corsa_compress_v2": [
+      "federation",
+      "vito"
+    ],
+    "corsa_decompress": [
+      "federation",
+      "vito"
+    ],
+    "corsa_decompress_v2": [
+      "federation",
+      "vito"
+    ],
+    "cos": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "rasdaman",
+      "vito"
+    ],
+    "cosh": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "rasdaman",
+      "vito"
+    ],
+    "count": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "rasdaman",
+      "vito"
+    ],
+    "create_data_cube": [
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "gee",
+      "openeo-platform"
+    ],
+    "cummax": [
+      "eodc",
+      "eurac"
+    ],
+    "cummin": [
+      "eodc",
+      "eurac"
+    ],
+    "cumproduct": [
+      "eodc",
+      "eurac"
+    ],
+    "cumsum": [
+      "eodc",
+      "eurac"
+    ],
+    "date_between": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "gee",
+      "openeo-platform",
+      "vito"
+    ],
+    "date_difference": [
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "gee",
+      "openeo-platform"
+    ],
+    "date_shift": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "vito"
+    ],
+    "ddmc": [
+      "eodc",
+      "eurac",
+      "openeo-platform"
+    ],
+    "dimension_labels": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "vito"
+    ],
+    "discard_result": [
+      "cdse",
+      "federation",
+      "vito"
+    ],
+    "divide": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "rasdaman",
+      "vito"
+    ],
+    "divide_floor": [
+      "rasdaman"
+    ],
+    "drop_dimension": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "vito"
+    ],
+    "e": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "vito"
+    ],
+    "eq": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "rasdaman",
+      "vito"
+    ],
+    "exp": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "rasdaman",
+      "vito"
+    ],
+    "export_workspace": [
+      "cdse",
+      "eodc",
+      "eurac",
+      "openeo-platform",
+      "vito"
+    ],
+    "extrema": [
+      "cdse",
+      "eodc",
+      "eurac",
+      "federation",
+      "openeo-platform",
+      "vito"
+    ],
+    "fapar": [
+      "eodc",
+      "eurac",
+      "openeo-platform"
+    ],
+    "fcover": [
+      "eodc",
+      "eurac",
+      "openeo-platform"
+    ],
+    "filter_bands": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "vito"
+    ],
+    "filter_bbox": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "rasdaman",
+      "vito"
+    ],
+    "filter_labels": [
+      "cdse",
+      "eodc",
+      "eurac",
+      "federation",
+      "openeo-platform",
+      "vito"
+    ],
+    "filter_spatial": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "rasdaman",
+      "vito"
+    ],
+    "filter_temporal": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "vito"
+    ],
+    "first": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "vito"
+    ],
+    "fit_class_catboost": [
+      "cdse",
+      "federation",
+      "vito"
+    ],
+    "fit_class_random_forest": [
+      "cdse",
+      "vito"
+    ],
+    "fit_curve": [
+      "eodc",
+      "eurac",
+      "openeo-platform"
+    ],
+    "fit_regr_random_forest": [
+      "eodc",
+      "eurac",
+      "openeo-platform"
+    ],
+    "floor": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "rasdaman",
+      "vito"
+    ],
+    "force_level2": [
+      "cdse"
+    ],
+    "force_tsa": [
+      "cdse"
+    ],
+    "get_geometries": [
+      "cdse",
+      "federation",
+      "vito"
+    ],
+    "gt": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "rasdaman",
+      "vito"
+    ],
+    "gte": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "rasdaman",
+      "vito"
+    ],
+    "if": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "rasdaman",
+      "vito"
+    ],
+    "inspect": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "vito"
+    ],
+    "int": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "vito"
+    ],
+    "is": [
+      "rasdaman"
+    ],
+    "is_infinite": [
+      "eodc",
+      "eurac",
+      "openeo-platform"
+    ],
+    "is_nan": [
+      "cdse",
+      "eodc",
+      "eurac",
+      "federation",
+      "openeo-platform",
+      "rasdaman",
+      "vito"
+    ],
+    "is_nodata": [
+      "cdse",
+      "eodc",
+      "eurac",
+      "federation",
+      "openeo-platform",
+      "rasdaman",
+      "vito"
+    ],
+    "is_valid": [
+      "cdse",
+      "eodc",
+      "eurac",
+      "federation",
+      "openeo-platform",
+      "rasdaman",
+      "vito"
+    ],
+    "lai": [
+      "eodc",
+      "eurac",
+      "openeo-platform"
+    ],
+    "last": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "vito"
+    ],
+    "linear_scale_range": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "vito"
+    ],
+    "ln": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "rasdaman",
+      "vito"
+    ],
+    "load_collection": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "rasdaman",
+      "vito"
+    ],
+    "load_geojson": [
+      "cdse",
+      "eodc",
+      "eurac",
+      "federation",
+      "vito"
+    ],
+    "load_ml_model": [
+      "cdse",
+      "federation",
+      "vito"
+    ],
+    "load_result": [
+      "federation"
+    ],
+    "load_stac": [
+      "cdse",
+      "eodc",
+      "eurac",
+      "federation",
+      "openeo-platform",
+      "vito"
+    ],
+    "load_uploaded_files": [
+      "cdse",
+      "federation",
+      "vito"
+    ],
+    "load_url": [
+      "cdse",
+      "eodc",
+      "eurac",
+      "federation",
+      "openeo-platform",
+      "vito"
+    ],
+    "load_vector_cube": [
+      "eodc",
+      "openeo-platform"
+    ],
+    "log": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "rasdaman",
+      "vito"
+    ],
+    "lt": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "rasdaman",
+      "vito"
+    ],
+    "lte": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "rasdaman",
+      "vito"
+    ],
+    "mask": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "vito"
+    ],
+    "mask_l1c": [
+      "cdse",
+      "federation",
+      "vito"
+    ],
+    "mask_polygon": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "vito"
+    ],
+    "mask_scl_dilation": [
+      "cdse",
+      "federation",
+      "vito"
+    ],
+    "max": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "rasdaman",
+      "vito"
+    ],
+    "max_binary": [
+      "rasdaman"
+    ],
+    "mean": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "rasdaman",
+      "vito"
+    ],
+    "median": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "vito"
+    ],
+    "merge_cubes": [
+      "cdse",
+      "eodc",
+      "eurac",
+      "federation",
+      "openeo-platform",
+      "vito"
+    ],
+    "min": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "rasdaman",
+      "vito"
+    ],
+    "min_binary": [
+      "rasdaman"
+    ],
+    "mod": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "rasdaman",
+      "vito"
+    ],
+    "multiply": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "rasdaman",
+      "vito"
+    ],
+    "nan": [
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "gee",
+      "openeo-platform"
+    ],
+    "ndvi": [
+      "cdse",
+      "eodc",
+      "eurac",
+      "federation",
+      "openeo-platform",
+      "vito"
+    ],
+    "neq": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "rasdaman",
+      "vito"
+    ],
+    "normalized_difference": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "vito"
+    ],
+    "not": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "rasdaman",
+      "vito"
+    ],
+    "or": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "rasdaman",
+      "vito"
+    ],
+    "order": [
+      "cdse",
+      "eodc",
+      "eurac",
+      "federation",
+      "openeo-platform",
+      "vito"
+    ],
+    "overlay": [
+      "rasdaman"
+    ],
+    "pi": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "vito"
+    ],
+    "power": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "rasdaman",
+      "vito"
+    ],
+    "predict_catboost": [
+      "cdse",
+      "federation",
+      "vito"
+    ],
+    "predict_curve": [
+      "eodc",
+      "eurac",
+      "openeo-platform"
+    ],
+    "predict_onnx": [
+      "cdse",
+      "federation",
+      "vito"
+    ],
+    "predict_probabilities": [
+      "cdse",
+      "vito"
+    ],
+    "predict_random_forest": [
+      "cdse",
+      "eodc",
+      "eurac",
+      "openeo-platform",
+      "vito"
+    ],
+    "product": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "vito"
+    ],
+    "quantiles": [
+      "cdse",
+      "eodc",
+      "eurac",
+      "federation",
+      "openeo-platform",
+      "vito"
+    ],
+    "query_stac": [
+      "cdse",
+      "federation",
+      "vito"
+    ],
+    "raster_to_vector": [
+      "cdse",
+      "eodc",
+      "federation",
+      "openeo-platform",
+      "vito"
+    ],
+    "read_vector": [
+      "cdse",
+      "federation",
+      "vito"
+    ],
+    "rearrange": [
+      "cdse",
+      "eodc",
+      "eurac",
+      "federation",
+      "openeo-platform",
+      "vito"
+    ],
+    "reduce_dimension": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "vito"
+    ],
+    "reduce_spatial": [
+      "eodc",
+      "eurac",
+      "openeo-platform"
+    ],
+    "rename_dimension": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "vito"
+    ],
+    "rename_labels": [
+      "cdse",
+      "eodc",
+      "eurac",
+      "federation",
+      "openeo-platform",
+      "vito"
+    ],
+    "resample_cube_spatial": [
+      "cdse",
+      "eodc",
+      "eurac",
+      "federation",
+      "openeo-platform",
+      "vito"
+    ],
+    "resample_cube_temporal": [
+      "eodc",
+      "eurac",
+      "openeo-platform"
+    ],
+    "resample_spatial": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "rasdaman",
+      "vito"
+    ],
+    "resolution_merge": [
+      "cdse",
+      "vito"
+    ],
+    "round": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "rasdaman",
+      "vito"
+    ],
+    "rqadeforestation": [
+      "eodc"
+    ],
+    "run_cwl": [
+      "eurac"
+    ],
+    "run_cwl_to_stac": [
+      "cdse",
+      "federation"
+    ],
+    "run_udf": [
+      "cdse",
+      "eodc",
+      "eurac",
+      "federation",
+      "vito"
+    ],
+    "sar_backscatter": [
+      "cdse",
+      "eodc",
+      "eurac",
+      "federation",
+      "openeo-platform",
+      "vito"
+    ],
+    "save_ml_model": [
+      "cdse",
+      "federation",
+      "vito"
+    ],
+    "save_result": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "rasdaman",
+      "vito"
+    ],
+    "save_vector_cube": [
+      "eodc",
+      "openeo-platform"
+    ],
+    "scale": [
+      "rasdaman"
+    ],
+    "sd": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "rasdaman",
+      "vito"
+    ],
+    "sd_pop": [
+      "rasdaman"
+    ],
+    "sen2like": [
+      "eodc",
+      "eurac",
+      "openeo-platform"
+    ],
+    "sgn": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "vito"
+    ],
+    "sin": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "rasdaman",
+      "vito"
+    ],
+    "sinh": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "rasdaman",
+      "vito"
+    ],
+    "sleep": [
+      "cdse",
+      "federation",
+      "vito"
+    ],
+    "slope": [
+      "cdse",
+      "federation",
+      "vito"
+    ],
+    "sort": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "rasdaman",
+      "vito"
+    ],
+    "sqrt": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "rasdaman",
+      "vito"
+    ],
+    "stac_modify": [
+      "eodc",
+      "eurac",
+      "openeo-platform"
+    ],
+    "subset": [
+      "rasdaman"
+    ],
+    "subset_band": [
+      "rasdaman"
+    ],
+    "subtract": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "rasdaman",
+      "vito"
+    ],
+    "sum": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "rasdaman",
+      "vito"
+    ],
+    "tan": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "rasdaman",
+      "vito"
+    ],
+    "tanh": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "rasdaman",
+      "vito"
+    ],
+    "text_begins": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "vito"
+    ],
+    "text_concat": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "vito"
+    ],
+    "text_contains": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "vito"
+    ],
+    "text_ends": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "vito"
+    ],
+    "text_find": [
+      "eo4eu",
+      "gee"
+    ],
+    "text_merge": [
+      "federation"
+    ],
+    "to_scl_dilation_mask": [
+      "cdse",
+      "federation",
+      "vito"
+    ],
+    "to_vector_cube": [
+      "cdse",
+      "federation",
+      "vito"
+    ],
+    "trim_cube": [
+      "eodc",
+      "eurac",
+      "openeo-platform"
+    ],
+    "variance": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "rasdaman",
+      "vito"
+    ],
+    "variance_pop": [
+      "rasdaman"
+    ],
+    "vector_buffer": [
+      "cdse",
+      "eodc",
+      "eurac",
+      "federation",
+      "vito"
+    ],
+    "vector_reproject": [
+      "eodc",
+      "eurac"
+    ],
+    "vector_to_raster": [
+      "cdse",
+      "federation",
+      "vito"
+    ],
+    "xor": [
+      "cdse",
+      "eo4eu",
+      "eodc",
+      "eurac",
+      "federation",
+      "gee",
+      "openeo-platform",
+      "rasdaman",
+      "vito"
+    ]
+  }
+}

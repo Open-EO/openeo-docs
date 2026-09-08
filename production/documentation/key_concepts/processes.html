@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>openEO Processes – openEO</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-f7b31f555e83651d4eb6f45835aa384a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css?family=Roboto+Mono|Source+Sans+Pro:300,400,600" rel="stylesheet">
+<meta name="zd-site-verification" content="xj9koofr1crilmoclgxsjd">
+
+<script type="text/javascript">
+
+
+    function setActiveClassForCurrentUrl() {
+        // Find all links in the navbarCollapse div where the href attribute is set to the current URL
+        let anchorTag = document.querySelector('#navbarCollapse a[href="' + window.location.href + '"]');
+
+        if (anchorTag) {
+
+            // Find the closest parent of the navigation
+            let parentUl = anchorTag.closest('li.nav-item')?.querySelector('a.nav-link');
+
+            if (parentUl) {
+                // Add active class to both the anchor tag and the parent ul
+                anchorTag.classList.add('active');
+                parentUl.classList.add('active');
+            }
+        }
+    }
+
+    window.addEventListener('popstate', setActiveClassForCurrentUrl);
+    window.addEventListener('hashchange', setActiveClassForCurrentUrl);
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const badges = Array.from(document.querySelectorAll(".tag-filter-badge"));
+        const items = Array.from(document.querySelectorAll(".tag-filter-item"));
+        if (badges.length === 0 || items.length === 0) return;
+
+        const getTags = (item) => {
+            const fromDataAttr = (item.getAttribute("data-tags") || "")
+            .toLowerCase()
+            .split(/\s+/)
+            .filter(Boolean);
+
+            if (fromDataAttr.length > 0) {
+            return new Set(fromDataAttr);
+            }
+
+            const fromBadges = Array.from(item.querySelectorAll(".badge"))
+            .flatMap((el) => Array.from(el.classList))
+            .filter((cls) => cls.startsWith("badge-"))
+            .map((cls) => cls.replace("badge-", "").toLowerCase());
+
+            return new Set(fromBadges);
+        };
+
+        const applyFilter = () => {
+            const activeBadges = badges.filter((b) => b.classList.contains("active"));
+            const selectedTags = new Set(activeBadges.map((b) => b.getAttribute("data-tag")));
+
+            items.forEach((item) => {
+            const tags = getTags(item);
+            const visible = Array.from(selectedTags).some((tag) => tags.has(tag));
+            item.hidden = !visible;
+            });
+        };
+
+        badges.forEach((badge) => {
+            badge.addEventListener("click", function (e) {
+            e.preventDefault();
+            this.classList.toggle("active");
+            this.classList.toggle("inactive");
+            applyFilter();
+            });
+        });
+
+        applyFilter();
+        });
+
+
+
+    window.onload = () => {
+        const brand = document.querySelector('.navbar-brand');
+        if (brand) {
+            // Keep local/preview behavior, but use the GitHub Pages project root in production.
+            const brandHref = window.location.hostname === 'open-eo.github.io'
+                ? '/openeo-docs/'
+                : '/index.html';
+            brand.setAttribute('href', brandHref);
+        }
+        setActiveClassForCurrentUrl();
+    }
+
+ 
+</script>
+
+
+<link rel="stylesheet" href="../../custom.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../news/images/openeo_logo.png" alt="openEO logo" class="navbar-logo light-content">
+    <img src="../../news/images/openeo_logo.png" alt="openEO logo" class="navbar-logo dark-content">
+    </a>
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">openEO</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-about" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">About</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-about">    
+        <li>
+    <a class="dropdown-item" href="../../about.html">
+ <span class="dropdown-text">About openEO</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../psc.html">
+ <span class="dropdown-text">Project Steering Committee (PSC)</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="https://hub.openeo.org/" target="_blank"> 
+<span class="menu-text">Services</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-community" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Community</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-community">    
+        <li>
+    <a class="dropdown-item" href="../../news/news.html">
+ <span class="dropdown-text">News</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../meetings.html">
+ <span class="dropdown-text">Meetings</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../events/events.html">
+ <span class="dropdown-text">Events</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-user-documentation" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">User Documentation</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-user-documentation">    
+        <li>
+    <a class="dropdown-item" href="../../documentation/cookbook.html">
+ <span class="dropdown-text">COOKBOOK</span></a>
+  </li>  
+        <li><hr class="dropdown-divider"></li>
+        <li class="dropdown-header">KEY CONCEPTS</li>
+        <li>
+    <a class="dropdown-item" href="../../documentation/key_concepts/glossary.html">
+ <span class="dropdown-text">Glossary</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../documentation/key_concepts/backend.html">
+ <span class="dropdown-text">Backends</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../documentation/key_concepts/datacube.html">
+ <span class="dropdown-text">Datacube</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../documentation/key_concepts/processes.html">
+ <span class="dropdown-text">Processes</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../documentation/key_concepts/architecture.html">
+ <span class="dropdown-text">openEO Architecture</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../documentation/setup.html">
+ <span class="dropdown-text">SETUP</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../documentation/data_discovery.html">
+ <span class="dropdown-text">DATA DISCOVERY</span></a>
+  </li>  
+        <li><hr class="dropdown-divider"></li>
+        <li class="dropdown-header">CUBE OPERATIONS</li>
+        <li>
+    <a class="dropdown-item" href="../../documentation/cube_operations/preprocessing.html">
+ <span class="dropdown-text">Preprocessing</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../documentation/cube_operations/spatial_operations.html">
+ <span class="dropdown-text">Spatial Operations</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../documentation/cube_operations/temporal_operations.html">
+ <span class="dropdown-text">Temporal Operations</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../documentation/cube_operations/spectral_operations.html">
+ <span class="dropdown-text">Spectral Operations</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../documentation/cube_operations/cube_manipulations.html">
+ <span class="dropdown-text">Cube Manipulations</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../documentation/cube_operations/udf.html">
+ <span class="dropdown-text">User Defined Functions</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../documentation/cube_operations/machine_learning.html">
+ <span class="dropdown-text">Machine Learning</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../documentation/cube_operations/udp.html">
+ <span class="dropdown-text">User Defined Processes</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../documentation/cube_operations/execute_jobs.html">
+ <span class="dropdown-text">Execute openEO Jobs</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../documentation/export_formats.html">
+ <span class="dropdown-text">EXPORT FORMATS</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-developers" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Developers</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-developers">    
+        <li>
+    <a class="dropdown-item" href="https://api.openeo.org/">
+ <span class="dropdown-text">REST API Reference</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../404-not-found.html">
+ <span class="dropdown-text">Xarray/Dask Guide</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../404-not-found.html">
+ <span class="dropdown-text">Backend Development</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-support" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Support</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-support">    
+        <li>
+    <a class="dropdown-item" href="../../contact.html">
+ <span class="dropdown-text">Contact</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://forum.dataspace.copernicus.eu/c/openeo/28">
+ <span class="dropdown-text">CDSE Forum</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../examples.html">
+ <span class="dropdown-text">Notebook examples</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools tools-wide">
+    <a href="mailto:openeo.psc@uni-muenster.de" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-envelope"></i></a>
+    <a href="https://www.linkedin.com/company/openeospec/" title="" class="quarto-navigation-tool px-1" aria-label="" target="_blank"><i class="bi bi-linkedin"></i></a>
+    <a href="https://bsky.app/profile/openeo.org" title="" class="quarto-navigation-tool px-1" aria-label="" target="_blank"><i class="bi bi-bluesky"></i></a>
+    <a href="https://github.com/Open-EO" title="" class="quarto-navigation-tool px-1" aria-label="" target="_blank"><i class="bi bi-github"></i></a>
+    <a href="https://www.youtube.com/channel/UCMJQil8j9sHBQkcSlSaEsvQ" title="" class="quarto-navigation-tool px-1" aria-label="" target="_blank"><i class="bi bi-youtube"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../documentation/key_concepts/glossary.html">KEY CONCEPTS</a></li><li class="breadcrumb-item"><a href="../../documentation/key_concepts/processes.html">Processes</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/cookbook.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">COOKBOOK</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">KEY CONCEPTS</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/key_concepts/glossary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Glossary</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/key_concepts/backend.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Backends</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/key_concepts/datacube.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Datacube</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/key_concepts/processes.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Processes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/key_concepts/architecture.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">openEO Architecture</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">SETUP</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/data_discovery.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">DATA DISCOVERY</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../documentation/cube_operations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">CUBE OPERATIONS</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/cube_operations/preprocessing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preprocessing</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/cube_operations/spatial_operations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Spatial Operations</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/cube_operations/temporal_operations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Temporal Operations</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/cube_operations/spectral_operations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Spectral Operations</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/cube_operations/cube_manipulations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Cube Manipulations</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/cube_operations/udf.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">User Defined Functions</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/cube_operations/machine_learning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Machine Learning</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/cube_operations/udp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">User Defined Processes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/cube_operations/execute_jobs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Execute openEO Jobs</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/export_formats.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">EXPORT FORMATS</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#what-openeo-offers" id="toc-what-openeo-offers" class="nav-link active" data-scroll-target="#what-openeo-offers">What openEO offers</a></li>
+  <li><a href="#embedded-process-reference" id="toc-embedded-process-reference" class="nav-link" data-scroll-target="#embedded-process-reference">Embedded process reference</a></li>
+  <li><a href="#process-families-at-a-glance" id="toc-process-families-at-a-glance" class="nav-link" data-scroll-target="#process-families-at-a-glance">Process families at a glance</a></li>
+  <li><a href="#a-simple-way-to-think-about-processes" id="toc-a-simple-way-to-think-about-processes" class="nav-link" data-scroll-target="#a-simple-way-to-think-about-processes">A simple way to think about processes</a></li>
+  <li><a href="#standardized-but-not-identical-everywhere" id="toc-standardized-but-not-identical-everywhere" class="nav-link" data-scroll-target="#standardized-but-not-identical-everywhere">Standardized, but not identical everywhere</a></li>
+  <li><a href="#process-profiles-and-support-levels" id="toc-process-profiles-and-support-levels" class="nav-link" data-scroll-target="#process-profiles-and-support-levels">Process profiles and support levels</a></li>
+  <li><a href="#how-to-discover-process-support-in-practice" id="toc-how-to-discover-process-support-in-practice" class="nav-link" data-scroll-target="#how-to-discover-process-support-in-practice">How to discover process support in practice</a></li>
+  <li><a href="#where-to-learn-how-to-use-processes" id="toc-where-to-learn-how-to-use-processes" class="nav-link" data-scroll-target="#where-to-learn-how-to-use-processes">Where to learn how to use processes</a></li>
+  <li><a href="#what-to-do-next" id="toc-what-to-do-next" class="nav-link" data-scroll-target="#what-to-do-next">What to do next</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content column-body" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../documentation/key_concepts/glossary.html">KEY CONCEPTS</a></li><li class="breadcrumb-item"><a href="../../documentation/key_concepts/processes.html">Processes</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">openEO Processes</h1>
+</div>
+
+
+
+<div class="quarto-title-meta column-body">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>An <strong>openEO process</strong> is an operation that takes one or more inputs, performs a task, and returns a result. In simple terms, processes are the building blocks of an openEO workflow.</p>
+<p>Some processes load data, some filter it, some transform it, or some export it. By combining them, users can describe an Earth Observation (EO) workflow in openEO.</p>
+<p>As described in the <a href="../../documentation/key_concepts/glossary.html">Glossary</a>, a process is an operation that performs a specific task on a set of parameters and returns a result.</p>
+<p>Examples include:</p>
+<ul>
+<li>loading a satellite collection,</li>
+<li>filtering data to a time range or geographic area,</li>
+<li>computing indices such as NDVI,</li>
+<li>aggregating data over time or space, and</li>
+<li>exporting the final result as a file.</li>
+</ul>
+<p>In openEO, processes are combined into a <strong>process graph</strong>. A process graph is the machine-readable description of a workflow: it tells the backend what to do, in which order, and with which parameters.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/processes-overview.png" class="img-fluid figure-img"></p>
+<figcaption>openEO process workflow overview</figcaption>
+</figure>
+</div>
+<section id="what-openeo-offers" class="level2">
+<h2 class="anchored" data-anchor-id="what-openeo-offers">What openEO offers</h2>
+<p>openEO offers a broad catalogue of standardised and a few non-standardised processes that cover most EO analysis tasks. These processes can be further identified as processes for data discovery, for applying operations on the cubes, or for simply exporting the results. Such as:</p>
+<ul>
+<li><strong>Import</strong> processes to load collections, STAC resources, uploaded files, or URLs.</li>
+<li><strong>Filter</strong> processes applied to a datacube to limit data by time, space, bands, labels, or metadata.</li>
+<li><strong>Reducer and aggregate</strong> processes to compute summaries such as mean, median, sum, or zonal statistics of a datacube</li>
+<li><strong>Math and logic</strong> processes for calculations, conditions, and comparisons.</li>
+<li><strong>Reproject and resample</strong> processes to align data spatially or temporally.</li>
+<li><strong>Masking</strong> processes to exclude invalid or unwanted data.</li>
+<li><strong>Vector</strong> processes for geometry-based operations.</li>
+<li><strong>UDF-related</strong> processes for more advanced custom logic.</li>
+<li><strong>Export</strong> processes to save or publish results.</li>
+</ul>
+<p>The official process definitions are maintained centrally by the openEO project in the <a href="https://github.com/Open-EO/openeo-processes">Open-EO openeo-processes repository</a>. For everyday use, the easiest entry point is the rendered reference at <a href="https://processes.openeo.org/">processes.openeo.org</a>, which tracks the latest released specification.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The openEO process reference lists the processes defined by the openEO project. A specific backend may support all, some, or only a subset of them, and may also provide additional backend-specific processes.</p>
+</div>
+</div>
+</section>
+<section id="embedded-process-reference" class="level2">
+<h2 class="anchored" data-anchor-id="embedded-process-reference">Embedded process reference</h2>
+<p>The standardised openEO processes are embedded below:</p>
+<iframe src="https://processes.openeo.org/" title="openEO process reference" loading="lazy" style="width: 100%; min-height: 1100px; border: 1px solid #d9d9d9; border-radius: 8px; background: #fff;"></iframe>
+<p>If the embedded reference does not load in your browser, open it directly at <a href="https://processes.openeo.org/">https://processes.openeo.org/</a>.</p>
+</section>
+<section id="process-families-at-a-glance" class="level2">
+<h2 class="anchored" data-anchor-id="process-families-at-a-glance">Process families at a glance</h2>
+<p>The full reference is extensive, so it helps to know the main families of processes offered by the openEO API.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Process family</th>
+<th>What it is for</th>
+<th>Typical examples</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Import</td>
+<td>Bring data into a workflow</td>
+<td><code>load_collection</code>, <code>load_stac</code>, <code>load_geojson</code>, <code>load_url</code></td>
+</tr>
+<tr class="even">
+<td>Filter</td>
+<td>Restrict data before heavy processing</td>
+<td><code>filter_temporal</code>, <code>filter_bbox</code>, <code>filter_spatial</code>, <code>filter_bands</code></td>
+</tr>
+<tr class="odd">
+<td>Cubes</td>
+<td>Transform or restructure data cubes</td>
+<td><code>apply</code>, <code>apply_dimension</code>, <code>merge_cubes</code>, <code>rename_labels</code></td>
+</tr>
+<tr class="even">
+<td>Aggregate and reduce</td>
+<td>Summarize data over time, space, or dimensions</td>
+<td><code>aggregate_temporal</code>, <code>aggregate_spatial</code>, <code>reduce_dimension</code>, <code>reduce_spatial</code></td>
+</tr>
+<tr class="odd">
+<td>Math and logic</td>
+<td>Perform calculations and conditions</td>
+<td><code>add</code>, <code>divide</code>, <code>normalized_difference</code>, <code>if</code>, <code>eq</code></td>
+</tr>
+<tr class="even">
+<td>Reproject and resample</td>
+<td>Align data in space or time</td>
+<td><code>resample_spatial</code>, <code>resample_cube_spatial</code>, <code>resample_cube_temporal</code></td>
+</tr>
+<tr class="odd">
+<td>Masks</td>
+<td>Exclude invalid or unwanted values</td>
+<td><code>mask</code>, <code>mask_polygon</code></td>
+</tr>
+<tr class="even">
+<td>Vector</td>
+<td>Work with geometries and vector data</td>
+<td><code>vector_buffer</code>, <code>vector_reproject</code>, <code>filter_vector</code></td>
+</tr>
+<tr class="odd">
+<td>UDF and external processing</td>
+<td>Inject custom logic or external compute</td>
+<td><code>run_udf</code>, <code>run_udf_externally</code>, <code>run_ogcapi</code></td>
+</tr>
+<tr class="even">
+<td>Export and STAC</td>
+<td>Save, publish, or package results</td>
+<td><code>save_result</code>, <code>export_workspace</code>, <code>stac_modify</code></td>
+</tr>
+<tr class="odd">
+<td>Domain-specific EO processes</td>
+<td>Use EO-focused higher-level operations</td>
+<td><code>ndvi</code>, <code>sar_backscatter</code>, <code>cloud_detection</code>, <code>climatological_normal</code></td>
+</tr>
+</tbody>
+</table>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/processes-udf.svg" class="img-fluid figure-img"></p>
+<figcaption>UDF-related process extension example</figcaption>
+</figure>
+</div>
+</section>
+<section id="a-simple-way-to-think-about-processes" class="level2">
+<h2 class="anchored" data-anchor-id="a-simple-way-to-think-about-processes">A simple way to think about processes</h2>
+<p>As mentioned earlier, openEO processes are the building blocks of workflows. You can think of an openEO workflow as a chain of processes that implement the questions you ask the system:</p>
+<ol type="1">
+<li>Which process do I need to load the data?</li>
+<li>How do I filter the data to the relevant spatial and temporal extent?</li>
+<li>Which calculations do I want to perform?</li>
+<li>How do I want to summarise or export the result?</li>
+</ol>
+<p>Each of those steps is implemented with one or more processes.</p>
+<p>For example, a basic workflow might look like this:</p>
+<pre class="text"><code>load_collection
+    -&gt; filter_temporal
+    -&gt; filter_bbox
+    -&gt; ndvi
+    -&gt; aggregate_temporal_period
+    -&gt; save_result</code></pre>
+<p>This means:</p>
+<ul>
+<li>load a collection,</li>
+<li>keep only the dates you need,</li>
+<li>keep only the area you need,</li>
+<li>compute a vegetation index,</li>
+<li>summarize it over time, and</li>
+<li>export the result.</li>
+</ul>
+</section>
+<section id="standardized-but-not-identical-everywhere" class="level2">
+<h2 class="anchored" data-anchor-id="standardized-but-not-identical-everywhere">Standardized, but not identical everywhere</h2>
+<p>One of the strengths of openEO is that the same workflow idea can be used across multiple services. However, process support can differ across backends; therefore, it is recommended always to check the capabilities of the specific backend you are using.</p>
+<p>Differences may include:</p>
+<ul>
+<li>which standardised processes are implemented,</li>
+<li>whether synchronous processing is supported,</li>
+<li>which experimental or advanced processes are available,</li>
+<li>whether UDFs or UDPs are supported,</li>
+<li>which input and output formats are available, and</li>
+<li>whether a backend exposes additional provider-specific processes.</li>
+</ul>
+<p>The differences between backends are intentional and expected. Though openEO tries to standardise the processing language, each backend may implement it differently.</p>
+<p>If you want more details about how services differ across backends, see the <a href="../../documentation/key_concepts/backend.html">Backends</a> page.</p>
+</section>
+<section id="process-profiles-and-support-levels" class="level2">
+<h2 class="anchored" data-anchor-id="process-profiles-and-support-levels">Process profiles and support levels</h2>
+<p>Not every service is expected to implement the same full set of processes. To make support levels easier to understand, openEO defines <strong>process profiles</strong>.</p>
+<p>These profiles group capabilities into levels such as:</p>
+<ul>
+<li><strong>L1 Minimal</strong> for basic openEO compliance,</li>
+<li><strong>L2 Recommended</strong> for practical day-to-day usage,</li>
+<li><strong>L3 Advanced</strong> for more demanding workflows, and</li>
+<li><strong>L4 Above and Beyond</strong> for specialised and highly advanced use cases.</li>
+</ul>
+<p>For users, the main benefit of profiles is that they help explain why two backends can both be openEO-compatible yet support different sets of processes.</p>
+<p>The main profile levels can be summarised like this:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Profile level</th>
+<th>What it usually means for users</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>L1 Minimal</strong></td>
+<td>Basic openEO compliance and the minimum process set needed for simple workflows.</td>
+</tr>
+<tr class="even">
+<td><strong>L2 Recommended</strong></td>
+<td>A more practical set of processes for everyday EO work, including common filtering, aggregation, and data-cube operations.</td>
+</tr>
+<tr class="odd">
+<td><strong>L3 Advanced</strong></td>
+<td>More advanced process support for richer workflows, including broader callback handling, STAC-related functionality, and advanced cube operations.</td>
+</tr>
+<tr class="even">
+<td><strong>L4 Above and Beyond</strong></td>
+<td>Specialised and high-end capabilities for demanding or niche workflows.</td>
+</tr>
+</tbody>
+</table>
+<p>There are also sub-profiles for particular needs such as raster processing, vector processing, date and time operations, text handling, machine learning, UDFs, climatology, and analysis-ready data.</p>
+<p>Some platforms also defined extra requirements on top of the general openEO profiles. A useful example is the former openEO Platform federation guidance, which introduced additional expectation levels often referred to as <strong>L2P</strong>, <strong>L3P</strong>, and <strong>L4P</strong>.</p>
+<p>Those platform-specific levels can be summarised as follows:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Additional platform level</th>
+<th>Practical meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>L2P</strong></td>
+<td>A backend not only supports the recommended process set, but is also expected to handle core raster workflows reliably at a meaningful scale. This typically includes common processes such as <code>load_collection</code>, <code>filter_temporal</code>, <code>filter_bbox</code>, <code>filter_bands</code>, <code>apply</code>, <code>aggregate_temporal</code>, <code>aggregate_spatial</code>, <code>mask</code>, <code>ndvi</code>, <code>reduce_dimension</code>, <code>resample_spatial</code>, and <code>save_result</code>.</td>
+</tr>
+<tr class="even">
+<td><strong>L3P</strong></td>
+<td>The backend also supports more advanced capabilities important for advanced workflows, such as <code>apply_neighborhood</code>, <code>load_stac</code>, <code>filter_labels</code>, <code>reduce_spatial</code>, <code>resample_cube_temporal</code>, and <code>run_udf</code>.</td>
+</tr>
+<tr class="odd">
+<td><strong>L4P</strong></td>
+<td>The backend additionally supports more specialised or high-end functionality such as <code>atmospheric_correction</code>, <code>load_uploaded_files</code>, <code>load_url</code>, and <code>sar_backscatter</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>In practice, these extra platform-specific levels were useful because they signalled more than simple endpoint availability: they indicated that important processes were expected to work robustly on larger, realistic Earth Observation workloads.</p>
+</section>
+<section id="how-to-discover-process-support-in-practice" class="level2">
+<h2 class="anchored" data-anchor-id="how-to-discover-process-support-in-practice">How to discover process support in practice</h2>
+<p>When you connect to a backend, you should not assume that every documented process is available exactly as shown in the generic reference.</p>
+<p>Instead, check support using one or more of these approaches:</p>
+<ul>
+<li>Inspect the backend documentation.</li>
+<li>Use the backend metadata or capability endpoints.</li>
+<li>Use client-library helpers such as <code>list_processes</code> or <code>describe_process</code>.</li>
+</ul>
+<p>Backends can implement a varying set of processes, including non-standardised ones.</p>
+</section>
+<section id="where-to-learn-how-to-use-processes" class="level2">
+<h2 class="anchored" data-anchor-id="where-to-learn-how-to-use-processes">Where to learn how to use processes</h2>
+<p>For practical usage, the next place to look is the documentation that shows how they are used on data cubes.</p>
+<p>The most relevant section is:</p>
+<ul>
+<li><a href="../../documentation/cube_operations.html">openEO Cube Operations</a></li>
+</ul>
+<p>That section explains how processes are used for common workflow steps such as:</p>
+<ul>
+<li>preprocessing,</li>
+<li>spatial operations,</li>
+<li>temporal operations,</li>
+<li>spectral operations,</li>
+<li>cube manipulation,</li>
+<li>UDFs,</li>
+<li>machine learning, and</li>
+<li>job execution.</li>
+</ul>
+</section>
+<section id="what-to-do-next" class="level2">
+<h2 class="anchored" data-anchor-id="what-to-do-next">What to do next</h2>
+<p>Depending on what you want to achieve, a sensible next step is one of the following:</p>
+<ul>
+<li>Read the <a href="../../documentation/key_concepts/backend.html">Backends</a> page to understand where process support can differ.</li>
+<li>Go to <a href="../../documentation/cube_operations.html">openEO Cube Operations</a> to learn how processes are applied in actual EO workflows.</li>
+<li>Open the <a href="https://processes.openeo.org/">openEO Processes Reference</a> when you need exact process definitions and examples.</li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/open-eo\.github\.io\/openeo-docs\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
