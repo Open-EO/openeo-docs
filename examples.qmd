@@ -1,0 +1,29 @@
+---
+title: "Explore openEO Sample Notebooks"
+toc: false
+listing: 
+  - id: examples
+    contents:
+    - path: https://github.com/Open-EO/openeo-community-examples/blob/9ee2197c8830e5c97bf8c2e4ac340aad897277b4/python/ParcelDelineation/Parcel%20delineation.ipynb
+      image: https://documentation.dataspace.copernicus.eu/APIs/openEO/openeo-community-examples/python/ParcelDelineation/Parcel%20delineation_files/figure-html/cell-14-output-1.png
+      title: "Parcel Delination using openEO API"   
+    - path: https://github.com/Open-EO/openeo-community-examples/blob/9ee2197c8830e5c97bf8c2e4ac340aad897277b4/python/SurfaceSoilMoisture/SoilMoisture.ipynb
+      image: https://documentation.dataspace.copernicus.eu/APIs/openEO/openeo-community-examples/python/SurfaceSoilMoisture/SoilMoisture_files/figure-html/cell-14-output-2.png
+      title: "Soil Surface Moisture using openEO API"  
+    - path: client_examples/openeo-community-examples/python/Heatwave/HeatwaveNL.ipynb
+    - path: client_examples/openeo-community-examples/python/Hillshade/Hillshade.ipynb
+    - path: client_examples/openeo-community-examples/python/OilSpill/OilSpillMapping.ipynb
+    - path: client_examples/openeo-community-examples/python/ManagingMultipleLargeScaleJobs/ManagingMultipleLargeScaleJobs.ipynb
+    type: grid
+    page-size: 3
+---
+
+
+::: {#examples}
+:::
+
+<div style="display:flex;justify-content: center;margin-top: 2rem;">
+[Go to community examples repository](https://github.com/Open-EO/openeo-community-examples/tree/main/python){.uiButton}
+</div>
+
+
