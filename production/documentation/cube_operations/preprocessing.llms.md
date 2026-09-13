@@ -1,30 +1,96 @@
 # Preprocessing
 
-Turning raw satellite imagery into Analysis Ready Data
+This page highlights key openEO processes for preprocessing satellite imagery into Analysis Ready Data.
 
-openEO exposes two flagship preprocessing workflows: **Atmospheric Correction** for optical sensors, and **SAR Backscatter** computation for radar sensors. Both are available in standard and CEOS CARD4L-compliant variants.
+ 
 
 VITO
 
+ 
+
 Sentinel Hub
+
+ 
 
 EODC
 
+ 
+
 CDSE
+
+ 
 
 Federation
 
+ 
+
 EURAC
+
+ 
 
 Google Earth Engine
 
-openEO Platform
+> **NOTE:**
+>
+> The buttons above let you filter processes supported by different backends. Selecting or deselecting a backend will show or hide the relevant sections in the documentation. However, please note that it is based on the latest documentation rendering. Thus, please refer to the [openEO Hub](https://hub.openeo.org/) for the most up-to-date information.
+
+------------------------------------------------------------------------
+
+## Mask a cube
+
+openEO provides the `mask` process to mask out unwanted or invalid observations. The standard [`mask`](https://open-eo.github.io/openeo-python-client/api-processes.html#openeo.processes.mask) process replaces values where a Boolean mask is true. It is the portable choice when the collection exposes its own quality band or when you build a mask from another data cube.
+
+### Python
+
+``` python
+import openeo
+
+connection = openeo.connect("https://openeo.vito.be").authenticate_oidc()
+
+sentinel2 = connection.load_collection(
+    "SENTINEL2_L2A",
+    spatial_extent={"west": 4.30, "east": 4.55, "south": 50.80, "north": 50.98},
+    temporal_extent=["2024-06-01", "2024-06-30"],
+    bands=["B04", "B08", "SCL"],
+)
+
+quality_mask = sentinel2.filter_bands("SCL").apply(
+  lambda value: (value == 3) | (value == 8) | (value == 9) | (value == 10)
+)
+cloud_free = sentinel2.mask(mask=quality_mask)
+```
+
+> **TIP:**
+>
+> The result keeps the original cube dimensions and sets masked pixels to no-data. The exact meaning of the quality-band labels is collection-specific.
+
+------------------------------------------------------------------------
+
+## Sentinel-2 SCL Dilation Mask
+
+[`to_scl_dilation_mask`](https://open-eo.github.io/openeo-python-client/api-processes.html#openeo.processes.to_scl_dilation_mask) is a backend-specific convenience process that derives and creates a cloud and cloud-shadow mask from the Sentinel-2 Scene Classification (SCL) band. The cloud mask generated can be used directly with the standard `mask` process to filter out cloudy pixels.
+
+### Python
+
+``` python
+scl = c.load_collection(
+    "SENTINEL2_L2A",
+    spatial_extent={"west": 4.279, "south": 50.218, "east": 4.626, "north": 50.423},
+    temporal_extent=["2020-01-01", "2020-01-31"],
+    bands=["SCL"]
+)
+cloud_mask = scl.process( data=scl,process_id="to_scl_dilation_mask")
+```
+
+The process is backend-specific and is not available on every backend. An openEO notebook demonstrating how it works and how to replicate the standard openEO process across different backends can be found [here](https://github.com/Open-EO/openeo-community-examples/blob/main/python/SCLDilationMask/to_scl_dilation_mask.ipynb).
+
+------------------------------------------------------------------------
 
 ## Atmospheric Correction
 
-When a satellite captures light reflected from the Earth’s surface, that signal has passed through the atmosphere twice — once on the way down, once on the way back up. Scattering, absorption, and haze all distort what the sensor actually records. **Atmospheric correction** reverses those distortions, converting top-of-atmosphere (TOA) radiance into **surface reflectance** — the physical quantity that characterises what’s actually on the ground, independent of sun angle, viewing geometry, and atmospheric state.
+Atmospheric correction accounts for atmospheric scattering, absorption, and haze in optical observations. It converts top-of-atmosphere measurements into surface reflectance, which is more suitable for comparing observations across dates and locations.
 
-Without atmospheric correction, multi-temporal comparisons are unreliable: a pixel that looks “brighter” in July might just be reflecting a clearer sky, not a healthier crop. Corrected data makes time series meaningful.
+The required input bands and correction methods depend on the collection and backend. Check the collection metadata and process description before use.
 
 ### Code examples
 
@@ -37,18 +103,18 @@ connection = openeo.connect("https://openeo.eodc.eu").authenticate_oidc()
 
 # Load raw L1C Sentinel-2 — include angle bands required by iCor
 l1c = connection.load_collection(
-    "SENTINEL2_L1C_SENTINELHUB",
-    spatial_extent={
-        "west": 3.758, "east": 4.088,
-        "south": 51.292, "north": 51.393
-    },
-    temporal_extent=["2017-03-07", "2017-03-07"],
-    bands=[
-        "B04", "B03", "B02",          # RGB
-        "B09", "B8A", "B11",          # SWIR / water vapour
-        "sunAzimuthAngles", "sunZenithAngles",
-        "viewAzimuthMean", "viewZenithMean"
-    ]
+    "SENTINEL2_L1C_SENTINELHUB",
+    spatial_extent={
+        "west": 3.758, "east": 4.088,
+        "south": 51.292, "north": 51.393
+    },
+    temporal_extent=["2017-03-07", "2017-03-07"],
+    bands=[
+        "B04", "B03", "B02",          # RGB
+        "B09", "B8A", "B11",          # SWIR / water vapour
+        "sunAzimuthAngles", "sunZenithAngles",
+        "viewAzimuthMean", "viewZenithMean"
+    ]
 )
 
 # Apply atmospheric correction with iCor
@@ -69,15 +135,15 @@ p <- processes()
 
 # Load raw L1C collection with required angle bands
 l1c <- p$load_collection(
-  id = "SENTINEL2_L1C_SENTINELHUB",
-  spatial_extent = list(west=3.758, east=4.088, south=51.292, north=51.393),
-  temporal_extent = c("2017-03-07", "2017-03-07"),
-  bands = c(
-    "B04", "B03", "B02",
-    "B09", "B8A", "B11",
-    "sunAzimuthAngles", "sunZenithAngles",
-    "viewAzimuthMean", "viewZenithMean"
-  )
+  id = "SENTINEL2_L1C_SENTINELHUB",
+  spatial_extent = list(west=3.758, east=4.088, south=51.292, north=51.393),
+  temporal_extent = c("2017-03-07", "2017-03-07"),
+  bands = c(
+    "B04", "B03", "B02",
+    "B09", "B8A", "B11",
+    "sunAzimuthAngles", "sunZenithAngles",
+    "viewAzimuthMean", "viewZenithMean"
+  )
 )
 
 # Apply iCor atmospheric correction
@@ -98,11 +164,11 @@ const builder = await con.buildProcess();
 
 // Load raw L1C collection
 const l1c = builder.load_collection(
-  "SENTINEL2_L1C_SENTINELHUB",
-  { west: 3.758, east: 4.088, south: 51.292, north: 51.393 },
-  ["2017-03-07", "2017-03-07"],
-  ["B04","B03","B02","B09","B8A","B11",
-   "sunAzimuthAngles","sunZenithAngles","viewAzimuthMean","viewZenithMean"]
+  "SENTINEL2_L1C_SENTINELHUB",
+  { west: 3.758, east: 4.088, south: 51.292, north: 51.393 },
+ ["2017-03-07", "2017-03-07"],
+ ["B04","B03","B02","B09","B8A","B11",
+   "sunAzimuthAngles", "sunZenithAngles", "viewAzimuthMean", "viewZenithMean"]
 );
 
 // Apply atmospheric correction
@@ -114,11 +180,11 @@ await con.computeResult(result, { filename: "sentinel2_icor.tif" });
 
 ------------------------------------------------------------------------
 
-## SAR Backscatter
+## Create CARD4L normalised radar backscatter
 
-Synthetic Aperture Radar sensors like Sentinel-1 see through clouds and work day and night — but the raw data they produce (GRD, SLC) is not directly interpretable as a surface measurement. It must be **calibrated**, **terrain-corrected**, and **normalised** before it can be used analytically. This pipeline is collectively called **backscatter computation**.
+SAR backscatter processing calibrates raw radar observations and can apply terrain correction and normalisation. The resulting measurements are commonly expressed as sigma0 or gamma0 in linear or decibel scale. Terrain correction is especially important in areas with varied topography.
 
-The process converts the raw radar signal into a physically meaningful quantity — typically **sigma0** (surface scattering cross-section) or **gamma0** (terrain-flattened reflectivity) — in either linear or decibel scale. Terrain flattening is essential for hilly regions: without it, slopes facing the sensor appear artificially brighter than flat terrain, corrupting any analysis based on backscatter magnitude. \### Code examples
+### Code examples
 
 ## Python
 
@@ -129,12 +195,12 @@ connection = openeo.connect("https://openeo.vito.be").authenticate_oidc()
 
 # Load Sentinel-1 GRD — spatial/temporal filters are fine before backscatter
 s1grd = (
-    connection.load_collection(
-        "SENTINEL1_GRD",
-        bands=["VH", "VV"]
-    )
-    .filter_bbox(west=2.590, east=2.895, north=51.221, south=51.069)
-    .filter_temporal(extent=["2019-10-10", "2019-10-10"])
+ connection.load_collection(
+        "SENTINEL1_GRD",
+        bands=["VH", "VV"]
+    )
+    .filter_bbox(west=2.590, east=2.895, north=51.221, south=51.069)
+    .filter_temporal(extent=["2019-10-10", "2019-10-10"])
 )
 
 # CARD4L-compliant normalised radar backscatter (gamma0, terrain-flattened)
@@ -144,21 +210,6 @@ nrb = s1grd.ard_normalized_radar_backscatter()
 job = nrb.execute_batch()
 job.get_results().download_files("./output/")
 ```
-
-> **NOTE:**
->
-> ``` python
-> # More control: use sar_backscatter() directly
-> backscatter = s1grd.sar_backscatter(
->     coefficient="gamma0-terrain",
->     elevation_model="COPERNICUS_30",
->     noise_removal=True
-> )
-> job = backscatter.execute_batch(
->     title="S1 Backscatter Test",
->     description="gamma0 terrain-flattened over Belgium"
-> )
-> ```
 
 ## R
 
@@ -172,18 +223,18 @@ p <- processes()
 
 # Load Sentinel-1 GRD with spatial and temporal filters
 s1grd <- p$load_collection(
-  id = "SENTINEL1_GRD",
-  bands = c("VH", "VV")
+  id = "SENTINEL1_GRD",
+  bands = c("VH", "VV")
 )
 
 s1grd <- p$filter_bbox(
-  data = s1grd,
-  extent = list(west=2.590, east=2.895, south=51.069, north=51.221)
+  data = s1grd,
+  extent = list(west=2.590, east=2.895, south=51.069, north=51.221)
 )
 
 s1grd <- p$filter_temporal(
-  data = s1grd,
-  extent = c("2019-10-10", "2019-10-10")
+  data = s1grd,
+  extent = c("2019-10-10", "2019-10-10")
 )
 
 # Apply CARD4L-compliant normalised radar backscatter
@@ -191,8 +242,8 @@ nrb <- p$ard_normalized_radar_backscatter(data = s1grd)
 
 # Submit batch job
 job <- create_job(
-  graph = nrb,
-  title = "S1 CARD4L NRB"
+  graph = nrb,
+  title = "S1 CARD4L NRB"
 )
 start_job(job)
 
@@ -213,15 +264,15 @@ const builder = await con.buildProcess();
 
 // Load Sentinel-1 GRD
 let s1grd = builder.load_collection(
-  "SENTINEL1_GRD",
-  null, null,
-  ["VH", "VV"]
+  "SENTINEL1_GRD",
+  null, null,
+ ["VH", "VV"]
 );
 
 // Apply spatial and temporal filters first
 s1grd = builder.filter_bbox(s1grd, {
-  west: 2.590, east: 2.895,
-  south: 51.069, north: 51.221
+ west: 2.590, east: 2.895,
+ south: 51.069, north: 51.221
 });
 
 s1grd = builder.filter_temporal(s1grd, ["2019-10-10", "2019-10-10"]);
@@ -238,21 +289,72 @@ await job.startJob();
 // Poll until done, then download
 const results = await job.getResults();
 for (const asset of Object.values(results.assets)) {
-  console.log("Download:", asset.href);
+  console.log("Download:", asset.href);
 }
 ```
 
 ------------------------------------------------------------------------
 
+## Compute SAR backscatter
+
+`sar_backscatter` calibrates radar observations and can produce a chosen backscatter coefficient, such as `gamma0-terrain`. Use it when you need explicit control over calibration, terrain correction, elevation data, or noise removal, rather than the higher-level CARD4L process.
+
+### Python
+
+``` python
+s1_image = connection.load_collection(
+    "SENTINEL1_GRD",
+    temporal_extent=["2017-08-09", "2017-08-12"],
+    spatial_extent=aoi,
+    bands=["VV"],
+)
+
+s1_backscatter = s1_image.sar_backscatter(coefficient="sigma0-ellipsoid")
+
+job = s1_backscatter.execute_batch(
+  title="S1 backscatter example",
+  description="Terrain-flattened gamma0 over Belgium",
+)
+job.get_results().download_files("./output/")
+```
+
+The returned values are calibrated radar measurements, usually expressed on a linear or decibel scale depending on the process parameters. Check the backend metadata for supported coefficients and ancillary data requirements.
+
+------------------------------------------------------------------------
+
 ## Performance considerations
 
-Both `atmospheric_correction` and `sar_backscatter` are among the most **computationally expensive** operations in openEO. Before including them in your workflow, consider:
+Both `atmospheric_correction` and `sar_backscatter` can require substantial backend resources. Before including them in a workflow, consider the following:
 
-- **Use batch jobs** — synchronous execution will time out for anything beyond a small test area.
-- **Filter early** — always apply `filter_bbox` and `filter_temporal` before calling these processes to minimise the data volume processed.
-- **Pre-corrected collections** — many openEO backends offer **analysis-ready collections** (e.g. Sentinel-2 L2A, Sentinel-1 backscatter products) that have already been corrected. Check your backend’s collection catalogue before computing from raw data.
-- **Cost awareness** — backends may charge more for preprocessing-heavy workflows. Profile on a small tile before scaling up.
+- **Use batch jobs:** synchronous execution may time out beyond a small test area.
+- **Filter early:** Apply `filter_bbox` and `filter_temporal` before these processes to reduce the volume of data processed.
+- **Prefer pre-corrected collections:** many backends provide analysis-ready collections, such as Sentinel-2 L2A or Sentinel-1 backscatter products.
+- **Test a small area first:** resource use and costs can increase substantially for larger areas or longer time ranges.
 
 > **TIP:**
 >
-> If your backend offers a collection like `SENTINEL2_L2A` or `SENTINEL1_BACKSCATTER`, use it directly — it is the output of these processes, pre-computed and stored at much lower retrieval cost.
+> If your backend provides a collection such as `SENTINEL2_L2A` or `SENTINEL1_BACKSCATTER`, use it when it meets the analysis requirements. These products are already processed and usually require fewer backend resources.
+
+## Related standard processes
+
+Some standard processes are useful during preprocessing but have a different primary purpose. To avoid documenting one process twice, use the dedicated pages for their full explanations and examples:
+
+- [`mask_polygon`](../../documentation/cube_operations/spatial_operations.llms.md) masks pixels outside a geometry.
+- [`apply`](../../documentation/cube_operations/cube_manipulations.llms.md) applies a per-pixel process callback.
+- [`linear_scale_range`](../../documentation/cube_operations/spectral_operations.llms.md) rescales numeric values.
+
+These processes remain individually associated with backend support through their own `data-process` sections on those pages.
+
+`cloud_detection` is not included here because it is not advertised by any backend in the current generated support data. It should only be documented after a backend advertises the process and its process metadata has been checked.
+
+------------------------------------------------------------------------
+
+## Produce CARD4L surface reflectance
+
+`ard_surface_reflectance` creates an analysis-ready optical product from suitable input data. It can include atmospheric, geometric, and quality corrections, depending on the backend implementation.
+
+``` python
+surface_reflectance = l1c.ard_surface_reflectance()
+```
+
+Each section is shown only for backends that advertise their process. The process metadata remains authoritative for exact parameters, supported collections, and output conventions.

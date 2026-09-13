@@ -1,10 +1,94 @@
-# openEO Key Concepts
+# Data Discovery and Loading
 
-This page will include information about:
+Explore the data available in an openEO backend and learn how to load it as a data cube in openEO.
 
-- loading data cubes
-- downloading data cubes
+   
 
-so will focus on following processes: - load_collection - load_stac
+VITO
 
-and if there are any ways to initially extract information about these data before downloading or applying processes on them.
+   
+
+EODC
+
+   
+
+CDSE
+
+   
+
+Sentinel Hub
+
+   
+
+Google Earth Engine
+
+> **NOTE:**
+>
+> The buttons above let you filter processes supported by different backends. Selecting or deselecting a backend will show or hide the relevant sections in the documentation. However, please note that it is based on the latest documentation rendering. Thus, please refer to the [openEO Hub](https://hub.openeo.org/) for the most up-to-date information.
+
+## Datacube discovery
+
+openEO handles EO data as a [**datacube**](../documentation/key_concepts/datacube.llms.md). A datacube is a multidimensional representation of data that serves as input to which we apply sets of processes, as covered in the [Cube Operations](../documentation/cube_operations.llms.md) section, for several types of EO workflows.
+
+These processes, when applied to a datacube, form a process chain called a process graph; the backend executes this graph only when an execution is explicitly triggered.
+
+Before loading data as a datacube, inspect the backend’s collection metadata. It lists whether the intended data is offered by the backend for loading as a datacube, available collection IDs, spatial and temporal coverage, band names, and other properties that can be used for filtering.
+
+``` python
+import openeo
+
+connection = openeo.connect("https://openeofed.dataspace.copernicus.eu")
+collections = connection.list_collections()
+metadata = connection.describe_collection("SENTINEL2_L2A")
+```
+
+## Load data
+
+### Load a backend collection
+
+If the collection metadata indicates that the desired data is available, proceed to load it using the `load_collection` process. Specify the spatial extent, temporal extent, and bands in this call when constructing the datacube. Loading only the data needed for the analysis avoids unnecessary processing.
+
+Alternatively, the user can choose to filter the data for a spatial and temporal extent later in the workflow using standard spatial and temporal operations. However, it is recommended to specify these extents when loading the collection to minimise unnecessary data processing.
+
+``` python
+bbox = {"west": 4.30, "south": 51.20, "east": 4.60, "north": 51.40}
+temporal_extent = ["2024-06-01", "2024-06-30"]
+
+cube = connection.load_collection(
+        "SENTINEL2_L2A",
+        spatial_extent=bbox,
+        temporal_extent=temporal_extent,
+        bands=["B04", "B08"],
+)
+```
+
+The collection ID and band names in this example are valid for the Copernicus Data Space Ecosystem federation backend, but may differ elsewhere.
+
+Next, continue with [spectral operations](../documentation/cube_operations/spectral_operations.llms.md) to calculate NDVI, or use [spatial operations](../documentation/cube_operations/spatial_operations.llms.md) to filter the area of interest or similar tasks using several operations offered by the backend.
+
+For complete parameters, see the official [`load_collection` process reference](https://processes.openeo.org/#load_collection).
+
+### Load data from STAC
+
+Alternatively, users can also load data from a STAC source rather than from a backend collection. This approach is useful when the desired data is available as STAC metadata but not registered in the connected backend.
+
+Use `load_stac` to load data from an accessible STAC source. Similar to `load_collection`, you can specify the spatial and temporal extents and bands when constructing the datacube.
+
+``` python
+stac_url = "https://example.org/stac/collections/my-collection"
+
+cube = connection.load_stac(
+        url=stac_url,
+        spatial_extent={"west": 4.30, "south": 51.20, "east": 4.60, "north": 51.40},
+        temporal_extent=["2024-06-01", "2024-06-30"],
+        bands=["B04", "B08"],
+)
+```
+
+A common use case is to load the STAC metadata of a completed job result back into a new process graph.
+
+For more details regarding the support for different STAC source types and parameters, see the official [`load_stac` process reference](https://processes.openeo.org/#load_stac).
+
+## Next steps
+
+Once a datacube is loaded, explore the [Cube Operations](../documentation/cube_operations.llms.md) pages to build an analysis, then [execute an openEO job](../documentation/cube_operations/execute_jobs.llms.md) to execute the workflow and download the result.

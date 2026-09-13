@@ -284,7 +284,67 @@
     "href": "documentation/setup.html",
     "title": "openEO Setup",
     "section": "",
-    "text": "This will include information about:\n\nDifferent ways to install and setup openEO clients\nHow to connect to openEO backends\nInfer information about the backend (e.g. available data, processes, etc.)\n\nSo the processes such as:\n\nopeneo.connect()\nopeneo.list_backends()\nopeneo.describe_backend()\nopeneo.describe_processes()\nopeneo.describe_collection()\nopeneo.describe_user()",
+    "text": "This page highlights the first steps to get started with openEO: choose the client that suits your preferred working environment and install it. Whether you work in Python, JavaScript, or R, the sections below provide a starting point for installing the client and connecting to an openEO backend. Additionally, on this page, we cover a brief introduction to using the openEO plugin in the QGIS environment.\nopenEO processing runs on a backend. Users must first install a client that fits their working environment to start implementing an EO workflow in the backend. For more information on available backends and their capabilities, refer to the Backend page.",
+    "crumbs": [
+      "SETUP"
+    ]
+  },
+  {
+    "objectID": "documentation/setup.html#installation",
+    "href": "documentation/setup.html#installation",
+    "title": "openEO Setup",
+    "section": "",
+    "text": "This page highlights the first steps to get started with openEO: choose the client that suits your preferred working environment and install it. Whether you work in Python, JavaScript, or R, the sections below provide a starting point for installing the client and connecting to an openEO backend. Additionally, on this page, we cover a brief introduction to using the openEO plugin in the QGIS environment.\nopenEO processing runs on a backend. Users must first install a client that fits their working environment to start implementing an EO workflow in the backend. For more information on available backends and their capabilities, refer to the Backend page.",
+    "crumbs": [
+      "SETUP"
+    ]
+  },
+  {
+    "objectID": "documentation/setup.html#python",
+    "href": "documentation/setup.html#python",
+    "title": "openEO Setup",
+    "section": "Python",
+    "text": "Python\nThe openEO Python client is a good choice for scripts and Jupyter notebooks. Although it is not strictly necessary, using a virtual environment is recommended to help avoid conflicts with other Python packages installed on your system.\npython -m venv .venv\n# Windows PowerShell: .venv\\Scripts\\Activate.ps1\n# macOS/Linux: source .venv/bin/activate\npython -m pip install --upgrade pip\npython -m pip install openeo\nAlternatively, install the client from conda-forge:\nconda install -c conda-forge openeo\nConfirm that the package is available and connect to a backend:\nimport openeo\n\nprint(openeo.client_version())\nconnection = openeo.connect(\"https://&lt;backend-url&gt;\") # such as \"https://openeo.dataspace.copernicus.eu\"\nprint(connection.list_collections())\nFor notebook preview and other Jupyter-enabled features, install the optional dependencies with python -m pip install \"openeo[jupyter]\".",
+    "crumbs": [
+      "SETUP"
+    ]
+  },
+  {
+    "objectID": "documentation/setup.html#javascript",
+    "href": "documentation/setup.html#javascript",
+    "title": "openEO Setup",
+    "section": "JavaScript",
+    "text": "JavaScript\nFor Node.js applications and projects using bundlers, install the JavaScript client with npm:\nnpm install @openeo/js-client\nThen create an asynchronous connection:\nimport { OpenEO } from \"@openeo/js-client\";\n\nconst connection = await OpenEO.connect(\"https://&lt;backend-url&gt;\");\nconsole.log(await connection.listCollections());\nBrowser applications can instead load the client and its Axios dependency from a CDN:\n&lt;script src=\"https://cdn.jsdelivr.net/npm/axios@0.21/dist/axios.min.js\"&gt;&lt;/script&gt;\n&lt;script src=\"https://cdn.jsdelivr.net/npm/@openeo/js-client@2/openeo.min.js\"&gt;&lt;/script&gt;\nSee the JavaScript client installation documentation for CommonJS imports and authentication guidance.",
+    "crumbs": [
+      "SETUP"
+    ]
+  },
+  {
+    "objectID": "documentation/setup.html#r",
+    "href": "documentation/setup.html#r",
+    "title": "openEO Setup",
+    "section": "R",
+    "text": "R\nThe R client is available from CRAN. It requires R 3.6 or later.\ninstall.packages(\"openeo\")\n\nlibrary(openeo)\nconnection &lt;- connect(host = \"https://&lt;backend-url&gt;\")\nprint(list_collections(con = connection))\nThe R client documentation also describes installing the development version from GitHub.",
+    "crumbs": [
+      "SETUP"
+    ]
+  },
+  {
+    "objectID": "documentation/setup.html#qgis",
+    "href": "documentation/setup.html#qgis",
+    "title": "openEO Setup",
+    "section": "QGIS",
+    "text": "QGIS\nopenEO provides a QGIS plugin that allows users to connect to openEO backends and interact with them directly within QGIS. Users can explore available collections, processes, and other backend capabilities through the plugin interface. Moreover, users can directly load their openEO workflow results into QGIS for further analysis and visualisation.\nTo use openEO from a graphical GIS environment, install the QGIS plugin:\n\nIn QGIS, open Plugins &gt; Manage and Install Plugins.\nSearch for OpenEO, then install and enable the plugin.\nIn the QGIS Browser panel, right-click openEO and choose New openEO Connection.\nSelect a backend from the openEO Hub or enter its URL, then authenticate when prompted.\n\nFor more details on the plugin, refer to the QGIS Plugin installation documentation.",
+    "crumbs": [
+      "SETUP"
+    ]
+  },
+  {
+    "objectID": "documentation/setup.html#authentication-and-backend-discovery",
+    "href": "documentation/setup.html#authentication-and-backend-discovery",
+    "title": "openEO Setup",
+    "section": "Authentication and Backend Discovery",
+    "text": "Authentication and Backend Discovery\nReading public backend metadata usually does not require logging in. However, if you want to create jobs, access protected collections, or download results, you need authentication.\nAuthentication is backend-specific; use the method supported by the backend, commonly OpenID Connect or basic authentication.\nAfter connecting, inspect the actual backend before building a workflow. The available collections, processes, output formats, and authentication options can vary between backends. For example, in Python:\nprint(connection.capabilities().api_version())\nprint(connection.list_collections())\nprint(connection.list_processes())\nprint(connection.list_file_formats())\nExplore the backend page or the openEO Hub to identify collection IDs, supported processes, account registration, and the appropriate login method.",
     "crumbs": [
       "SETUP"
     ]
@@ -512,11 +572,272 @@
   {
     "objectID": "documentation/data_discovery.html",
     "href": "documentation/data_discovery.html",
-    "title": "openEO Key Concepts",
+    "title": "Data Discovery and Loading",
     "section": "",
-    "text": "This page will include information about:\n\nloading data cubes\ndownloading data cubes\n\nso will focus on following processes: - load_collection - load_stac\nand if there are any ways to initially extract information about these data before downloading or applying processes on them.",
+    "text": "Explore the data available in an openEO backend and learn how to load it as a data cube in openEO.",
     "crumbs": [
       "DATA DISCOVERY"
+    ]
+  },
+  {
+    "objectID": "documentation/data_discovery.html#datacube-discovery",
+    "href": "documentation/data_discovery.html#datacube-discovery",
+    "title": "Data Discovery and Loading",
+    "section": "Datacube discovery",
+    "text": "Datacube discovery\nopenEO handles EO data as a datacube. A datacube is a multidimensional representation of data that serves as input to which we apply sets of processes, as covered in the Cube Operations section, for several types of EO workflows.\nThese processes, when applied to a datacube, form a process chain called a process graph; the backend executes this graph only when an execution is explicitly triggered.\nBefore loading data as a datacube, inspect the backend’s collection metadata. It lists whether the intended data is offered by the backend for loading as a datacube, available collection IDs, spatial and temporal coverage, band names, and other properties that can be used for filtering.\nimport openeo\n\nconnection = openeo.connect(\"https://openeofed.dataspace.copernicus.eu\")\ncollections = connection.list_collections()\nmetadata = connection.describe_collection(\"SENTINEL2_L2A\")",
+    "crumbs": [
+      "DATA DISCOVERY"
+    ]
+  },
+  {
+    "objectID": "documentation/data_discovery.html#load-data",
+    "href": "documentation/data_discovery.html#load-data",
+    "title": "Data Discovery and Loading",
+    "section": "Load data",
+    "text": "Load data\n\nLoad a backend collection\nIf the collection metadata indicates that the desired data is available, proceed to load it using the load_collection process. Specify the spatial extent, temporal extent, and bands in this call when constructing the datacube. Loading only the data needed for the analysis avoids unnecessary processing.\nAlternatively, the user can choose to filter the data for a spatial and temporal extent later in the workflow using standard spatial and temporal operations. However, it is recommended to specify these extents when loading the collection to minimise unnecessary data processing.\nbbox = {\"west\": 4.30, \"south\": 51.20, \"east\": 4.60, \"north\": 51.40}\ntemporal_extent = [\"2024-06-01\", \"2024-06-30\"]\n\ncube = connection.load_collection(\n        \"SENTINEL2_L2A\",\n        spatial_extent=bbox,\n        temporal_extent=temporal_extent,\n        bands=[\"B04\", \"B08\"],\n)\nThe collection ID and band names in this example are valid for the Copernicus Data Space Ecosystem federation backend, but may differ elsewhere.\nNext, continue with spectral operations to calculate NDVI, or use spatial operations to filter the area of interest or similar tasks using several operations offered by the backend.\nFor complete parameters, see the official load_collection process reference.\n\n\nLoad data from STAC\nAlternatively, users can also load data from a STAC source rather than from a backend collection. This approach is useful when the desired data is available as STAC metadata but not registered in the connected backend.\nUse load_stac to load data from an accessible STAC source. Similar to load_collection, you can specify the spatial and temporal extents and bands when constructing the datacube.\nstac_url = \"https://example.org/stac/collections/my-collection\"\n\ncube = connection.load_stac(\n        url=stac_url,\n        spatial_extent={\"west\": 4.30, \"south\": 51.20, \"east\": 4.60, \"north\": 51.40},\n        temporal_extent=[\"2024-06-01\", \"2024-06-30\"],\n        bands=[\"B04\", \"B08\"],\n)\nA common use case is to load the STAC metadata of a completed job result back into a new process graph.\nFor more details regarding the support for different STAC source types and parameters, see the official load_stac process reference.",
+    "crumbs": [
+      "DATA DISCOVERY"
+    ]
+  },
+  {
+    "objectID": "documentation/data_discovery.html#next-steps",
+    "href": "documentation/data_discovery.html#next-steps",
+    "title": "Data Discovery and Loading",
+    "section": "Next steps",
+    "text": "Next steps\nOnce a datacube is loaded, explore the Cube Operations pages to build an analysis, then execute an openEO job to execute the workflow and download the result.",
+    "crumbs": [
+      "DATA DISCOVERY"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/udf.html",
+    "href": "documentation/cube_operations/udf.html",
+    "title": "User Defined Functions",
+    "section": "",
+    "text": "A User Defined Function (UDF) is custom Python or R code executed within an openEO process graph. Use it when standard processes do not express the required calculation.\nThe Python-client guide to callbacks explains the distinction and the callback restrictions in detail.",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "User Defined Functions"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/udf.html#apply-a-udf",
+    "href": "documentation/cube_operations/udf.html#apply-a-udf",
+    "title": "User Defined Functions",
+    "section": "Apply a UDF",
+    "text": "Apply a UDF\nrun_udf passes raster or vector data to backend-managed code. The supported runtime, packages, resource limits, and data model are backend-specific, so begin with a small batch job.\n\nPython\nudf_code = \"\"\"\ndef apply_datacube(cube, context):\n    return cube * 2\n\"\"\"\n\nresult = cube.run_udf(\n    udf=udf_code,\n    runtime=\"Python\",\n)\n\n\n\n\n\n\nWarningPortability consideration\n\n\n\nKeep UDFs small and use only packages documented by the selected backend. Standard openEO processes are generally more portable and can be optimized more easily by a backend.\n\n\nSee run_udf and the backend documentation for the current runtime contract.",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "User Defined Functions"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/udf.html#choose-the-right-extension-mechanism",
+    "href": "documentation/cube_operations/udf.html#choose-the-right-extension-mechanism",
+    "title": "User Defined Functions",
+    "section": "Choose the right extension mechanism",
+    "text": "Choose the right extension mechanism\nA callback is not a UDF. With apply, apply_dimension, reduce_dimension, aggregate_temporal, aggregate_spatial, or apply_neighborhood, a Python lambda describes an openEO process graph using standardized processes; no arbitrary Python code is sent to the backend. A UDF sends backend-executed Python or R code through run_udf.\n\n\n\n\n\n\n\nNeed\nPreferred mechanism\n\n\n\n\nScale values, calculate an index, or reduce a dimension\nA standard process or callback.\n\n\nReuse a named process graph\nA UDP.\n\n\nApply a backend-supported ML model\nThe backend’s ML process.\n\n\nRun an algorithm unavailable as an openEO process\nrun_udf.\n\n\nUse a custom external execution environment\nrun_udf_externally, when advertised by the backend.",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "User Defined Functions"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/udf.html#udf-related-processes",
+    "href": "documentation/cube_operations/udf.html#udf-related-processes",
+    "title": "User Defined Functions",
+    "section": "UDF-related processes",
+    "text": "UDF-related processes\nEach process below has its own backend filter. The callback processes are included for comparison, but they do not execute arbitrary Python or R code on the backend.",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "User Defined Functions"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/udf.html#run-a-backend-udf",
+    "href": "documentation/cube_operations/udf.html#run-a-backend-udf",
+    "title": "User Defined Functions",
+    "section": "Run a backend UDF",
+    "text": "Run a backend UDF\nUse run_udf when the required algorithm cannot be expressed with standardized openEO processes. The backend executes the supplied Python or R code close to the data, subject to its runtime, package, memory, and execution limits.\nresult = cube.run_udf(udf=udf_code, runtime=\"Python\")",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "User Defined Functions"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/udf.html#run-an-external-udf",
+    "href": "documentation/cube_operations/udf.html#run-an-external-udf",
+    "title": "User Defined Functions",
+    "section": "Run an external UDF",
+    "text": "Run an external UDF\nUse run_udf_externally when the computation must run in an environment managed outside the backend. This is useful for custom dependencies, but it is less portable and may require backend-specific credentials or configuration.\nresult = openeo.processes.run_udf_externally(data=cube, udf=udf_code)",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "User Defined Functions"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/udf.html#apply-a-standardized-pixel-callback",
+    "href": "documentation/cube_operations/udf.html#apply-a-standardized-pixel-callback",
+    "title": "User Defined Functions",
+    "section": "Apply a standardized pixel callback",
+    "text": "Apply a standardized pixel callback\nApply a standardized process callback independently to each pixel; this is not arbitrary Python execution.\nscaled = cube.apply(lambda value: value * 0.0001)",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "User Defined Functions"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/udf.html#apply-a-standardized-dimension-callback",
+    "href": "documentation/cube_operations/udf.html#apply-a-standardized-dimension-callback",
+    "title": "User Defined Functions",
+    "section": "Apply a standardized dimension callback",
+    "text": "Apply a standardized dimension callback\nApply a standardized callback along one cube dimension.\nsmoothed = cube.apply_dimension(dimension=\"t\", process=lambda series: series.median())",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "User Defined Functions"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/udf.html#apply-a-standardized-neighbourhood-callback",
+    "href": "documentation/cube_operations/udf.html#apply-a-standardized-neighbourhood-callback",
+    "title": "User Defined Functions",
+    "section": "Apply a standardized neighbourhood callback",
+    "text": "Apply a standardized neighbourhood callback\nApply a standardized callback over a moving spatial neighbourhood.\nresult = cube.apply_neighborhood(size=[3, 3], process=lambda window: window.mean())",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "User Defined Functions"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/spectral_operations.html",
+    "href": "documentation/cube_operations/spectral_operations.html",
+    "title": "Spectral Operations",
+    "section": "",
+    "text": "Spectral operations work across a sensor’s bands. They let you select the information that matters, calculate indices, and add derived bands to a cube.",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Spectral Operations"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/spectral_operations.html#select-only-the-required-bands",
+    "href": "documentation/cube_operations/spectral_operations.html#select-only-the-required-bands",
+    "title": "Spectral Operations",
+    "section": "Select only the required bands",
+    "text": "Select only the required bands\nfilter_bands reduces a cube to named bands or to a wavelength range. Selecting bands early makes a process graph clearer and can substantially reduce processing volume.\n\nPython\nimport openeo\n\nconnection = openeo.connect(\"https://openeo.vito.be\").authenticate_oidc()\nsentinel2 = connection.load_collection(\n    \"SENTINEL2_L2A\",\n    spatial_extent={\"west\": 4.30, \"east\": 4.55, \"south\": 50.80, \"north\": 50.98},\n    temporal_extent=[\"2024-06-01\", \"2024-06-30\"],\n)\nred_nir = sentinel2.filter_bands([\"B04\", \"B08\"])\nBand names are collection-specific. Check the collection metadata rather than assuming that every backend uses the same Sentinel band labels.",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Spectral Operations"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/spectral_operations.html#calculate-ndvi",
+    "href": "documentation/cube_operations/spectral_operations.html#calculate-ndvi",
+    "title": "Spectral Operations",
+    "section": "Calculate NDVI",
+    "text": "Calculate NDVI\nndvi is a convenience process for the normalized difference between near-infrared and red reflectance. It adds an NDVI band while retaining the cube’s spatial and temporal dimensions.\n\nPython\nndvi = red_nir.ndvi(nir=\"B08\", red=\"B04\", target_band=\"NDVI\")\nndvi.download(\"ndvi.tif\", format=\"GTiff\")\nFor indices without a dedicated process, use normalized_difference or an apply_dimension callback with arithmetic processes. For example, normalized difference is suitable for NDWI and NBR when you supply the appropriate pair of input bands.",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Spectral Operations"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/spectral_operations.html#workflow-combine-an-index-with-a-temporal-composite",
+    "href": "documentation/cube_operations/spectral_operations.html#workflow-combine-an-index-with-a-temporal-composite",
+    "title": "Spectral Operations",
+    "section": "Workflow: combine an index with a temporal composite",
+    "text": "Workflow: combine an index with a temporal composite\nSpectral and temporal operations are normally chained. Here the index is calculated for each acquisition and then reduced to a monthly median; this is generally more meaningful than calculating the index from separately aggregated red and NIR bands.\n\nPython\nmonthly_ndvi = (\n    red_nir.ndvi(nir=\"B08\", red=\"B04\", target_band=\"NDVI\")\n    .aggregate_temporal_period(period=\"month\", reducer=\"median\")\n)\nThis is a workflow example rather than a separate process: ndvi is calculated per acquisition and aggregate_temporal_period then creates the monthly product. The temporal process is documented in the Temporal Operations page.",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Spectral Operations"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/spectral_operations.html#spectral-process-details",
+    "href": "documentation/cube_operations/spectral_operations.html#spectral-process-details",
+    "title": "Spectral Operations",
+    "section": "Spectral process details",
+    "text": "Spectral process details\nEach process below has its own backend filter. Generic dimension processes are shown here with dimension=\"bands\".",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Spectral Operations"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/spectral_operations.html#calculate-a-normalized-difference",
+    "href": "documentation/cube_operations/spectral_operations.html#calculate-a-normalized-difference",
+    "title": "Spectral Operations",
+    "section": "Calculate a normalized difference",
+    "text": "Calculate a normalized difference\nUse normalized_difference for a two-band index when no dedicated convenience process exists. For example, it can create NDWI from green and near-infrared bands or NBR from near-infrared and shortwave-infrared bands.\nndwi = cube.normalized_difference(first_band=\"B03\", second_band=\"B08\")",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Spectral Operations"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/spectral_operations.html#aggregate-an-index-over-time",
+    "href": "documentation/cube_operations/spectral_operations.html#aggregate-an-index-over-time",
+    "title": "Spectral Operations",
+    "section": "Aggregate an index over time",
+    "text": "Aggregate an index over time\naggregate_temporal_period groups an index into calendar periods such as monthly medians.\nmonthly_ndvi = ndvi.aggregate_temporal_period(period=\"month\", reducer=\"median\")",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Spectral Operations"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/spectral_operations.html#apply-a-process-across-bands",
+    "href": "documentation/cube_operations/spectral_operations.html#apply-a-process-across-bands",
+    "title": "Spectral Operations",
+    "section": "Apply a process across bands",
+    "text": "Apply a process across bands\nUse apply_dimension with dimension=\"bands\" when the calculation needs a custom combination of the band array. Prefer a dedicated index process when one exists because its band semantics are clearer.\nderived = cube.apply_dimension(\n  dimension=\"bands\",\n  process=lambda bands: bands[1] / bands[0],\n)",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Spectral Operations"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/spectral_operations.html#reduce-the-band-dimension",
+    "href": "documentation/cube_operations/spectral_operations.html#reduce-the-band-dimension",
+    "title": "Spectral Operations",
+    "section": "Reduce the band dimension",
+    "text": "Reduce the band dimension\nUse reduce_dimension with dimension=\"bands\" to collapse several bands into one value, for example a mean brightness or maximum response. The process removes the reduced dimension.\nbrightness = cube.reduce_dimension(dimension=\"bands\", reducer=\"mean\")",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Spectral Operations"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/spectral_operations.html#scale-spectral-values",
+    "href": "documentation/cube_operations/spectral_operations.html#scale-spectral-values",
+    "title": "Spectral Operations",
+    "section": "Scale spectral values",
+    "text": "Scale spectral values\nUse linear_scale_range to convert stored digital numbers into a physical range before calculating indices or exporting data. Confirm the source scaling in the collection metadata first.\nreflectance = cube.linear_scale_range(\n  input_min=0, input_max=10000, output_min=0, output_max=1\n)",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Spectral Operations"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/spectral_operations.html#select-an-array-element",
+    "href": "documentation/cube_operations/spectral_operations.html#select-an-array-element",
+    "title": "Spectral Operations",
+    "section": "Select an array element",
+    "text": "Select an array element\nUse array_element when a callback returns an array and the workflow needs one position, such as selecting a particular component from a model result.\nred = openeo.processes.array_element(data=band_array, index=0)",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Spectral Operations"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/spectral_operations.html#apply-a-process-to-an-array",
+    "href": "documentation/cube_operations/spectral_operations.html#apply-a-process-to-an-array",
+    "title": "Spectral Operations",
+    "section": "Apply a process to an array",
+    "text": "Apply a process to an array\nUse array_apply when every element of an array should receive the same process graph, for example scaling each value before converting the array back into a cube dimension.\nscaled = openeo.processes.array_apply(\n  data=band_array,\n  process=lambda value: value.multiply(0.0001),\n)",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Spectral Operations"
     ]
   },
   {
@@ -524,7 +845,29 @@
     "href": "documentation/cube_operations/preprocessing.html",
     "title": "Preprocessing",
     "section": "",
-    "text": "openEO exposes two flagship preprocessing workflows: Atmospheric Correction for optical sensors, and SAR Backscatter computation for radar sensors. Both are available in standard and CEOS CARD4L-compliant variants.",
+    "text": "This page highlights key openEO processes for preprocessing satellite imagery into Analysis Ready Data.\nEach section is shown only for backends that advertise their process. The process metadata remains authoritative for exact parameters, supported collections, and output conventions.",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Preprocessing"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/preprocessing.html#mask-a-cube",
+    "href": "documentation/cube_operations/preprocessing.html#mask-a-cube",
+    "title": "Preprocessing",
+    "section": "Mask a cube",
+    "text": "Mask a cube\nopenEO provides the mask process to mask out unwanted or invalid observations. The standard mask process replaces values where a Boolean mask is true. It is the portable choice when the collection exposes its own quality band or when you build a mask from another data cube.\n\nPython\nimport openeo\n\nconnection = openeo.connect(\"https://openeo.vito.be\").authenticate_oidc()\n\nsentinel2 = connection.load_collection(\n    \"SENTINEL2_L2A\",\n    spatial_extent={\"west\": 4.30, \"east\": 4.55, \"south\": 50.80, \"north\": 50.98},\n    temporal_extent=[\"2024-06-01\", \"2024-06-30\"],\n    bands=[\"B04\", \"B08\", \"SCL\"],\n)\n\nquality_mask = sentinel2.filter_bands(\"SCL\").apply(\n  lambda value: (value == 3) | (value == 8) | (value == 9) | (value == 10)\n)\ncloud_free = sentinel2.mask(mask=quality_mask)\n\n\n\n\n\n\nTipWhat this provides\n\n\n\nThe result keeps the original cube dimensions and sets masked pixels to no-data. The exact meaning of the quality-band labels is collection-specific.",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Preprocessing"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/preprocessing.html#sentinel-2-scl-dilation-mask",
+    "href": "documentation/cube_operations/preprocessing.html#sentinel-2-scl-dilation-mask",
+    "title": "Preprocessing",
+    "section": "Sentinel-2 SCL Dilation Mask",
+    "text": "Sentinel-2 SCL Dilation Mask\nto_scl_dilation_mask is a backend-specific convenience process that derives and creates a cloud and cloud-shadow mask from the Sentinel-2 Scene Classification (SCL) band. The cloud mask generated can be used directly with the standard mask process to filter out cloudy pixels.\n\nPython\nscl = c.load_collection(\n    \"SENTINEL2_L2A\",\n    spatial_extent={\"west\": 4.279, \"south\": 50.218, \"east\": 4.626, \"north\": 50.423},\n    temporal_extent=[\"2020-01-01\", \"2020-01-31\"],\n    bands=[\"SCL\"]\n)\ncloud_mask = scl.process( data=scl,process_id=\"to_scl_dilation_mask\")\nThe process is backend-specific and is not available on every backend. An openEO notebook demonstrating how it works and how to replicate the standard openEO process across different backends can be found here.",
     "crumbs": [
       "CUBE OPERATIONS",
       "Preprocessing"
@@ -535,18 +878,29 @@
     "href": "documentation/cube_operations/preprocessing.html#atmospheric-correction",
     "title": "Preprocessing",
     "section": "Atmospheric Correction",
-    "text": "Atmospheric Correction\nWhen a satellite captures light reflected from the Earth’s surface, that signal has passed through the atmosphere twice — once on the way down, once on the way back up. Scattering, absorption, and haze all distort what the sensor actually records. Atmospheric correction reverses those distortions, converting top-of-atmosphere (TOA) radiance into surface reflectance — the physical quantity that characterises what’s actually on the ground, independent of sun angle, viewing geometry, and atmospheric state.\nWithout atmospheric correction, multi-temporal comparisons are unreliable: a pixel that looks “brighter” in July might just be reflecting a clearer sky, not a healthier crop. Corrected data makes time series meaningful.\n\nCode examples\n\nPythonRJavaScript\n\n\nimport openeo\n\nconnection = openeo.connect(\"https://openeo.eodc.eu\").authenticate_oidc()\n\n# Load raw L1C Sentinel-2 — include angle bands required by iCor\nl1c = connection.load_collection(\n    \"SENTINEL2_L1C_SENTINELHUB\",\n    spatial_extent={\n        \"west\": 3.758, \"east\": 4.088,\n        \"south\": 51.292, \"north\": 51.393\n    },\n    temporal_extent=[\"2017-03-07\", \"2017-03-07\"],\n    bands=[\n        \"B04\", \"B03\", \"B02\",          # RGB\n        \"B09\", \"B8A\", \"B11\",          # SWIR / water vapour\n        \"sunAzimuthAngles\", \"sunZenithAngles\",\n        \"viewAzimuthMean\", \"viewZenithMean\"\n    ]\n)\n\n# Apply atmospheric correction with iCor\nl2a = l1c.atmospheric_correction(method=\"iCor\")\n\nl2a.download(\"sentinel2_icor.tif\", format=\"GTiff\")\n\n\nlibrary(openeo)\n\ncon &lt;- connect(\"https://openeo.eodc.eu\")\nlogin()\n\np &lt;- processes()\n\n# Load raw L1C collection with required angle bands\nl1c &lt;- p$load_collection(\n  id = \"SENTINEL2_L1C_SENTINELHUB\",\n  spatial_extent = list(west=3.758, east=4.088, south=51.292, north=51.393),\n  temporal_extent = c(\"2017-03-07\", \"2017-03-07\"),\n  bands = c(\n    \"B04\", \"B03\", \"B02\",\n    \"B09\", \"B8A\", \"B11\",\n    \"sunAzimuthAngles\", \"sunZenithAngles\",\n    \"viewAzimuthMean\", \"viewZenithMean\"\n  )\n)\n\n# Apply iCor atmospheric correction\nl2a &lt;- p$atmospheric_correction(data = l1c, method = \"iCor\")\n\ncompute_result(graph = l2a, format = \"GTiff\", output_file = \"sentinel2_icor.tif\")\n\n\nimport { Connection, authenticate } from \"@openeo/js-client\";\n\nconst con = await Connection.connect(\"https://openeo.eodc.eu\");\nawait con.authenticateOIDC();\n\nconst builder = await con.buildProcess();\n\n// Load raw L1C collection\nconst l1c = builder.load_collection(\n  \"SENTINEL2_L1C_SENTINELHUB\",\n  { west: 3.758, east: 4.088, south: 51.292, north: 51.393 },\n  [\"2017-03-07\", \"2017-03-07\"],\n  [\"B04\",\"B03\",\"B02\",\"B09\",\"B8A\",\"B11\",\n   \"sunAzimuthAngles\",\"sunZenithAngles\",\"viewAzimuthMean\",\"viewZenithMean\"]\n);\n\n// Apply atmospheric correction\nconst l2a = builder.atmospheric_correction(l1c, { method: \"iCor\" });\n\nconst result = builder.save_result(l2a, \"GTiff\");\nawait con.computeResult(result, { filename: \"sentinel2_icor.tif\" });",
+    "text": "Atmospheric Correction\nAtmospheric correction accounts for atmospheric scattering, absorption, and haze in optical observations. It converts top-of-atmosphere measurements into surface reflectance, which is more suitable for comparing observations across dates and locations.\nThe required input bands and correction methods depend on the collection and backend. Check the collection metadata and process description before use.\n\nCode examples\n\nPythonRJavaScript\n\n\nimport openeo\n\nconnection = openeo.connect(\"https://openeo.eodc.eu\").authenticate_oidc()\n\n# Load raw L1C Sentinel-2 — include angle bands required by iCor\nl1c = connection.load_collection(\n    \"SENTINEL2_L1C_SENTINELHUB\",\n    spatial_extent={\n        \"west\": 3.758, \"east\": 4.088,\n        \"south\": 51.292, \"north\": 51.393\n    },\n    temporal_extent=[\"2017-03-07\", \"2017-03-07\"],\n    bands=[\n        \"B04\", \"B03\", \"B02\",          # RGB\n        \"B09\", \"B8A\", \"B11\",          # SWIR / water vapour\n        \"sunAzimuthAngles\", \"sunZenithAngles\",\n        \"viewAzimuthMean\", \"viewZenithMean\"\n    ]\n)\n\n# Apply atmospheric correction with iCor\nl2a = l1c.atmospheric_correction(method=\"iCor\")\n\nl2a.download(\"sentinel2_icor.tif\", format=\"GTiff\")\n\n\nlibrary(openeo)\n\ncon &lt;- connect(\"https://openeo.eodc.eu\")\nlogin()\n\np &lt;- processes()\n\n# Load raw L1C collection with required angle bands\nl1c &lt;- p$load_collection(\n  id = \"SENTINEL2_L1C_SENTINELHUB\",\n  spatial_extent = list(west=3.758, east=4.088, south=51.292, north=51.393),\n  temporal_extent = c(\"2017-03-07\", \"2017-03-07\"),\n  bands = c(\n    \"B04\", \"B03\", \"B02\",\n    \"B09\", \"B8A\", \"B11\",\n    \"sunAzimuthAngles\", \"sunZenithAngles\",\n    \"viewAzimuthMean\", \"viewZenithMean\"\n  )\n)\n\n# Apply iCor atmospheric correction\nl2a &lt;- p$atmospheric_correction(data = l1c, method = \"iCor\")\n\ncompute_result(graph = l2a, format = \"GTiff\", output_file = \"sentinel2_icor.tif\")\n\n\nimport { Connection, authenticate } from \"@openeo/js-client\";\n\nconst con = await Connection.connect(\"https://openeo.eodc.eu\");\nawait con.authenticateOIDC();\n\nconst builder = await con.buildProcess();\n\n// Load raw L1C collection\nconst l1c = builder.load_collection(\n  \"SENTINEL2_L1C_SENTINELHUB\",\n  { west: 3.758, east: 4.088, south: 51.292, north: 51.393 },\n [\"2017-03-07\", \"2017-03-07\"],\n [\"B04\",\"B03\",\"B02\",\"B09\",\"B8A\",\"B11\",\n   \"sunAzimuthAngles\", \"sunZenithAngles\", \"viewAzimuthMean\", \"viewZenithMean\"]\n);\n\n// Apply atmospheric correction\nconst l2a = builder.atmospheric_correction(l1c, { method: \"iCor\" });\n\nconst result = builder.save_result(l2a, \"GTiff\");\nawait con.computeResult(result, { filename: \"sentinel2_icor.tif\" });",
     "crumbs": [
       "CUBE OPERATIONS",
       "Preprocessing"
     ]
   },
   {
-    "objectID": "documentation/cube_operations/preprocessing.html#sar-backscatter",
-    "href": "documentation/cube_operations/preprocessing.html#sar-backscatter",
+    "objectID": "documentation/cube_operations/preprocessing.html#create-card4l-normalised-radar-backscatter",
+    "href": "documentation/cube_operations/preprocessing.html#create-card4l-normalised-radar-backscatter",
     "title": "Preprocessing",
-    "section": "SAR Backscatter",
-    "text": "SAR Backscatter\nSynthetic Aperture Radar sensors like Sentinel-1 see through clouds and work day and night — but the raw data they produce (GRD, SLC) is not directly interpretable as a surface measurement. It must be calibrated, terrain-corrected, and normalised before it can be used analytically. This pipeline is collectively called backscatter computation.\nThe process converts the raw radar signal into a physically meaningful quantity — typically sigma0 (surface scattering cross-section) or gamma0 (terrain-flattened reflectivity) — in either linear or decibel scale. Terrain flattening is essential for hilly regions: without it, slopes facing the sensor appear artificially brighter than flat terrain, corrupting any analysis based on backscatter magnitude. ### Code examples\n\nPythonRJavaScript\n\n\nimport openeo\n\nconnection = openeo.connect(\"https://openeo.vito.be\").authenticate_oidc()\n\n# Load Sentinel-1 GRD — spatial/temporal filters are fine before backscatter\ns1grd = (\n    connection.load_collection(\n        \"SENTINEL1_GRD\",\n        bands=[\"VH\", \"VV\"]\n    )\n    .filter_bbox(west=2.590, east=2.895, north=51.221, south=51.069)\n    .filter_temporal(extent=[\"2019-10-10\", \"2019-10-10\"])\n)\n\n# CARD4L-compliant normalised radar backscatter (gamma0, terrain-flattened)\nnrb = s1grd.ard_normalized_radar_backscatter()\n\n# Submit as batch job and download results\njob = nrb.execute_batch()\njob.get_results().download_files(\"./output/\")\n\n\n\n\n\n\nNoteStandard sar_backscatter() with explicit parameters\n\n\n\n\n\n# More control: use sar_backscatter() directly\nbackscatter = s1grd.sar_backscatter(\n    coefficient=\"gamma0-terrain\",\n    elevation_model=\"COPERNICUS_30\",\n    noise_removal=True\n)\njob = backscatter.execute_batch(\n    title=\"S1 Backscatter Test\",\n    description=\"gamma0 terrain-flattened over Belgium\"\n)\n\n\n\n\n\nlibrary(openeo)\n\ncon &lt;- connect(\"https://openeo.vito.be\")\nlogin()\n\np &lt;- processes()\n\n# Load Sentinel-1 GRD with spatial and temporal filters\ns1grd &lt;- p$load_collection(\n  id = \"SENTINEL1_GRD\",\n  bands = c(\"VH\", \"VV\")\n)\n\ns1grd &lt;- p$filter_bbox(\n  data = s1grd,\n  extent = list(west=2.590, east=2.895, south=51.069, north=51.221)\n)\n\ns1grd &lt;- p$filter_temporal(\n  data = s1grd,\n  extent = c(\"2019-10-10\", \"2019-10-10\")\n)\n\n# Apply CARD4L-compliant normalised radar backscatter\nnrb &lt;- p$ard_normalized_radar_backscatter(data = s1grd)\n\n# Submit batch job\njob &lt;- create_job(\n  graph = nrb,\n  title = \"S1 CARD4L NRB\"\n)\nstart_job(job)\n\n# Monitor and download when complete\njob_status &lt;- describe_job(job)\ndownload_results(job, folder = \"./output/\")\n\n\nimport { Connection } from \"@openeo/js-client\";\n\nconst con = await Connection.connect(\"https://openeo.vito.be\");\nawait con.authenticateOIDC();\n\nconst builder = await con.buildProcess();\n\n// Load Sentinel-1 GRD\nlet s1grd = builder.load_collection(\n  \"SENTINEL1_GRD\",\n  null, null,\n  [\"VH\", \"VV\"]\n);\n\n// Apply spatial and temporal filters first\ns1grd = builder.filter_bbox(s1grd, {\n  west: 2.590, east: 2.895,\n  south: 51.069, north: 51.221\n});\n\ns1grd = builder.filter_temporal(s1grd, [\"2019-10-10\", \"2019-10-10\"]);\n\n// CARD4L normalised radar backscatter\nconst nrb = builder.ard_normalized_radar_backscatter(s1grd);\n\nconst result = builder.save_result(nrb, \"GTiff\");\n\n// Submit as batch job\nconst job = await con.createJob(result, { title: \"S1 NRB Belgium\" });\nawait job.startJob();\n\n// Poll until done, then download\nconst results = await job.getResults();\nfor (const asset of Object.values(results.assets)) {\n  console.log(\"Download:\", asset.href);\n}",
+    "section": "Create CARD4L normalised radar backscatter",
+    "text": "Create CARD4L normalised radar backscatter\nSAR backscatter processing calibrates raw radar observations and can apply terrain correction and normalisation. The resulting measurements are commonly expressed as sigma0 or gamma0 in linear or decibel scale. Terrain correction is especially important in areas with varied topography.\n\nCode examples\n\nPythonRJavaScript\n\n\nimport openeo\n\nconnection = openeo.connect(\"https://openeo.vito.be\").authenticate_oidc()\n\n# Load Sentinel-1 GRD — spatial/temporal filters are fine before backscatter\ns1grd = (\n connection.load_collection(\n        \"SENTINEL1_GRD\",\n        bands=[\"VH\", \"VV\"]\n    )\n    .filter_bbox(west=2.590, east=2.895, north=51.221, south=51.069)\n    .filter_temporal(extent=[\"2019-10-10\", \"2019-10-10\"])\n)\n\n# CARD4L-compliant normalised radar backscatter (gamma0, terrain-flattened)\nnrb = s1grd.ard_normalized_radar_backscatter()\n\n# Submit as batch job and download results\njob = nrb.execute_batch()\njob.get_results().download_files(\"./output/\")\n\n\nlibrary(openeo)\n\ncon &lt;- connect(\"https://openeo.vito.be\")\nlogin()\n\np &lt;- processes()\n\n# Load Sentinel-1 GRD with spatial and temporal filters\ns1grd &lt;- p$load_collection(\n  id = \"SENTINEL1_GRD\",\n  bands = c(\"VH\", \"VV\")\n)\n\ns1grd &lt;- p$filter_bbox(\n  data = s1grd,\n  extent = list(west=2.590, east=2.895, south=51.069, north=51.221)\n)\n\ns1grd &lt;- p$filter_temporal(\n  data = s1grd,\n  extent = c(\"2019-10-10\", \"2019-10-10\")\n)\n\n# Apply CARD4L-compliant normalised radar backscatter\nnrb &lt;- p$ard_normalized_radar_backscatter(data = s1grd)\n\n# Submit batch job\njob &lt;- create_job(\n  graph = nrb,\n  title = \"S1 CARD4L NRB\"\n)\nstart_job(job)\n\n# Monitor and download when complete\njob_status &lt;- describe_job(job)\ndownload_results(job, folder = \"./output/\")\n\n\nimport { Connection } from \"@openeo/js-client\";\n\nconst con = await Connection.connect(\"https://openeo.vito.be\");\nawait con.authenticateOIDC();\n\nconst builder = await con.buildProcess();\n\n// Load Sentinel-1 GRD\nlet s1grd = builder.load_collection(\n  \"SENTINEL1_GRD\",\n  null, null,\n [\"VH\", \"VV\"]\n);\n\n// Apply spatial and temporal filters first\ns1grd = builder.filter_bbox(s1grd, {\n west: 2.590, east: 2.895,\n south: 51.069, north: 51.221\n});\n\ns1grd = builder.filter_temporal(s1grd, [\"2019-10-10\", \"2019-10-10\"]);\n\n// CARD4L normalised radar backscatter\nconst nrb = builder.ard_normalized_radar_backscatter(s1grd);\n\nconst result = builder.save_result(nrb, \"GTiff\");\n\n// Submit as batch job\nconst job = await con.createJob(result, { title: \"S1 NRB Belgium\" });\nawait job.startJob();\n\n// Poll until done, then download\nconst results = await job.getResults();\nfor (const asset of Object.values(results.assets)) {\n  console.log(\"Download:\", asset.href);\n}",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Preprocessing"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/preprocessing.html#compute-sar-backscatter",
+    "href": "documentation/cube_operations/preprocessing.html#compute-sar-backscatter",
+    "title": "Preprocessing",
+    "section": "Compute SAR backscatter",
+    "text": "Compute SAR backscatter\nsar_backscatter calibrates radar observations and can produce a chosen backscatter coefficient, such as gamma0-terrain. Use it when you need explicit control over calibration, terrain correction, elevation data, or noise removal, rather than the higher-level CARD4L process.\n\nPython\ns1_image = connection.load_collection(\n    \"SENTINEL1_GRD\",\n    temporal_extent=[\"2017-08-09\", \"2017-08-12\"],\n    spatial_extent=aoi,\n    bands=[\"VV\"],\n)\n\ns1_backscatter = s1_image.sar_backscatter(coefficient=\"sigma0-ellipsoid\")\n\njob = s1_backscatter.execute_batch(\n  title=\"S1 backscatter example\",\n  description=\"Terrain-flattened gamma0 over Belgium\",\n)\njob.get_results().download_files(\"./output/\")\nThe returned values are calibrated radar measurements, usually expressed on a linear or decibel scale depending on the process parameters. Check the backend metadata for supported coefficients and ancillary data requirements.",
     "crumbs": [
       "CUBE OPERATIONS",
       "Preprocessing"
@@ -557,10 +911,54 @@
     "href": "documentation/cube_operations/preprocessing.html#performance-considerations",
     "title": "Preprocessing",
     "section": "Performance considerations",
-    "text": "Performance considerations\nBoth atmospheric_correction and sar_backscatter are among the most computationally expensive operations in openEO. Before including them in your workflow, consider:\n\nUse batch jobs — synchronous execution will time out for anything beyond a small test area.\nFilter early — always apply filter_bbox and filter_temporal before calling these processes to minimise the data volume processed.\nPre-corrected collections — many openEO backends offer analysis-ready collections (e.g. Sentinel-2 L2A, Sentinel-1 backscatter products) that have already been corrected. Check your backend’s collection catalogue before computing from raw data.\nCost awareness — backends may charge more for preprocessing-heavy workflows. Profile on a small tile before scaling up.\n\n\n\n\n\n\n\nTipWhen to skip preprocessing\n\n\n\nIf your backend offers a collection like SENTINEL2_L2A or SENTINEL1_BACKSCATTER, use it directly — it is the output of these processes, pre-computed and stored at much lower retrieval cost.",
+    "text": "Performance considerations\nBoth atmospheric_correction and sar_backscatter can require substantial backend resources. Before including them in a workflow, consider the following:\n\nUse batch jobs: synchronous execution may time out beyond a small test area.\nFilter early: Apply filter_bbox and filter_temporal before these processes to reduce the volume of data processed.\nPrefer pre-corrected collections: many backends provide analysis-ready collections, such as Sentinel-2 L2A or Sentinel-1 backscatter products.\nTest a small area first: resource use and costs can increase substantially for larger areas or longer time ranges.\n\n\n\n\n\n\n\nTipWhen to skip preprocessing\n\n\n\nIf your backend provides a collection such as SENTINEL2_L2A or SENTINEL1_BACKSCATTER, use it when it meets the analysis requirements. These products are already processed and usually require fewer backend resources.",
     "crumbs": [
       "CUBE OPERATIONS",
       "Preprocessing"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/preprocessing.html#related-standard-processes",
+    "href": "documentation/cube_operations/preprocessing.html#related-standard-processes",
+    "title": "Preprocessing",
+    "section": "Related standard processes",
+    "text": "Related standard processes\nSome standard processes are useful during preprocessing but have a different primary purpose. To avoid documenting one process twice, use the dedicated pages for their full explanations and examples:\n\nmask_polygon masks pixels outside a geometry.\napply applies a per-pixel process callback.\nlinear_scale_range rescales numeric values.\n\nThese processes remain individually associated with backend support through their own data-process sections on those pages.\ncloud_detection is not included here because it is not advertised by any backend in the current generated support data. It should only be documented after a backend advertises the process and its process metadata has been checked.",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Preprocessing"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/preprocessing.html#produce-card4l-surface-reflectance",
+    "href": "documentation/cube_operations/preprocessing.html#produce-card4l-surface-reflectance",
+    "title": "Preprocessing",
+    "section": "Produce CARD4L surface reflectance",
+    "text": "Produce CARD4L surface reflectance\nard_surface_reflectance creates an analysis-ready optical product from suitable input data. It can include atmospheric, geometric, and quality corrections, depending on the backend implementation.\nsurface_reflectance = l1c.ard_surface_reflectance()",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Preprocessing"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/execute_jobs.html",
+    "href": "documentation/cube_operations/execute_jobs.html",
+    "title": "Execute openEO Jobs",
+    "section": "",
+    "text": "A process graph becomes useful when it is executed. Use synchronous requests for very small explorations and batch jobs for real analyses.",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Execute openEO Jobs"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/execute_jobs.html#run-a-batch-job",
+    "href": "documentation/cube_operations/execute_jobs.html#run-a-batch-job",
+    "title": "Execute openEO Jobs",
+    "section": "Run a batch job",
+    "text": "Run a batch job\nUse a batch job for large spatial extents, long time series, UDFs, and preprocessing that may exceed synchronous request limits. The backend records logs and result assets while the job runs, so the workflow can be monitored and retried independently of the client connection.\n\nPython\njob = result.create_job(\n    out_format=\"GTiff\",\n    title=\"Monthly NDVI composite\",\n    description=\"A monthly median NDVI workflow\",\n)\njob.start_and_wait()\njob.get_results().download_files(\"./output\")\n\n\n\n\n\n\nTipMake jobs efficient\n\n\n\nFilter space, time, and bands before computationally intensive processes. Test a small area first, then submit the final workflow as a batch job. Inspect job logs when a backend reports an error.\n\n\nsave_result defines the output format inside a process graph; job creation controls when and how the backend executes it. Review the backend’s supported output formats and job limits before a large run.",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Execute openEO Jobs"
     ]
   },
   {
@@ -786,7 +1184,7 @@
     "href": "contact.html",
     "title": "openEO",
     "section": "",
-    "text": "TipContact\n\n\n\nUniversity of Münster Heisenbergstraße 2 48149 Münster Germany\nThe email address below is meant for general topics around the openEO project, openEO PSC, openEO API specification, or openEO process specification. The email address below is NOT meant for technical support regarding specific service providers or client implementations.\n\nIf you need help with specific service providers (e.g. openEO Platform or CDSE), please use their support channels.\n\nopenEO Platform Support Forum\nCopernicus Dataspace Ecosystem Support\n\nIf you need help with specific clients, please use the corresponding GitHub issue trackers:\n\nPython client\nR Client\nJavascript Client\nWeb Editor\n\nIf you have general questions or want to get in touch with the community, we recommend to join the chat (see below) and/or join the monthly community calls.",
+    "text": "TipContact\n\n\n\nUniversity of Münster Heisenbergstraße 2 48149 Münster Germany\nThe email address below is meant for general topics around the openEO project, openEO PSC, openEO API specification, or openEO process specification. The email address below is NOT meant for technical support regarding specific service providers or client implementations.\n\nIf you need help with specific service providers (e.g. CDSE), please use their support channels.\n\nCopernicus Dataspace Ecosystem Support\n\nIf you need help with specific clients, please use the corresponding GitHub issue trackers:\n\nPython client\nR Client\nJavascript Client\nWeb Editor\n\nIf you have general questions or want to get in touch with the community, we recommend to join the chat (see below) and/or join the monthly community calls.",
     "crumbs": [
       "Contact"
     ]
@@ -818,6 +1216,567 @@
     "title": "openEO Cookbook",
     "section": "Endnote",
     "text": "Endnote\nYou have feedback or noticed an error? Feel free to open an issue in the github repository or use the other communication channels"
+  },
+  {
+    "objectID": "documentation/cube_operations/cube_manipulations.html",
+    "href": "documentation/cube_operations/cube_manipulations.html",
+    "title": "Cube Manipulations",
+    "section": "",
+    "text": "Cube-manipulation processes change a cube’s structure without changing the scientific question: combine compatible cubes, add derived bands, and make dimensions easier to work with.",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Cube Manipulations"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/cube_manipulations.html#merge-cubes",
+    "href": "documentation/cube_operations/cube_manipulations.html#merge-cubes",
+    "title": "Cube Manipulations",
+    "section": "Merge cubes",
+    "text": "Merge cubes\nmerge_cubes combines two compatible cubes. Without an overlap resolver, the cubes must not contain overlapping labels. When they do overlap, provide a callback that defines how values are combined.\n\nPython\n# For example: stack two non-overlapping seasonal cubes.\nfull_year = spring.merge_cubes(summer)\nUse merge_cubes for a union of compatible data. Use resample_cube_spatial or resample_cube_temporal first when grids or time labels must be aligned.",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Cube Manipulations"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/cube_manipulations.html#add-a-dimension",
+    "href": "documentation/cube_operations/cube_manipulations.html#add-a-dimension",
+    "title": "Cube Manipulations",
+    "section": "Add a dimension",
+    "text": "Add a dimension\nadd_dimension can turn a single-band result into a labelled band in a larger workflow.\n\nPython\n# Add a named band dimension to a single-band derived raster.\nwith_band = derived.add_dimension(name=\"NDVI\", label=\"bands\", type=\"bands\")\ndrop_dimension removes a dimension only when it has one label. For other structural changes, see flatten_dimensions and unflatten_dimension in the process reference.",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Cube Manipulations"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/cube_manipulations.html#rename-dimension-labels",
+    "href": "documentation/cube_operations/cube_manipulations.html#rename-dimension-labels",
+    "title": "Cube Manipulations",
+    "section": "Rename dimension labels",
+    "text": "Rename dimension labels\nrename_labels replaces labels while keeping the dimension structure unchanged.\nrenamed = with_band.rename_labels(dimension=\"bands\", target=[\"vegetation_index\"])",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Cube Manipulations"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/cube_manipulations.html#cube-structure-process-details",
+    "href": "documentation/cube_operations/cube_manipulations.html#cube-structure-process-details",
+    "title": "Cube Manipulations",
+    "section": "Cube-structure process details",
+    "text": "Cube-structure process details\nEach structural process is documented in its own section below. A process is documented on another operations page when its primary purpose is analysis along that dimension.",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Cube Manipulations"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/cube_manipulations.html#drop-a-singleton-dimension",
+    "href": "documentation/cube_operations/cube_manipulations.html#drop-a-singleton-dimension",
+    "title": "Cube Manipulations",
+    "section": "Drop a singleton dimension",
+    "text": "Drop a singleton dimension\nUse drop_dimension after a workflow produces a dimension with one label and that dimension is no longer useful in the output. It does not remove a dimension containing multiple labels.\nwithout_singleton = cube.drop_dimension(dimension=\"bands\")",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Cube Manipulations"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/cube_manipulations.html#rename-a-dimension",
+    "href": "documentation/cube_operations/cube_manipulations.html#rename-a-dimension",
+    "title": "Cube Manipulations",
+    "section": "Rename a dimension",
+    "text": "Rename a dimension\nUse rename_dimension to make a dimension name match the vocabulary expected by a later process or output consumer. The labels and values remain unchanged.\nrenamed = cube.rename_dimension(dimension=\"bands\", target=\"spectral\")",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Cube Manipulations"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/cube_manipulations.html#read-dimension-labels",
+    "href": "documentation/cube_operations/cube_manipulations.html#read-dimension-labels",
+    "title": "Cube Manipulations",
+    "section": "Read dimension labels",
+    "text": "Read dimension labels\nUse dimension_labels when a workflow needs to inspect or pass on the labels of a dimension, for example band names or temporal labels.\nlabels = cube.dimension_labels(dimension=\"bands\")",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Cube Manipulations"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/cube_manipulations.html#filter-dimension-labels",
+    "href": "documentation/cube_operations/cube_manipulations.html#filter-dimension-labels",
+    "title": "Cube Manipulations",
+    "section": "Filter dimension labels",
+    "text": "Filter dimension labels\nUse filter_labels to select a subset of labels such as specific bands, dates, or categories while keeping the other cube dimensions intact.\nselected = cube.filter_labels(dimension=\"bands\", condition=lambda label: label != \"QA\")",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Cube Manipulations"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/cube_manipulations.html#flatten-dimensions",
+    "href": "documentation/cube_operations/cube_manipulations.html#flatten-dimensions",
+    "title": "Cube Manipulations",
+    "section": "Flatten dimensions",
+    "text": "Flatten dimensions\nUse flatten_dimensions when a downstream model expects a single feature axis instead of separate spatial or categorical dimensions. Keep the original labels if you may need to reverse the operation.\nflattened = cube.flatten_dimensions(dimension_names=[\"x\", \"y\"], target_dimension=\"pixels\")",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Cube Manipulations"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/cube_manipulations.html#unflatten-a-dimension",
+    "href": "documentation/cube_operations/cube_manipulations.html#unflatten-a-dimension",
+    "title": "Cube Manipulations",
+    "section": "Unflatten a dimension",
+    "text": "Unflatten a dimension\nUse unflatten_dimension to restore the dimensions represented by a flattened axis, for example after a model or export step that required one feature dimension.\nunflattened = flattened.unflatten_dimension(dimension=\"pixels\", target_dimensions=[\"x\", \"y\"])",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Cube Manipulations"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/machine_learning.html",
+    "href": "documentation/cube_operations/machine_learning.html",
+    "title": "Machine Learning Support",
+    "section": "",
+    "text": "openEO machine-learning processes keep feature preparation and inference close to the data. Their availability is more backend-specific than core cube processes.",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Machine Learning"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/machine_learning.html#a-typical-ml-workflow",
+    "href": "documentation/cube_operations/machine_learning.html#a-typical-ml-workflow",
+    "title": "Machine Learning Support",
+    "section": "A typical ML workflow",
+    "text": "A typical ML workflow\n\nCreate a feature cube with processes such as ndvi, aggregate_temporal_period, and filter_bands.\nTrain a supported model or load an exported model, depending on the backend.\nApply it with a model-prediction process and export the resulting cube.\n\n\nPython\n# Feature preparation stays portable across backends.\nfeatures = (\n    cube.filter_bands([\"B02\", \"B03\", \"B04\", \"B08\"])\n    .aggregate_temporal_period(period=\"month\", reducer=\"median\")\n)\n\n# The available training and prediction methods must be checked per backend.\nprocesses = connection.list_processes()\n\n\n\n\n\n\nNoteCheck before building the workflow\n\n\n\nLook for processes such as fit_class_random_forest, fit_regr_random_forest, predict_random_forest, load_ml_model, or predict_ml_model in the connected backend’s process listing. Exact names and supported model formats may differ by process specification version.",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Machine Learning"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/machine_learning.html#machine-learning-process-details",
+    "href": "documentation/cube_operations/machine_learning.html#machine-learning-process-details",
+    "title": "Machine Learning Support",
+    "section": "Machine-learning process details",
+    "text": "Machine-learning process details\nEach model process is documented separately because training, loading, and prediction support can differ between backends.",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Machine Learning"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/machine_learning.html#train-a-random-forest-classifier",
+    "href": "documentation/cube_operations/machine_learning.html#train-a-random-forest-classifier",
+    "title": "Machine Learning Support",
+    "section": "Train a random-forest classifier",
+    "text": "Train a random-forest classifier\nUse fit_class_random_forest when labelled training features should be used to classify a feature cube. The backend determines the supported feature layout, label column, and model parameters.\nmodel = training_data.fit_class_random_forest(target_column=\"class\")",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Machine Learning"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/machine_learning.html#train-a-random-forest-regressor",
+    "href": "documentation/cube_operations/machine_learning.html#train-a-random-forest-regressor",
+    "title": "Machine Learning Support",
+    "section": "Train a random-forest regressor",
+    "text": "Train a random-forest regressor\nUse fit_regr_random_forest when labelled training features contain a continuous target such as biomass or temperature. Check the backend metadata for required training dimensions and parameter names.\nmodel = training_data.fit_regr_random_forest(target_column=\"value\")",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Machine Learning"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/machine_learning.html#predict-with-a-random-forest",
+    "href": "documentation/cube_operations/machine_learning.html#predict-with-a-random-forest",
+    "title": "Machine Learning Support",
+    "section": "Predict with a random forest",
+    "text": "Predict with a random forest\nUse predict_random_forest after preparing a feature cube with the same bands and ordering used for training. It returns model predictions aligned with the input features.\nprediction = features.predict_random_forest(model=model)",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Machine Learning"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/machine_learning.html#load-a-machine-learning-model",
+    "href": "documentation/cube_operations/machine_learning.html#load-a-machine-learning-model",
+    "title": "Machine Learning Support",
+    "section": "Load a machine-learning model",
+    "text": "Load a machine-learning model\nUse load_ml_model when a model has already been stored in the backend and should be reused by a new workflow. Model identifiers, permissions, and formats are backend-specific.\nmodel = connection.load_ml_model(model_id=\"my-model\")",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Machine Learning"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/machine_learning.html#save-a-machine-learning-model",
+    "href": "documentation/cube_operations/machine_learning.html#save-a-machine-learning-model",
+    "title": "Machine Learning Support",
+    "section": "Save a machine-learning model",
+    "text": "Save a machine-learning model\nUse save_ml_model to persist a trained model for later prediction or sharing within the backend workspace. Confirm retention and access rules before using it in production.\nsaved = model.save_ml_model(model_id=\"my-model\")",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Machine Learning"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/machine_learning.html#predict-with-a-generic-model",
+    "href": "documentation/cube_operations/machine_learning.html#predict-with-a-generic-model",
+    "title": "Machine Learning Support",
+    "section": "Predict with a generic model",
+    "text": "Predict with a generic model\nUse predict_ml_model when the backend supports a generic model format that is not covered by a specialized process. Exact model formats, input schema, and output labels must be checked in backend metadata.\nprediction = features.predict_ml_model(model=model)",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Machine Learning"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/machine_learning.html#predict-with-an-onnx-model",
+    "href": "documentation/cube_operations/machine_learning.html#predict-with-an-onnx-model",
+    "title": "Machine Learning Support",
+    "section": "Predict with an ONNX model",
+    "text": "Predict with an ONNX model\nUse predict_onnx to apply a portable ONNX model when the backend advertises ONNX inference. The model input order and tensor shape must match the feature cube.\nprediction = features.predict_onnx(model=model)",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Machine Learning"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/spatial_operations.html",
+    "href": "documentation/cube_operations/spatial_operations.html",
+    "title": "Spatial Operations",
+    "section": "",
+    "text": "Spatial processes define where an analysis runs. Use them early to reduce the data a backend must read, then use them to align cubes or produce statistics for geographic features.",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Spatial Operations"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/spatial_operations.html#filter-an-area-of-interest",
+    "href": "documentation/cube_operations/spatial_operations.html#filter-an-area-of-interest",
+    "title": "Spatial Operations",
+    "section": "Filter an area of interest",
+    "text": "Filter an area of interest\nfilter_bbox keeps only pixels within a bounding box. It is the usual first spatial operation because it reduces data transfer and processing before later, more expensive processes. Use filter_spatial when your area is an irregular GeoJSON geometry instead.\n\nPython\nimport openeo\n\nconnection = openeo.connect(\"https://openeo.vito.be\").authenticate_oidc()\ncube = connection.load_collection(\n    \"SENTINEL2_L2A\",\n    temporal_extent=[\"2024-06-01\", \"2024-06-30\"],\n    bands=[\"B04\", \"B08\"],\n)\n\nstudy_area = cube.filter_bbox(\n    west=4.30, east=4.55, south=50.80, north=50.98, crs=\"EPSG:4326\"\n)\n\n\nWhen the boundary is not rectangular\nPass a GeoJSON polygon or feature collection to filter_spatial. This keeps the original grid but marks pixels outside the geometry as no-data. For a quick rectangular crop, prefer filter_bbox.\nboundary = {\n    \"type\": \"Polygon\",\n    \"coordinates\": [[[4.31, 50.81], [4.54, 50.81], [4.54, 50.97],\n                     [4.31, 50.97], [4.31, 50.81]]],\n}\nstudy_area = cube.filter_spatial(boundary)",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Spatial Operations"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/spatial_operations.html#filter-with-a-geometry",
+    "href": "documentation/cube_operations/spatial_operations.html#filter-with-a-geometry",
+    "title": "Spatial Operations",
+    "section": "Filter with a geometry",
+    "text": "Filter with a geometry\nfilter_spatial selects data using an irregular GeoJSON geometry while preserving the cube grid.\nstudy_area = cube.filter_spatial(boundary)",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Spatial Operations"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/spatial_operations.html#resample-or-reproject-a-cube",
+    "href": "documentation/cube_operations/spatial_operations.html#resample-or-reproject-a-cube",
+    "title": "Spatial Operations",
+    "section": "Resample or reproject a cube",
+    "text": "Resample or reproject a cube\nresample_spatial changes the spatial resolution and, optionally, the coordinate reference system. This is useful when combining datasets with different grids or when a coarser output is sufficient. The interpolation method matters: use near for classes and masks, and a continuous-data method such as bilinear for reflectance or temperature.\n\nPython\naligned = study_area.resample_spatial(\n    resolution=20,\n    projection=\"EPSG:3857\",\n    method=\"bilinear\",\n)\n\n\n\n\n\n\nTipAlign to another cube\n\n\n\nWhen a second cube is the target grid, use resample_cube_spatial rather than guessing a projection and resolution. It preserves the target cube’s spatial layout.",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Spatial Operations"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/spatial_operations.html#align-to-another-cube-1",
+    "href": "documentation/cube_operations/spatial_operations.html#align-to-another-cube-1",
+    "title": "Spatial Operations",
+    "section": "Align to another cube",
+    "text": "Align to another cube\nresample_cube_spatial aligns a cube with the spatial grid of a target cube.\naligned = source.resample_cube_spatial(target)",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Spatial Operations"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/spatial_operations.html#calculate-statistics-for-polygons",
+    "href": "documentation/cube_operations/spatial_operations.html#calculate-statistics-for-polygons",
+    "title": "Spatial Operations",
+    "section": "Calculate statistics for polygons",
+    "text": "Calculate statistics for polygons\naggregate_spatial summarizes raster values for each feature in a GeoJSON or vector collection. A common example is a mean NDVI per agricultural parcel. The result is a vector cube: each input feature receives its own value or time series.\n\nPython\nparcels = {\n    \"type\": \"FeatureCollection\",\n    \"features\": [{\n        \"type\": \"Feature\",\n        \"properties\": {\"parcel_id\": \"A01\"},\n        \"geometry\": {\n            \"type\": \"Polygon\",\n            \"coordinates\": [[[4.35, 50.85], [4.38, 50.85], [4.38, 50.87],\n                             [4.35, 50.87], [4.35, 50.85]]],\n        },\n    }],\n}\n\nparcel_means = aligned.aggregate_spatial(geometries=parcels, reducer=\"mean\")\nparcel_means.download(\"parcel_means.geojson\", format=\"GeoJSON\")\nFor exact parameter definitions, see filter_bbox, filter_spatial, resample_spatial, and aggregate_spatial in the official process reference.",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Spatial Operations"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/spatial_operations.html#spatial-process-details",
+    "href": "documentation/cube_operations/spatial_operations.html#spatial-process-details",
+    "title": "Spatial Operations",
+    "section": "Spatial process details",
+    "text": "Spatial process details\nEach process below has its own backend filter. The official process reference remains the source for exact parameters and return schemas.",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Spatial Operations"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/spatial_operations.html#filter-vector-features",
+    "href": "documentation/cube_operations/spatial_operations.html#filter-vector-features",
+    "title": "Spatial Operations",
+    "section": "Filter vector features",
+    "text": "Filter vector features\nUse filter_vector when the input is already a vector cube and you want to keep only features intersecting a geometry. It filters feature records rather than raster pixels.\nselected = vector_cube.filter_vector(geometries=study_area)",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Spatial Operations"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/spatial_operations.html#reduce-pixels-within-one-geometry",
+    "href": "documentation/cube_operations/spatial_operations.html#reduce-pixels-within-one-geometry",
+    "title": "Spatial Operations",
+    "section": "Reduce pixels within one geometry",
+    "text": "Reduce pixels within one geometry\nUse reduce_spatial when one geometry should produce one value per remaining cube label. It is useful for a single region summary, while aggregate_spatial is better when many features should each receive a result.\nmean_value = cube.reduce_spatial(geometries=study_area, reducer=\"mean\")",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Spatial Operations"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/spatial_operations.html#aggregate-spatial-windows",
+    "href": "documentation/cube_operations/spatial_operations.html#aggregate-spatial-windows",
+    "title": "Spatial Operations",
+    "section": "Aggregate spatial windows",
+    "text": "Aggregate spatial windows\nUse aggregate_spatial_window for regularly sized windows over a raster, for example to create a local mean or maximum product. Choose it when the analysis is grid-based rather than driven by irregular vector features.\nwindowed = cube.aggregate_spatial_window(size=5, reducer=\"mean\")",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Spatial Operations"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/spatial_operations.html#apply-a-spatial-kernel",
+    "href": "documentation/cube_operations/spatial_operations.html#apply-a-spatial-kernel",
+    "title": "Spatial Operations",
+    "section": "Apply a spatial kernel",
+    "text": "Apply a spatial kernel\nUse apply_kernel for a fixed convolution such as smoothing, sharpening, or edge detection. The kernel defines the weights applied around each pixel and is preferable to a custom neighbourhood callback when the weights are known in advance.\nsmoothed = cube.apply_kernel(kernel=[[1, 1, 1], [1, 1, 1], [1, 1, 1]])",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Spatial Operations"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/spatial_operations.html#apply-a-neighbourhood-callback",
+    "href": "documentation/cube_operations/spatial_operations.html#apply-a-neighbourhood-callback",
+    "title": "Spatial Operations",
+    "section": "Apply a neighbourhood callback",
+    "text": "Apply a neighbourhood callback\nUse apply_neighborhood when each moving window needs a custom process graph, for example a local percentile or a conditional texture measure. Set overlap so neighbouring windows have enough context at tile boundaries.\nneighborhood_result = cube.apply_neighborhood(\n    size=[3, 3],\n    overlap=[1, 1],\n    process=lambda neighborhood: neighborhood.reduce_dimension(dimension=\"x\", reducer=\"mean\"),\n)",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Spatial Operations"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/spatial_operations.html#mask-outside-a-polygon",
+    "href": "documentation/cube_operations/spatial_operations.html#mask-outside-a-polygon",
+    "title": "Spatial Operations",
+    "section": "Mask outside a polygon",
+    "text": "Mask outside a polygon\nUse mask_polygon to restrict a raster cube to an irregular study area while preserving its spatial grid. For a rectangular extent, use filter_bbox instead; for a quality-band mask, use mask on the preprocessing page.\nmasked = cube.mask_polygon(geometries=study_area)",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Spatial Operations"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/spatial_operations.html#buffer-vector-geometries",
+    "href": "documentation/cube_operations/spatial_operations.html#buffer-vector-geometries",
+    "title": "Spatial Operations",
+    "section": "Buffer vector geometries",
+    "text": "Buffer vector geometries\nUse vector_buffer to expand or contract geometries before filtering or aggregating. A positive distance creates an area around a feature; a negative distance can create an interior buffer where supported.\nbuffered = openeo.processes.vector_buffer(data=geometry, distance=100)",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Spatial Operations"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/spatial_operations.html#reproject-vector-geometries",
+    "href": "documentation/cube_operations/spatial_operations.html#reproject-vector-geometries",
+    "title": "Spatial Operations",
+    "section": "Reproject vector geometries",
+    "text": "Reproject vector geometries\nUse vector_reproject when a geometry’s CRS does not match the cube or the process that will consume it. Reproject the vector rather than silently interpreting coordinates in the wrong CRS.\nreprojected = openeo.processes.vector_reproject(\n    data=geometry, target_crs=\"EPSG:3035\"\n)",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Spatial Operations"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/temporal_operations.html",
+    "href": "documentation/cube_operations/temporal_operations.html",
+    "title": "Temporal Operations",
+    "section": "",
+    "text": "Temporal processes select observations, build regular composites, and apply calculations along a cube’s time dimension.",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Temporal Operations"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/temporal_operations.html#select-a-time-range",
+    "href": "documentation/cube_operations/temporal_operations.html#select-a-time-range",
+    "title": "Temporal Operations",
+    "section": "Select a time range",
+    "text": "Select a time range\nUse filter_temporal immediately after loading a collection when the temporal extent is not already supplied to load_collection. It accepts an inclusive start and exclusive end timestamp, so consecutive intervals can be joined without duplicated observations.\n\nPython\nimport openeo\n\nconnection = openeo.connect(\"https://openeo.vito.be\").authenticate_oidc()\ncube = connection.load_collection(\"SENTINEL2_L2A\", bands=[\"B04\", \"B08\"])\ngrowing_season = cube.filter_temporal([\"2024-04-01\", \"2024-10-01\"])",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Temporal Operations"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/temporal_operations.html#build-monthly-composites",
+    "href": "documentation/cube_operations/temporal_operations.html#build-monthly-composites",
+    "title": "Temporal Operations",
+    "section": "Build monthly composites",
+    "text": "Build monthly composites\nClouds and irregular acquisition dates make raw satellite time series difficult to compare. aggregate_temporal_period groups observations into calendar periods and reduces each group. A monthly median is a robust first composite for optical data after cloud masking.\n\nPython\nmonthly_median = growing_season.aggregate_temporal_period(\n    period=\"month\",\n    reducer=\"median\",\n)\nmonthly_median.download(\"monthly_median.tif\", format=\"GTiff\")\nUse aggregate_temporal instead when you already have explicit date intervals, for example a crop calendar or event-based periods.",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Temporal Operations"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/temporal_operations.html#aggregate-explicit-time-intervals",
+    "href": "documentation/cube_operations/temporal_operations.html#aggregate-explicit-time-intervals",
+    "title": "Temporal Operations",
+    "section": "Aggregate explicit time intervals",
+    "text": "Aggregate explicit time intervals\naggregate_temporal reduces user-defined intervals, such as phenological phases or event windows.\nseasonal = growing_season.aggregate_temporal(\n  intervals=[\"2024-04-01\", \"2024-06-01\"],\n  reducer=\"mean\",\n)",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Temporal Operations"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/temporal_operations.html#apply-a-reducer-along-time",
+    "href": "documentation/cube_operations/temporal_operations.html#apply-a-reducer-along-time",
+    "title": "Temporal Operations",
+    "section": "Apply a reducer along time",
+    "text": "Apply a reducer along time\nreduce_dimension is the flexible option for collapsing a dimension. Set dimension=\"t\" to derive one raster from the whole time series, such as the maximum NDVI or the number of valid observations.\n\nPython\nseasonal_maximum = growing_season.reduce_dimension(\n    dimension=\"t\",\n    reducer=\"max\",\n)\n\n\n\n\n\n\nTipKeep time when you need a time series\n\n\n\naggregate_temporal_period retains a time dimension with one label per period. reduce_dimension removes the reduced dimension entirely. Choose the former for a monthly series and the latter for a single seasonal product.\n\n\nFor the definitive schema, consult filter_temporal, aggregate_temporal, aggregate_temporal_period, and reduce_dimension.",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Temporal Operations"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/temporal_operations.html#temporal-process-details",
+    "href": "documentation/cube_operations/temporal_operations.html#temporal-process-details",
+    "title": "Temporal Operations",
+    "section": "Temporal process details",
+    "text": "Temporal process details\nEach process below has its own backend filter. Generic dimension processes are shown here with dimension=\"t\".",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Temporal Operations"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/temporal_operations.html#align-temporal-labels",
+    "href": "documentation/cube_operations/temporal_operations.html#align-temporal-labels",
+    "title": "Temporal Operations",
+    "section": "Align temporal labels",
+    "text": "Align temporal labels\nUse resample_cube_temporal before merging or comparing cubes whose timestamps do not line up. The target cube supplies the temporal labels and avoids accidentally comparing observations from different dates.\naligned = source.resample_cube_temporal(target)",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Temporal Operations"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/temporal_operations.html#apply-a-process-along-time",
+    "href": "documentation/cube_operations/temporal_operations.html#apply-a-process-along-time",
+    "title": "Temporal Operations",
+    "section": "Apply a process along time",
+    "text": "Apply a process along time\nUse apply_dimension with dimension=\"t\" when every pixel needs the same custom time-series calculation, such as smoothing or a threshold-based event detector. The callback describes an openEO graph; it is not arbitrary local Python execution.\nsmoothed = cube.apply_dimension(\n  dimension=\"t\",\n  process=lambda series: series.median(),\n)",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Temporal Operations"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/temporal_operations.html#count-observations-over-time",
+    "href": "documentation/cube_operations/temporal_operations.html#count-observations-over-time",
+    "title": "Temporal Operations",
+    "section": "Count observations over time",
+    "text": "Count observations over time\nUse count to measure how many valid or matching observations contribute to each pixel. This is useful as a quality layer alongside a temporal mean or median.\nobservation_count = cube.count(dimension=\"t\")",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Temporal Operations"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/temporal_operations.html#fit-a-temporal-curve",
+    "href": "documentation/cube_operations/temporal_operations.html#fit-a-temporal-curve",
+    "title": "Temporal Operations",
+    "section": "Fit a temporal curve",
+    "text": "Fit a temporal curve\nUse fit_curve when a time series should be represented by a model, such as a linear trend or seasonal curve. The fitted parameters can then be passed to predict_curve.\nmodel = cube.fit_curve(reducer=\"linear\", parameters={\"order\": 1})",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Temporal Operations"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/temporal_operations.html#predict-from-a-temporal-curve",
+    "href": "documentation/cube_operations/temporal_operations.html#predict-from-a-temporal-curve",
+    "title": "Temporal Operations",
+    "section": "Predict from a temporal curve",
+    "text": "Predict from a temporal curve\nUse predict_curve to evaluate a model created by fit_curve at new timestamps or labels. This can fill a regular time axis or estimate values at dates not directly observed.\nprediction = model.predict_curve(labels=[\"2025-01-01\", \"2025-07-01\"])",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Temporal Operations"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/temporal_operations.html#calculate-a-climatological-normal",
+    "href": "documentation/cube_operations/temporal_operations.html#calculate-a-climatological-normal",
+    "title": "Temporal Operations",
+    "section": "Calculate a climatological normal",
+    "text": "Calculate a climatological normal\nUse climatological_normal to calculate a typical value for recurring periods, such as the mean NDVI for each month across several years. It provides the baseline needed for anomaly analysis.\nnormal = cube.climatological_normal(period=\"month\", reducer=\"mean\")",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Temporal Operations"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/temporal_operations.html#calculate-temporal-anomalies",
+    "href": "documentation/cube_operations/temporal_operations.html#calculate-temporal-anomalies",
+    "title": "Temporal Operations",
+    "section": "Calculate temporal anomalies",
+    "text": "Calculate temporal anomalies\nUse anomaly to express observations as departures from a climatological normal. Positive and negative values then indicate conditions above or below the expected baseline.\nanomalies = cube.anomaly(normal=normal)",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "Temporal Operations"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/udp.html",
+    "href": "documentation/cube_operations/udp.html",
+    "title": "User Defined Processes",
+    "section": "",
+    "text": "A User Defined Process (UDP) packages a process graph behind a reusable name and a documented set of parameters. It is useful for sharing a cloud-mask routine, an index calculation, or a project-specific workflow.",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "User Defined Processes"
+    ]
+  },
+  {
+    "objectID": "documentation/cube_operations/udp.html#create-a-reusable-workflow",
+    "href": "documentation/cube_operations/udp.html#create-a-reusable-workflow",
+    "title": "User Defined Processes",
+    "section": "Create a reusable workflow",
+    "text": "Create a reusable workflow\nA UDP is not one raster operation: it packages a process graph behind a reusable identifier. Use it when the same cloud mask, index, or compositing workflow should be called by multiple users or applications. A UDP has an identifier, summary, parameter definitions, and a process graph; once saved to a backend, it can be called like another process in a new graph.\n\nGood candidates for a UDP\n\nA cloud or quality-mask routine used by several projects.\nA named index or feature-engineering recipe with configurable bands.\nA standard compositing workflow for one data product.\n\n\n\n\n\n\n\nNoteScope and portability\n\n\n\nA UDP is stored by a backend or workspace. The graph itself can use standardized processes, but the UDP identifier, permissions, and any backend-specific process used inside it are not automatically portable.\n\n\nSee the openEO API documentation for the current UDP endpoints and the process reference for graph building blocks.",
+    "crumbs": [
+      "CUBE OPERATIONS",
+      "User Defined Processes"
+    ]
   },
   {
     "objectID": "documentation/key_concepts/backend.html",

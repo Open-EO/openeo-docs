@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>spatial_operations – openEO</title>
+<title>Spatial Operations – openEO</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -25,6 +25,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -45,7 +80,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-f7b31f555e83651d4eb6f45835aa384a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-5db03c06400178421883125b8393055e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -73,6 +108,7 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<style>html{ scroll-behavior: smooth; }</style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link href="https://fonts.googleapis.com/css?family=Roboto+Mono|Source+Sans+Pro:300,400,600" rel="stylesheet">
@@ -101,54 +137,53 @@ ul.task-list li input[type="checkbox"] {
     window.addEventListener('popstate', setActiveClassForCurrentUrl);
     window.addEventListener('hashchange', setActiveClassForCurrentUrl);
 
-    document.addEventListener("DOMContentLoaded", function () {
-        const badges = Array.from(document.querySelectorAll(".tag-filter-badge"));
+    document.addEventListener("DOMContentLoaded", async function () {
         const items = Array.from(document.querySelectorAll(".tag-filter-item"));
-        if (badges.length === 0 || items.length === 0) return;
-
+        const filterUi = document.querySelector(".tag-filter-ui");
+        if (items.length === 0 || !filterUi) return;
+        const staticBadges = Array.from(document.querySelectorAll(".tag-filter-badge"));
+        const hasLiveProcesses = items.some((item) => item.hasAttribute("data-process"));
+        let support = null;
+        if (hasLiveProcesses) {
+            try {
+                const url = new URL("../../_data/backend_process_support.json", window.location.href);
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                support = await response.json();
+            } catch (error) { console.warn("Could not load backend process support data.", error); }
+        }
         const getTags = (item) => {
-            const fromDataAttr = (item.getAttribute("data-tags") || "")
-            .toLowerCase()
-            .split(/\s+/)
-            .filter(Boolean);
-
-            if (fromDataAttr.length > 0) {
-            return new Set(fromDataAttr);
+            if (support && item.hasAttribute("data-process")) {
+                return new Set(item.getAttribute("data-process").split(/[\s,]+/).flatMap((id) => support.processes[id] || []));
             }
-
-            const fromBadges = Array.from(item.querySelectorAll(".badge"))
-            .flatMap((el) => Array.from(el.classList))
-            .filter((cls) => cls.startsWith("badge-"))
-            .map((cls) => cls.replace("badge-", "").toLowerCase());
-
-            return new Set(fromBadges);
+            return new Set((item.getAttribute("data-tags") || "").toLowerCase().split(/\s+/).filter(Boolean));
         };
-
+        let badges = staticBadges;
+        if (support) {
+            const availableTags = [...new Set(items.flatMap((item) => [...getTags(item)]))].sort();
+            filterUi.replaceChildren();
+            badges = availableTags.map((tag) => {
+                const button = document.createElement("button");
+                button.className = "tag-filter-badge active";
+                button.dataset.tag = tag;
+                button.textContent = support.backends[tag]?.label || tag;
+                filterUi.appendChild(button);
+                return button;
+            });
+        }
+        if (badges.length === 0) return;
         const applyFilter = () => {
-            const activeBadges = badges.filter((b) => b.classList.contains("active"));
-            const selectedTags = new Set(activeBadges.map((b) => b.getAttribute("data-tag")));
-
+            const selectedTags = new Set(badges.filter((badge) => badge.classList.contains("active")).map((badge) => badge.dataset.tag));
             items.forEach((item) => {
-            const tags = getTags(item);
-            const visible = Array.from(selectedTags).some((tag) => tags.has(tag));
-            item.hidden = !visible;
+                const tags = getTags(item);
+                item.hidden = ![...selectedTags].some((tag) => tags.has(tag));
             });
         };
-
-        badges.forEach((badge) => {
-            badge.addEventListener("click", function (e) {
-            e.preventDefault();
-            this.classList.toggle("active");
-            this.classList.toggle("inactive");
-            applyFilter();
-            });
-        });
-
+        badges.forEach((badge) => badge.addEventListener("click", function (event) {
+            event.preventDefault(); this.classList.toggle("active"); this.classList.toggle("inactive"); applyFilter();
+        }));
         applyFilter();
-        });
-
-
-
+    });
     window.onload = () => {
         const brand = document.querySelector('.navbar-brand');
         if (brand) {
@@ -373,7 +408,7 @@ ul.task-list li input[type="checkbox"] {
   </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="sidebar-menu-container"> 
@@ -513,15 +548,235 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#filter-an-area-of-interest" id="toc-filter-an-area-of-interest" class="nav-link active" data-scroll-target="#filter-an-area-of-interest">Filter an area of interest</a>
+  <ul class="collapse">
+  <li><a href="#python" id="toc-python" class="nav-link" data-scroll-target="#python">Python</a></li>
+  <li><a href="#when-the-boundary-is-not-rectangular" id="toc-when-the-boundary-is-not-rectangular" class="nav-link" data-scroll-target="#when-the-boundary-is-not-rectangular">When the boundary is not rectangular</a></li>
+  </ul></li>
+  <li><a href="#filter-with-a-geometry" id="toc-filter-with-a-geometry" class="nav-link" data-scroll-target="#filter-with-a-geometry">Filter with a geometry</a></li>
+  <li><a href="#resample-or-reproject-a-cube" id="toc-resample-or-reproject-a-cube" class="nav-link" data-scroll-target="#resample-or-reproject-a-cube">Resample or reproject a cube</a>
+  <ul class="collapse">
+  <li><a href="#python-1" id="toc-python-1" class="nav-link" data-scroll-target="#python-1">Python</a></li>
+  </ul></li>
+  <li><a href="#align-to-another-cube-1" id="toc-align-to-another-cube-1" class="nav-link" data-scroll-target="#align-to-another-cube-1">Align to another cube</a></li>
+  <li><a href="#calculate-statistics-for-polygons" id="toc-calculate-statistics-for-polygons" class="nav-link" data-scroll-target="#calculate-statistics-for-polygons">Calculate statistics for polygons</a>
+  <ul class="collapse">
+  <li><a href="#python-2" id="toc-python-2" class="nav-link" data-scroll-target="#python-2">Python</a></li>
+  </ul></li>
+  <li><a href="#spatial-process-details" id="toc-spatial-process-details" class="nav-link" data-scroll-target="#spatial-process-details">Spatial process details</a></li>
+  <li><a href="#filter-vector-features" id="toc-filter-vector-features" class="nav-link" data-scroll-target="#filter-vector-features">Filter vector features</a></li>
+  <li><a href="#reduce-pixels-within-one-geometry" id="toc-reduce-pixels-within-one-geometry" class="nav-link" data-scroll-target="#reduce-pixels-within-one-geometry">Reduce pixels within one geometry</a></li>
+  <li><a href="#aggregate-spatial-windows" id="toc-aggregate-spatial-windows" class="nav-link" data-scroll-target="#aggregate-spatial-windows">Aggregate spatial windows</a></li>
+  <li><a href="#apply-a-spatial-kernel" id="toc-apply-a-spatial-kernel" class="nav-link" data-scroll-target="#apply-a-spatial-kernel">Apply a spatial kernel</a></li>
+  <li><a href="#apply-a-neighbourhood-callback" id="toc-apply-a-neighbourhood-callback" class="nav-link" data-scroll-target="#apply-a-neighbourhood-callback">Apply a neighbourhood callback</a></li>
+  <li><a href="#mask-outside-a-polygon" id="toc-mask-outside-a-polygon" class="nav-link" data-scroll-target="#mask-outside-a-polygon">Mask outside a polygon</a></li>
+  <li><a href="#buffer-vector-geometries" id="toc-buffer-vector-geometries" class="nav-link" data-scroll-target="#buffer-vector-geometries">Buffer vector geometries</a></li>
+  <li><a href="#reproject-vector-geometries" id="toc-reproject-vector-geometries" class="nav-link" data-scroll-target="#reproject-vector-geometries">Reproject vector geometries</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
-<main class="content column-page-right" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../documentation/cube_operations.html">CUBE OPERATIONS</a></li><li class="breadcrumb-item"><a href="../../documentation/cube_operations/spatial_operations.html">Spatial Operations</a></li></ol></nav></header>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../documentation/cube_operations.html">CUBE OPERATIONS</a></li><li class="breadcrumb-item"><a href="../../documentation/cube_operations/spatial_operations.html">Spatial Operations</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Spatial Operations</h1>
+</div>
 
 
 
+<div class="quarto-title-meta">
 
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="lead">
+<p>Spatial processes define <strong>where</strong> an analysis runs. Use them early to reduce the data a backend must read, then use them to align cubes or produce statistics for geographic features.</p>
+</div>
+<div class="tag-filter-ui" id="tag-filter-ui">
+  <button class="tag-filter-badge active" data-tag="vito">VITO</button>
+  <button class="tag-filter-badge active" data-tag="eodc">EODC</button>
+  <button class="tag-filter-badge active" data-tag="cdse">CDSE</button>
+  <button class="tag-filter-badge active" data-tag="sentinelhub">Sentinel Hub</button>
+  <button class="tag-filter-badge inactive" data-tag="gee">Google Earth Engine</button>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Backend support overview
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The buttons on this page are a documentation aid, not a live capability registry. Use the <a href="https://hub.openeo.org/">openEO Hub</a> for a cross-backend overview: open <strong>Filters</strong>, select a process under <strong>Processes</strong>, and the Hub shows only matching services. The Hub data is crawled and cached.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>About backend labels
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The labels show backends for which this first documentation version provides a relevant example. Process availability, parameter support, collection identifiers, and limits can change; inspect the backend’s process listing before using a workflow in production.</p>
+</div>
+</div>
+<section id="filter-an-area-of-interest" class="level2 tag-filter-item" data-process="filter_bbox">
+<h2 class="anchored" data-anchor-id="filter-an-area-of-interest">Filter an area of interest</h2>
+<p><code>filter_bbox</code> keeps only pixels within a bounding box. It is the usual first spatial operation because it reduces data transfer and processing before later, more expensive processes. Use <code>filter_spatial</code> when your area is an irregular GeoJSON geometry instead.</p>
+<section id="python" class="level3">
+<h3 class="anchored" data-anchor-id="python">Python</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> openeo</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>connection <span class="op">=</span> openeo.<span class="ex">connect</span>(<span class="st">"https://openeo.vito.be"</span>).authenticate_oidc()</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>cube <span class="op">=</span> connection.load_collection(</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"SENTINEL2_L2A"</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    temporal_extent<span class="op">=</span>[<span class="st">"2024-06-01"</span>, <span class="st">"2024-06-30"</span>],</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    bands<span class="op">=</span>[<span class="st">"B04"</span>, <span class="st">"B08"</span>],</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>study_area <span class="op">=</span> cube.filter_bbox(</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    west<span class="op">=</span><span class="fl">4.30</span>, east<span class="op">=</span><span class="fl">4.55</span>, south<span class="op">=</span><span class="fl">50.80</span>, north<span class="op">=</span><span class="fl">50.98</span>, crs<span class="op">=</span><span class="st">"EPSG:4326"</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="when-the-boundary-is-not-rectangular" class="level3">
+<h3 class="anchored" data-anchor-id="when-the-boundary-is-not-rectangular">When the boundary is not rectangular</h3>
+<p>Pass a GeoJSON polygon or feature collection to <code>filter_spatial</code>. This keeps the original grid but marks pixels outside the geometry as no-data. For a quick rectangular crop, prefer <code>filter_bbox</code>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>boundary <span class="op">=</span> {</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"type"</span>: <span class="st">"Polygon"</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"coordinates"</span>: [[[<span class="fl">4.31</span>, <span class="fl">50.81</span>], [<span class="fl">4.54</span>, <span class="fl">50.81</span>], [<span class="fl">4.54</span>, <span class="fl">50.97</span>],</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>                     [<span class="fl">4.31</span>, <span class="fl">50.97</span>], [<span class="fl">4.31</span>, <span class="fl">50.81</span>]]],</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>study_area <span class="op">=</span> cube.filter_spatial(boundary)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+</section>
+<section id="filter-with-a-geometry" class="level2 tag-filter-item" data-process="filter_spatial">
+<h2 class="anchored" data-anchor-id="filter-with-a-geometry">Filter with a geometry</h2>
+<p><code>filter_spatial</code> selects data using an irregular GeoJSON geometry while preserving the cube grid.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>study_area <span class="op">=</span> cube.filter_spatial(boundary)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<hr>
+<section id="resample-or-reproject-a-cube" class="level2 tag-filter-item" data-process="resample_spatial">
+<h2 class="anchored" data-anchor-id="resample-or-reproject-a-cube">Resample or reproject a cube</h2>
+<p><code>resample_spatial</code> changes the spatial resolution and, optionally, the coordinate reference system. This is useful when combining datasets with different grids or when a coarser output is sufficient. The interpolation method matters: use <code>near</code> for classes and masks, and a continuous-data method such as <code>bilinear</code> for reflectance or temperature.</p>
+<section id="python-1" class="level3">
+<h3 class="anchored" data-anchor-id="python-1">Python</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>aligned <span class="op">=</span> study_area.resample_spatial(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    resolution<span class="op">=</span><span class="dv">20</span>,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    projection<span class="op">=</span><span class="st">"EPSG:3857"</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    method<span class="op">=</span><span class="st">"bilinear"</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Align to another cube
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>When a second cube is the target grid, use <code>resample_cube_spatial</code> rather than guessing a projection and resolution. It preserves the target cube’s spatial layout.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="align-to-another-cube-1" class="level2 tag-filter-item" data-process="resample_cube_spatial">
+<h2 class="anchored" data-anchor-id="align-to-another-cube-1">Align to another cube</h2>
+<p><code>resample_cube_spatial</code> aligns a cube with the spatial grid of a target cube.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>aligned <span class="op">=</span> source.resample_cube_spatial(target)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<hr>
+<section id="calculate-statistics-for-polygons" class="level2 tag-filter-item" data-process="aggregate_spatial">
+<h2 class="anchored" data-anchor-id="calculate-statistics-for-polygons">Calculate statistics for polygons</h2>
+<p><code>aggregate_spatial</code> summarizes raster values for each feature in a GeoJSON or vector collection. A common example is a mean NDVI per agricultural parcel. The result is a vector cube: each input feature receives its own value or time series.</p>
+<section id="python-2" class="level3">
+<h3 class="anchored" data-anchor-id="python-2">Python</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>parcels <span class="op">=</span> {</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"type"</span>: <span class="st">"FeatureCollection"</span>,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"features"</span>: [{</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">"type"</span>: <span class="st">"Feature"</span>,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">"properties"</span>: {<span class="st">"parcel_id"</span>: <span class="st">"A01"</span>},</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"geometry"</span>: {</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>            <span class="st">"type"</span>: <span class="st">"Polygon"</span>,</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>            <span class="st">"coordinates"</span>: [[[<span class="fl">4.35</span>, <span class="fl">50.85</span>], [<span class="fl">4.38</span>, <span class="fl">50.85</span>], [<span class="fl">4.38</span>, <span class="fl">50.87</span>],</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>                             [<span class="fl">4.35</span>, <span class="fl">50.87</span>], [<span class="fl">4.35</span>, <span class="fl">50.85</span>]]],</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>        },</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    }],</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>parcel_means <span class="op">=</span> aligned.aggregate_spatial(geometries<span class="op">=</span>parcels, reducer<span class="op">=</span><span class="st">"mean"</span>)</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>parcel_means.download(<span class="st">"parcel_means.geojson"</span>, <span class="bu">format</span><span class="op">=</span><span class="st">"GeoJSON"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>For exact parameter definitions, see <a href="https://processes.openeo.org/"><code>filter_bbox</code></a>, <a href="https://processes.openeo.org/"><code>filter_spatial</code></a>, <a href="https://processes.openeo.org/"><code>resample_spatial</code></a>, and <a href="https://processes.openeo.org/"><code>aggregate_spatial</code></a> in the official process reference.</p>
+</section>
+</section>
+<section id="spatial-process-details" class="level2">
+<h2 class="anchored" data-anchor-id="spatial-process-details">Spatial process details</h2>
+<p>Each process below has its own backend filter. The official <a href="https://processes.openeo.org/">process reference</a> remains the source for exact parameters and return schemas.</p>
+</section>
+<section id="filter-vector-features" class="level2 tag-filter-item" data-process="filter_vector">
+<h2 class="anchored" data-anchor-id="filter-vector-features">Filter vector features</h2>
+<p>Use <code>filter_vector</code> when the input is already a vector cube and you want to keep only features intersecting a geometry. It filters feature records rather than raster pixels.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>selected <span class="op">=</span> vector_cube.filter_vector(geometries<span class="op">=</span>study_area)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="reduce-pixels-within-one-geometry" class="level2 tag-filter-item" data-process="reduce_spatial">
+<h2 class="anchored" data-anchor-id="reduce-pixels-within-one-geometry">Reduce pixels within one geometry</h2>
+<p>Use <code>reduce_spatial</code> when one geometry should produce one value per remaining cube label. It is useful for a single region summary, while <code>aggregate_spatial</code> is better when many features should each receive a result.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>mean_value <span class="op">=</span> cube.reduce_spatial(geometries<span class="op">=</span>study_area, reducer<span class="op">=</span><span class="st">"mean"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="aggregate-spatial-windows" class="level2 tag-filter-item" data-process="aggregate_spatial_window">
+<h2 class="anchored" data-anchor-id="aggregate-spatial-windows">Aggregate spatial windows</h2>
+<p>Use <code>aggregate_spatial_window</code> for regularly sized windows over a raster, for example to create a local mean or maximum product. Choose it when the analysis is grid-based rather than driven by irregular vector features.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>windowed <span class="op">=</span> cube.aggregate_spatial_window(size<span class="op">=</span><span class="dv">5</span>, reducer<span class="op">=</span><span class="st">"mean"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="apply-a-spatial-kernel" class="level2 tag-filter-item" data-process="apply_kernel">
+<h2 class="anchored" data-anchor-id="apply-a-spatial-kernel">Apply a spatial kernel</h2>
+<p>Use <code>apply_kernel</code> for a fixed convolution such as smoothing, sharpening, or edge detection. The kernel defines the weights applied around each pixel and is preferable to a custom neighbourhood callback when the weights are known in advance.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>smoothed <span class="op">=</span> cube.apply_kernel(kernel<span class="op">=</span>[[<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>], [<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>], [<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>]])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="apply-a-neighbourhood-callback" class="level2 tag-filter-item" data-process="apply_neighborhood">
+<h2 class="anchored" data-anchor-id="apply-a-neighbourhood-callback">Apply a neighbourhood callback</h2>
+<p>Use <code>apply_neighborhood</code> when each moving window needs a custom process graph, for example a local percentile or a conditional texture measure. Set overlap so neighbouring windows have enough context at tile boundaries.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>neighborhood_result <span class="op">=</span> cube.apply_neighborhood(</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    size<span class="op">=</span>[<span class="dv">3</span>, <span class="dv">3</span>],</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    overlap<span class="op">=</span>[<span class="dv">1</span>, <span class="dv">1</span>],</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    process<span class="op">=</span><span class="kw">lambda</span> neighborhood: neighborhood.reduce_dimension(dimension<span class="op">=</span><span class="st">"x"</span>, reducer<span class="op">=</span><span class="st">"mean"</span>),</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="mask-outside-a-polygon" class="level2 tag-filter-item" data-process="mask_polygon">
+<h2 class="anchored" data-anchor-id="mask-outside-a-polygon">Mask outside a polygon</h2>
+<p>Use <code>mask_polygon</code> to restrict a raster cube to an irregular study area while preserving its spatial grid. For a rectangular extent, use <code>filter_bbox</code> instead; for a quality-band mask, use <code>mask</code> on the preprocessing page.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>masked <span class="op">=</span> cube.mask_polygon(geometries<span class="op">=</span>study_area)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="buffer-vector-geometries" class="level2 tag-filter-item" data-process="vector_buffer">
+<h2 class="anchored" data-anchor-id="buffer-vector-geometries">Buffer vector geometries</h2>
+<p>Use <code>vector_buffer</code> to expand or contract geometries before filtering or aggregating. A positive distance creates an area around a feature; a negative distance can create an interior buffer where supported.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>buffered <span class="op">=</span> openeo.processes.vector_buffer(data<span class="op">=</span>geometry, distance<span class="op">=</span><span class="dv">100</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="reproject-vector-geometries" class="level2 tag-filter-item" data-process="vector_reproject">
+<h2 class="anchored" data-anchor-id="reproject-vector-geometries">Reproject vector geometries</h2>
+<p>Use <code>vector_reproject</code> when a geometry’s CRS does not match the cube or the process that will consume it. Reproject the vector rather than silently interpreting coordinates in the wrong CRS.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>reprojected <span class="op">=</span> openeo.processes.vector_reproject(</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    data<span class="op">=</span>geometry, target_crs<span class="op">=</span><span class="st">"EPSG:3035"</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
 
 
 
@@ -931,4 +1186,5 @@ ul.task-list li input[type="checkbox"] {
 
 
 
+<script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>

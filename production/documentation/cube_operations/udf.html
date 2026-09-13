@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>udf – openEO</title>
+<title>User Defined Functions – openEO</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -25,6 +25,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -45,7 +80,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-f7b31f555e83651d4eb6f45835aa384a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-5db03c06400178421883125b8393055e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -73,6 +108,7 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<style>html{ scroll-behavior: smooth; }</style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link href="https://fonts.googleapis.com/css?family=Roboto+Mono|Source+Sans+Pro:300,400,600" rel="stylesheet">
@@ -101,54 +137,53 @@ ul.task-list li input[type="checkbox"] {
     window.addEventListener('popstate', setActiveClassForCurrentUrl);
     window.addEventListener('hashchange', setActiveClassForCurrentUrl);
 
-    document.addEventListener("DOMContentLoaded", function () {
-        const badges = Array.from(document.querySelectorAll(".tag-filter-badge"));
+    document.addEventListener("DOMContentLoaded", async function () {
         const items = Array.from(document.querySelectorAll(".tag-filter-item"));
-        if (badges.length === 0 || items.length === 0) return;
-
+        const filterUi = document.querySelector(".tag-filter-ui");
+        if (items.length === 0 || !filterUi) return;
+        const staticBadges = Array.from(document.querySelectorAll(".tag-filter-badge"));
+        const hasLiveProcesses = items.some((item) => item.hasAttribute("data-process"));
+        let support = null;
+        if (hasLiveProcesses) {
+            try {
+                const url = new URL("../../_data/backend_process_support.json", window.location.href);
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                support = await response.json();
+            } catch (error) { console.warn("Could not load backend process support data.", error); }
+        }
         const getTags = (item) => {
-            const fromDataAttr = (item.getAttribute("data-tags") || "")
-            .toLowerCase()
-            .split(/\s+/)
-            .filter(Boolean);
-
-            if (fromDataAttr.length > 0) {
-            return new Set(fromDataAttr);
+            if (support && item.hasAttribute("data-process")) {
+                return new Set(item.getAttribute("data-process").split(/[\s,]+/).flatMap((id) => support.processes[id] || []));
             }
-
-            const fromBadges = Array.from(item.querySelectorAll(".badge"))
-            .flatMap((el) => Array.from(el.classList))
-            .filter((cls) => cls.startsWith("badge-"))
-            .map((cls) => cls.replace("badge-", "").toLowerCase());
-
-            return new Set(fromBadges);
+            return new Set((item.getAttribute("data-tags") || "").toLowerCase().split(/\s+/).filter(Boolean));
         };
-
+        let badges = staticBadges;
+        if (support) {
+            const availableTags = [...new Set(items.flatMap((item) => [...getTags(item)]))].sort();
+            filterUi.replaceChildren();
+            badges = availableTags.map((tag) => {
+                const button = document.createElement("button");
+                button.className = "tag-filter-badge active";
+                button.dataset.tag = tag;
+                button.textContent = support.backends[tag]?.label || tag;
+                filterUi.appendChild(button);
+                return button;
+            });
+        }
+        if (badges.length === 0) return;
         const applyFilter = () => {
-            const activeBadges = badges.filter((b) => b.classList.contains("active"));
-            const selectedTags = new Set(activeBadges.map((b) => b.getAttribute("data-tag")));
-
+            const selectedTags = new Set(badges.filter((badge) => badge.classList.contains("active")).map((badge) => badge.dataset.tag));
             items.forEach((item) => {
-            const tags = getTags(item);
-            const visible = Array.from(selectedTags).some((tag) => tags.has(tag));
-            item.hidden = !visible;
+                const tags = getTags(item);
+                item.hidden = ![...selectedTags].some((tag) => tags.has(tag));
             });
         };
-
-        badges.forEach((badge) => {
-            badge.addEventListener("click", function (e) {
-            e.preventDefault();
-            this.classList.toggle("active");
-            this.classList.toggle("inactive");
-            applyFilter();
-            });
-        });
-
+        badges.forEach((badge) => badge.addEventListener("click", function (event) {
+            event.preventDefault(); this.classList.toggle("active"); this.classList.toggle("inactive"); applyFilter();
+        }));
         applyFilter();
-        });
-
-
-
+    });
     window.onload = () => {
         const brand = document.querySelector('.navbar-brand');
         if (brand) {
@@ -373,7 +408,7 @@ ul.task-list li input[type="checkbox"] {
   </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="sidebar-menu-container"> 
@@ -513,15 +548,167 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#apply-a-udf" id="toc-apply-a-udf" class="nav-link active" data-scroll-target="#apply-a-udf">Apply a UDF</a>
+  <ul class="collapse">
+  <li><a href="#python" id="toc-python" class="nav-link" data-scroll-target="#python">Python</a></li>
+  </ul></li>
+  <li><a href="#choose-the-right-extension-mechanism" id="toc-choose-the-right-extension-mechanism" class="nav-link" data-scroll-target="#choose-the-right-extension-mechanism">Choose the right extension mechanism</a></li>
+  <li><a href="#udf-related-processes" id="toc-udf-related-processes" class="nav-link" data-scroll-target="#udf-related-processes">UDF-related processes</a></li>
+  <li><a href="#run-a-backend-udf" id="toc-run-a-backend-udf" class="nav-link" data-scroll-target="#run-a-backend-udf">Run a backend UDF</a></li>
+  <li><a href="#run-an-external-udf" id="toc-run-an-external-udf" class="nav-link" data-scroll-target="#run-an-external-udf">Run an external UDF</a></li>
+  <li><a href="#apply-a-standardized-pixel-callback" id="toc-apply-a-standardized-pixel-callback" class="nav-link" data-scroll-target="#apply-a-standardized-pixel-callback">Apply a standardized pixel callback</a></li>
+  <li><a href="#apply-a-standardized-dimension-callback" id="toc-apply-a-standardized-dimension-callback" class="nav-link" data-scroll-target="#apply-a-standardized-dimension-callback">Apply a standardized dimension callback</a></li>
+  <li><a href="#apply-a-standardized-neighbourhood-callback" id="toc-apply-a-standardized-neighbourhood-callback" class="nav-link" data-scroll-target="#apply-a-standardized-neighbourhood-callback">Apply a standardized neighbourhood callback</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
-<main class="content column-page-right" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../documentation/cube_operations.html">CUBE OPERATIONS</a></li><li class="breadcrumb-item"><a href="../../documentation/cube_operations/udf.html">User Defined Functions</a></li></ol></nav></header>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../documentation/cube_operations.html">CUBE OPERATIONS</a></li><li class="breadcrumb-item"><a href="../../documentation/cube_operations/udf.html">User Defined Functions</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">User Defined Functions</h1>
+<p class="subtitle lead">Run custom Python or R logic on the backend</p>
+</div>
 
 
 
+<div class="quarto-title-meta">
 
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="lead">
+<p>A User Defined Function (UDF) is custom Python or R code executed within an openEO process graph. Use it when standard processes do not express the required calculation.</p>
+</div>
+<div class="tag-filter-ui" id="tag-filter-ui">
+  <button class="tag-filter-badge active" data-tag="vito">VITO</button>
+  <button class="tag-filter-badge active" data-tag="eodc">EODC</button>
+  <button class="tag-filter-badge active" data-tag="cdse">CDSE</button>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Backend support overview
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The buttons on this page are a documentation aid, not a live capability registry. Use the <a href="https://hub.openeo.org/">openEO Hub</a> for a cross-backend overview: open <strong>Filters</strong>, select a process under <strong>Processes</strong>, and the Hub shows only matching services. The Hub data is crawled and cached.</p>
+</div>
+</div>
+<section id="apply-a-udf" class="level2 tag-filter-item" data-process="run_udf">
+<h2 class="anchored" data-anchor-id="apply-a-udf">Apply a UDF</h2>
+<p><code>run_udf</code> passes raster or vector data to backend-managed code. The supported runtime, packages, resource limits, and data model are backend-specific, so begin with a small batch job.</p>
+<section id="python" class="level3">
+<h3 class="anchored" data-anchor-id="python">Python</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>udf_code <span class="op">=</span> <span class="st">"""</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="st">def apply_datacube(cube, context):</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="st">    return cube * 2</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> cube.run_udf(</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    udf<span class="op">=</span>udf_code,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    runtime<span class="op">=</span><span class="st">"Python"</span>,</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Portability consideration
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Keep UDFs small and use only packages documented by the selected backend. Standard openEO processes are generally more portable and can be optimized more easily by a backend.</p>
+</div>
+</div>
+<p>See <a href="https://processes.openeo.org/"><code>run_udf</code></a> and the backend documentation for the current runtime contract.</p>
+</section>
+</section>
+<section id="choose-the-right-extension-mechanism" class="level2">
+<h2 class="anchored" data-anchor-id="choose-the-right-extension-mechanism">Choose the right extension mechanism</h2>
+<p>A <strong>callback</strong> is not a UDF. With <code>apply</code>, <code>apply_dimension</code>, <code>reduce_dimension</code>, <code>aggregate_temporal</code>, <code>aggregate_spatial</code>, or <code>apply_neighborhood</code>, a Python lambda describes an openEO process graph using standardized processes; no arbitrary Python code is sent to the backend. A <strong>UDF</strong> sends backend-executed Python or R code through <code>run_udf</code>.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Need</th>
+<th>Preferred mechanism</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Scale values, calculate an index, or reduce a dimension</td>
+<td>A standard process or callback.</td>
+</tr>
+<tr class="even">
+<td>Reuse a named process graph</td>
+<td>A UDP.</td>
+</tr>
+<tr class="odd">
+<td>Apply a backend-supported ML model</td>
+<td>The backend’s ML process.</td>
+</tr>
+<tr class="even">
+<td>Run an algorithm unavailable as an openEO process</td>
+<td><code>run_udf</code>.</td>
+</tr>
+<tr class="odd">
+<td>Use a custom external execution environment</td>
+<td><code>run_udf_externally</code>, when advertised by the backend.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="udf-related-processes" class="level2">
+<h2 class="anchored" data-anchor-id="udf-related-processes">UDF-related processes</h2>
+<p>Each process below has its own backend filter. The callback processes are included for comparison, but they do not execute arbitrary Python or R code on the backend.</p>
+</section>
+<section id="run-a-backend-udf" class="level2 tag-filter-item" data-process="run_udf">
+<h2 class="anchored" data-anchor-id="run-a-backend-udf">Run a backend UDF</h2>
+<p>Use <code>run_udf</code> when the required algorithm cannot be expressed with standardized openEO processes. The backend executes the supplied Python or R code close to the data, subject to its runtime, package, memory, and execution limits.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> cube.run_udf(udf<span class="op">=</span>udf_code, runtime<span class="op">=</span><span class="st">"Python"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="run-an-external-udf" class="level2 tag-filter-item" data-process="run_udf_externally">
+<h2 class="anchored" data-anchor-id="run-an-external-udf">Run an external UDF</h2>
+<p>Use <code>run_udf_externally</code> when the computation must run in an environment managed outside the backend. This is useful for custom dependencies, but it is less portable and may require backend-specific credentials or configuration.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> openeo.processes.run_udf_externally(data<span class="op">=</span>cube, udf<span class="op">=</span>udf_code)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="apply-a-standardized-pixel-callback" class="level2 tag-filter-item" data-process="apply">
+<h2 class="anchored" data-anchor-id="apply-a-standardized-pixel-callback">Apply a standardized pixel callback</h2>
+<p>Apply a standardized process callback independently to each pixel; this is not arbitrary Python execution.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>scaled <span class="op">=</span> cube.<span class="bu">apply</span>(<span class="kw">lambda</span> value: value <span class="op">*</span> <span class="fl">0.0001</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="apply-a-standardized-dimension-callback" class="level2 tag-filter-item" data-process="apply_dimension">
+<h2 class="anchored" data-anchor-id="apply-a-standardized-dimension-callback">Apply a standardized dimension callback</h2>
+<p>Apply a standardized callback along one cube dimension.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>smoothed <span class="op">=</span> cube.apply_dimension(dimension<span class="op">=</span><span class="st">"t"</span>, process<span class="op">=</span><span class="kw">lambda</span> series: series.median())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="apply-a-standardized-neighbourhood-callback" class="level2 tag-filter-item" data-process="apply_neighborhood">
+<h2 class="anchored" data-anchor-id="apply-a-standardized-neighbourhood-callback">Apply a standardized neighbourhood callback</h2>
+<p>Apply a standardized callback over a moving spatial neighbourhood.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> cube.apply_neighborhood(size<span class="op">=</span>[<span class="dv">3</span>, <span class="dv">3</span>], process<span class="op">=</span><span class="kw">lambda</span> window: window.mean())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<p>The <a href="https://open-eo.github.io/openeo-python-client/processes.html">Python-client guide to callbacks</a> explains the distinction and the callback restrictions in detail.</p>
 
 
 
@@ -931,4 +1118,5 @@ ul.task-list li input[type="checkbox"] {
 
 
 
+<script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>spectral_operations – openEO</title>
+<title>Spectral Operations – openEO</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -25,6 +25,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -45,7 +80,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-f7b31f555e83651d4eb6f45835aa384a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-5db03c06400178421883125b8393055e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -73,6 +108,7 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<style>html{ scroll-behavior: smooth; }</style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link href="https://fonts.googleapis.com/css?family=Roboto+Mono|Source+Sans+Pro:300,400,600" rel="stylesheet">
@@ -101,54 +137,53 @@ ul.task-list li input[type="checkbox"] {
     window.addEventListener('popstate', setActiveClassForCurrentUrl);
     window.addEventListener('hashchange', setActiveClassForCurrentUrl);
 
-    document.addEventListener("DOMContentLoaded", function () {
-        const badges = Array.from(document.querySelectorAll(".tag-filter-badge"));
+    document.addEventListener("DOMContentLoaded", async function () {
         const items = Array.from(document.querySelectorAll(".tag-filter-item"));
-        if (badges.length === 0 || items.length === 0) return;
-
+        const filterUi = document.querySelector(".tag-filter-ui");
+        if (items.length === 0 || !filterUi) return;
+        const staticBadges = Array.from(document.querySelectorAll(".tag-filter-badge"));
+        const hasLiveProcesses = items.some((item) => item.hasAttribute("data-process"));
+        let support = null;
+        if (hasLiveProcesses) {
+            try {
+                const url = new URL("../../_data/backend_process_support.json", window.location.href);
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                support = await response.json();
+            } catch (error) { console.warn("Could not load backend process support data.", error); }
+        }
         const getTags = (item) => {
-            const fromDataAttr = (item.getAttribute("data-tags") || "")
-            .toLowerCase()
-            .split(/\s+/)
-            .filter(Boolean);
-
-            if (fromDataAttr.length > 0) {
-            return new Set(fromDataAttr);
+            if (support && item.hasAttribute("data-process")) {
+                return new Set(item.getAttribute("data-process").split(/[\s,]+/).flatMap((id) => support.processes[id] || []));
             }
-
-            const fromBadges = Array.from(item.querySelectorAll(".badge"))
-            .flatMap((el) => Array.from(el.classList))
-            .filter((cls) => cls.startsWith("badge-"))
-            .map((cls) => cls.replace("badge-", "").toLowerCase());
-
-            return new Set(fromBadges);
+            return new Set((item.getAttribute("data-tags") || "").toLowerCase().split(/\s+/).filter(Boolean));
         };
-
+        let badges = staticBadges;
+        if (support) {
+            const availableTags = [...new Set(items.flatMap((item) => [...getTags(item)]))].sort();
+            filterUi.replaceChildren();
+            badges = availableTags.map((tag) => {
+                const button = document.createElement("button");
+                button.className = "tag-filter-badge active";
+                button.dataset.tag = tag;
+                button.textContent = support.backends[tag]?.label || tag;
+                filterUi.appendChild(button);
+                return button;
+            });
+        }
+        if (badges.length === 0) return;
         const applyFilter = () => {
-            const activeBadges = badges.filter((b) => b.classList.contains("active"));
-            const selectedTags = new Set(activeBadges.map((b) => b.getAttribute("data-tag")));
-
+            const selectedTags = new Set(badges.filter((badge) => badge.classList.contains("active")).map((badge) => badge.dataset.tag));
             items.forEach((item) => {
-            const tags = getTags(item);
-            const visible = Array.from(selectedTags).some((tag) => tags.has(tag));
-            item.hidden = !visible;
+                const tags = getTags(item);
+                item.hidden = ![...selectedTags].some((tag) => tags.has(tag));
             });
         };
-
-        badges.forEach((badge) => {
-            badge.addEventListener("click", function (e) {
-            e.preventDefault();
-            this.classList.toggle("active");
-            this.classList.toggle("inactive");
-            applyFilter();
-            });
-        });
-
+        badges.forEach((badge) => badge.addEventListener("click", function (event) {
+            event.preventDefault(); this.classList.toggle("active"); this.classList.toggle("inactive"); applyFilter();
+        }));
         applyFilter();
-        });
-
-
-
+    });
     window.onload = () => {
         const brand = document.querySelector('.navbar-brand');
         if (brand) {
@@ -373,7 +408,7 @@ ul.task-list li input[type="checkbox"] {
   </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="sidebar-menu-container"> 
@@ -513,15 +548,180 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#select-only-the-required-bands" id="toc-select-only-the-required-bands" class="nav-link active" data-scroll-target="#select-only-the-required-bands">Select only the required bands</a>
+  <ul class="collapse">
+  <li><a href="#python" id="toc-python" class="nav-link" data-scroll-target="#python">Python</a></li>
+  </ul></li>
+  <li><a href="#calculate-ndvi" id="toc-calculate-ndvi" class="nav-link" data-scroll-target="#calculate-ndvi">Calculate NDVI</a>
+  <ul class="collapse">
+  <li><a href="#python-1" id="toc-python-1" class="nav-link" data-scroll-target="#python-1">Python</a></li>
+  </ul></li>
+  <li><a href="#workflow-combine-an-index-with-a-temporal-composite" id="toc-workflow-combine-an-index-with-a-temporal-composite" class="nav-link" data-scroll-target="#workflow-combine-an-index-with-a-temporal-composite">Workflow: combine an index with a temporal composite</a>
+  <ul class="collapse">
+  <li><a href="#python-2" id="toc-python-2" class="nav-link" data-scroll-target="#python-2">Python</a></li>
+  </ul></li>
+  <li><a href="#spectral-process-details" id="toc-spectral-process-details" class="nav-link" data-scroll-target="#spectral-process-details">Spectral process details</a></li>
+  <li><a href="#calculate-a-normalized-difference" id="toc-calculate-a-normalized-difference" class="nav-link" data-scroll-target="#calculate-a-normalized-difference">Calculate a normalized difference</a></li>
+  <li><a href="#aggregate-an-index-over-time" id="toc-aggregate-an-index-over-time" class="nav-link" data-scroll-target="#aggregate-an-index-over-time">Aggregate an index over time</a></li>
+  <li><a href="#apply-a-process-across-bands" id="toc-apply-a-process-across-bands" class="nav-link" data-scroll-target="#apply-a-process-across-bands">Apply a process across bands</a></li>
+  <li><a href="#reduce-the-band-dimension" id="toc-reduce-the-band-dimension" class="nav-link" data-scroll-target="#reduce-the-band-dimension">Reduce the band dimension</a></li>
+  <li><a href="#scale-spectral-values" id="toc-scale-spectral-values" class="nav-link" data-scroll-target="#scale-spectral-values">Scale spectral values</a></li>
+  <li><a href="#select-an-array-element" id="toc-select-an-array-element" class="nav-link" data-scroll-target="#select-an-array-element">Select an array element</a></li>
+  <li><a href="#apply-a-process-to-an-array" id="toc-apply-a-process-to-an-array" class="nav-link" data-scroll-target="#apply-a-process-to-an-array">Apply a process to an array</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
-<main class="content column-page-right" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../documentation/cube_operations.html">CUBE OPERATIONS</a></li><li class="breadcrumb-item"><a href="../../documentation/cube_operations/spectral_operations.html">Spectral Operations</a></li></ol></nav></header>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../documentation/cube_operations.html">CUBE OPERATIONS</a></li><li class="breadcrumb-item"><a href="../../documentation/cube_operations/spectral_operations.html">Spectral Operations</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Spectral Operations</h1>
+</div>
 
 
 
+<div class="quarto-title-meta">
 
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="lead">
+<p>Spectral operations work across a sensor’s bands. They let you select the information that matters, calculate indices, and add derived bands to a cube.</p>
+</div>
+<div class="tag-filter-ui" id="tag-filter-ui">
+  <button class="tag-filter-badge active" data-tag="vito">VITO</button>
+  <button class="tag-filter-badge active" data-tag="eodc">EODC</button>
+  <button class="tag-filter-badge active" data-tag="cdse">CDSE</button>
+  <button class="tag-filter-badge active" data-tag="sentinelhub">Sentinel Hub</button>
+  <button class="tag-filter-badge inactive" data-tag="gee">Google Earth Engine</button>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Backend support overview
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The buttons on this page are a documentation aid, not a live capability registry. Use the <a href="https://hub.openeo.org/">openEO Hub</a> for a cross-backend overview: open <strong>Filters</strong>, select a process under <strong>Processes</strong>, and the Hub shows only matching services. The Hub data is crawled and cached.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>About backend labels
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The labels identify backends associated with these examples, not a permanent guarantee of capability. Check the backend process listing for its current support.</p>
+</div>
+</div>
+<section id="select-only-the-required-bands" class="level2 tag-filter-item" data-process="filter_bands">
+<h2 class="anchored" data-anchor-id="select-only-the-required-bands">Select only the required bands</h2>
+<p><code>filter_bands</code> reduces a cube to named bands or to a wavelength range. Selecting bands early makes a process graph clearer and can substantially reduce processing volume.</p>
+<section id="python" class="level3">
+<h3 class="anchored" data-anchor-id="python">Python</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> openeo</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>connection <span class="op">=</span> openeo.<span class="ex">connect</span>(<span class="st">"https://openeo.vito.be"</span>).authenticate_oidc()</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>sentinel2 <span class="op">=</span> connection.load_collection(</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"SENTINEL2_L2A"</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    spatial_extent<span class="op">=</span>{<span class="st">"west"</span>: <span class="fl">4.30</span>, <span class="st">"east"</span>: <span class="fl">4.55</span>, <span class="st">"south"</span>: <span class="fl">50.80</span>, <span class="st">"north"</span>: <span class="fl">50.98</span>},</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    temporal_extent<span class="op">=</span>[<span class="st">"2024-06-01"</span>, <span class="st">"2024-06-30"</span>],</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>red_nir <span class="op">=</span> sentinel2.filter_bands([<span class="st">"B04"</span>, <span class="st">"B08"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Band names are collection-specific. Check the collection metadata rather than assuming that every backend uses the same Sentinel band labels.</p>
+</section>
+</section>
+<hr>
+<section id="calculate-ndvi" class="level2 tag-filter-item" data-process="ndvi">
+<h2 class="anchored" data-anchor-id="calculate-ndvi">Calculate NDVI</h2>
+<p><code>ndvi</code> is a convenience process for the normalized difference between near-infrared and red reflectance. It adds an NDVI band while retaining the cube’s spatial and temporal dimensions.</p>
+<section id="python-1" class="level3">
+<h3 class="anchored" data-anchor-id="python-1">Python</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>ndvi <span class="op">=</span> red_nir.ndvi(nir<span class="op">=</span><span class="st">"B08"</span>, red<span class="op">=</span><span class="st">"B04"</span>, target_band<span class="op">=</span><span class="st">"NDVI"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>ndvi.download(<span class="st">"ndvi.tif"</span>, <span class="bu">format</span><span class="op">=</span><span class="st">"GTiff"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>For indices without a dedicated process, use <code>normalized_difference</code> or an <code>apply_dimension</code> callback with arithmetic processes. For example, normalized difference is suitable for NDWI and NBR when you supply the appropriate pair of input bands.</p>
+</section>
+</section>
+<hr>
+<section id="workflow-combine-an-index-with-a-temporal-composite" class="level2 tag-filter-item" data-process="ndvi">
+<h2 class="anchored" data-anchor-id="workflow-combine-an-index-with-a-temporal-composite">Workflow: combine an index with a temporal composite</h2>
+<p>Spectral and temporal operations are normally chained. Here the index is calculated for each acquisition and then reduced to a monthly median; this is generally more meaningful than calculating the index from separately aggregated red and NIR bands.</p>
+<section id="python-2" class="level3">
+<h3 class="anchored" data-anchor-id="python-2">Python</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>monthly_ndvi <span class="op">=</span> (</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    red_nir.ndvi(nir<span class="op">=</span><span class="st">"B08"</span>, red<span class="op">=</span><span class="st">"B04"</span>, target_band<span class="op">=</span><span class="st">"NDVI"</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    .aggregate_temporal_period(period<span class="op">=</span><span class="st">"month"</span>, reducer<span class="op">=</span><span class="st">"median"</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This is a workflow example rather than a separate process: <code>ndvi</code> is calculated per acquisition and <code>aggregate_temporal_period</code> then creates the monthly product. The temporal process is documented in the <a href="../../documentation/cube_operations/temporal_operations.html">Temporal Operations</a> page.</p>
+</section>
+</section>
+<section id="spectral-process-details" class="level2">
+<h2 class="anchored" data-anchor-id="spectral-process-details">Spectral process details</h2>
+<p>Each process below has its own backend filter. Generic dimension processes are shown here with <code>dimension="bands"</code>.</p>
+</section>
+<section id="calculate-a-normalized-difference" class="level2 tag-filter-item" data-process="normalized_difference">
+<h2 class="anchored" data-anchor-id="calculate-a-normalized-difference">Calculate a normalized difference</h2>
+<p>Use <code>normalized_difference</code> for a two-band index when no dedicated convenience process exists. For example, it can create NDWI from green and near-infrared bands or NBR from near-infrared and shortwave-infrared bands.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>ndwi <span class="op">=</span> cube.normalized_difference(first_band<span class="op">=</span><span class="st">"B03"</span>, second_band<span class="op">=</span><span class="st">"B08"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="aggregate-an-index-over-time" class="level2 tag-filter-item" data-process="aggregate_temporal_period">
+<h2 class="anchored" data-anchor-id="aggregate-an-index-over-time">Aggregate an index over time</h2>
+<p><code>aggregate_temporal_period</code> groups an index into calendar periods such as monthly medians.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>monthly_ndvi <span class="op">=</span> ndvi.aggregate_temporal_period(period<span class="op">=</span><span class="st">"month"</span>, reducer<span class="op">=</span><span class="st">"median"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="apply-a-process-across-bands" class="level2 tag-filter-item" data-process="apply_dimension">
+<h2 class="anchored" data-anchor-id="apply-a-process-across-bands">Apply a process across bands</h2>
+<p>Use <code>apply_dimension</code> with <code>dimension="bands"</code> when the calculation needs a custom combination of the band array. Prefer a dedicated index process when one exists because its band semantics are clearer.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>derived <span class="op">=</span> cube.apply_dimension(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  dimension<span class="op">=</span><span class="st">"bands"</span>,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  process<span class="op">=</span><span class="kw">lambda</span> bands: bands[<span class="dv">1</span>] <span class="op">/</span> bands[<span class="dv">0</span>],</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="reduce-the-band-dimension" class="level2 tag-filter-item" data-process="reduce_dimension">
+<h2 class="anchored" data-anchor-id="reduce-the-band-dimension">Reduce the band dimension</h2>
+<p>Use <code>reduce_dimension</code> with <code>dimension="bands"</code> to collapse several bands into one value, for example a mean brightness or maximum response. The process removes the reduced dimension.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>brightness <span class="op">=</span> cube.reduce_dimension(dimension<span class="op">=</span><span class="st">"bands"</span>, reducer<span class="op">=</span><span class="st">"mean"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="scale-spectral-values" class="level2 tag-filter-item" data-process="linear_scale_range">
+<h2 class="anchored" data-anchor-id="scale-spectral-values">Scale spectral values</h2>
+<p>Use <code>linear_scale_range</code> to convert stored digital numbers into a physical range before calculating indices or exporting data. Confirm the source scaling in the collection metadata first.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>reflectance <span class="op">=</span> cube.linear_scale_range(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  input_min<span class="op">=</span><span class="dv">0</span>, input_max<span class="op">=</span><span class="dv">10000</span>, output_min<span class="op">=</span><span class="dv">0</span>, output_max<span class="op">=</span><span class="dv">1</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="select-an-array-element" class="level2 tag-filter-item" data-process="array_element">
+<h2 class="anchored" data-anchor-id="select-an-array-element">Select an array element</h2>
+<p>Use <code>array_element</code> when a callback returns an array and the workflow needs one position, such as selecting a particular component from a model result.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>red <span class="op">=</span> openeo.processes.array_element(data<span class="op">=</span>band_array, index<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="apply-a-process-to-an-array" class="level2 tag-filter-item" data-process="array_apply">
+<h2 class="anchored" data-anchor-id="apply-a-process-to-an-array">Apply a process to an array</h2>
+<p>Use <code>array_apply</code> when every element of an array should receive the same process graph, for example scaling each value before converting the array back into a cube dimension.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>scaled <span class="op">=</span> openeo.processes.array_apply(</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  data<span class="op">=</span>band_array,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  process<span class="op">=</span><span class="kw">lambda</span> value: value.multiply(<span class="fl">0.0001</span>),</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
 
 
 
@@ -931,4 +1131,5 @@ ul.task-list li input[type="checkbox"] {
 
 
 
+<script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>

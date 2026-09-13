@@ -1,1 +1,31 @@
+# User Defined Processes
 
+Package a reusable process graph as a named process
+
+A User Defined Process (UDP) packages a process graph behind a reusable name and a documented set of parameters. It is useful for sharing a cloud-mask routine, an index calculation, or a project-specific workflow.
+
+VITO
+
+EODC
+
+CDSE
+
+> **NOTE:**
+>
+> The buttons on this page are a documentation aid, not a live capability registry. Use the [openEO Hub](https://hub.openeo.org/) for a cross-backend overview: open **Filters**, select a process under **Processes**, and the Hub shows only matching services. The Hub data is crawled and cached.
+
+## Create a reusable workflow
+
+A UDP is not one raster operation: it packages a process graph behind a reusable identifier. Use it when the same cloud mask, index, or compositing workflow should be called by multiple users or applications. A UDP has an identifier, summary, parameter definitions, and a process graph; once saved to a backend, it can be called like another process in a new graph.
+
+### Good candidates for a UDP
+
+- A cloud or quality-mask routine used by several projects.
+- A named index or feature-engineering recipe with configurable bands.
+- A standard compositing workflow for one data product.
+
+> **NOTE:**
+>
+> A UDP is stored by a backend or workspace. The graph itself can use standardized processes, but the UDP identifier, permissions, and any backend-specific process used inside it are not automatically portable.
+
+See the [openEO API documentation](https://api.openeo.org/) for the current UDP endpoints and the [process reference](https://processes.openeo.org/) for graph building blocks.

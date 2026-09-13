@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>temporal_operations – openEO</title>
+<title>Temporal Operations – openEO</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -25,6 +25,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -45,7 +80,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-f7b31f555e83651d4eb6f45835aa384a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-5db03c06400178421883125b8393055e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -73,6 +108,7 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<style>html{ scroll-behavior: smooth; }</style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link href="https://fonts.googleapis.com/css?family=Roboto+Mono|Source+Sans+Pro:300,400,600" rel="stylesheet">
@@ -101,54 +137,53 @@ ul.task-list li input[type="checkbox"] {
     window.addEventListener('popstate', setActiveClassForCurrentUrl);
     window.addEventListener('hashchange', setActiveClassForCurrentUrl);
 
-    document.addEventListener("DOMContentLoaded", function () {
-        const badges = Array.from(document.querySelectorAll(".tag-filter-badge"));
+    document.addEventListener("DOMContentLoaded", async function () {
         const items = Array.from(document.querySelectorAll(".tag-filter-item"));
-        if (badges.length === 0 || items.length === 0) return;
-
+        const filterUi = document.querySelector(".tag-filter-ui");
+        if (items.length === 0 || !filterUi) return;
+        const staticBadges = Array.from(document.querySelectorAll(".tag-filter-badge"));
+        const hasLiveProcesses = items.some((item) => item.hasAttribute("data-process"));
+        let support = null;
+        if (hasLiveProcesses) {
+            try {
+                const url = new URL("../../_data/backend_process_support.json", window.location.href);
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                support = await response.json();
+            } catch (error) { console.warn("Could not load backend process support data.", error); }
+        }
         const getTags = (item) => {
-            const fromDataAttr = (item.getAttribute("data-tags") || "")
-            .toLowerCase()
-            .split(/\s+/)
-            .filter(Boolean);
-
-            if (fromDataAttr.length > 0) {
-            return new Set(fromDataAttr);
+            if (support && item.hasAttribute("data-process")) {
+                return new Set(item.getAttribute("data-process").split(/[\s,]+/).flatMap((id) => support.processes[id] || []));
             }
-
-            const fromBadges = Array.from(item.querySelectorAll(".badge"))
-            .flatMap((el) => Array.from(el.classList))
-            .filter((cls) => cls.startsWith("badge-"))
-            .map((cls) => cls.replace("badge-", "").toLowerCase());
-
-            return new Set(fromBadges);
+            return new Set((item.getAttribute("data-tags") || "").toLowerCase().split(/\s+/).filter(Boolean));
         };
-
+        let badges = staticBadges;
+        if (support) {
+            const availableTags = [...new Set(items.flatMap((item) => [...getTags(item)]))].sort();
+            filterUi.replaceChildren();
+            badges = availableTags.map((tag) => {
+                const button = document.createElement("button");
+                button.className = "tag-filter-badge active";
+                button.dataset.tag = tag;
+                button.textContent = support.backends[tag]?.label || tag;
+                filterUi.appendChild(button);
+                return button;
+            });
+        }
+        if (badges.length === 0) return;
         const applyFilter = () => {
-            const activeBadges = badges.filter((b) => b.classList.contains("active"));
-            const selectedTags = new Set(activeBadges.map((b) => b.getAttribute("data-tag")));
-
+            const selectedTags = new Set(badges.filter((badge) => badge.classList.contains("active")).map((badge) => badge.dataset.tag));
             items.forEach((item) => {
-            const tags = getTags(item);
-            const visible = Array.from(selectedTags).some((tag) => tags.has(tag));
-            item.hidden = !visible;
+                const tags = getTags(item);
+                item.hidden = ![...selectedTags].some((tag) => tags.has(tag));
             });
         };
-
-        badges.forEach((badge) => {
-            badge.addEventListener("click", function (e) {
-            e.preventDefault();
-            this.classList.toggle("active");
-            this.classList.toggle("inactive");
-            applyFilter();
-            });
-        });
-
+        badges.forEach((badge) => badge.addEventListener("click", function (event) {
+            event.preventDefault(); this.classList.toggle("active"); this.classList.toggle("inactive"); applyFilter();
+        }));
         applyFilter();
-        });
-
-
-
+    });
     window.onload = () => {
         const brand = document.querySelector('.navbar-brand');
         if (brand) {
@@ -373,7 +408,7 @@ ul.task-list li input[type="checkbox"] {
   </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="sidebar-menu-container"> 
@@ -513,15 +548,195 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#select-a-time-range" id="toc-select-a-time-range" class="nav-link active" data-scroll-target="#select-a-time-range">Select a time range</a>
+  <ul class="collapse">
+  <li><a href="#python" id="toc-python" class="nav-link" data-scroll-target="#python">Python</a></li>
+  </ul></li>
+  <li><a href="#build-monthly-composites" id="toc-build-monthly-composites" class="nav-link" data-scroll-target="#build-monthly-composites">Build monthly composites</a>
+  <ul class="collapse">
+  <li><a href="#python-1" id="toc-python-1" class="nav-link" data-scroll-target="#python-1">Python</a></li>
+  </ul></li>
+  <li><a href="#aggregate-explicit-time-intervals" id="toc-aggregate-explicit-time-intervals" class="nav-link" data-scroll-target="#aggregate-explicit-time-intervals">Aggregate explicit time intervals</a></li>
+  <li><a href="#apply-a-reducer-along-time" id="toc-apply-a-reducer-along-time" class="nav-link" data-scroll-target="#apply-a-reducer-along-time">Apply a reducer along time</a>
+  <ul class="collapse">
+  <li><a href="#python-2" id="toc-python-2" class="nav-link" data-scroll-target="#python-2">Python</a></li>
+  </ul></li>
+  <li><a href="#temporal-process-details" id="toc-temporal-process-details" class="nav-link" data-scroll-target="#temporal-process-details">Temporal process details</a></li>
+  <li><a href="#align-temporal-labels" id="toc-align-temporal-labels" class="nav-link" data-scroll-target="#align-temporal-labels">Align temporal labels</a></li>
+  <li><a href="#apply-a-process-along-time" id="toc-apply-a-process-along-time" class="nav-link" data-scroll-target="#apply-a-process-along-time">Apply a process along time</a></li>
+  <li><a href="#count-observations-over-time" id="toc-count-observations-over-time" class="nav-link" data-scroll-target="#count-observations-over-time">Count observations over time</a></li>
+  <li><a href="#fit-a-temporal-curve" id="toc-fit-a-temporal-curve" class="nav-link" data-scroll-target="#fit-a-temporal-curve">Fit a temporal curve</a></li>
+  <li><a href="#predict-from-a-temporal-curve" id="toc-predict-from-a-temporal-curve" class="nav-link" data-scroll-target="#predict-from-a-temporal-curve">Predict from a temporal curve</a></li>
+  <li><a href="#calculate-a-climatological-normal" id="toc-calculate-a-climatological-normal" class="nav-link" data-scroll-target="#calculate-a-climatological-normal">Calculate a climatological normal</a></li>
+  <li><a href="#calculate-temporal-anomalies" id="toc-calculate-temporal-anomalies" class="nav-link" data-scroll-target="#calculate-temporal-anomalies">Calculate temporal anomalies</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
-<main class="content column-page-right" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../documentation/cube_operations.html">CUBE OPERATIONS</a></li><li class="breadcrumb-item"><a href="../../documentation/cube_operations/temporal_operations.html">Temporal Operations</a></li></ol></nav></header>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../documentation/cube_operations.html">CUBE OPERATIONS</a></li><li class="breadcrumb-item"><a href="../../documentation/cube_operations/temporal_operations.html">Temporal Operations</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Temporal Operations</h1>
+</div>
 
 
 
+<div class="quarto-title-meta">
 
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="lead">
+<p>Temporal processes select observations, build regular composites, and apply calculations along a cube’s time dimension.</p>
+</div>
+<div class="tag-filter-ui" id="tag-filter-ui">
+  <button class="tag-filter-badge active" data-tag="vito">VITO</button>
+  <button class="tag-filter-badge active" data-tag="eodc">EODC</button>
+  <button class="tag-filter-badge active" data-tag="cdse">CDSE</button>
+  <button class="tag-filter-badge active" data-tag="sentinelhub">Sentinel Hub</button>
+  <button class="tag-filter-badge inactive" data-tag="gee">Google Earth Engine</button>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Backend support overview
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The buttons on this page are a documentation aid, not a live capability registry. Use the <a href="https://hub.openeo.org/">openEO Hub</a> for a cross-backend overview: open <strong>Filters</strong>, select a process under <strong>Processes</strong>, and the Hub shows only matching services. The Hub data is crawled and cached.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>About backend labels
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The labels identify backends associated with these examples, not a permanent guarantee of capability. Check the backend process listing for its current support.</p>
+</div>
+</div>
+<section id="select-a-time-range" class="level2 tag-filter-item" data-process="filter_temporal">
+<h2 class="anchored" data-anchor-id="select-a-time-range">Select a time range</h2>
+<p>Use <code>filter_temporal</code> immediately after loading a collection when the temporal extent is not already supplied to <code>load_collection</code>. It accepts an inclusive start and exclusive end timestamp, so consecutive intervals can be joined without duplicated observations.</p>
+<section id="python" class="level3">
+<h3 class="anchored" data-anchor-id="python">Python</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> openeo</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>connection <span class="op">=</span> openeo.<span class="ex">connect</span>(<span class="st">"https://openeo.vito.be"</span>).authenticate_oidc()</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>cube <span class="op">=</span> connection.load_collection(<span class="st">"SENTINEL2_L2A"</span>, bands<span class="op">=</span>[<span class="st">"B04"</span>, <span class="st">"B08"</span>])</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>growing_season <span class="op">=</span> cube.filter_temporal([<span class="st">"2024-04-01"</span>, <span class="st">"2024-10-01"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+</section>
+<hr>
+<section id="build-monthly-composites" class="level2 tag-filter-item" data-process="aggregate_temporal_period">
+<h2 class="anchored" data-anchor-id="build-monthly-composites">Build monthly composites</h2>
+<p>Clouds and irregular acquisition dates make raw satellite time series difficult to compare. <code>aggregate_temporal_period</code> groups observations into calendar periods and reduces each group. A monthly median is a robust first composite for optical data after cloud masking.</p>
+<section id="python-1" class="level3">
+<h3 class="anchored" data-anchor-id="python-1">Python</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>monthly_median <span class="op">=</span> growing_season.aggregate_temporal_period(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    period<span class="op">=</span><span class="st">"month"</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    reducer<span class="op">=</span><span class="st">"median"</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>monthly_median.download(<span class="st">"monthly_median.tif"</span>, <span class="bu">format</span><span class="op">=</span><span class="st">"GTiff"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Use <code>aggregate_temporal</code> instead when you already have explicit date intervals, for example a crop calendar or event-based periods.</p>
+</section>
+</section>
+<section id="aggregate-explicit-time-intervals" class="level2 tag-filter-item" data-process="aggregate_temporal">
+<h2 class="anchored" data-anchor-id="aggregate-explicit-time-intervals">Aggregate explicit time intervals</h2>
+<p><code>aggregate_temporal</code> reduces user-defined intervals, such as phenological phases or event windows.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>seasonal <span class="op">=</span> growing_season.aggregate_temporal(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  intervals<span class="op">=</span>[<span class="st">"2024-04-01"</span>, <span class="st">"2024-06-01"</span>],</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  reducer<span class="op">=</span><span class="st">"mean"</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<hr>
+<section id="apply-a-reducer-along-time" class="level2 tag-filter-item" data-process="reduce_dimension">
+<h2 class="anchored" data-anchor-id="apply-a-reducer-along-time">Apply a reducer along time</h2>
+<p><code>reduce_dimension</code> is the flexible option for collapsing a dimension. Set <code>dimension="t"</code> to derive one raster from the whole time series, such as the maximum NDVI or the number of valid observations.</p>
+<section id="python-2" class="level3">
+<h3 class="anchored" data-anchor-id="python-2">Python</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>seasonal_maximum <span class="op">=</span> growing_season.reduce_dimension(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    dimension<span class="op">=</span><span class="st">"t"</span>,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    reducer<span class="op">=</span><span class="st">"max"</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Keep time when you need a time series
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>aggregate_temporal_period</code> retains a time dimension with one label per period. <code>reduce_dimension</code> removes the reduced dimension entirely. Choose the former for a monthly series and the latter for a single seasonal product.</p>
+</div>
+</div>
+<p>For the definitive schema, consult <a href="https://processes.openeo.org/"><code>filter_temporal</code></a>, <a href="https://processes.openeo.org/"><code>aggregate_temporal</code></a>, <a href="https://processes.openeo.org/"><code>aggregate_temporal_period</code></a>, and <a href="https://processes.openeo.org/"><code>reduce_dimension</code></a>.</p>
+</section>
+</section>
+<section id="temporal-process-details" class="level2">
+<h2 class="anchored" data-anchor-id="temporal-process-details">Temporal process details</h2>
+<p>Each process below has its own backend filter. Generic dimension processes are shown here with <code>dimension="t"</code>.</p>
+</section>
+<section id="align-temporal-labels" class="level2 tag-filter-item" data-process="resample_cube_temporal">
+<h2 class="anchored" data-anchor-id="align-temporal-labels">Align temporal labels</h2>
+<p>Use <code>resample_cube_temporal</code> before merging or comparing cubes whose timestamps do not line up. The target cube supplies the temporal labels and avoids accidentally comparing observations from different dates.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>aligned <span class="op">=</span> source.resample_cube_temporal(target)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="apply-a-process-along-time" class="level2 tag-filter-item" data-process="apply_dimension">
+<h2 class="anchored" data-anchor-id="apply-a-process-along-time">Apply a process along time</h2>
+<p>Use <code>apply_dimension</code> with <code>dimension="t"</code> when every pixel needs the same custom time-series calculation, such as smoothing or a threshold-based event detector. The callback describes an openEO graph; it is not arbitrary local Python execution.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>smoothed <span class="op">=</span> cube.apply_dimension(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  dimension<span class="op">=</span><span class="st">"t"</span>,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  process<span class="op">=</span><span class="kw">lambda</span> series: series.median(),</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="count-observations-over-time" class="level2 tag-filter-item" data-process="count">
+<h2 class="anchored" data-anchor-id="count-observations-over-time">Count observations over time</h2>
+<p>Use <code>count</code> to measure how many valid or matching observations contribute to each pixel. This is useful as a quality layer alongside a temporal mean or median.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>observation_count <span class="op">=</span> cube.count(dimension<span class="op">=</span><span class="st">"t"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="fit-a-temporal-curve" class="level2 tag-filter-item" data-process="fit_curve">
+<h2 class="anchored" data-anchor-id="fit-a-temporal-curve">Fit a temporal curve</h2>
+<p>Use <code>fit_curve</code> when a time series should be represented by a model, such as a linear trend or seasonal curve. The fitted parameters can then be passed to <code>predict_curve</code>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> cube.fit_curve(reducer<span class="op">=</span><span class="st">"linear"</span>, parameters<span class="op">=</span>{<span class="st">"order"</span>: <span class="dv">1</span>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="predict-from-a-temporal-curve" class="level2 tag-filter-item" data-process="predict_curve">
+<h2 class="anchored" data-anchor-id="predict-from-a-temporal-curve">Predict from a temporal curve</h2>
+<p>Use <code>predict_curve</code> to evaluate a model created by <code>fit_curve</code> at new timestamps or labels. This can fill a regular time axis or estimate values at dates not directly observed.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>prediction <span class="op">=</span> model.predict_curve(labels<span class="op">=</span>[<span class="st">"2025-01-01"</span>, <span class="st">"2025-07-01"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="calculate-a-climatological-normal" class="level2 tag-filter-item" data-process="climatological_normal">
+<h2 class="anchored" data-anchor-id="calculate-a-climatological-normal">Calculate a climatological normal</h2>
+<p>Use <code>climatological_normal</code> to calculate a typical value for recurring periods, such as the mean NDVI for each month across several years. It provides the baseline needed for anomaly analysis.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>normal <span class="op">=</span> cube.climatological_normal(period<span class="op">=</span><span class="st">"month"</span>, reducer<span class="op">=</span><span class="st">"mean"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="calculate-temporal-anomalies" class="level2 tag-filter-item" data-process="anomaly">
+<h2 class="anchored" data-anchor-id="calculate-temporal-anomalies">Calculate temporal anomalies</h2>
+<p>Use <code>anomaly</code> to express observations as departures from a climatological normal. Positive and negative values then indicate conditions above or below the expected baseline.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>anomalies <span class="op">=</span> cube.anomaly(normal<span class="op">=</span>normal)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
 
 
 
@@ -931,4 +1146,5 @@ ul.task-list li input[type="checkbox"] {
 
 
 
+<script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>

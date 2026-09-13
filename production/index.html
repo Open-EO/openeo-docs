@@ -132,54 +132,53 @@ ul.task-list li input[type="checkbox"] {
     window.addEventListener('popstate', setActiveClassForCurrentUrl);
     window.addEventListener('hashchange', setActiveClassForCurrentUrl);
 
-    document.addEventListener("DOMContentLoaded", function () {
-        const badges = Array.from(document.querySelectorAll(".tag-filter-badge"));
+    document.addEventListener("DOMContentLoaded", async function () {
         const items = Array.from(document.querySelectorAll(".tag-filter-item"));
-        if (badges.length === 0 || items.length === 0) return;
-
+        const filterUi = document.querySelector(".tag-filter-ui");
+        if (items.length === 0 || !filterUi) return;
+        const staticBadges = Array.from(document.querySelectorAll(".tag-filter-badge"));
+        const hasLiveProcesses = items.some((item) => item.hasAttribute("data-process"));
+        let support = null;
+        if (hasLiveProcesses) {
+            try {
+                const url = new URL("../../_data/backend_process_support.json", window.location.href);
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                support = await response.json();
+            } catch (error) { console.warn("Could not load backend process support data.", error); }
+        }
         const getTags = (item) => {
-            const fromDataAttr = (item.getAttribute("data-tags") || "")
-            .toLowerCase()
-            .split(/\s+/)
-            .filter(Boolean);
-
-            if (fromDataAttr.length > 0) {
-            return new Set(fromDataAttr);
+            if (support && item.hasAttribute("data-process")) {
+                return new Set(item.getAttribute("data-process").split(/[\s,]+/).flatMap((id) => support.processes[id] || []));
             }
-
-            const fromBadges = Array.from(item.querySelectorAll(".badge"))
-            .flatMap((el) => Array.from(el.classList))
-            .filter((cls) => cls.startsWith("badge-"))
-            .map((cls) => cls.replace("badge-", "").toLowerCase());
-
-            return new Set(fromBadges);
+            return new Set((item.getAttribute("data-tags") || "").toLowerCase().split(/\s+/).filter(Boolean));
         };
-
+        let badges = staticBadges;
+        if (support) {
+            const availableTags = [...new Set(items.flatMap((item) => [...getTags(item)]))].sort();
+            filterUi.replaceChildren();
+            badges = availableTags.map((tag) => {
+                const button = document.createElement("button");
+                button.className = "tag-filter-badge active";
+                button.dataset.tag = tag;
+                button.textContent = support.backends[tag]?.label || tag;
+                filterUi.appendChild(button);
+                return button;
+            });
+        }
+        if (badges.length === 0) return;
         const applyFilter = () => {
-            const activeBadges = badges.filter((b) => b.classList.contains("active"));
-            const selectedTags = new Set(activeBadges.map((b) => b.getAttribute("data-tag")));
-
+            const selectedTags = new Set(badges.filter((badge) => badge.classList.contains("active")).map((badge) => badge.dataset.tag));
             items.forEach((item) => {
-            const tags = getTags(item);
-            const visible = Array.from(selectedTags).some((tag) => tags.has(tag));
-            item.hidden = !visible;
+                const tags = getTags(item);
+                item.hidden = ![...selectedTags].some((tag) => tags.has(tag));
             });
         };
-
-        badges.forEach((badge) => {
-            badge.addEventListener("click", function (e) {
-            e.preventDefault();
-            this.classList.toggle("active");
-            this.classList.toggle("inactive");
-            applyFilter();
-            });
-        });
-
+        badges.forEach((badge) => badge.addEventListener("click", function (event) {
+            event.preventDefault(); this.classList.toggle("active"); this.classList.toggle("inactive"); applyFilter();
+        }));
         applyFilter();
-        });
-
-
-
+    });
     window.onload = () => {
         const brand = document.querySelector('.navbar-brand');
         if (brand) {
@@ -763,7 +762,7 @@ What’s new
 </thead>
 <tbody class="list">
 
-<tr data-index="0" data-listing-date-sort="1778716800000" data-listing-file-modified-sort="1788851761764" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="148" data-listing-title-sort="OGC publishes openEO as a new Community Standard" data-listing-filename-sort="2026-05-14-openeo-is-an-ogc-community-standard.qmd">
+<tr data-index="0" data-listing-date-sort="1778716800000" data-listing-file-modified-sort="1789312101387" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="148" data-listing-title-sort="OGC publishes openEO as a new Community Standard" data-listing-filename-sort="2026-05-14-openeo-is-an-ogc-community-standard.qmd">
 <td>
 <span class="listing-date">May 14, 2026</span>
 </td>
@@ -776,7 +775,7 @@ What’s new
 
 </tr>
 
-<tr data-index="1" data-listing-date-sort="1770076800000" data-listing-file-modified-sort="1788851761764" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="479" data-listing-title-sort="openEO API 1.3.0 and openEO Processes 2.0.0 RC2 released" data-listing-filename-sort="2026-02-03-new-openeo-versions-130-200rc2.qmd">
+<tr data-index="1" data-listing-date-sort="1770076800000" data-listing-file-modified-sort="1789312101387" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="479" data-listing-title-sort="openEO API 1.3.0 and openEO Processes 2.0.0 RC2 released" data-listing-filename-sort="2026-02-03-new-openeo-versions-130-200rc2.qmd">
 <td>
 <span class="listing-date">Feb 3, 2026</span>
 </td>
@@ -789,7 +788,7 @@ What’s new
 
 </tr>
 
-<tr data-index="2" data-listing-date-sort="1766361600000" data-listing-file-modified-sort="1788851761764" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="537" data-listing-title-sort="New openEO QGIS plugin has been released" data-listing-filename-sort="2025-12-22-new-qgis-plugin.qmd">
+<tr data-index="2" data-listing-date-sort="1766361600000" data-listing-file-modified-sort="1789312101387" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="537" data-listing-title-sort="New openEO QGIS plugin has been released" data-listing-filename-sort="2025-12-22-new-qgis-plugin.qmd">
 <td>
 <span class="listing-date">Dec 22, 2025</span>
 </td>
