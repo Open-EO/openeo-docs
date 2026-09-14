@@ -34,7 +34,7 @@ Before loading data as a datacube, inspect the backend's collection metadata. It
 ```python
 import openeo
 
-connection = openeo.connect("https://openeofed.dataspace.copernicus.eu")
+connection = openeo.connect("openeofed.dataspace.copernicus.eu")
 collections = connection.list_collections()
 metadata = connection.describe_collection("SENTINEL2_L2A")
 ```

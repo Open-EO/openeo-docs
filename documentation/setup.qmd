@@ -36,7 +36,7 @@ Confirm that the package is available and connect to a backend:
 import openeo
 
 print(openeo.client_version())
-connection = openeo.connect("https://<backend-url>") # such as "https://openeo.dataspace.copernicus.eu"
+connection = openeo.connect("<backend-url>") # such as "openeo.dataspace.copernicus.eu"
 print(connection.list_collections())
 ```
 
@@ -57,7 +57,7 @@ Then create an asynchronous connection:
 ```javascript
 import { OpenEO } from "@openeo/js-client";
 
-const connection = await OpenEO.connect("https://<backend-url>");
+const connection = await OpenEO.connect("<backend-url>");
 console.log(await connection.listCollections());
 ```
 

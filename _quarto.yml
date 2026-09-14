@@ -99,7 +99,7 @@ website:
               - href: documentation/key_concepts/processes.qmd
                 text: Processes
               - href: documentation/key_concepts/architecture.qmd
-                text: openEO Architecture
+                text: Architecture
           - href: documentation/setup.qmd
             text: SETUP
           - href: documentation/data_discovery.qmd
