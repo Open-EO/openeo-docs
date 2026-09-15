@@ -6,7 +6,8 @@ title: "Data Discovery and Loading"
 <div class="tag-filter-ui" id="tag-filter-ui">
     <button class="tag-filter-badge active" data-tag="vito">VITO</button>
     <button class="tag-filter-badge active" data-tag="eodc">EODC</button>
-    <button class="tag-filter-badge active" data-tag="cdse">CDSE</button>
+	<button class="tag-filter-badge inactive" data-tag="cdse">CDSE</button>
+	<button class="tag-filter-badge inactive" data-tag="federation">Federation</button>
     <button class="tag-filter-badge active" data-tag="sentinelhub">Sentinel Hub</button>
     <button class="tag-filter-badge inactive" data-tag="gee">Google Earth Engine</button>
 </div>
