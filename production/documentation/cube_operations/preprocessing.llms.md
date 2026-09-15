@@ -45,7 +45,7 @@ openEO provides the `mask` process to mask out unwanted or invalid observations.
 ``` python
 import openeo
 
-connection = openeo.connect("https://openeo.vito.be").authenticate_oidc()
+connection = openeo.connect("openeofed.dataspace.copernicus.eu").authenticate_oidc()
 
 sentinel2 = connection.load_collection(
     "SENTINEL2_L2A",
@@ -99,7 +99,7 @@ The required input bands and correction methods depend on the collection and bac
 ``` python
 import openeo
 
-connection = openeo.connect("https://openeo.eodc.eu").authenticate_oidc()
+connection = openeo.connect("openeo.eodc.eu").authenticate_oidc()
 
 # Load raw L1C Sentinel-2 — include angle bands required by iCor
 l1c = connection.load_collection(
@@ -128,7 +128,7 @@ l2a.download("sentinel2_icor.tif", format="GTiff")
 ``` r
 library(openeo)
 
-con <- connect("https://openeo.eodc.eu")
+con <- connect("openeo.eodc.eu")
 login()
 
 p <- processes()
@@ -157,7 +157,7 @@ compute_result(graph = l2a, format = "GTiff", output_file = "sentinel2_icor.tif"
 ``` javascript
 import { Connection, authenticate } from "@openeo/js-client";
 
-const con = await Connection.connect("https://openeo.eodc.eu");
+const con = await Connection.connect("openeo.eodc.eu");
 await con.authenticateOIDC();
 
 const builder = await con.buildProcess();
@@ -191,7 +191,7 @@ SAR backscatter processing calibrates raw radar observations and can apply terra
 ``` python
 import openeo
 
-connection = openeo.connect("https://openeo.vito.be").authenticate_oidc()
+connection = openeo.connect("openeo.vito.be").authenticate_oidc()
 
 # Load Sentinel-1 GRD — spatial/temporal filters are fine before backscatter
 s1grd = (
@@ -216,7 +216,7 @@ job.get_results().download_files("./output/")
 ``` r
 library(openeo)
 
-con <- connect("https://openeo.vito.be")
+con <- connect("openeo.terrascope.be")
 login()
 
 p <- processes()
@@ -257,7 +257,7 @@ download_results(job, folder = "./output/")
 ``` javascript
 import { Connection } from "@openeo/js-client";
 
-const con = await Connection.connect("https://openeo.vito.be");
+const con = await Connection.connect("openeo.terrascope.be");
 await con.authenticateOIDC();
 
 const builder = await con.buildProcess();

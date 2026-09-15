@@ -257,7 +257,7 @@ ul.task-list li input[type="checkbox"] {
   </li>  
         <li>
     <a class="dropdown-item" href="../../documentation/key_concepts/architecture.html">
- <span class="dropdown-text">openEO Architecture</span></a>
+ <span class="dropdown-text">Architecture</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="../../documentation/setup.html">
@@ -365,7 +365,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../documentation/key_concepts/glossary.html">KEY CONCEPTS</a></li><li class="breadcrumb-item"><a href="../../documentation/key_concepts/architecture.html">openEO Architecture</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../documentation/key_concepts/glossary.html">KEY CONCEPTS</a></li><li class="breadcrumb-item"><a href="../../documentation/key_concepts/architecture.html">Architecture</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -419,7 +419,7 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../documentation/key_concepts/architecture.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">openEO Architecture</span></a>
+ <span class="menu-text">Architecture</span></a>
   </div>
 </li>
       </ul>
@@ -512,17 +512,93 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#architecture" id="toc-architecture" class="nav-link active" data-scroll-target="#architecture">Architecture</a></li>
+  <li><a href="#microservices" id="toc-microservices" class="nav-link" data-scroll-target="#microservices">Microservices</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
-<main class="content column-page-right" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../documentation/key_concepts/glossary.html">KEY CONCEPTS</a></li><li class="breadcrumb-item"><a href="../../documentation/key_concepts/architecture.html">openEO Architecture</a></li></ol></nav></header>
+<main class="content column-body" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../documentation/key_concepts/glossary.html">KEY CONCEPTS</a></li><li class="breadcrumb-item"><a href="../../documentation/key_concepts/architecture.html">Architecture</a></li></ol></nav></header>
 
 
 
 
+<section id="architecture" class="level1">
+<h1>Architecture</h1>
+<p>The openEO API defines a language for how clients communicate to back-ends in order to analyze large Earth observation datasets. The API will be implemented by drivers for specific back-ends. Some first architecture considerations are listed below.</p>
+<ol type="1">
+<li>The openEO API is a contract between clients and back-ends that describes the communication only</li>
+<li>Each back-end runs its own API instance including the specific back-end driver. There is no API instance that runs more than one driver.</li>
+<li>Clients in R, Python, and JavaScript connect directly to the back-ends and communicate with the back-ends over <em>HTTPS</em> according to the openEO API specification.</li>
+<li>API instances can run on back-end servers or additional intermediate layers, which then communicate to back-ends in a back-end specific way.</li>
+<li>Back-ends may add functionality and extend the API wherever there is need.</li>
+<li>There will be a central back-end registry service (openEO Hub), to allow users to search for back-ends with specific functionality and or data.</li>
+<li>The openEO API may define <em>profiles</em> in order to group specific functionality.</li>
+</ol>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/arch.png" class="img-fluid figure-img"></p>
+<figcaption>Architecture - openEO API shown in dark blue</figcaption>
+</figure>
+</div>
+</section>
+<section id="microservices" class="level1">
+<h1>Microservices</h1>
+<p>To simplify and structure the development, the API is divided into a few microservices.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Microservice</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Capabilities</td>
+<td>This microservice reports on the capabilities of the back-end, i.e.&nbsp;which API endpoints are implemented, which authentication methods are supported, and whether and how UDFs can be executed at the back-end.</td>
+</tr>
+<tr class="even">
+<td>EO Data Discovery</td>
+<td>Describes which collections are available at the back-end.</td>
+</tr>
+<tr class="odd">
+<td>Process Discovery</td>
+<td>Provides services to find out which processes a back-end provides, i.e., what users can do with the available data.</td>
+</tr>
+<tr class="even">
+<td>Data Processing</td>
+<td>Organizes and manages data processing on the back-end, either as synchronous on-demand computation or batch jobs.</td>
+</tr>
+<tr class="odd">
+<td>File Storage</td>
+<td>Organizes and manages user-uploaded files.</td>
+</tr>
+<tr class="even">
+<td>User-Defined Processes</td>
+<td>Organizes and manages user-defined processes (process graphs).</td>
+</tr>
+<tr class="odd">
+<td>Secondary Services</td>
+<td>External web services to access data and job results such as a OGC WMTS service.</td>
+</tr>
+<tr class="even">
+<td>Account Management</td>
+<td>User management, accounting and authentication.</td>
+</tr>
+<tr class="odd">
+<td>UDF Runtime</td>
+<td>Execution of user-defined functions, not part of the Core API. See the <a href="../../documentation/cube_operations/udf.html">UDF documentation</a> for more information.</td>
+</tr>
+</tbody>
+</table>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

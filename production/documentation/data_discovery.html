@@ -292,7 +292,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
         <li>
     <a class="dropdown-item" href="../documentation/key_concepts/architecture.html">
- <span class="dropdown-text">openEO Architecture</span></a>
+ <span class="dropdown-text">Architecture</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="../documentation/setup.html">
@@ -454,7 +454,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../documentation/key_concepts/architecture.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">openEO Architecture</span></a>
+ <span class="menu-text">Architecture</span></a>
   </div>
 </li>
       </ul>
@@ -555,7 +555,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#datacube-discovery" id="toc-datacube-discovery" class="nav-link active" data-scroll-target="#datacube-discovery">Datacube discovery</a></li>
   <li><a href="#load-data" id="toc-load-data" class="nav-link" data-scroll-target="#load-data">Load data</a>
   <ul class="collapse">
-  <li><a href="#load-a-backend-collection" id="toc-load-a-backend-collection" class="nav-link" data-scroll-target="#load-a-backend-collection">Load a backend collection</a></li>
+  <li><a href="#load-collection-from-the-backend" id="toc-load-collection-from-the-backend" class="nav-link" data-scroll-target="#load-collection-from-the-backend">Load collection from the backend</a></li>
   <li><a href="#load-data-from-stac" id="toc-load-data-from-stac" class="nav-link" data-scroll-target="#load-data-from-stac">Load data from STAC</a></li>
   </ul></li>
   <li><a href="#next-steps" id="toc-next-steps" class="nav-link" data-scroll-target="#next-steps">Next steps</a></li>
@@ -584,9 +584,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<div class="lead">
-<p>Explore the data available in an openEO backend and learn how to load it as a data cube in openEO.</p>
-</div>
 <div class="tag-filter-ui" id="tag-filter-ui">
 &nbsp; &nbsp; <button class="tag-filter-badge active" data-tag="vito">VITO</button>
 &nbsp; &nbsp; <button class="tag-filter-badge active" data-tag="eodc">EODC</button>
@@ -614,46 +611,182 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="datacube-discovery">Datacube discovery</h2>
 <p>openEO handles EO data as a <a href="../documentation/key_concepts/datacube.html"><strong>datacube</strong></a>. A datacube is a multidimensional representation of data that serves as input to which we apply sets of processes, as covered in the <a href="../documentation/cube_operations.html">Cube Operations</a> section, for several types of EO workflows.</p>
 <p>These processes, when applied to a datacube, form a process chain called a process graph; the backend executes this graph only when an execution is explicitly triggered.</p>
-<p>Before loading data as a datacube, inspect the backend’s collection metadata. It lists whether the intended data is offered by the backend for loading as a datacube, available collection IDs, spatial and temporal coverage, band names, and other properties that can be used for filtering.</p>
+<p>Before loading data as a datacube, it is recommended to inspect the collection’s metadata. Users can check whether the intended data is offered by the backend for loading as a datacube, available collection IDs, spatial and temporal coverage, band names, and other properties that can be used for filtering.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> openeo</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>connection <span class="op">=</span> openeo.<span class="ex">connect</span>(<span class="st">"https://openeofed.dataspace.copernicus.eu"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>connection <span class="op">=</span> openeo.<span class="ex">connect</span>(<span class="st">"openeofed.dataspace.copernicus.eu"</span>)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>collections <span class="op">=</span> connection.list_collections()</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>metadata <span class="op">=</span> connection.describe_collection(<span class="st">"SENTINEL2_L2A"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(openeo)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>connection <span class="ot">&lt;-</span> <span class="fu">connect</span>(<span class="st">"openeofed.dataspace.copernicus.eu"</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>collections <span class="ot">&lt;-</span> <span class="fu">list_collections</span>(connection)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>metadata <span class="ot">&lt;-</span> <span class="fu">describe_collection</span>(connection, <span class="st">"SENTINEL2_L2A"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> OpenEO <span class="im">from</span> <span class="st">"openeo-js-client"</span><span class="op">;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> connection <span class="op">=</span> <span class="cf">await</span> OpenEO<span class="op">.</span><span class="fu">connect</span>(<span class="st">"openeofed.dataspace.copernicus.eu"</span>)<span class="op">;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> collections <span class="op">=</span> <span class="cf">await</span> connection<span class="op">.</span><span class="fu">listCollections</span>()<span class="op">;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> metadata <span class="op">=</span> <span class="cf">await</span> connection<span class="op">.</span><span class="fu">describeCollection</span>(<span class="st">"SENTINEL2_L2A"</span>)<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
 </section>
 <section id="load-data" class="level2">
 <h2 class="anchored" data-anchor-id="load-data">Load data</h2>
-<section id="load-a-backend-collection" class="level3 tag-filter-item" data-process="load_collection">
-<h3 class="anchored" data-anchor-id="load-a-backend-collection">Load a backend collection</h3>
-<p>If the collection metadata indicates that the desired data is available, proceed to load it using the <code>load_collection</code> process. Specify the spatial extent, temporal extent, and bands in this call when constructing the datacube. Loading only the data needed for the analysis avoids unnecessary processing.</p>
+<p>A <code>DataCube</code> is a virtual representation of the data that allows you to define and manipulate the data without immediately downloading it or performing computations. The backend reads the requested collection only when an execute request is made. It is recommended to start with a small area and a short time period, then increase the scope once the result looks correct.</p>
+<p>Use <code>load_collection</code> when the connected backend lists the dataset. Use <code>load_stac</code> when you have a publicly accessible STAC URL for data that is not registered as a backend collection, or when you want to use the result of an earlier job.</p>
+<section id="load-collection-from-the-backend" class="level3 tag-filter-item" data-process="load_collection">
+<h3 class="anchored" data-anchor-id="load-collection-from-the-backend">Load collection from the backend</h3>
+<p>When inspecting the available collections, you can determine whether the backend lists the desired dataset. If the dataset is listed, you can proceed to load it using the <code>load_collection</code> process. Specify the spatial extent, temporal extent, and bands in this call when constructing the datacube. Loading only the data needed for the analysis avoids unnecessary processing.</p>
 <p>Alternatively, the user can choose to filter the data for a spatial and temporal extent later in the workflow using standard spatial and temporal operations. However, it is recommended to specify these extents when loading the collection to minimise unnecessary data processing.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>bbox <span class="op">=</span> {<span class="st">"west"</span>: <span class="fl">4.30</span>, <span class="st">"south"</span>: <span class="fl">51.20</span>, <span class="st">"east"</span>: <span class="fl">4.60</span>, <span class="st">"north"</span>: <span class="fl">51.40</span>}</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>temporal_extent <span class="op">=</span> [<span class="st">"2024-06-01"</span>, <span class="st">"2024-06-30"</span>]</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>cube <span class="op">=</span> connection.load_collection(</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; <span class="st">"SENTINEL2_L2A"</span>,</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; spatial_extent<span class="op">=</span>bbox,</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; temporal_extent<span class="op">=</span>temporal_extent,</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; bands<span class="op">=</span>[<span class="st">"B04"</span>, <span class="st">"B08"</span>],</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The collection ID and band names in this example are valid for the Copernicus Data Space Ecosystem federation backend, but may differ elsewhere.</p>
-<p>Next, continue with <a href="../documentation/cube_operations/spectral_operations.html">spectral operations</a> to calculate NDVI, or use <a href="../documentation/cube_operations/spatial_operations.html">spatial operations</a> to filter the area of interest or similar tasks using several operations offered by the backend.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>bbox <span class="op">=</span> {<span class="st">"west"</span>: <span class="fl">4.30</span>, <span class="st">"south"</span>: <span class="fl">51.20</span>, <span class="st">"east"</span>: <span class="fl">4.60</span>, <span class="st">"north"</span>: <span class="fl">51.40</span>}</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>temporal_extent <span class="op">=</span> [<span class="st">"2024-06-01"</span>, <span class="st">"2024-06-30"</span>]</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>cube <span class="op">=</span> connection.load_collection(</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; <span class="st">"SENTINEL2_L2A"</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; spatial_extent<span class="op">=</span>bbox,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; temporal_extent<span class="op">=</span>temporal_extent,</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; bands<span class="op">=</span>[<span class="st">"B04"</span>, <span class="st">"B08"</span>],</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>bbox <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">west =</span> <span class="fl">4.30</span>, <span class="at">south =</span> <span class="fl">51.20</span>, <span class="at">east =</span> <span class="fl">4.60</span>, <span class="at">north =</span> <span class="fl">51.40</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>temporal_extent <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"2024-06-01"</span>, <span class="st">"2024-06-30"</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>cube <span class="ot">&lt;-</span> <span class="fu">load_collection</span>(</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; connection,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; <span class="st">"SENTINEL2_L2A"</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; <span class="at">spatial_extent =</span> bbox,</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; <span class="at">temporal_extent =</span> temporal_extent,</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; <span class="at">bands =</span> <span class="fu">c</span>(<span class="st">"B04"</span>, <span class="st">"B08"</span>)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> bbox <span class="op">=</span> {<span class="dt">west</span><span class="op">:</span> <span class="fl">4.30</span><span class="op">,</span> <span class="dt">south</span><span class="op">:</span> <span class="fl">51.20</span><span class="op">,</span> <span class="dt">east</span><span class="op">:</span> <span class="fl">4.60</span><span class="op">,</span> <span class="dt">north</span><span class="op">:</span> <span class="fl">51.40</span>}<span class="op">;</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> temporal_extent <span class="op">=</span> [<span class="st">"2024-06-01"</span><span class="op">,</span> <span class="st">"2024-06-30"</span>]<span class="op">;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> cube <span class="op">=</span> <span class="cf">await</span> connection<span class="op">.</span><span class="fu">loadCollection</span>(</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; <span class="st">"SENTINEL2_L2A"</span><span class="op">,</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; {</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; <span class="dt">spatial_extent</span><span class="op">:</span> bbox<span class="op">,</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; <span class="dt">temporal_extent</span><span class="op">:</span> temporal_extent<span class="op">,</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; <span class="dt">bands</span><span class="op">:</span> [<span class="st">"B04"</span><span class="op">,</span> <span class="st">"B08"</span>]</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; }</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>)<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<p>The collection ID and band names in this example are valid for the Copernicus Data Space Ecosystem federation backend, but may differ in other backends.</p>
+<p><code>cube</code> is now a reusable data-cube object: subsequent calls such as <code>cube.ndvi()</code> extend the planned workflow and return a new cube.</p>
+<section id="choose-the-data-to-load" class="level4">
+<h4 class="anchored" data-anchor-id="choose-the-data-to-load">Choose the data to load</h4>
+<p>The most important <code>load_collection</code> arguments are:</p>
+<ul>
+<li><code>collection_id</code>: The identifier of the dataset offered by the backend, for example <code>"SENTINEL2_L2A"</code>.</li>
+<li><code>spatial_extent</code>: The area of interest. It can be a bounding box or a feature collection</li>
+<li><code>temporal_extent</code>: A start and end date or date-time. The start is included and the end is excluded, so <code>['2024-06-01', '2024-07-01']</code> covers all of June.</li>
+<li><code>bands</code>: The band names needed by the analysis. Their names, and their order in the cube can be determined from the collection metadata. If not specified, all available bands are loaded.</li>
+</ul>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-3" role="tab" aria-controls="tabset-3-3" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Keep only Sentinel-2 scenes reported with 20% cloud cover or less.</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>cube <span class="op">=</span> connection.load_collection(</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"SENTINEL2_L2A"</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    spatial_extent<span class="op">=</span>bbox,</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    temporal_extent<span class="op">=</span><span class="st">"2024-06"</span>,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    bands<span class="op">=</span>[<span class="st">"B04"</span>, <span class="st">"B08"</span>],</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    max_cloud_cover<span class="op">=</span><span class="dv">20</span>,</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Keep only Sentinel-2 scenes reported with 20% cloud cover or less.</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>cube <span class="ot">&lt;-</span> <span class="fu">load_collection</span>(</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; connection,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; <span class="st">"SENTINEL2_L2A"</span>,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; <span class="at">spatial_extent =</span> bbox,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; <span class="at">temporal_extent =</span> <span class="st">"2024-06"</span>,</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; <span class="at">bands =</span> <span class="fu">c</span>(<span class="st">"B04"</span>, <span class="st">"B08"</span>),</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; <span class="at">max_cloud_cover =</span> <span class="dv">20</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-3-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Keep only Sentinel-2 scenes reported with 20% cloud cover or less.</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> cube <span class="op">=</span> <span class="cf">await</span> connection<span class="op">.</span><span class="fu">loadCollection</span>(</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; <span class="st">"SENTINEL2_L2A"</span><span class="op">,</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; {</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; <span class="dt">spatial_extent</span><span class="op">:</span> bbox<span class="op">,</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; <span class="dt">temporal_extent</span><span class="op">:</span> <span class="st">"2024-06"</span><span class="op">,</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; <span class="dt">bands</span><span class="op">:</span> [<span class="st">"B04"</span><span class="op">,</span> <span class="st">"B08"</span>]<span class="op">,</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; <span class="dt">max_cloud_cover</span><span class="op">:</span> <span class="dv">20</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; }</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>)<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<p>Next, a wider range of operations can be applied to this datacube. Some common usecases include calculating NDVI as shown in <a href="../documentation/cube_operations/spectral_operations.html">spectral operations</a>, or using <a href="../documentation/cube_operations/spatial_operations.html">spatial operations</a> to filter the area of interest or similar tasks using several operations offered by the backend.</p>
 <p>For complete parameters, see the official <a href="https://processes.openeo.org/#load_collection"><code>load_collection</code> process reference</a>.</p>
+</section>
 </section>
 <section id="load-data-from-stac" class="level3 tag-filter-item" data-process="load_stac">
 <h3 class="anchored" data-anchor-id="load-data-from-stac">Load data from STAC</h3>
 <p>Alternatively, users can also load data from a STAC source rather than from a backend collection. This approach is useful when the desired data is available as STAC metadata but not registered in the connected backend.</p>
-<p>Use <code>load_stac</code> to load data from an accessible STAC source. Similar to <code>load_collection</code>, you can specify the spatial and temporal extents and bands when constructing the datacube.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>stac_url <span class="op">=</span> <span class="st">"https://example.org/stac/collections/my-collection"</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>cube <span class="op">=</span> connection.load_stac(</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; url<span class="op">=</span>stac_url,</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; spatial_extent<span class="op">=</span>{<span class="st">"west"</span>: <span class="fl">4.30</span>, <span class="st">"south"</span>: <span class="fl">51.20</span>, <span class="st">"east"</span>: <span class="fl">4.60</span>, <span class="st">"north"</span>: <span class="fl">51.40</span>},</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; temporal_extent<span class="op">=</span>[<span class="st">"2024-06-01"</span>, <span class="st">"2024-06-30"</span>],</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; bands<span class="op">=</span>[<span class="st">"B04"</span>, <span class="st">"B08"</span>],</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>A common use case is to load the STAC metadata of a completed job result back into a new process graph.</p>
-<p>For more details regarding the support for different STAC source types and parameters, see the official <a href="https://processes.openeo.org/#load_stac"><code>load_stac</code> process reference</a>.</p>
+<p>STAC (SpatioTemporal Asset Catalog) is a standard for describing geospatial data and its files. Use <code>load_stac</code> with the URL of a static STAC Item, Collection, or Catalog, or with a specific collection of a STAC API. The backend must be able to access the URL and the data assets it references. Support can differ between backends, so check the backend’s process support before relying on a STAC source in a production workflow.</p>
+<p>Similar to <code>load_collection</code>, specify the spatial extent, temporal extent, and bands while constructing the cube. This gives the backend the opportunity to read less data. A STAC API can additionally support <code>properties</code> filters; static STAC files do not support these server-side property filters.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-3" role="tab" aria-controls="tabset-4-3" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>stac_url <span class="op">=</span> <span class="st">"https://example.org/stac/collections/my-collection"</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>cube <span class="op">=</span> connection.load_stac(</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; url<span class="op">=</span>stac_url,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; spatial_extent<span class="op">=</span>{<span class="st">"west"</span>: <span class="fl">4.30</span>, <span class="st">"south"</span>: <span class="fl">51.20</span>, <span class="st">"east"</span>: <span class="fl">4.60</span>, <span class="st">"north"</span>: <span class="fl">51.40</span>},</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; temporal_extent<span class="op">=</span>[<span class="st">"2024-06-01"</span>, <span class="st">"2024-06-30"</span>],</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; bands<span class="op">=</span>[<span class="st">"B04"</span>, <span class="st">"B08"</span>],</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>stac_url <span class="ot">&lt;-</span> <span class="st">"https://example.org/stac/collections/my-collection"</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>cube <span class="ot">&lt;-</span> <span class="fu">load_stac</span>(</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; connection,</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; <span class="at">url =</span> stac_url,</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; <span class="at">spatial_extent =</span> <span class="fu">list</span>(<span class="at">west =</span> <span class="fl">4.30</span>, <span class="at">south =</span> <span class="fl">51.20</span>, <span class="at">east =</span> <span class="fl">4.60</span>, <span class="at">north =</span> <span class="fl">51.40</span>),</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; <span class="at">temporal_extent =</span> <span class="fu">c</span>(<span class="st">"2024-06-01"</span>, <span class="st">"2024-06-30"</span>),</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; <span class="at">bands =</span> <span class="fu">c</span>(<span class="st">"B04"</span>, <span class="st">"B08"</span>)</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-4-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> stacUrl <span class="op">=</span> <span class="st">"https://example.org/stac/collections/my-collection"</span><span class="op">;</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> cube <span class="op">=</span> <span class="cf">await</span> connection<span class="op">.</span><span class="fu">loadStac</span>({</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; <span class="dt">url</span><span class="op">:</span> stacUrl<span class="op">,</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; <span class="dt">spatial_extent</span><span class="op">:</span> { <span class="dt">west</span><span class="op">:</span> <span class="fl">4.30</span><span class="op">,</span> <span class="dt">south</span><span class="op">:</span> <span class="fl">51.20</span><span class="op">,</span> <span class="dt">east</span><span class="op">:</span> <span class="fl">4.60</span><span class="op">,</span> <span class="dt">north</span><span class="op">:</span> <span class="fl">51.40</span> }<span class="op">,</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; <span class="dt">temporal_extent</span><span class="op">:</span> [<span class="st">"2024-06-01"</span><span class="op">,</span> <span class="st">"2024-06-30"</span>]<span class="op">,</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; <span class="dt">bands</span><span class="op">:</span> [<span class="st">"B04"</span><span class="op">,</span> <span class="st">"B08"</span>]</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<p>A common use case is to load the STAC metadata of a completed job result back into a new process graph. When the finished job is available on the same backend, <code>load_stac_from_job</code> is the clearest option:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>previous_job <span class="op">=</span> connection.job(<span class="st">"&lt;finished-job-id&gt;"</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>result_cube <span class="op">=</span> connection.load_stac_from_job(previous_job)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The equivalent lower-level approach is <code>connection.load_stac()</code> with the completed job’s results URL, which normally ends in <code>/jobs/&lt;job-id&gt;/results</code>. For a result on another backend, use its signed canonical STAC URL when the backend supports it. Do not include access tokens or other secrets in notebooks or documentation.</p>
+<p>For more details about the process itself, see the <a href="https://processes.openeo.org/#load_stac"><code>load_stac</code> process reference</a> page.</p>
 </section>
 </section>
 <section id="next-steps" class="level2">

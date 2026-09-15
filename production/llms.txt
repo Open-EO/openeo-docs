@@ -41,7 +41,7 @@
 - [Spatial Operations](https://open-eo.github.io/openeo-docs/documentation/cube_operations/spatial_operations.llms.md)
 - [Temporal Operations](https://open-eo.github.io/openeo-docs/documentation/cube_operations/temporal_operations.llms.md)
 - [User Defined Processes](https://open-eo.github.io/openeo-docs/documentation/cube_operations/udp.llms.md)
-- [export_formats](https://open-eo.github.io/openeo-docs/documentation/export_formats.llms.md)
+- [Export Formats](https://open-eo.github.io/openeo-docs/documentation/export_formats.llms.md)
 - [openEO Backends](https://open-eo.github.io/openeo-docs/documentation/key_concepts/backend.llms.md)
 - [Glossary](https://open-eo.github.io/openeo-docs/documentation/key_concepts/glossary.llms.md)
 - [openEO Key Concepts](https://open-eo.github.io/openeo-docs/documentation/keyconcepts.llms.md)

@@ -123,7 +123,7 @@ import { OpenEO } from '@openeo/js-client';
 
 ------------------------------------------------------------------------
 
-In this cookbook, we use the openEO federation backend of the Copernicus Data Space Ecosystem, available at `https://openeofed.dataspace.copernicus.eu`. This backend also provides access to partner resources. For more information on different openEO Backends, please refer [here](https://hub.openeo.org/).
+In this cookbook, we use the [openEO federation (openeofed.dataspace.copernicus.eu)](https://openeofed.dataspace.copernicus.eu) backend of the Copernicus Data Space Ecosystem. This backend also provides access to partner resources. For more information on different openEO Backends, please refer [here](https://hub.openeo.org/).
 
 Once we are sure on the backend we want to use, we can connect to it using the openEO client library.
 
@@ -131,7 +131,7 @@ Once we are sure on the backend we want to use, we can connect to it using the o
 
 ``` python
 import openeo
-connection = openeo.connect("https://openeofed.dataspace.copernicus.eu")
+connection = openeo.connect("openeofed.dataspace.copernicus.eu")
 ```
 
 ## R
@@ -139,13 +139,13 @@ connection = openeo.connect("https://openeofed.dataspace.copernicus.eu")
 ``` r
 
 library(openeo)
-connection <- connect(host = "https://openeofed.dataspace.copernicus.eu")
+connection <- connect(host = "openeofed.dataspace.copernicus.eu")
 ```
 
 ## JavaScript
 
 ``` js
-var connection = await OpenEO.connect("https://openeofed.dataspace.copernicus.eu");
+var connection = await OpenEO.connect("openeofed.dataspace.copernicus.eu");
 ```
 
 The `Connection` object is the central gateway to interact with the back-end: listing collections and processes, building algorithms, and executing and monitoring batch jobs.
@@ -183,7 +183,7 @@ The `Connection` object is the central gateway to interact with the back-end: li
 
 ### 1.2 Explore available collections
 
-EO data in openEO are available as collections, which serve as the input for your processing jobs. Collections can be listed and inspected programmatically, or browsed via the [openEO Web Editor](https://openeofed.dataspace.copernicus.eu).
+EO data in openEO are available as collections, which serve as the input for your processing jobs. Collections can be listed and inspected programmatically, or browsed via the [openEO Web Editor](openeofed.dataspace.copernicus.eu).
 
 ## Python
 
@@ -274,7 +274,7 @@ Processes in openEO are operations applied to EO data — for example, calculati
 connection.list_processes()
 ```
 
-It is often easier to consult the [process listing page](https://documentation.dataspace.copernicus.eu/APIs/openEO/Processes.html) or the [openEO Web Editor](https://openeo.dataspace.copernicus.eu) sidebar.
+It is often easier to consult the [process listing page](../documentation/key_concepts/processes.llms.md) or the [openEO Web Editor](https://openeofed.dataspace.copernicus.eu) sidebar.
 
 ## R
 
@@ -351,7 +351,7 @@ We will load the green, red and blue bands (B02, B03, B04) from Sentinel-2 Level
 ``` python
 import openeo
 
-connection = openeo.connect("https://openeofed.dataspace.copernicus.eu")
+connection = openeo.connect("openeofed.dataspace.copernicus.eu")
 connection.authenticate_oidc()
 
 # Spatial and temporal extent
@@ -373,7 +373,7 @@ s2_rgb = connection.load_collection(
 ``` r
 library(openeo)
 
-connection <- connect(host = "https://openeofed.dataspace.copernicus.eu")
+connection <- connect(host = "openeofed.dataspace.copernicus.eu")
 login()
 
 p <- processes()
@@ -394,7 +394,7 @@ s2_rgb <- p$load_collection(
 ## JavaScript
 
 ``` js
-var con = await OpenEO.connect("https://openeofed.dataspace.copernicus.eu");
+var con = await OpenEO.connect("openeofed.dataspace.copernicus.eu");
 await con.authenticateOIDC();
 var builder = await con.buildProcess();
 
@@ -797,7 +797,7 @@ EVI = 2.5 × (NIR − Red) / (NIR + 6 × Red − 7.5 × Blue + 1)
 ``` python
 import openeo
 
-connection = openeo.connect("https://openeofed.dataspace.copernicus.eu")
+connection = openeo.connect("openeofed.dataspace.copernicus.eu")
 connection.authenticate_oidc()
 
 datacube = connection.load_collection(
@@ -814,7 +814,7 @@ datacube = connection.load_collection(
 ``` r
 library(openeo)
 
-connection <- connect(host = "https://openeofed.dataspace.copernicus.eu")
+connection <- connect(host = "openeofed.dataspace.copernicus.eu")
 login()
 p <- processes()
 
@@ -831,7 +831,7 @@ datacube <- p$load_collection(
 ``` js
 const { OpenEO, Formula } = require('@openeo/js-client');
 
-var con = await OpenEO.connect("https://openeofed.dataspace.copernicus.eu");
+var con = await OpenEO.connect("openeofed.dataspace.copernicus.eu");
 await con.authenticateOIDC();
 var builder = await con.buildProcess();
 
@@ -1006,7 +1006,7 @@ Though several types of algorithms can be used as UDF applications, in this exam
 ``` python
 import openeo
 
-connection = openeo.connect("https://openeofed.dataspace.copernicus.eu")
+connection = openeo.connect("openeofed.dataspace.copernicus.eu")
 connection.authenticate_oidc()
 
 datacube = connection.load_collection(
@@ -1024,7 +1024,7 @@ datacube = connection.load_collection(
 
 library(openeo)
 
-connection <- connect(host = "https://openeofed.dataspace.copernicus.eu")
+connection <- connect(host = "openeofed.dataspace.copernicus.eu")
 login()
 p <- processes()
 
@@ -1041,7 +1041,7 @@ datacube <- p$load_collection(
 ``` js
 const { OpenEO, Formula } = require('@openeo/js-client');
 
-var con = await OpenEO.connect("https://openeofed.dataspace.copernicus.eu");
+var con = await OpenEO.connect("openeofed.dataspace.copernicus.eu");
 await con.authenticateOIDC();
 var builder = await con.buildProcess();
 

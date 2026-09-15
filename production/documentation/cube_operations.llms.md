@@ -1,39 +1,35 @@
 # openEO Cube Operations
 
-A journey through the tools that transform Earth Observation data into insight
+## Datacube: Your Starting Point
 
-## The Data Cube: Your Starting Point
+Before diving into operations, it is important to understand the concept of a datacube and how it is handled in openEO. Loading EO data as a datacube is the first step in a typical openEO workflow.
 
-Before any operation begins, openEO organises satellite imagery into a **data cube** — a structured, multi-dimensional array where every pixel has a place in space, time, and the electromagnetic spectrum. Think of it as a living archive of the Earth’s surface: each layer a different moment, each band a different wavelength of light.
+A datacube is essentially a multidimensional array that organises satellite imagery by space, time, and spectral bands, providing a structured foundation for subsequent analysis. Think of it as a living archive of the Earth’s surface: each layer a different moment, each band a different wavelength of light.
 
-Once your data is loaded, the operations described below are the tools you use to shape, refine, and interrogate that cube.
+You can find more information on loading the datacube in the [Loading Data](cube_operations/loading_data.llms.md) section. For more information on Datacube, visit the [Datacube Concept](../documentation/key_concepts/datacube.llms.md) page.
+
+Once your data is loaded, the operations described below are the tools users can use to shape, refine, and interrogate that cube.
 
 ------------------------------------------------------------------------
 
-## Preprocessing — Cleaning the Canvas
+## Preprocessing: Preparing the Cube
 
-*Every analysis begins with good data. Preprocessing is where raw imagery becomes reliable.*
+Several common preprocessing steps are typically applied to a datacube before any analysis, mainly to ensure the data is clean, consistent, and ready for further processing.
 
-Satellite images arrive with imperfections: clouds blocking the view, atmospheric haze distorting reflectance values, sensor noise introducing artefacts. Before you can draw any conclusions, you need to clean the canvas.
-
-openEO’s preprocessing tools allow you to:
+Some of the issues that preprocessing aims to address include clouds, atmospheric effects, sensor noise, and missing data. openEO’s preprocessing tools/processes allow you to:
 
 - **Mask out clouds and cloud shadows**, using quality flag bands (e.g. SCL from Sentinel-2) to set unreliable pixels to `nodata`.
 - **Apply atmospheric correction** to convert top-of-atmosphere radiance into surface reflectance — the physical quantity that actually describes what’s on the ground.
 - **Rescale and normalise** raw digital numbers into meaningful physical values.
 - **Fill missing values** using spatial or temporal interpolation, so gaps don’t propagate into your analysis.
 
-The result is a clean, analysis-ready cube that your downstream processes can trust.
-
 [→ Explore Preprocessing](cube_operations/preprocessing.llms.md)
 
 ------------------------------------------------------------------------
 
-## Spatial Operations — Working in Space
+## Spatial Operations: Working in Space
 
-*Where on Earth are you looking? Spatial operations let you define, transform, and refine the geographic footprint of your analysis.*
-
-EO data doesn’t exist in a vacuum — it exists somewhere. Spatial operations are about manipulating the **where**: cropping to a region of interest, reprojecting to a different coordinate reference system, resampling to a different spatial resolution, or aggregating pixel values over polygons.
+Spatial operations are about manipulating the **where**: cropping to a region of interest, reprojecting to a different coordinate reference system, resampling to a different spatial resolution, or aggregating pixel values over polygons.
 
 Key spatial capabilities include:
 
@@ -50,18 +46,16 @@ Spatial operations are often combined: you might first filter to a country bound
 
 ## Temporal Operations — Working in Time
 
-*Satellites revisit the same location every few days. Temporal operations let you harness that time dimension.*
+Satellites often revisit the same location every few days. The data collected over time forms a time series, capturing changes and trends at that location. In a datacube, these are stored along the temporal dimension. Temporal operations let you slice, aggregate, and reason across the time dimension of your cube.
 
-One of EO’s greatest powers is its temporal depth. A Sentinel-2 time series over a field shows the entire growing season; over a forest, it reveals phenological change or disturbance events. Temporal operations let you slice, aggregate, and reason across the time dimension of your cube.
-
-With temporal operations you can:
+With temporal operations, you can:
 
 - **`filter_temporal`** — Select a specific time window, such as a growing season, a year, or a period around an event.
 - **`aggregate_temporal`** — Reduce irregular time series to regular composites: monthly medians, annual means, or seasonal summaries that smooth out noise and cloud gaps.
 - **`apply_dimension` over time** — Apply any reducer or custom function along the temporal axis, enabling trend detection, anomaly scoring, or time-series smoothing.
 - **Temporal mosaicking** — Combine multiple acquisitions into a single cloud-free image by taking the best available observation per pixel over a time period.
 
-The time dimension is what separates a snapshot from a story. Temporal operations are how you read that story.
+Therefore, if the interest lies in understanding how a location changes over time, temporal operations can be used to extract meaningful insights from the time dimension of your datacube.
 
 [→ Explore Temporal Operations](cube_operations/temporal_operations.llms.md)
 
@@ -69,18 +63,16 @@ The time dimension is what separates a snapshot from a story. Temporal operation
 
 ## Spectral Operations — Working Across Bands
 
-*Modern satellites capture dozens of wavelengths simultaneously. Spectral operations let you combine them into meaningful signals.*
+Modern satellites capture dozens of wavelengths simultaneously, measuring reflected or emitted energy across many parts of the electromagnetic spectrum simultaneously. This information is stored across the spectral dimension of the datacube. Spectral operations let you combine them into meaningful signals.
 
-A satellite’s sensor doesn’t just capture a colour photograph — it measures reflected or emitted energy across many parts of the electromagnetic spectrum simultaneously. Sentinel-2 has 13 bands; hyperspectral sensors can have hundreds. Spectral operations let you combine, transform, and analyse these bands to extract geophysical information that no single band could reveal alone.
+For example, Sentinel-2 has 13 bands; hyperspectral sensors can have hundreds of bands. Therefore, if the information you need is contained in specific spectral features, spectral operations let you combine, transform, and analyse these bands to extract geophysical information that no single band could reveal alone.
 
 Common spectral operations include:
 
-- **Band math and spectral indices** — Compute indices like NDVI (Normalized Difference Vegetation Index), NDWI (water), NBR (burn ratio), or EVI using arithmetic combinations of bands. These distil multi-band information into a single interpretable value.
+- **Band math and spectral indices** — Compute indices like NDVI (Normalised Difference Vegetation Index), NDWI (water), NBR (burn ratio), or EVI using arithmetic combinations of bands. These distil multi-band information into a single interpretable value.
 - **`filter_bands`** — Select only the bands you need, reducing data volume and computation.
 - **`apply_dimension` over bands** — Apply custom functions across the band dimension, enabling PCA, spectral unmixing, or band normalisation.
 - **`reduce_dimension` over bands** — Collapse multiple bands into a single output, for example reducing a hyperspectral cube to a few principal components.
-
-Spectral operations are where physics meets analysis: the absorption of chlorophyll, the reflectance of water, the emissivity of urban surfaces — all detectable through careful band manipulation.
 
 [→ Explore Spectral Operations](cube_operations/spectral_operations.llms.md)
 
@@ -88,18 +80,14 @@ Spectral operations are where physics meets analysis: the absorption of chloroph
 
 ## Cube Manipulations — Reshaping the Cube Itself
 
-*Sometimes the analysis you need requires reshaping the data structure itself — merging cubes, renaming dimensions, or reorganising axes.*
-
-Not every operation fits neatly into spatial, temporal, or spectral categories. Sometimes you need to change the shape or structure of the cube — merging results from different collections, reordering dimensions, or creating new derived bands. These are the **structural** operations of openEO.
+Sometimes the analysis you need requires reshaping the data structure itself, such as merging cubes, renaming dimensions, or reorganising axes. These are the **structural** operations of openEO. Using the processes defined in Cube Manipulation provides the user with the flexibility to adapt the cube structure to their analysis needs.
 
 Cube manipulation tools include:
 
-- **`merge_cubes`** — Combine two cubes that may differ in their band content, temporal extent, or spatial coverage into a single unified cube.
-- **`rename_labels`** / **`rename_dimension`** — Give dimensions and band labels meaningful names to keep your process graph readable and self-documenting.
-- **`add_dimension`** / **`drop_dimension`** — Dynamically add or remove dimensions, for example adding a new band derived from a computation, or dropping a singleton dimension no longer needed.
-- **`flatten_dimensions`** / **`unflatten_dimension`** — Pivot the cube structure, converting multi-dimensional data into formats suited for tabular analysis or machine learning.
-
-Cube manipulations are the connective tissue of complex workflows, letting you route, reshape, and recombine data between processing steps.
+- **`merge_cubes`**: Combine two cubes that may differ in their band content, temporal extent, or spatial coverage into a single unified cube.
+- **`rename_labels`** / **`rename_dimension`**: Give dimensions and band labels meaningful names to keep your process graph readable and self-documenting.
+- **`add_dimension`** / **`drop_dimension`**: Dynamically add or remove dimensions, for example adding a new band derived from a computation, or dropping a singleton dimension no longer needed.
+- **`flatten_dimensions`** / **`unflatten_dimension`**: Pivot the cube structure, converting multi-dimensional data into formats suited for tabular analysis or machine learning.
 
 [→ Explore Cube Manipulations](cube_operations/cube_manipulations.llms.md)
 
@@ -107,9 +95,7 @@ Cube manipulations are the connective tissue of complex workflows, letting you r
 
 ## User Defined Functions (UDFs) — Bringing Your Own Code
 
-*When the built-in processes aren’t enough, bring your own Python or R code into the cube.*
-
-openEO’s standard process library covers a vast range of operations, but science is unpublished and analysis needs are endlessly varied. **User Defined Functions (UDFs)** are your escape hatch: they let you inject arbitrary Python or R code into the openEO workflow, running it in a vectorised way across your data cube — server-side, at scale, without downloading a byte.
+openEO’s standard process library covers a vast range of operations, howerver, it may not cover every specific need required for your analysis. **User Defined Functions (UDFs)** are your escape hatch: they let you inject arbitrary Python or R code into the openEO workflow, running it vectorised across your datacube on the server side at scale, without downloading the collection locally.
 
 With UDFs you can:
 
@@ -130,17 +116,15 @@ UDFs run within openEO’s execution model, meaning your code benefits from dist
 
 ## Machine Learning — Scaling Intelligence Across the Cube
 
-*Train a model locally. Run it globally. openEO bridges the gap between ML workflows and planetary-scale EO data.*
+Machine learning has transformed Earth Observation analysis: from crop type mapping to flood detection, from land cover classification to forest biomass estimation. openEO’s machine learning capabilities let you apply trained models directly inside the cube processing pipeline. There are certain set of processes and functionalities introduced within openEO to facilitate machine learning workflows at scale.
 
-Machine learning has transformed Earth Observation: from crop type mapping to flood detection, from land cover classification to forest biomass estimation. openEO’s machine learning capabilities let you apply trained models directly inside the cube processing pipeline.
+Users can leverage openEO’s machine learning support to build analytical workflows directly on the server side:
 
-The workflow typically follows three phases:
+**1. Feature preparation**: Use the operations described above (spectral indices, temporal composites, spatial aggregations) to assemble a feature cube. These features can then be either exported for local model training or saved as part of a data preparation pipeline for subsequent machine learning steps.
 
-**1. Feature preparation** — Use the operations described above (spectral indices, temporal composites, spatial aggregations) to assemble a feature cube that your model can learn from.
+**2. Model training or import**: Train a model using `fit_regressor_random_forest`, `fit_class_random_forest`, or import an externally trained ONNX model.
 
-**2. Model training or import** — Train a model using `fit_regressor_random_forest`, `fit_class_random_forest`, or import an externally trained ONNX model.
-
-**3. Inference at scale** — Apply `predict_random_forest` or `predict_ml_model` to run inference across the full spatial and temporal extent of your cube, producing a classified or regressed output layer.
+**3. Inference at scale**: Apply `predict_random_forest` or `predict_ml_model` to run inference across the full spatial and temporal extent of your cube, producing a classified or regressed output layer. Additionally, the inference pipeline can be saved as a reusable process for future analyses.
 
 This tight integration between EO processing and ML inference removes the need to export data for external modelling, keeping the full workflow reproducible, versioned, and scalable.
 
@@ -148,18 +132,16 @@ This tight integration between EO processing and ML inference removes the need t
 
 ------------------------------------------------------------------------
 
-## User Defined Processes (UDPs) — Reusable Workflow Building Blocks
+## User Defined Processes (UDPs): Reusable Workflow Building Blocks
 
-*Compose your own named processes. Share them. Build on them.*
-
-As your openEO workflows grow more sophisticated, you’ll find yourself repeating the same sequences of operations: a cloud masking routine, a vegetation index pipeline, a temporal compositing strategy. **User Defined Processes (UDPs)** let you encapsulate these patterns into named, reusable building blocks — treating your own workflows as first-class processes.
+We have noticed that, although several research groups and practitioners develop advanced analytical workflows, there is often a lack of standardisation and reusability. openEO’s User Defined Processes (UDPs) address this gap by allowing you to define, share, and reuse complex processing routines consistently across projects. In practice, UDPs let user encapsulate these patterns into named, reusable building blocks — treating your own workflows as first-class processes.
 
 UDPs allow you to:
 
-- **Encapsulate complexity** — Wrap a multi-step process graph into a single named process with clean inputs and outputs.
-- **Parameterise workflows** — Expose configurable parameters so the same UDP can be applied to different sensors, date ranges, or thresholds.
-- **Share and collaborate** — Publish UDPs to a backend so colleagues or community members can reuse your workflows without needing to understand their internals.
-- **Build process libraries** — Compose higher-level analytical tools from lower-level openEO primitives.
+- **Encapsulate complexity**: Wrap a multi-step process graph into a single named process with clean inputs and outputs.
+- **Parameterise workflows**: Expose configurable parameters so the same UDP can be applied to different sensors, date ranges, or thresholds.
+- **Share and collaborate**: Publish UDPs to a backend so colleagues or community members can reuse your workflows without needing to understand their internals.
+- **Build process libraries**: Compose higher-level analytical tools from lower-level openEO primitives.
 
 UDPs are the mechanism by which openEO workflows become modular, composable, and community-shareable.
 
@@ -169,36 +151,15 @@ UDPs are the mechanism by which openEO workflows become modular, composable, and
 
 ## Execute openEO Jobs — Putting It All Together
 
-*Build your process graph. Submit it. Scale it. Retrieve the results.*
-
-Everything described on this page — preprocessing, spatial and temporal operations, spectral analysis, ML inference — is assembled into a **process graph**: a directed acyclic graph (DAG) that describes exactly the computations to be performed. When you’re ready, you submit that graph as a **batch job** to an openEO backend, which executes it at scale.
+Everything described on this page, including preprocessing, spatial and temporal operations, spectral analysis, and ML inference, when combined together, forms a process chain referred to as a **process graph**. It is a directed acyclic graph (DAG) that describes exactly the computations to be performed. When it is ready, the user can submit it to an openEO backend for execution.
 
 Execution options include:
 
-- **Synchronous processing** — For small areas or quick explorations, get results immediately in your Python or R session.
-- **Batch jobs** — For large-scale processing (full countries, multi-year time series), submit a job that runs asynchronously and stores results to cloud storage or your backend account.
-- **Secondary services** — Expose a process graph as a live OGC Web Map Service (WMS) or other tile-based endpoint.
-
-The batch job system supports monitoring, logging, and result retrieval, giving you full visibility into the processing lifecycle — from submission to download.
+- **Synchronous processing**: For small areas or quick explorations, get results immediately in your Python or R session.
+- **Batch jobs**: For large-scale processing (full countries, multi-year time series), submit a job that runs asynchronously and stores results to cloud storage or your backend account. The batch job system supports monitoring, logging, and result retrieval, giving you full visibility into the processing lifecycle.
 
 [→ Explore Job Execution](cube_operations/execute_jobs.llms.md)
 
 ------------------------------------------------------------------------
-
-## Where to Go Next
-
-The operations above are meant to be combined. A typical EO analysis workflow might look like this:
-
-    Load Collection
-        → load_collection (select collection)
-        → filter_temporal (select season)
-        → filter_bbox (clip to region)
-        → mask_scl (remove clouds)
-        → reduce_dimension (compute NDVI)
-        → aggregate_temporal (monthly median)
-        → aggregate_spatial (mean per polygon)
-        → save_result (export as CSV or GeoTIFF)
-
-Each link in this chain is an openEO process. Each process is documented, versioned, and backend-agnostic. That’s the promise of openEO: **portable, reproducible, scalable Earth Observation analysis**.
 
 Explore each operation category in the sidebar to dive deeper.

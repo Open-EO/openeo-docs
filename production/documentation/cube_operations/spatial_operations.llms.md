@@ -29,7 +29,7 @@ Google Earth Engine
 ``` python
 import openeo
 
-connection = openeo.connect("https://openeo.vito.be").authenticate_oidc()
+connection = openeo.connect("openeofed.dataspace.copernicus.eu").authenticate_oidc()
 cube = connection.load_collection(
     "SENTINEL2_L2A",
     temporal_extent=["2024-06-01", "2024-06-30"],

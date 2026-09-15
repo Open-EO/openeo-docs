@@ -29,7 +29,7 @@ Use `filter_temporal` immediately after loading a collection when the temporal e
 ``` python
 import openeo
 
-connection = openeo.connect("https://openeo.vito.be").authenticate_oidc()
+connection = openeo.connect("openeofed.dataspace.copernicus.eu").authenticate_oidc()
 cube = connection.load_collection("SENTINEL2_L2A", bands=["B04", "B08"])
 growing_season = cube.filter_temporal(["2024-04-01", "2024-10-01"])
 ```
