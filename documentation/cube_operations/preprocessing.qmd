@@ -13,7 +13,7 @@ format:
 page-layout: article
 ---
 
-This page provides an overview of preprocessing operations available in openEO for pre-processing EO datacubes for further analysis. Please note that the availability of specific processes may vary depending on the backend you are using. In addition to being backend-dependent, some processes might be experimental or support is available for a specific client library only.
+This page provides an overview of preprocessing operations available in openEO for pre-processing EO datacubes for further analysis. Please note that the availability of specific processes may vary depending on the backend you are using. In addition to being backend-dependent, some processes might be experimental, or support may be available only for a specific client library.
 
 
 ```{=html}
@@ -94,7 +94,7 @@ cloud_mask = scl.process( data=scl,process_id="to_scl_dilation_mask")
 ```
 :::
 
-The process is backend-specific and is not available on every backend. An openEO notebook demonstrating how it works and how to replicate the standard openEO process across different backends can be found [here](https://github.com/Open-EO/openeo-community-examples/blob/main/python/SCLDilationMask/to_scl_dilation_mask.ipynb).
+The process is backend-specific and is not available on every backend. An openEO notebook demonstrating how it works and how to replicate the standard openEO process across different backends is available [here](https://github.com/Open-EO/openeo-community-examples/blob/main/python/SCLDilationMask/to_scl_dilation_mask.ipynb).
 
 
 :::
@@ -105,14 +105,14 @@ The process is backend-specific and is not available on every backend. An openEO
 
 [Atmospheric correction](https://processes.openeo.org/draft/#atmospheric_correction) accounts for atmospheric scattering, absorption, and haze in optical observations. It converts top-of-atmosphere measurements into surface reflectance, which is more suitable for comparing observations across dates and locations.
 
-The atmospheric correction process can apply a chosen method on raw ‘L1C’ data. The supported methods and input datasets depend on the back-end, because not every method is validated or works on any dataset, and different back-ends try to offer a variety of options. This gives you as a user more options to run and compare different methods, and select the most suitable one for your case.
+The atmospheric correction process can apply a chosen method to raw ‘L1C’ data. The supported methods and input datasets depend on the backend, because not every method is validated or works with every dataset, and different backends offer a variety of options. This gives you, as a user, more options to run and compare different methods, and select the most suitable one for your case.
 
-To perform an atmospheric correction, the user has to load an uncorrected L1C optical dataset. On the resulting datacube, the atmospheric_correction() method can be invoked. Note that it may not be possible to apply certain processes to the raw input data: preprocessing algorithms can be tightly coupled with the raw data, making it hard or impossible for the back-end to perform operations in between loading and correcting the data.
+To perform an atmospheric correction, the user has to load an uncorrected L1C optical dataset. On the resulting datacube, the atmospheric_correction() method can be invoked. Note that it may not be possible to apply certain processes to the raw input data: preprocessing algorithms can be tightly coupled with the raw data, making it hard or impossible for the backend to perform operations in between loading and correcting the data.
 
 ::: {.callout-caution collapse="true"}
 ## Experimental
 
-Please note that this process is experimental with the potential for major things to change. Feel encouraged to try it out and give feedback, but refrain from using it in production.
+Please note that this process is experimental and may change significantly. Feel encouraged to try it out and give feedback, but refrain from using it in production.
 
 :::
 
@@ -211,7 +211,7 @@ await con.computeResult(result, { filename: "sentinel2_icor.tif" });
 ::: {.tag-filter-item data-process="ard_surface_reflectance"}
 ## CARD4L surface reflectance
 
-The CARD4L variant of the atmospheric correction process is: ard_surface_reflectance(). This process follows CEOS specifications, and thus can include additional processing steps, like a BRDF correction, that are not yet available as a separate process.
+The CARD4L variant of the atmospheric correction process is: ard_surface_reflectance(). This process follows CEOS specifications and thus can include additional processing steps, such as a BRDF correction, that are not yet available as separate processes.
 
 `ard_surface_reflectance` creates an analysis-ready optical product from suitable input data. It can include atmospheric, geometric, and quality corrections, depending on the backend implementation.
 
@@ -223,7 +223,7 @@ surface_reflectance = l1c.ard_surface_reflectance()
 ::: {.tag-filter-item data-process="ard_normalized_radar_backscatter"}
 ## CARD4L normalised radar backscatter
 
-Data from synthetic aperture radar sensors requires significant preprocessing to be calibrated and normalized for terrain. This is referred to as backscatter computation, and supported by [`sar_backscatter`](#compute-sar-backscatter) and the CARD4L compliant variant [`ard_normalized_radar_backscatter`](https://openeo.org/documentation/1.0/processes.html#ard_normalized_radar_backscatter).
+Data from synthetic aperture radar sensors requires significant preprocessing to be calibrated and normalised for terrain. This is referred to as backscatter computation, and supported by [`sar_backscatter`](#compute-sar-backscatter) and the CARD4L compliant variant [`ard_normalized_radar_backscatter`](https://openeo.org/documentation/1.0/processes.html#ard_normalized_radar_backscatter).
 
 SAR backscatter processing calibrates raw radar observations and can apply terrain correction and normalisation. The resulting measurements are commonly expressed as sigma0 or gamma0 in linear or decibel scale. Terrain correction is especially important in areas with varied topography.
 
@@ -379,7 +379,7 @@ If your backend provides a collection such as `SENTINEL2_L2A` or `SENTINEL1_BACK
 ::: {.tag-filter-item data-process="cloud_detection"}
 
 ## Cloud detection
-[`Cloud detection`](https://processes.openeo.org/#cloud_detection) is defined within the OpenEO processes as a method to identify cloud-covered pixels in satellite imagery. It detects atmospheric disturbances such as clouds, cloud shadows, aerosols, haze, ozone and/or water vapour in optical imagery and then creates a data cube with the spatial and temporal dimensions compatible to the source data cube and a dimension that contains a dimension label for each of the supported/considered atmospheric disturbances. The naming of the bands follows these pre-defined values:
+[`Cloud detection`](https://processes.openeo.org/#cloud_detection) is defined within the OpenEO processes as a method to identify cloud-covered pixels in satellite imagery. It detects atmospheric disturbances such as clouds, cloud shadows, aerosols, haze, ozone and/or water vapour in optical imagery. Then it creates a data cube with spatial and temporal dimensions compatible with the source data cube, and a dimension containing a label for each supported/considered atmospheric disturbance. The naming of the bands follows these pre-defined values:
 
 - cloud
 - aerosol
@@ -394,7 +394,7 @@ All bands have values between 0 (clear) and 1, which describes the probability t
 ::: {.callout-caution collapse="true"}
 ## Experimental
 
-Please note that this process is experimental with the potential for major things to change. Feel encouraged to try it out and give feedback, but refrain from using it in production.
+Please note that this process is experimental and may change significantly. Feel encouraged to try it out and give feedback, but refrain from using it in production.
 
 :::
 
