@@ -1,15 +1,28 @@
 ---
 title: "Data Discovery and Loading"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    toc-title: "On this page"
+    number-sections: false
+    theme: cosmo
+    smooth-scroll: true
+    code-fold: false
+    code-tools: false
+page-layout: article
 ---
 
 ```{=html}
+
 <div class="tag-filter-ui" id="tag-filter-ui">
-    <button class="tag-filter-badge active" data-tag="vito">VITO</button>
-    <button class="tag-filter-badge active" data-tag="eodc">EODC</button>
-	<button class="tag-filter-badge inactive" data-tag="cdse">CDSE</button>
-	<button class="tag-filter-badge inactive" data-tag="federation">Federation</button>
-    <button class="tag-filter-badge active" data-tag="sentinelhub">Sentinel Hub</button>
-    <button class="tag-filter-badge inactive" data-tag="gee">Google Earth Engine</button>
+  <button class="tag-filter-badge active" data-tag="vito">Terrascope</button>
+  <button class="tag-filter-badge inactive" data-tag="sentinelhub">Sentinel Hub</button>
+  <button class="tag-filter-badge inactive" data-tag="eodc">EODC</button>
+  <button class="tag-filter-badge inactive" data-tag="cdse">CDSE</button>
+  <button class="tag-filter-badge inactive" data-tag="federation">Federation</button>
+  <button class="tag-filter-badge inactive" data-tag="eurac">EURAC</button>
+  <button class="tag-filter-badge inactive" data-tag="gee">Google Earth Engine</button>
 </div>
 ```
 
