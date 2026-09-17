@@ -286,7 +286,7 @@ While openEO supports training a Random Forest model, users often prefer to use 
 
 These models can be saved as ONNX files and passed in as dependency packages within a UDF.
 
-A similar example is: https://github.com/Open-EO/openeo-community-examples/tree/main/python/OnnxMLInference
+A similar example is: [ONNX ML Inference](https://github.com/Open-EO/openeo-community-examples/tree/main/python/OnnxMLInference)
 
 ### Save as a UDP
 

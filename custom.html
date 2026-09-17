@@ -41,11 +41,15 @@
                 support = await response.json();
             } catch (error) { console.warn("Could not load backend process support data.", error); }
         }
+        const getExplicitTags = (item) => new Set((item.getAttribute("data-tags") || "").toLowerCase().split(/\s+/).filter(Boolean));
+        const getDefaultTags = () => new Set(staticBadges.map((badge) => badge.dataset.tag).filter(Boolean));
         const getTags = (item) => {
+            const explicitTags = getExplicitTags(item);
             if (support && item.hasAttribute("data-process")) {
-                return new Set(item.getAttribute("data-process").split(/[\s,]+/).flatMap((id) => support.processes[id] || []));
+                const liveTags = new Set(item.getAttribute("data-process").split(/[\s,]+/).flatMap((id) => support.processes[id] || []));
+                return liveTags.size > 0 ? liveTags : explicitTags.size > 0 ? explicitTags : getDefaultTags();
             }
-            return new Set((item.getAttribute("data-tags") || "").toLowerCase().split(/\s+/).filter(Boolean));
+            return explicitTags.size > 0 ? explicitTags : getDefaultTags();
         };
         let badges = staticBadges;
         if (support) {

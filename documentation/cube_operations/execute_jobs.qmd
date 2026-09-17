@@ -18,14 +18,6 @@ On this page, we will demonstrate how to execute openEO process graphs using bot
 ```{=html}
 
 <div class="tag-filter-ui" id="tag-filter-ui">
-  <button class="tag-filter-badge active" data-tag="vito">Terrascope</button>
-  <button class="tag-filter-badge inactive" data-tag="sentinelhub">Sentinel Hub</button>
-  <button class="tag-filter-badge inactive" data-tag="eodc">EODC</button>
-  <button class="tag-filter-badge inactive" data-tag="cdse">CDSE</button>
-  <button class="tag-filter-badge inactive" data-tag="federation">Federation</button>
-  <button class="tag-filter-badge inactive" data-tag="eurac">EURAC</button>
-  <button class="tag-filter-badge inactive" data-tag="gee">Google Earth Engine</button>
-
 </div>
 ```
 

@@ -19,9 +19,6 @@ A User Defined Process (UDP) packages a process graph behind a reusable name and
 
 ```{=html}
 <div class="tag-filter-ui" id="tag-filter-ui">
-  <button class="tag-filter-badge active" data-tag="vito">VITO</button>
-  <button class="tag-filter-badge active" data-tag="eodc">EODC</button>
-  <button class="tag-filter-badge active" data-tag="cdse">CDSE</button>
 </div>
 ```
 
