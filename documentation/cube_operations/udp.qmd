@@ -1,6 +1,5 @@
 ---
 title: "User Defined Processes"
-subtitle: "Package a reusable process graph as a named process"
 format:
   html:
     toc: true
@@ -12,38 +11,169 @@ format:
 page-layout: article
 ---
 
-::: {.lead}
+In openEO, a User Defined Process (UDP) allows users to define a custom process graph that can be reused across different workflows. We have often noticed that many users repeatedly perform the same processing steps, which takes up valuable time and effort. A UDP helps to encapsulate these steps into a single, reusable process. It is useful for sharing a cloud-mask routine, an index calculation, or a project-specific workflow.
 
-A User Defined Process (UDP) packages a process graph behind a reusable name and a documented set of parameters. It is useful for sharing a cloud-mask routine, an index calculation, or a project-specific workflow.
-:::
-
-```{=html}
-<div class="tag-filter-ui" id="tag-filter-ui">
-</div>
-```
-
-::: {.callout-note}
-## Backend support overview
-
-The buttons on this page are a documentation aid, not a live capability registry. Use the [openEO Hub](https://hub.openeo.org/) for a cross-backend overview: open **Filters**, select a process under **Processes**, and the Hub shows only matching services. The Hub data is crawled and cached.
-:::
-
-::: {.tag-filter-item data-tags="vito eodc cdse"}
 ## Create a reusable workflow
 
-A UDP is not one raster operation: it packages a process graph behind a reusable identifier. Use it when the same cloud mask, index, or compositing workflow should be called by multiple users or applications. A UDP has an identifier, summary, parameter definitions, and a process graph; once saved to a backend, it can be called like another process in a new graph.
+A UDP is not a single raster operation; it packages a process graph behind a reusable identifier. Use it when multiple users or applications should call the same cloud mask, index, or compositing workflow. A UDP has an identifier, summary, parameter definitions, and a process graph; once saved to a backend, it can be called like another process in a new graph.
 
-### Good candidates for a UDP
+**Some good candidate examples for a UDP could be:**
 
 - A cloud or quality-mask routine used by several projects.
 - A named index or feature-engineering recipe with configurable bands.
 - A standard compositing workflow for one data product.
+- An inference or prediction workflow that is repeatedly used across projects.
 
 ::: {.callout-note}
 ## Scope and portability
 
-A UDP is stored by a backend or workspace. The graph itself can use standardized processes, but the UDP identifier, permissions, and any backend-specific process used inside it are not automatically portable.
+A backend or workspace stores a UDP. The graph itself can use standardised processes, but the UDP identifier, permissions, and any backend-specific process used inside it are not automatically portable.
 :::
 
 See the [openEO API documentation](https://api.openeo.org/) for the current UDP endpoints and the [process reference](https://processes.openeo.org/) for graph building blocks.
+
+## Define clear parameters
+
+Declare every value that callers must supply. Parameter definitions document the interface, validate inputs, and allow a graph to refer to caller-provided values instead of fixed literals. The Python client provides helpers for common types, including `Parameter.datacube`, `Parameter.number`, `Parameter.string`, `Parameter.spatial_extent`, `Parameter.temporal_interval`, and `Parameter.geojson`.
+
+```python
+from openeo.api.process import Parameter
+
+spatial_extent = Parameter.spatial_extent(
+  name="spatial_extent",
+  description="Area to process.",
+)
+temporal_extent = Parameter.temporal_interval(
+  name="temporal_extent",
+  description="Date range to process.",
+)
+```
+
+Use a default only when a value is genuinely optional. For more specialised inputs, create a `Parameter` with a JSON Schema `schema` argument. Ensure every `Parameter` used in the graph is also included when the UDP is saved.
+
+For example, define an array of band names with a JSON Schema:
+
+```python
+bands = Parameter(
+  name="bands",
+  description="Bands to process.",
+  schema={"type": "array", "items": {"type": "string"}},
+  default=["B04", "B08"],
+)
+```
+
+## Build and store a UDP
+
+Build the process graph with the same Python-client methods used for an ordinary workflow, passing `Parameter` objects where the future caller should provide values. This example creates a reusable, parameterised Sentinel-2 loading and NDVI workflow:
+
+```python
+import openeo
+from openeo.api.process import Parameter
+
+connection = openeo.connect("https://openeo.example.org").authenticate_oidc()
+
+spatial_extent = Parameter.spatial_extent("spatial_extent", "Area to process.")
+temporal_extent = Parameter.temporal_interval("temporal_extent", "Date range to process.")
+
+cube = connection.load_collection(
+  "SENTINEL2_L2A",
+  spatial_extent=spatial_extent,
+  temporal_extent=temporal_extent,
+  bands=["B04", "B08"],
+)
+ndvi = (cube.band("B08") - cube.band("B04")) / (cube.band("B08") + cube.band("B04"))
+
+connection.save_user_defined_process(
+  user_defined_process_id="ndvi_for_extent",
+  process_graph=ndvi,
+  parameters=[spatial_extent, temporal_extent],
+  summary="Calculate NDVI for an area and time range.",
+)
+```
+
+The process identifier is the stable public interface for users and applications. Treat parameter names, defaults, and output semantics as a versioned contract. Inspect the generated graph using `print_json()` before saving when troubleshooting.
+
+When a graph already exists as JSON or a Python dictionary, pass it directly as `process_graph` to `save_user_defined_process`. The dictionary must include a `result: true` node and must declare every value referenced through `from_parameter`.
+
+::: {.callout-tip}
+## Store source with the project
+
+Keep the code or JSON specification used to create a UDP in version control. Saving a UDP registers it on a backend, but does not replace a reviewable source definition or release history.
 :::
+
+### Export a portable definition
+
+Use `build_process_dict` to create the complete metadata and process-graph specification for review, version control, or deployment to another service:
+
+```python
+import json
+from openeo.rest.udp import build_process_dict
+
+definition = build_process_dict(
+  process_id="ndvi_for_extent",
+  process_graph=ndvi,
+  parameters=[spatial_extent, temporal_extent],
+  summary="Calculate NDVI for an area and time range.",
+)
+
+with open("ndvi_for_extent.json", "w") as file:
+ json.dump(definition, file, indent=2)
+```
+
+The exported definition is portable source, not a guarantee of cross-backend execution. Validate it on every target backend.
+
+## Invoke a UDP
+
+After saving, a UDP is available to subsequent process graphs on the same backend. Use `datacube_from_process` for a UDP that returns a data cube, then continue composing processes or download/submit it as a job.
+
+```python
+ndvi = connection.datacube_from_process(
+  "ndvi_for_extent",
+  spatial_extent={"west": 4.0, "south": 51.0, "east": 4.1, "north": 51.1},
+  temporal_extent=["2024-06-01", "2024-06-30"],
+)
+ndvi.download("ndvi.tiff", format="GTiff")
+```
+
+For a UDP returning a scalar, array, or other non-cube value, build its call with `openeo.processes.process("udp_id", ...)` and execute that process graph. A UDP can also call another UDP, allowing teams to assemble a small library of tested building blocks.
+
+```python
+from openeo.processes import divide, process, subtract
+from openeo.api.process import Parameter
+
+fahrenheit = Parameter.number("fahrenheit", "Temperature in degrees Fahrenheit.")
+celsius = divide(subtract(fahrenheit, 32), 1.8)
+connection.save_user_defined_process("fahrenheit_to_celsius", celsius, parameters=[fahrenheit])
+
+result = connection.execute(process("fahrenheit_to_celsius", fahrenheit=70))
+```
+
+## Applicability and constraints
+
+UDPs are an openEO API feature, not a Python-client-only feature. The Python client provides the examples on this page as convenience methods; other openEO clients and direct API requests can also create and invoke UDPs.
+
+A UDP is not automatically available across all backends. It is saved to a single backend or workspace, and it can only be called from that same service unless it is exported and deployed elsewhere. A UDP built entirely from standardised processes can often be recreated on another backend, but success still depends on that backend supporting all processes, parameter schemas, result types, and required collections. Backend-specific processes and custom runtime assumptions reduce portability.
+
+Before publishing a UDP for a team, check the target backend's process support and test the saved definition with representative inputs. Use the [openEO Hub](https://hub.openeo.org/) to compare advertised process support, while treating its results as an overview rather than a guarantee of identical behaviour or resource limits.
+
+### Authoring guidelines
+
+Keep each UDP focused on a single useful capability, and compose UDPs when workflows require multiple capabilities. Use the established `spatial_extent` and `temporal_extent` parameter names where applicable, and pass them directly to `load_collection` or `load_stac` so callers can use the standard spatial and temporal input forms.
+
+Prefer returning a raster or vector cube instead of ending the UDP with `save_result`. This lets callers apply further processing and choose their own output format. Only include `save_result` when a fixed output format is an intentional part of the UDP contract.
+
+Version definitions and retain a changelog. A change to a parameter or output that breaks existing callers merits a new version or identifier while users migrate. Document the algorithm, required inputs, outputs, expected performance or cost, limitations, and known artefacts; publish a representative result where practical.
+
+## Manage and share UDPs
+
+Use the connection's UDP methods to list available definitions, retrieve a definition before changing it, update it by saving the same identifier again, and delete retired definitions:
+
+```python
+available = connection.list_user_defined_processes()
+definition = connection.describe_user_defined_process("ndvi_for_extent")
+connection.delete_user_defined_process("retired_process")
+```
+
+Exact sharing and permission options are backend-specific; verify them in the documentation for the selected backend before relying on a UDP as a shared service.
+
+Do not confuse a UDP with a [User Defined Function](udf.qmd). A UDP is a reusable openEO process graph composed of processes; a UDF sends custom Python or R code to the backend through `run_udf`. Prefer standardised processes within a UDP where possible, as they are generally easier to validate, optimise, and reuse across backends.
