@@ -167,8 +167,6 @@ await job.startJob();
 
 `cube.execute_batch(out_format="GTiff", title="Monthly NDVI composite") is a shortcut that creates, starts, and waits for a job in one call.
 
-:::
-
 
 ::: {.tag-filter-item data-process="list_jobs"}
 
