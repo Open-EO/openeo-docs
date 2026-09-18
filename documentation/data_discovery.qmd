@@ -224,6 +224,19 @@ Next, a wider range of operations can be applied to this datacube. Some common u
 
 For complete parameters, see the official
 [`load_collection` process reference](https://processes.openeo.org/#load_collection).
+
+::: {.callout-tip collapse="true"}
+## Example notebooks
+
+- [Access PROBA-V Collection](../client_examples/openeo-community-examples/python/AccessPROBA-V/PROBA_V.ipynb)
+- [Accessing and Analysing Sentinel-5P Products](../client_examples/openeo-community-examples/python/AccessSentinel5P/Access_&_Analyse_Sentinel5P_Products.ipynb)
+- [Exploring CLMS Datasets with openEO](../client_examples/openeo-community-examples/python/Access_CLMS/CLMS_layers_using_openEO.ipynb)
+- [Explore Sentinel-5P Products with openEO (Air Quality)](../client_examples/openeo-community-examples/python/AirQuality/AirQuality.ipynb)
+- [Access MODIS Data using openEO](../client_examples/openeo-community-examples/python/MODIS/MODIS_data_using_openEO.ipynb)
+- [Advanced Use of Federated Processing](../client_examples/openeo-community-examples/python/Federation/FederatedProcessing.ipynb)
+
+More notebooks are listed on the [sample notebooks page](../examples.qmd).
+:::
 :::
 
 ::: {.tag-filter-item data-process="load_stac"}
@@ -301,6 +314,16 @@ backend supports it. Do not include access tokens or other secrets in notebooks
 or documentation.
 
 For more details about the process itself, see the [`load_stac` process reference](https://processes.openeo.org/#load_stac) page. 
+
+::: {.callout-tip collapse="true"}
+## Example notebooks
+
+- [Loading a Single STAC Item](../client_examples/openeo-community-examples/python/LoadStac/load-stac-item-example.ipynb)
+- [Using load_stac for External Datasets (Landsat 8)](../client_examples/openeo-community-examples/python/LoadStac/LoadLandsatSTAC.ipynb)
+- [Using load_stac for External Datasets (Biomass)](../client_examples/openeo-community-examples/python/LoadStac/LoadBiomassSTAC.ipynb)
+
+More notebooks are listed on the [sample notebooks page](../examples.qmd).
+:::
 :::
 
 ::: {.tag-filter-item data-process="load_geojson"}

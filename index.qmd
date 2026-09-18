@@ -144,7 +144,9 @@ Quickly build true-color composites from Sentinel-2 and export clean visuals for
 **Data used:** Sentinel-2 L2A  
 **Outcome:** RGB composite image
 
-[Explore recipe →](documentation/cookbook.html#load-sentinel2-rgb-composite)
+[Explore load collection →](documentation/cookbook.html#load-sentinel2-rgb-composite)
+
+[Run in JupyterLite →](jupyterlite/lab/index.html?path=notebooks/Access_CLMS/CLMS_layers_using_openEO.ipynb){target="_blank" rel="noopener"}
 :::
 
 ## Performing Band Math
@@ -162,6 +164,8 @@ Combine spectral bands to derive vegetation and environmental indicators with re
 **Outcome:** EVI Geotiff image
 
 [Run band math →](documentation/cookbook.html#evi-calculation)
+
+[Run in JupyterLite →](jupyterlite/lab/index.html?path=notebooks/FloodNDWI/flood_ndwi.ipynb){target="_blank" rel="noopener"}
 :::
 
 ## Bringing your own functions
@@ -179,6 +183,8 @@ Inject your domain logic with UDFs to extend standard processes while keeping yo
 **Outcome:** custom UDF process
 
 [Build your UDF →](documentation/cookbook.html#cookbook-udfs)
+
+[Run in JupyterLite →](jupyterlite/lab/index.html?path=notebooks/Heatwave/HeatwaveNL.ipynb){target="_blank" rel="noopener"}
 :::
 
 ## Share EO workflow as a service
@@ -195,7 +201,8 @@ Package your workflow as a user-defined process so teams can execute the same an
 **Data used:** Sentinel-2 L2A 
 **Outcome:** reusable UDP service
 
-[Publish workflow →](client_examples/openeo-community-examples/python/RandomForest-ForestFire/RandomForestModelInference_AsUDP.ipynb)
+[Publish workflow →](client_examples/openeo-community-examples/python/RandomForest-ForestFire/RandomForestModelInference_AsUDP.ipynb)  
+[Run notebook (experimental) →](jupyterlite/lab/index.html?path=notebooks/RandomForest-ForestFire/RandomForestModelInference_AsUDP.ipynb){target="_blank" rel="noopener"}
 :::
 
 ## Large-scale Processing

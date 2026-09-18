@@ -167,6 +167,15 @@ await job.startJob();
 
 `cube.execute_batch(out_format="GTiff", title="Monthly NDVI composite") is a shortcut that creates, starts, and waits for a job in one call.
 
+::: {.callout-tip collapse="true"}
+## Example notebooks
+
+- [Forest Fire Analysis: Saving Multiple Results in One Job](../../client_examples/openeo-community-examples/python/ForestFire/ForestFire.ipynb)
+- [EO Data Processing with the openEO MultiBackendJobManager](../../client_examples/openeo-community-examples/python/ManagingMultipleLargeScaleJobs/ManagingMultipleLargeScaleJobs.ipynb)
+- [Geospatial Job Management and Visualisation](../../client_examples/openeo-community-examples/python/ManagingMultipleLargeScaleJobs/VisualisingMultipleOpeneoJobs.ipynb)
+
+More notebooks are listed on the [sample notebooks page](../../examples.qmd).
+:::
 
 ::: {.tag-filter-item data-process="list_jobs"}
 

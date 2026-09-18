@@ -177,3 +177,12 @@ connection.delete_user_defined_process("retired_process")
 Exact sharing and permission options are backend-specific; verify them in the documentation for the selected backend before relying on a UDP as a shared service.
 
 Do not confuse a UDP with a [User Defined Function](udf.qmd). A UDP is a reusable openEO process graph composed of processes; a UDF sends custom Python or R code to the backend through `run_udf`. Prefer standardised processes within a UDP where possible, as they are generally easier to validate, optimise, and reuse across backends.
+
+::: {.callout-tip collapse="true"}
+## Example notebooks
+
+- [Publishing an openEO Workflow as a User-Defined Process](../../client_examples/openeo-community-examples/python/Sentinel1_Stats/Sentinel1_Stats.ipynb)
+- [Reusing openEO Workflows Saved as UDPs](../../client_examples/openeo-community-examples/python/RandomForest-ForestFire/RandomForestModelInference_AsUDP.ipynb)
+
+More notebooks are listed on the [sample notebooks page](../../examples.qmd).
+:::

@@ -362,6 +362,19 @@ job.get_results().download_files("./output/")
 The returned values are calibrated radar measurements, usually expressed on a linear or decibel scale depending on the process parameters. Check the backend metadata for supported coefficients and ancillary data requirements.
 :::
 
+::: {.callout-tip collapse="true"}
+## Example notebooks
+
+- [Identifying Flooded Areas with Sentinel-1 Data](../../client_examples/openeo-community-examples/python/FloodNDWI/flood_SAR.ipynb)
+- [Oil Spill Mapping using Sentinel-1](../../client_examples/openeo-community-examples/python/OilSpill/OilSpillMapping.ipynb)
+- [Analysing openEO-Generated Interferograms for Surface Deformation](../../client_examples/openeo-community-examples/python/SAR_in_openEO/Interferogram_deformation_map.ipynb)
+- [Analysing Coherence Output for Harvest-Day Detection](../../client_examples/openeo-community-examples/python/SAR_in_openEO/Coherence_for_harvestdays.ipynb)
+- [Publishing an openEO Workflow as a User-Defined Process (Sentinel-1 stats)](../../client_examples/openeo-community-examples/python/Sentinel1_Stats/Sentinel1_Stats.ipynb)
+- [Soil Surface Moisture using openEO API](https://github.com/Open-EO/openeo-community-examples/blob/main/python/SurfaceSoilMoisture/SoilMoisture.ipynb)
+
+More notebooks are listed on the [sample notebooks page](../../examples.qmd).
+:::
+
 
 ::: {.callout-tip}
 

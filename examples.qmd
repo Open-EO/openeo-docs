@@ -11,239 +11,192 @@ listing:
     - path: "client_examples/openeo-community-examples/python/1. GettingStarted/GettingStarted.ipynb"
       image: images/notebook_previews/getting-started.png
       title: "Getting Started with openEO"
-      description: "Connect to a backend, explore collections, and run a first synchronous process graph."
       categories: [Getting Started]
     # Data Access & Collections
     - path: client_examples/openeo-community-examples/python/AccessPROBA-V/PROBA_V.ipynb
       title: "Access PROBA-V Collection"
-      description: "Discover and load the PROBA-V collection through openEO."
       categories: [Data Access & Collections]
     - path: "client_examples/openeo-community-examples/python/AccessSentinel5P/Access_&_Analyse_Sentinel5P_Products.ipynb"
       image: images/notebook_previews/access-sentinel5p.png
       title: "Accessing and Analysing Sentinel-5P Products"
-      description: "Query and visualise atmospheric Sentinel-5P products in CDSE."
       categories: [Data Access & Collections]
     - path: client_examples/openeo-community-examples/python/Access_CLMS/CLMS_layers_using_openEO.ipynb
       image: images/notebook_previews/access-clms.png
       title: "Exploring CLMS Datasets with openEO"
-      description: "Browse and load Copernicus Land Monitoring Service land-cover and burnt-area layers."
       categories: [Data Access & Collections]
     - path: client_examples/openeo-community-examples/python/AirQuality/AirQuality.ipynb
       image: images/notebook_previews/air-quality.png
       title: "Explore Sentinel-5P Products with openEO"
-      description: "Retrieve and inspect Sentinel-5P air-quality bands over an area of interest."
       categories: [Data Access & Collections]
     - path: client_examples/openeo-community-examples/python/Federation/FederatedProcessing.ipynb
       image: images/notebook_previews/federation.png
       title: "Advanced Use of Federated Processing"
-      description: "Work with multiple openEO backends transparently through a federation."
       categories: [Data Access & Collections]
     - path: client_examples/openeo-community-examples/python/LoadStac/load-stac-item-example.ipynb
       image: images/notebook_previews/load-stac-item.png
       title: "Loading a Single STAC Item"
-      description: "Load a single externally hosted STAC item as an openEO data cube."
       categories: [Data Access & Collections]
     - path: client_examples/openeo-community-examples/python/LoadStac/LoadLandsatSTAC.ipynb
       image: images/notebook_previews/load-landsat-stac.png
       title: "Using load_stac for External Datasets (Landsat 8)"
-      description: "Access an external Landsat-8 STAC catalogue and compute NDVI."
       categories: [Data Access & Collections]
     - path: client_examples/openeo-community-examples/python/LoadStac/LoadBiomassSTAC.ipynb
       image: images/notebook_previews/load-biomass-stac.png
       title: "Using load_stac for External Datasets (Biomass)"
-      description: "Load an external biomass STAC collection into an openEO process graph."
       categories: [Data Access & Collections]
     - path: client_examples/openeo-community-examples/python/MODIS/MODIS_data_using_openEO.ipynb
       title: "Access MODIS Data using openEO"
-      description: "Discover and load MODIS collections through openEO."
       categories: [Data Access & Collections]
     # Preprocessing & Data Preparation
     - path: client_examples/openeo-community-examples/python/BasicSentinelMerge/sentinel_merge.ipynb
       title: "Creating a Multi-Mission, Multi-Temporal Datacube"
-      description: "Merge Sentinel-1 and Sentinel-2 data into a single aligned datacube."
       categories: [Preprocessing & Data Preparation]
     - path: "client_examples/openeo-community-examples/python/Corsa/CORSA processes.ipynb"
       image: images/notebook_previews/corsa.png
       title: "CORSA: Near-Lossless Image Compression for Sentinel-2"
-      description: "Use the CORSA processes to compress Sentinel-2 data with minimal loss."
       categories: [Preprocessing & Data Preparation]
     - path: client_examples/openeo-community-examples/python/Hillshade/Hillshade.ipynb
       title: "Hillshade from Copernicus 30 m DEM"
-      description: "Derive slope, aspect, and hillshade from a digital elevation model."
       categories: [Preprocessing & Data Preparation]
     - path: client_examples/openeo-community-examples/python/RankComposites/rank_composites.ipynb
       image: images/notebook_previews/rank-composites.png
       title: "Rank Composites"
-      description: "Build cloud-free composites by ranking pixel observations."
       categories: [Preprocessing & Data Preparation]
     - path: client_examples/openeo-community-examples/python/RankComposites/bap_composite.ipynb
       image: images/notebook_previews/bap-composite.png
       title: "Best Available Pixel Composite"
-      description: "Generate a best-available-pixel (BAP) composite from a Sentinel-2 time series."
       categories: [Preprocessing & Data Preparation]
     - path: client_examples/openeo-community-examples/python/SCLDilationMask/to_scl_dilation_mask.ipynb
       image: images/notebook_previews/scl-dilation-mask.png
       title: "Sentinel-2 SCL Dilation Mask"
-      description: "Build a dilated cloud/cloud-shadow mask from the Sentinel-2 SCL band."
       categories: [Preprocessing & Data Preparation]
     - path: client_examples/openeo-community-examples/python/StatisticalDataFill/StatisticalDataFill.ipynb
       image: images/notebook_previews/statistical-data-fill.png
       title: "Filling Missing Time Series Data with Lowess Regression"
-      description: "Fill gaps in a time series using local regression smoothing."
       categories: [Preprocessing & Data Preparation]
     # Vegetation & Agriculture
     - path: client_examples/openeo-community-examples/python/BioPAR/biopar_service.ipynb
       image: images/notebook_previews/biopar.png
       title: "Using the BioPAR openEO Service"
-      description: "Compute biophysical vegetation parameters (e.g. LAI, FAPAR) via a hosted service."
       categories: [Vegetation & Agriculture]
     - path: client_examples/openeo-community-examples/python/MODIS/CarbonProduces.ipynb
       image: images/notebook_previews/modis-carbon.png
       title: "Exploring Carbon Dynamics from MODIS Products"
-      description: "Analyse MODIS-derived carbon flux products in CDSE."
       categories: [Vegetation & Agriculture]
     - path: client_examples/openeo-community-examples/python/MODIS/Environmental_productivity.ipynb
       image: images/notebook_previews/modis-productivity.png
       title: "Analyse Vegetation Productivity from MODIS Products"
-      description: "Combine MODIS LST and NDVI to study vegetation productivity."
       categories: [Vegetation & Agriculture]
-    - path: https://github.com/Open-EO/openeo-community-examples/blob/9ee2197c8830e5c97bf8c2e4ac340aad897277b4/python/ParcelDelineation/Parcel%20delineation.ipynb
+    - path: "client_examples/openeo-community-examples/python/ParcelDelineation/Parcel delineation.ipynb"
       image: https://documentation.dataspace.copernicus.eu/APIs/openEO/openeo-community-examples/python/ParcelDelineation/Parcel%20delineation_files/figure-html/cell-14-output-1.png
       title: "Parcel Delineation using openEO API"
-      description: "Delineate agricultural field boundaries from a Sentinel-2 time series."
       categories: [Vegetation & Agriculture]
     - path: client_examples/openeo-community-examples/python/WorldCereal/WorldCereal.ipynb
       title: "WorldCereal Product Download"
-      description: "Download WorldCereal crop-type and irrigation products."
       categories: [Vegetation & Agriculture]
     # Land Cover Mapping
     - path: "client_examples/openeo-community-examples/python/DynamicLandCoverMapping/Dynamic land cover mapping.ipynb"
       image: images/notebook_previews/dynamic-land-cover.png
       title: "Dynamic Land Cover Mapping"
-      description: "Train and apply a random forest classifier on Sentinel composites for land cover mapping."
       categories: [Land Cover Mapping]
     - path: client_examples/openeo-community-examples/python/LandCoverStatistics/land_cover_country_lcfm.ipynb
       image: images/notebook_previews/land-cover-statistics.png
       title: "Land Cover Statistics Extraction (LCFM)"
-      description: "Compute country-level land cover statistics from the LCFM product."
       categories: [Land Cover Mapping]
     # Climate & Extreme Events
     - path: client_examples/openeo-community-examples/python/Anomaly_Detection/Anomaly_Detection.ipynb
       image: images/notebook_previews/anomaly-detection.png
       title: "Regional Benchmarking Service for Anomaly Identification"
-      description: "Detect regional anomalies against a benchmark using a hosted openEO service."
       categories: [Climate & Extreme Events]
     - path: client_examples/openeo-community-examples/python/Heatwave/HeatwaveNL.ipynb
       image: images/notebook_previews/heatwave-nl.png
       title: "Heatwave in the Netherlands"
-      description: "Analyse land surface temperature patterns during a Dutch heatwave."
       categories: [Climate & Extreme Events]
     - path: client_examples/openeo-community-examples/python/NDDI/NDDI_Drought.ipynb
       image: images/notebook_previews/nddi-drought.png
       title: "Comparing the Summer Drought in Serbia"
-      description: "Use the Normalized Difference Drought Index (NDDI) to compare drought conditions."
       categories: [Climate & Extreme Events]
     # Water & Disaster Monitoring
     - path: client_examples/openeo-community-examples/python/FloodNDWI/flood_SAR.ipynb
       image: images/notebook_previews/flood-sar.png
       title: "Identifying Flooded Areas with Sentinel-1 Data"
-      description: "Detect flood extent from SAR backscatter changes."
       categories: [Water & Disaster Monitoring]
     - path: client_examples/openeo-community-examples/python/FloodNDWI/flood_ndwi.ipynb
       title: "Before/After Flash Flood Comparison using NDWI"
-      description: "Compare NDWI before and after a flash flood event in Cologne."
       categories: [Water & Disaster Monitoring]
     - path: client_examples/openeo-community-examples/python/GlobalFloodMonitoring/Global_Flood_Monitoring.ipynb
       image: images/notebook_previews/global-flood-monitoring.png
       title: "openEO Flood Monitoring: Pakistan Flooding of 2022"
-      description: "Map the extent of the 2022 Pakistan floods from satellite observations."
       categories: [Water & Disaster Monitoring]
     - path: client_examples/openeo-community-examples/python/LandslideNDVI/LandslidesNDVI.ipynb
       image: images/notebook_previews/landslide-ndvi.png
       title: "NDVI-based Approach to Study Landslide Areas"
-      description: "Detect landslide-affected vegetation loss using NDVI differencing."
       categories: [Water & Disaster Monitoring]
     - path: client_examples/openeo-community-examples/python/OilSpill/OilSpillMapping.ipynb
       image: images/notebook_previews/oil-spill.png
       title: "Oil Spill Mapping using Sentinel-1"
-      description: "Detect oil spill signatures in Sentinel-1 SAR imagery."
       categories: [Water & Disaster Monitoring]
     # Fire Monitoring
     - path: client_examples/openeo-community-examples/python/BurntMapping/burntmapping.ipynb
       image: images/notebook_previews/burnt-mapping.png
       title: "Burnt Area Mapping using apply_polygon on a UDF"
-      description: "Compute the Normalized Burn Ratio per fire-affected parcel using a UDF."
       categories: [Fire Monitoring]
     - path: client_examples/openeo-community-examples/python/ForestFire/ForestFire.ipynb
       image: images/notebook_previews/forest-fire.png
       title: "Forest Fire Analysis: Saving Multiple Results in One Job"
-      description: "Produce several fire-related result assets from a single batch job."
       categories: [Fire Monitoring]
     # SAR Processing
     - path: client_examples/openeo-community-examples/python/RVI/RVI.ipynb
       image: images/notebook_previews/rvi.png
       title: "Calculate Radar Vegetation Index (RVI)"
-      description: "Compute RVI from the Sentinel-1 GRD collection."
       categories: [SAR Processing]
     - path: client_examples/openeo-community-examples/python/SAR_in_openEO/Interferogram_deformation_map.ipynb
       image: images/notebook_previews/insar-deformation.png
       title: "Analysing openEO-Generated Interferograms for Surface Deformation"
-      description: "Study earthquake-induced surface deformation from InSAR interferograms."
       categories: [SAR Processing]
     - path: client_examples/openeo-community-examples/python/SAR_in_openEO/Coherence_for_harvestdays.ipynb
       image: images/notebook_previews/sar-coherence-harvest.png
       title: "Analysing Coherence Output for Harvest-Day Detection"
-      description: "Detect crop harvest dates from SAR coherence time series."
       categories: [SAR Processing]
     - path: client_examples/openeo-community-examples/python/Sentinel1_Stats/Sentinel1_Stats.ipynb
       image: images/notebook_previews/sentinel1-stats.png
       title: "Publishing an openEO Workflow as a User-Defined Process"
-      description: "Compute Sentinel-1 statistics and publish the workflow as a reusable UDP."
       categories: [SAR Processing]
-    - path: https://github.com/Open-EO/openeo-community-examples/blob/9ee2197c8830e5c97bf8c2e4ac340aad897277b4/python/SurfaceSoilMoisture/SoilMoisture.ipynb
+    - path: client_examples/openeo-community-examples/python/SurfaceSoilMoisture/SoilMoisture.ipynb
       image: https://documentation.dataspace.copernicus.eu/APIs/openEO/openeo-community-examples/python/SurfaceSoilMoisture/SoilMoisture_files/figure-html/cell-14-output-2.png
       title: "Soil Surface Moisture using openEO API"
-      description: "Derive surface soil moisture from Sentinel-1 backscatter."
       categories: [SAR Processing]
     # Machine Learning
     - path: "client_examples/openeo-community-examples/python/DimensionalityReduction/Dimensionality Reduction.ipynb"
       image: images/notebook_previews/dimensionality-reduction.png
       title: "Dimensionality Reduction using Sentinel-2 (PCA)"
-      description: "Reduce the dimensionality of a Sentinel-2 time series with PCA."
       categories: [Machine Learning]
     - path: client_examples/openeo-community-examples/python/ExtractingTrainingData/ML_ready_data_extraction.ipynb
       image: images/notebook_previews/ml-ready-data-extraction.png
       title: "ML-Ready Data Preparation using openEO"
-      description: "Extract balanced, ML-ready training samples from ground-truth points."
       categories: [Machine Learning]
     - path: client_examples/openeo-community-examples/python/OnnxMLInference/Onnx_ML_Inference.ipynb
       image: images/notebook_previews/onnx-ml-inference.png
       title: "Running ML Inference with an ONNX Model"
-      description: "Run an ONNX model as a UDF for on-the-fly inference."
       categories: [Machine Learning]
     - path: client_examples/openeo-community-examples/python/RandomForest-ForestFire/RandomForestModelTraining.ipynb
       image: images/notebook_previews/random-forest-training.png
       title: "Forest Fire Mapping using Random Forest"
-      description: "Train a random forest classifier for forest-fire mapping."
       categories: [Machine Learning]
     - path: client_examples/openeo-community-examples/python/RandomForest-ForestFire/RandomForestModelInference_AsUDP.ipynb
       title: "Reusing openEO Workflows Saved as UDPs"
-      description: "Run inference by reusing a trained model through a saved UDP."
       categories: [Machine Learning]
     - path: client_examples/openeo-community-examples/python/TesseraEmbedding/TesseraEmbedding.ipynb
       image: images/notebook_previews/tessera-embedding.png
       title: "TESSERA Pixel Embeddings from Sentinel-1/2"
-      description: "Generate pixel embeddings from Sentinel-1/2 with the TESSERA model."
       categories: [Machine Learning]
     # Job Management & Utilities
     - path: client_examples/openeo-community-examples/python/ManagingMultipleLargeScaleJobs/VisualisingMultipleOpeneoJobs.ipynb
       title: "Geospatial Job Management and Visualisation"
-      description: "Track and visualise the status of many concurrent batch jobs."
       categories: [Job Management & Utilities]
     - path: client_examples/openeo-community-examples/python/ManagingMultipleLargeScaleJobs/ManagingMultipleLargeScaleJobs.ipynb
       image: images/notebook_previews/managing-large-scale-jobs.png
       title: "EO Data Processing with the openEO MultiBackendJobManager"
-      description: "Manage large-scale, tiled batch job processing across a job database."
       categories: [Job Management & Utilities]
     type: grid
     page-size: 12

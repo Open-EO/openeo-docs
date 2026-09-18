@@ -367,4 +367,14 @@ anomalies <- cube %>% anomaly(normal=normal)
 const anomalies = cube.anomaly({normal:normal});
 ```
 :::
+
+::: {.callout-tip collapse="true"}
+## Example notebooks
+
+- [Regional Benchmarking Service for Anomaly Identification](../../client_examples/openeo-community-examples/python/Anomaly_Detection/Anomaly_Detection.ipynb)
+- [Heatwave in the Netherlands](../../client_examples/openeo-community-examples/python/Heatwave/HeatwaveNL.ipynb)
+- [Comparing the Summer Drought in Serbia (NDDI)](../../client_examples/openeo-community-examples/python/NDDI/NDDI_Drought.ipynb)
+
+More notebooks are listed on the [sample notebooks page](../../examples.qmd).
+:::
 :::
