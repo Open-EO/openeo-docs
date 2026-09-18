@@ -1,0 +1,43 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2026-09-18T14:08:49.261937Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:08:46.284520Z",
+      "mimetype": "image/png",
+      "name": "result.png",
+      "path": "notebooks/BasicSentinelMerge/result.png",
+      "size": 106960,
+      "type": "file",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2026-09-18T14:08:49.262463Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:08:46.284603Z",
+      "mimetype": null,
+      "name": "sentinel_merge.ipynb",
+      "path": "notebooks/BasicSentinelMerge/sentinel_merge.ipynb",
+      "size": 40699,
+      "type": "notebook",
+      "writable": true
+    }
+  ],
+  "created": "2026-09-18T14:08:49.262463Z",
+  "format": "json",
+  "hash": null,
+  "hash_algorithm": null,
+  "last_modified": "2026-09-18T14:08:49.262463Z",
+  "mimetype": null,
+  "name": "BasicSentinelMerge",
+  "path": "notebooks/BasicSentinelMerge",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}

@@ -1,0 +1,352 @@
+# Preprocessing
+
+This page provides an overview of preprocessing operations available in openEO for pre-processing EO datacubes for further analysis. Please note that the availability of specific processes may vary depending on the backend you are using. In addition to being backend-dependent, some processes might be experimental, or support may be available only for a specific client library.
+
+> **NOTE:**
+>
+> The buttons above let you filter processes supported by different backends. Selecting or deselecting a backend will show or hide the relevant sections in the documentation. However, please note that it is based on the latest documentation rendering. Thus, please refer to the [openEO Hub](https://hub.openeo.org/) for the most up-to-date information.
+
+## Mask a cube
+
+openEO provides the `mask` process to mask out unwanted or invalid observations. The standard [`mask`](https://open-eo.github.io/openeo-python-client/api-processes.html#openeo.processes.mask) process replaces values where a Boolean mask is true. It is the portable choice when the collection exposes its own quality band or when you build a mask from another data cube.
+
+## Python
+
+``` python
+import openeo
+
+connection = openeo.connect("openeofed.dataspace.copernicus.eu").authenticate_oidc()
+
+sentinel2 = connection.load_collection(
+    "SENTINEL2_L2A",
+    spatial_extent={"west": 4.30, "east": 4.55, "south": 50.80, "north": 50.98},
+    temporal_extent=["2024-06-01", "2024-06-30"],
+    bands=["B04", "B08", "SCL"],
+)
+
+quality_mask = sentinel2.filter_bands("SCL").apply(
+  lambda value: (value == 3) | (value == 8) | (value == 9) | (value == 10)
+)
+cloud_free = sentinel2.mask(mask=quality_mask)
+```
+
+> **TIP:**
+>
+> The result keeps the original cube dimensions and sets masked pixels to no-data. The exact meaning of the quality-band labels is collection-specific.
+
+## Sentinel-2 SCL Dilation Mask
+
+[`to_scl_dilation_mask`](https://open-eo.github.io/openeo-python-client/api-processes.html#openeo.processes.to_scl_dilation_mask) is a backend-specific convenience process that derives and creates a cloud and cloud-shadow mask from the Sentinel-2 Scene Classification (SCL) band. The cloud mask generated can be used directly with the standard `mask` process to filter out cloudy pixels.
+
+## Python
+
+``` python
+scl = c.load_collection(
+    "SENTINEL2_L2A",
+    spatial_extent={"west": 4.279, "south": 50.218, "east": 4.626, "north": 50.423},
+    temporal_extent=["2020-01-01", "2020-01-31"],
+    bands=["SCL"]
+)
+cloud_mask = scl.process( data=scl,process_id="to_scl_dilation_mask")
+```
+
+The process is backend-specific and is not available on every backend. An openEO notebook demonstrating how it works and how to replicate the standard openEO process across different backends is available [here](https://github.com/Open-EO/openeo-community-examples/blob/main/python/SCLDilationMask/to_scl_dilation_mask.ipynb).
+
+## Atmospheric Correction
+
+[Atmospheric correction](https://processes.openeo.org/2.0.0-rc.2/#atmospheric_correction) accounts for atmospheric scattering, absorption, and haze in optical observations. It converts top-of-atmosphere measurements into surface reflectance, which is more suitable for comparing observations across dates and locations.
+
+The atmospheric correction process can apply a chosen method to raw ‘L1C’ data. The supported methods and input datasets depend on the backend, because not every method is validated or works with every dataset, and different backends offer a variety of options. This gives you, as a user, more options to run and compare different methods, and select the most suitable one for your case.
+
+To perform an atmospheric correction, the user has to load an uncorrected L1C optical dataset. On the resulting datacube, the atmospheric_correction() method can be invoked. Note that it may not be possible to apply certain processes to the raw input data: preprocessing algorithms can be tightly coupled with the raw data, making it hard or impossible for the backend to perform operations in between loading and correcting the data.
+
+> **CAUTION:**
+>
+> Please note that this process is experimental and may change significantly. Feel encouraged to try it out and give feedback, but refrain from using it in production.
+
+### Code examples
+
+## Python
+
+``` python
+import openeo
+
+connection = openeo.connect("openeo.eodc.eu").authenticate_oidc()
+
+# Load raw L1C Sentinel-2 — include angle bands required by iCor
+l1c = connection.load_collection(
+    "SENTINEL2_L1C_SENTINELHUB",
+    spatial_extent={
+        "west": 3.758, "east": 4.088,
+        "south": 51.292, "north": 51.393
+    },
+    temporal_extent=["2017-03-07", "2017-03-07"],
+    bands=[
+        "B04", "B03", "B02",          # RGB
+        "B09", "B8A", "B11",          # SWIR / water vapour
+        "sunAzimuthAngles", "sunZenithAngles",
+        "viewAzimuthMean", "viewZenithMean"
+    ]
+)
+
+# Apply atmospheric correction with iCor
+l2a = l1c.atmospheric_correction(method="iCor")
+
+l2a.download("sentinel2_icor.tif", format="GTiff")
+```
+
+## R
+
+``` r
+library(openeo)
+
+con <- connect("openeo.eodc.eu")
+login()
+
+p <- processes()
+
+# Load raw L1C collection with required angle bands
+l1c <- p$load_collection(
+  id = "SENTINEL2_L1C_SENTINELHUB",
+  spatial_extent = list(west=3.758, east=4.088, south=51.292, north=51.393),
+  temporal_extent = c("2017-03-07", "2017-03-07"),
+  bands = c(
+    "B04", "B03", "B02",
+    "B09", "B8A", "B11",
+    "sunAzimuthAngles", "sunZenithAngles",
+    "viewAzimuthMean", "viewZenithMean"
+  )
+)
+
+# Apply iCor atmospheric correction
+l2a <- p$atmospheric_correction(data = l1c, method = "iCor")
+
+compute_result(graph = l2a, format = "GTiff", output_file = "sentinel2_icor.tif")
+```
+
+## JavaScript
+
+``` javascript
+import { Connection, authenticate } from "@openeo/js-client";
+
+const con = await Connection.connect("openeo.eodc.eu");
+await con.authenticateOIDC();
+
+const builder = await con.buildProcess();
+
+// Load raw L1C collection
+const l1c = builder.load_collection(
+  "SENTINEL2_L1C_SENTINELHUB",
+  { west: 3.758, east: 4.088, south: 51.292, north: 51.393 },
+ ["2017-03-07", "2017-03-07"],
+ ["B04","B03","B02","B09","B8A","B11",
+   "sunAzimuthAngles", "sunZenithAngles", "viewAzimuthMean", "viewZenithMean"]
+);
+
+// Apply atmospheric correction
+const l2a = builder.atmospheric_correction(l1c, { method: "iCor" });
+
+const result = builder.save_result(l2a, "GTiff");
+await con.computeResult(result, { filename: "sentinel2_icor.tif" });
+```
+
+## CARD4L surface reflectance
+
+The CARD4L variant of the atmospheric correction process is: ard_surface_reflectance(). This process follows CEOS specifications and thus can include additional processing steps, such as a BRDF correction, that are not yet available as separate processes.
+
+`ard_surface_reflectance` creates an analysis-ready optical product from suitable input data. It can include atmospheric, geometric, and quality corrections, depending on the backend implementation.
+
+``` python
+surface_reflectance = l1c.ard_surface_reflectance()
+```
+
+## CARD4L normalised radar backscatter
+
+Data from synthetic aperture radar sensors requires significant preprocessing to be calibrated and normalised for terrain. This is referred to as backscatter computation, and supported by [`sar_backscatter`](#compute-sar-backscatter) and the CARD4L compliant variant [`ard_normalized_radar_backscatter`](https://processes.openeo.org/2.0.0-rc.2/#ard_normalized_radar_backscatter).
+
+SAR backscatter processing calibrates raw radar observations and can apply terrain correction and normalisation. The resulting measurements are commonly expressed as sigma0 or gamma0 in linear or decibel scale. Terrain correction is especially important in areas with varied topography.
+
+## Python
+
+``` python
+import openeo
+
+connection = openeo.connect("openeo.vito.be").authenticate_oidc()
+
+# Load Sentinel-1 GRD — spatial/temporal filters are fine before backscatter
+s1grd = (
+ connection.load_collection(
+        "SENTINEL1_GRD",
+        bands=["VH", "VV"]
+    )
+    .filter_bbox(west=2.590, east=2.895, north=51.221, south=51.069)
+    .filter_temporal(extent=["2019-10-10", "2019-10-10"])
+)
+
+# CARD4L-compliant normalised radar backscatter (gamma0, terrain-flattened)
+nrb = s1grd.ard_normalized_radar_backscatter()
+
+# Submit as batch job and download results
+job = nrb.execute_batch()
+job.get_results().download_files("./output/")
+```
+
+## R
+
+``` r
+library(openeo)
+
+con <- connect("openeo.terrascope.be")
+login()
+
+p <- processes()
+
+# Load Sentinel-1 GRD with spatial and temporal filters
+s1grd <- p$load_collection(
+  id = "SENTINEL1_GRD",
+  bands = c("VH", "VV")
+)
+
+s1grd <- p$filter_bbox(
+  data = s1grd,
+  extent = list(west=2.590, east=2.895, south=51.069, north=51.221)
+)
+
+s1grd <- p$filter_temporal(
+  data = s1grd,
+  extent = c("2019-10-10", "2019-10-10")
+)
+
+# Apply CARD4L-compliant normalised radar backscatter
+nrb <- p$ard_normalized_radar_backscatter(data = s1grd)
+
+# Submit batch job
+job <- create_job(
+  graph = nrb,
+  title = "S1 CARD4L NRB"
+)
+start_job(job)
+
+# Monitor and download when complete
+job_status <- describe_job(job)
+download_results(job, folder = "./output/")
+```
+
+## JavaScript
+
+``` javascript
+import { Connection } from "@openeo/js-client";
+
+const con = await Connection.connect("openeo.terrascope.be");
+await con.authenticateOIDC();
+
+const builder = await con.buildProcess();
+
+// Load Sentinel-1 GRD
+let s1grd = builder.load_collection(
+  "SENTINEL1_GRD",
+  null, null,
+ ["VH", "VV"]
+);
+
+// Apply spatial and temporal filters first
+s1grd = builder.filter_bbox(s1grd, {
+ west: 2.590, east: 2.895,
+ south: 51.069, north: 51.221
+});
+
+s1grd = builder.filter_temporal(s1grd, ["2019-10-10", "2019-10-10"]);
+
+// CARD4L normalised radar backscatter
+const nrb = builder.ard_normalized_radar_backscatter(s1grd);
+
+const result = builder.save_result(nrb, "GTiff");
+
+// Submit as batch job
+const job = await con.createJob(result, { title: "S1 NRB Belgium" });
+await job.startJob();
+
+// Poll until done, then download
+const results = await job.getResults();
+for (const asset of Object.values(results.assets)) {
+  console.log("Download:", asset.href);
+}
+```
+
+## SAR backscatter
+
+`sar_backscatter` calibrates radar observations and can produce a chosen backscatter coefficient, such as `gamma0-terrain`. Use it when you need explicit control over calibration, terrain correction, elevation data, or noise removal, rather than the higher-level CARD4L process. For more information, refer to the process documentation [here](https://processes.openeo.org/2.0.0-rc.2/#sar_backscatter).
+
+## Python
+
+``` python
+s1_image = connection.load_collection(
+    "SENTINEL1_GRD",
+    temporal_extent=["2017-08-09", "2017-08-12"],
+    spatial_extent=aoi,
+    bands=["VV"],
+)
+
+s1_backscatter = s1_image.sar_backscatter(coefficient="sigma0-ellipsoid")
+
+job = s1_backscatter.execute_batch(
+  title="S1 backscatter example",
+  description="Terrain-flattened gamma0 over Belgium",
+)
+job.get_results().download_files("./output/")
+```
+
+The returned values are calibrated radar measurements, usually expressed on a linear or decibel scale depending on the process parameters. Check the backend metadata for supported coefficients and ancillary data requirements.
+
+> **TIP:**
+>
+> - [Identifying Flooded Areas with Sentinel-1 Data](../../client_examples/openeo-community-examples/python/FloodNDWI/flood_SAR.ipynb)
+> - [Oil Spill Mapping using Sentinel-1](../../client_examples/openeo-community-examples/python/OilSpill/OilSpillMapping.ipynb)
+> - [Analysing openEO-Generated Interferograms for Surface Deformation](../../client_examples/openeo-community-examples/python/SAR_in_openEO/Interferogram_deformation_map.ipynb)
+> - [Analysing Coherence Output for Harvest-Day Detection](../../client_examples/openeo-community-examples/python/SAR_in_openEO/Coherence_for_harvestdays.ipynb)
+> - [Publishing an openEO Workflow as a User-Defined Process (Sentinel-1 stats)](../../client_examples/openeo-community-examples/python/Sentinel1_Stats/Sentinel1_Stats.ipynb)
+> - [Soil Surface Moisture using openEO API](https://github.com/Open-EO/openeo-community-examples/blob/main/python/SurfaceSoilMoisture/SoilMoisture.ipynb)
+>
+> More notebooks are listed on the [sample notebooks page](../../examples.llms.md).
+
+> **TIP:**
+>
+> If your backend provides a collection such as `SENTINEL2_L2A` or `SENTINEL1_BACKSCATTER`, use it when it meets the analysis requirements. These products are already processed and usually require fewer backend resources.
+
+## Cloud detection
+
+[`Cloud detection`](https://processes.openeo.org/#cloud_detection) is defined within the OpenEO processes as a method to identify cloud-covered pixels in satellite imagery. It detects atmospheric disturbances such as clouds, cloud shadows, aerosols, haze, ozone and/or water vapour in optical imagery. Then it creates a data cube with spatial and temporal dimensions compatible with the source data cube, and a dimension containing a label for each supported/considered atmospheric disturbance. The naming of the bands follows these pre-defined values:
+
+- cloud
+- aerosol
+- shadow
+- aerosol
+- haze
+- ozone
+- water_vapor
+
+All bands have values between 0 (clear) and 1, which describes the probability that it is an atmospheric disturbance.
+
+> **CAUTION:**
+>
+> Please note that this process is experimental and may change significantly. Feel encouraged to try it out and give feedback, but refrain from using it in production.
+
+## Python
+
+``` python
+cloud_mask = s2_image.cloud_detection()
+```
+
+## R
+
+``` r
+cloud_mask <- cloud_detection(s2_image)
+```
+
+## JavaScript
+
+``` javascript
+let cloud_mask = s2_image.cloud_detection();
+```
+
+Back to top

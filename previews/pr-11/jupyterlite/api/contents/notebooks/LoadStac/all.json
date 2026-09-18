@@ -1,0 +1,57 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2026-09-18T14:08:49.330376Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:08:46.295020Z",
+      "mimetype": null,
+      "name": "LoadLandsatSTAC.ipynb",
+      "path": "notebooks/LoadStac/LoadLandsatSTAC.ipynb",
+      "size": 177362,
+      "type": "notebook",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2026-09-18T14:08:49.331009Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:08:46.295137Z",
+      "mimetype": null,
+      "name": "load-stac-item-example.ipynb",
+      "path": "notebooks/LoadStac/load-stac-item-example.ipynb",
+      "size": 611188,
+      "type": "notebook",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2026-09-18T14:08:49.329798Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:08:46.294934Z",
+      "mimetype": null,
+      "name": "LoadBiomassSTAC.ipynb",
+      "path": "notebooks/LoadStac/LoadBiomassSTAC.ipynb",
+      "size": 137090,
+      "type": "notebook",
+      "writable": true
+    }
+  ],
+  "created": "2026-09-18T14:08:49.331009Z",
+  "format": "json",
+  "hash": null,
+  "hash_algorithm": null,
+  "last_modified": "2026-09-18T14:08:49.331009Z",
+  "mimetype": null,
+  "name": "LoadStac",
+  "path": "notebooks/LoadStac",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}

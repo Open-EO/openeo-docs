@@ -1,0 +1,43 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2026-09-18T14:08:49.264997Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:08:46.285012Z",
+      "mimetype": "application/geo+json",
+      "name": "cal_aoi_v2.geojson",
+      "path": "notebooks/BurntMapping/cal_aoi_v2.geojson",
+      "size": 593,
+      "type": "file",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2026-09-18T14:08:49.264601Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:08:46.284949Z",
+      "mimetype": null,
+      "name": "burntmapping.ipynb",
+      "path": "notebooks/BurntMapping/burntmapping.ipynb",
+      "size": 53441,
+      "type": "notebook",
+      "writable": true
+    }
+  ],
+  "created": "2026-09-18T14:08:49.264997Z",
+  "format": "json",
+  "hash": null,
+  "hash_algorithm": null,
+  "last_modified": "2026-09-18T14:08:49.264997Z",
+  "mimetype": null,
+  "name": "BurntMapping",
+  "path": "notebooks/BurntMapping",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}

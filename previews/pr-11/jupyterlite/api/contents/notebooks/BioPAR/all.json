@@ -1,0 +1,29 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2026-09-18T14:08:49.262895Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:08:46.284680Z",
+      "mimetype": null,
+      "name": "biopar_service.ipynb",
+      "path": "notebooks/BioPAR/biopar_service.ipynb",
+      "size": 659850,
+      "type": "notebook",
+      "writable": true
+    }
+  ],
+  "created": "2026-09-18T14:08:49.262895Z",
+  "format": "json",
+  "hash": null,
+  "hash_algorithm": null,
+  "last_modified": "2026-09-18T14:08:49.262895Z",
+  "mimetype": null,
+  "name": "BioPAR",
+  "path": "notebooks/BioPAR",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}

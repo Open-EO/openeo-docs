@@ -1,0 +1,71 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2026-09-18T14:08:49.244698Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:08:46.281795Z",
+      "mimetype": "application/geo+json",
+      "name": "polygons.geojson",
+      "path": "notebooks/AccessPROBA-V/polygons.geojson",
+      "size": 4047,
+      "type": "file",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2026-09-18T14:08:49.243434Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:08:46.281648Z",
+      "mimetype": null,
+      "name": "PROBA_V.ipynb",
+      "path": "notebooks/AccessPROBA-V/PROBA_V.ipynb",
+      "size": 7624,
+      "type": "notebook",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2026-09-18T14:08:49.244201Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:08:46.281748Z",
+      "mimetype": "image/png",
+      "name": "newplot.png",
+      "path": "notebooks/AccessPROBA-V/newplot.png",
+      "size": 27639,
+      "type": "file",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2026-09-18T14:08:49.243753Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:08:46.281697Z",
+      "mimetype": "image/png",
+      "name": "ProbaVplot.png",
+      "path": "notebooks/AccessPROBA-V/ProbaVplot.png",
+      "size": 37395,
+      "type": "file",
+      "writable": true
+    }
+  ],
+  "created": "2026-09-18T14:08:49.244698Z",
+  "format": "json",
+  "hash": null,
+  "hash_algorithm": null,
+  "last_modified": "2026-09-18T14:08:49.244698Z",
+  "mimetype": null,
+  "name": "AccessPROBA-V",
+  "path": "notebooks/AccessPROBA-V",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}

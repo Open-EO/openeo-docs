@@ -1,0 +1,29 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2026-09-18T14:08:49.327257Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:08:46.294539Z",
+      "mimetype": null,
+      "name": "LandslidesNDVI.ipynb",
+      "path": "notebooks/LandslideNDVI/LandslidesNDVI.ipynb",
+      "size": 1089382,
+      "type": "notebook",
+      "writable": true
+    }
+  ],
+  "created": "2026-09-18T14:08:49.327257Z",
+  "format": "json",
+  "hash": null,
+  "hash_algorithm": null,
+  "last_modified": "2026-09-18T14:08:49.327257Z",
+  "mimetype": null,
+  "name": "LandslideNDVI",
+  "path": "notebooks/LandslideNDVI",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}

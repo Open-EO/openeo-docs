@@ -1,0 +1,29 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2026-09-18T14:08:49.435074Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:08:46.311411Z",
+      "mimetype": null,
+      "name": "WorldCereal.ipynb",
+      "path": "notebooks/WorldCereal/WorldCereal.ipynb",
+      "size": 21565,
+      "type": "notebook",
+      "writable": true
+    }
+  ],
+  "created": "2026-09-18T14:08:49.435074Z",
+  "format": "json",
+  "hash": null,
+  "hash_algorithm": null,
+  "last_modified": "2026-09-18T14:08:49.435074Z",
+  "mimetype": null,
+  "name": "WorldCereal",
+  "path": "notebooks/WorldCereal",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}

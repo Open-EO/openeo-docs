@@ -1,0 +1,29 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2026-09-18T14:08:49.257027Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:08:46.283667Z",
+      "mimetype": null,
+      "name": "CLMS_layers_using_openEO.ipynb",
+      "path": "notebooks/Access_CLMS/CLMS_layers_using_openEO.ipynb",
+      "size": 389346,
+      "type": "notebook",
+      "writable": true
+    }
+  ],
+  "created": "2026-09-18T14:08:49.257027Z",
+  "format": "json",
+  "hash": null,
+  "hash_algorithm": null,
+  "last_modified": "2026-09-18T14:08:49.257027Z",
+  "mimetype": null,
+  "name": "Access_CLMS",
+  "path": "notebooks/Access_CLMS",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}

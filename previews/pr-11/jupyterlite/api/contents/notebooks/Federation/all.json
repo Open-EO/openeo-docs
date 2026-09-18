@@ -1,0 +1,29 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2026-09-18T14:08:49.286067Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:08:46.288285Z",
+      "mimetype": null,
+      "name": "FederatedProcessing.ipynb",
+      "path": "notebooks/Federation/FederatedProcessing.ipynb",
+      "size": 107519,
+      "type": "notebook",
+      "writable": true
+    }
+  ],
+  "created": "2026-09-18T14:08:49.286067Z",
+  "format": "json",
+  "hash": null,
+  "hash_algorithm": null,
+  "last_modified": "2026-09-18T14:08:49.286067Z",
+  "mimetype": null,
+  "name": "Federation",
+  "path": "notebooks/Federation",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}

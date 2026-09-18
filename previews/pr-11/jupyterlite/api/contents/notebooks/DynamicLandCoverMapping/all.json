@@ -1,0 +1,57 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2026-09-18T14:08:49.282244Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:08:46.287660Z",
+      "mimetype": null,
+      "name": "Dynamic land cover mapping.ipynb",
+      "path": "notebooks/DynamicLandCoverMapping/Dynamic land cover mapping.ipynb",
+      "size": 304099,
+      "type": "notebook",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2026-09-18T14:08:49.283178Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:08:46.287800Z",
+      "mimetype": "text/markdown",
+      "name": "README.md",
+      "path": "notebooks/DynamicLandCoverMapping/README.md",
+      "size": 2056,
+      "type": "file",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2026-09-18T14:08:49.283461Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:08:46.287833Z",
+      "mimetype": "image/svg+xml",
+      "name": "ml_suggestion.svg",
+      "path": "notebooks/DynamicLandCoverMapping/ml_suggestion.svg",
+      "size": 27308,
+      "type": "file",
+      "writable": true
+    }
+  ],
+  "created": "2026-09-18T14:08:49.283178Z",
+  "format": "json",
+  "hash": null,
+  "hash_algorithm": null,
+  "last_modified": "2026-09-18T14:08:49.283178Z",
+  "mimetype": null,
+  "name": "DynamicLandCoverMapping",
+  "path": "notebooks/DynamicLandCoverMapping",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}

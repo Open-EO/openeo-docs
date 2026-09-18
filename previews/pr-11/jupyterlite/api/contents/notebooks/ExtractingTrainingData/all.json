@@ -1,0 +1,57 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2026-09-18T14:08:49.283845Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:08:46.287908Z",
+      "mimetype": null,
+      "name": "ML_ready_data_extraction.ipynb",
+      "path": "notebooks/ExtractingTrainingData/ML_ready_data_extraction.ipynb",
+      "size": 629601,
+      "type": "notebook",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2026-09-18T14:08:49.285423Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:08:46.288183Z",
+      "mimetype": "text/x-python",
+      "name": "plot_func.py",
+      "path": "notebooks/ExtractingTrainingData/plot_func.py",
+      "size": 6373,
+      "type": "file",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2026-09-18T14:08:49.285732Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:08:46.288219Z",
+      "mimetype": "text/x-python",
+      "name": "udf.py",
+      "path": "notebooks/ExtractingTrainingData/udf.py",
+      "size": 4010,
+      "type": "file",
+      "writable": true
+    }
+  ],
+  "created": "2026-09-18T14:08:49.285423Z",
+  "format": "json",
+  "hash": null,
+  "hash_algorithm": null,
+  "last_modified": "2026-09-18T14:08:49.285423Z",
+  "mimetype": null,
+  "name": "ExtractingTrainingData",
+  "path": "notebooks/ExtractingTrainingData",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}

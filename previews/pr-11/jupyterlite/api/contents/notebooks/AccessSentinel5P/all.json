@@ -1,0 +1,43 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2026-09-18T14:08:49.247591Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:08:46.282591Z",
+      "mimetype": "image/gif",
+      "name": "sentinel5p_aerosol_index_animation.gif",
+      "path": "notebooks/AccessSentinel5P/sentinel5p_aerosol_index_animation.gif",
+      "size": 4897515,
+      "type": "file",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2026-09-18T14:08:49.245163Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:08:46.281864Z",
+      "mimetype": null,
+      "name": "Access_&_Analyse_Sentinel5P_Products.ipynb",
+      "path": "notebooks/AccessSentinel5P/Access_&_Analyse_Sentinel5P_Products.ipynb",
+      "size": 573950,
+      "type": "notebook",
+      "writable": true
+    }
+  ],
+  "created": "2026-09-18T14:08:49.245591Z",
+  "format": "json",
+  "hash": null,
+  "hash_algorithm": null,
+  "last_modified": "2026-09-18T14:08:49.245591Z",
+  "mimetype": null,
+  "name": "AccessSentinel5P",
+  "path": "notebooks/AccessSentinel5P",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}

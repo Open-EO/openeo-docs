@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Cube Manipulations – openEO</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../documentation/cube_operations/udf.html" rel="next">
+<link href="../../documentation/cube_operations/spectral_operations.html" rel="prev">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-5db03c06400178421883125b8393055e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css?family=Roboto+Mono|Source+Sans+Pro:300,400,600" rel="stylesheet">
+<meta name="zd-site-verification" content="xj9koofr1crilmoclgxsjd">
+
+<script type="text/javascript">
+
+
+    function setActiveClassForCurrentUrl() {
+        // Find all links in the navbarCollapse div where the href attribute is set to the current URL
+        let anchorTag = document.querySelector('#navbarCollapse a[href="' + window.location.href + '"]');
+
+        if (anchorTag) {
+
+            // Find the closest parent of the navigation
+            let parentUl = anchorTag.closest('li.nav-item')?.querySelector('a.nav-link');
+
+            if (parentUl) {
+                // Add active class to both the anchor tag and the parent ul
+                anchorTag.classList.add('active');
+                parentUl.classList.add('active');
+            }
+        }
+    }
+
+    window.addEventListener('popstate', setActiveClassForCurrentUrl);
+    window.addEventListener('hashchange', setActiveClassForCurrentUrl);
+
+    document.addEventListener("DOMContentLoaded", async function () {
+        const items = Array.from(document.querySelectorAll(".tag-filter-item"));
+        const filterUi = document.querySelector(".tag-filter-ui");
+        if (items.length === 0 || !filterUi) return;
+        const staticBadges = Array.from(document.querySelectorAll(".tag-filter-badge"));
+        const hasLiveProcesses = items.some((item) => item.hasAttribute("data-process"));
+        let support = null;
+        if (hasLiveProcesses) {
+            try {
+                const url = new URL("../../_data/backend_process_support.json", window.location.href);
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                support = await response.json();
+            } catch (error) { console.warn("Could not load backend process support data.", error); }
+        }
+        const getExplicitTags = (item) => new Set((item.getAttribute("data-tags") || "").toLowerCase().split(/\s+/).filter(Boolean));
+        const getDefaultTags = () => new Set(staticBadges.map((badge) => badge.dataset.tag).filter(Boolean));
+        const getTags = (item) => {
+            const explicitTags = getExplicitTags(item);
+            if (support && item.hasAttribute("data-process")) {
+                const liveTags = new Set(item.getAttribute("data-process").split(/[\s,]+/).flatMap((id) => support.processes[id] || []));
+                return liveTags.size > 0 ? liveTags : explicitTags.size > 0 ? explicitTags : getDefaultTags();
+            }
+            return explicitTags.size > 0 ? explicitTags : getDefaultTags();
+        };
+        let badges = staticBadges;
+        if (support) {
+            const availableTags = [...new Set(items.flatMap((item) => [...getTags(item)]))].sort();
+            filterUi.replaceChildren();
+            badges = availableTags.map((tag) => {
+                const button = document.createElement("button");
+                button.className = "tag-filter-badge active";
+                button.dataset.tag = tag;
+                button.textContent = support.backends[tag]?.label || tag;
+                filterUi.appendChild(button);
+                return button;
+            });
+        }
+        if (badges.length === 0) return;
+        const tocLinks = Array.from(document.querySelectorAll("#TOC a[data-scroll-target]"));
+        const applyFilter = () => {
+            const selectedTags = new Set(badges.filter((badge) => badge.classList.contains("active")).map((badge) => badge.dataset.tag));
+            items.forEach((item) => {
+                const tags = getTags(item);
+                const visible = [...selectedTags].some((tag) => tags.has(tag));
+                item.hidden = !visible;
+                const tocLink = tocLinks.find((link) => link.dataset.scrollTarget === `#${item.id}`);
+                tocLink?.closest("li")?.toggleAttribute("hidden", !visible);
+            });
+        };
+        badges.forEach((badge) => badge.addEventListener("click", function (event) {
+            event.preventDefault(); this.classList.toggle("active"); this.classList.toggle("inactive"); applyFilter();
+        }));
+        applyFilter();
+    });
+    window.onload = () => {
+        const brand = document.querySelector('.navbar-brand');
+        if (brand) {
+            // Keep local/preview behavior, but use the GitHub Pages project root in production.
+            const brandHref = window.location.hostname === 'open-eo.github.io'
+                ? '/openeo-docs/'
+                : '/index.html';
+            brand.setAttribute('href', brandHref);
+        }
+        setActiveClassForCurrentUrl();
+    }
+
+ 
+</script>
+
+
+<link rel="stylesheet" href="../../custom.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../news/images/openeo_logo.png" alt="openEO logo" class="navbar-logo light-content">
+    <img src="../../news/images/openeo_logo.png" alt="openEO logo" class="navbar-logo dark-content">
+    </a>
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">openEO</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-about" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">About</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-about">    
+        <li>
+    <a class="dropdown-item" href="../../about.html">
+ <span class="dropdown-text">About openEO</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../psc.html">
+ <span class="dropdown-text">Project Steering Committee (PSC)</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="https://hub.openeo.org/" target="_blank"> 
+<span class="menu-text">Services</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-community" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Community</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-community">    
+        <li>
+    <a class="dropdown-item" href="../../news/news.html">
+ <span class="dropdown-text">News</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../meetings.html">
+ <span class="dropdown-text">Meetings</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../events/events.html">
+ <span class="dropdown-text">Events</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-user-documentation" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">User Documentation</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-user-documentation">    
+        <li>
+    <a class="dropdown-item" href="../../documentation/cookbook.html">
+ <span class="dropdown-text">COOKBOOK</span></a>
+  </li>  
+        <li><hr class="dropdown-divider"></li>
+        <li class="dropdown-header">KEY CONCEPTS</li>
+        <li>
+    <a class="dropdown-item" href="../../documentation/key_concepts/glossary.html">
+ <span class="dropdown-text">Glossary</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../documentation/key_concepts/backend.html">
+ <span class="dropdown-text">Backends</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../documentation/key_concepts/datacube.html">
+ <span class="dropdown-text">Datacube</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../documentation/key_concepts/processes.html">
+ <span class="dropdown-text">Processes</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../documentation/key_concepts/architecture.html">
+ <span class="dropdown-text">Architecture</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../documentation/setup.html">
+ <span class="dropdown-text">SETUP</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../documentation/data_discovery.html">
+ <span class="dropdown-text">DATA DISCOVERY</span></a>
+  </li>  
+        <li><hr class="dropdown-divider"></li>
+        <li class="dropdown-header">CUBE OPERATIONS</li>
+        <li>
+    <a class="dropdown-item" href="../../documentation/cube_operations/general_operations.html">
+ <span class="dropdown-text">General Operations</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../documentation/cube_operations/preprocessing.html">
+ <span class="dropdown-text">Preprocessing</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../documentation/cube_operations/spatial_operations.html">
+ <span class="dropdown-text">Spatial Operations</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../documentation/cube_operations/temporal_operations.html">
+ <span class="dropdown-text">Temporal Operations</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../documentation/cube_operations/spectral_operations.html">
+ <span class="dropdown-text">Spectral Operations</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../documentation/cube_operations/cube_manipulations.html">
+ <span class="dropdown-text">Cube Manipulations</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../documentation/cube_operations/udf.html">
+ <span class="dropdown-text">User Defined Functions</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../documentation/cube_operations/machine_learning.html">
+ <span class="dropdown-text">Machine Learning</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../documentation/cube_operations/udp.html">
+ <span class="dropdown-text">User Defined Processes</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../documentation/cube_operations/execute_jobs.html">
+ <span class="dropdown-text">Execute openEO Jobs</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../documentation/export_formats.html">
+ <span class="dropdown-text">EXPORT FORMATS</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-developers" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Developers</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-developers">    
+        <li>
+    <a class="dropdown-item" href="https://api.openeo.org/">
+ <span class="dropdown-text">REST API Reference</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../404-not-found.html">
+ <span class="dropdown-text">Xarray/Dask Guide</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../404-not-found.html">
+ <span class="dropdown-text">Backend Development</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-support" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Support</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-support">    
+        <li>
+    <a class="dropdown-item" href="../../contact.html">
+ <span class="dropdown-text">Contact</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://forum.dataspace.copernicus.eu/c/openeo/28">
+ <span class="dropdown-text">CDSE Forum</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../examples.html">
+ <span class="dropdown-text">Notebook examples</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools tools-wide">
+    <a href="mailto:openeo.psc@uni-muenster.de" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-envelope"></i></a>
+    <a href="https://www.linkedin.com/company/openeospec/" title="" class="quarto-navigation-tool px-1" aria-label="" target="_blank"><i class="bi bi-linkedin"></i></a>
+    <a href="https://bsky.app/profile/openeo.org" title="" class="quarto-navigation-tool px-1" aria-label="" target="_blank"><i class="bi bi-bluesky"></i></a>
+    <a href="https://github.com/Open-EO" title="" class="quarto-navigation-tool px-1" aria-label="" target="_blank"><i class="bi bi-github"></i></a>
+    <a href="https://www.youtube.com/channel/UCMJQil8j9sHBQkcSlSaEsvQ" title="" class="quarto-navigation-tool px-1" aria-label="" target="_blank"><i class="bi bi-youtube"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../documentation/cube_operations.html">CUBE OPERATIONS</a></li><li class="breadcrumb-item"><a href="../../documentation/cube_operations/cube_manipulations.html">Cube Manipulations</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/cookbook.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">COOKBOOK</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false">
+ <span class="menu-text">KEY CONCEPTS</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/key_concepts/glossary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Glossary</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/key_concepts/backend.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Backends</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/key_concepts/datacube.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Datacube</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/key_concepts/processes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Processes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/key_concepts/architecture.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Architecture</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">SETUP</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/data_discovery.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">DATA DISCOVERY</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../documentation/cube_operations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">CUBE OPERATIONS</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/cube_operations/general_operations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">General Operations</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/cube_operations/preprocessing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preprocessing</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/cube_operations/spatial_operations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Spatial Operations</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/cube_operations/temporal_operations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Temporal Operations</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/cube_operations/spectral_operations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Spectral Operations</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/cube_operations/cube_manipulations.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Cube Manipulations</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/cube_operations/udf.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">User Defined Functions</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/cube_operations/machine_learning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Machine Learning</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/cube_operations/udp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">User Defined Processes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/cube_operations/execute_jobs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Execute openEO Jobs</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/export_formats.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">EXPORT FORMATS</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#create-an-empty-data-cube" id="toc-create-an-empty-data-cube" class="nav-link active" data-scroll-target="#create-an-empty-data-cube">Create an empty data cube</a></li>
+  <li><a href="#merge-cubes" id="toc-merge-cubes" class="nav-link" data-scroll-target="#merge-cubes">Merge cubes</a></li>
+  <li><a href="#add-a-dimension" id="toc-add-a-dimension" class="nav-link" data-scroll-target="#add-a-dimension">Add a dimension</a></li>
+  <li><a href="#drop-a-singleton-dimension" id="toc-drop-a-singleton-dimension" class="nav-link" data-scroll-target="#drop-a-singleton-dimension">Drop a singleton dimension</a></li>
+  <li><a href="#rename-dimension-labels" id="toc-rename-dimension-labels" class="nav-link" data-scroll-target="#rename-dimension-labels">Rename dimension labels</a></li>
+  <li><a href="#rename-a-dimension" id="toc-rename-a-dimension" class="nav-link" data-scroll-target="#rename-a-dimension">Rename a dimension</a></li>
+  <li><a href="#read-dimension-labels" id="toc-read-dimension-labels" class="nav-link" data-scroll-target="#read-dimension-labels">Read dimension labels</a></li>
+  <li><a href="#filter-dimension-labels" id="toc-filter-dimension-labels" class="nav-link" data-scroll-target="#filter-dimension-labels">Filter dimension labels</a></li>
+  <li><a href="#flatten-dimensions" id="toc-flatten-dimensions" class="nav-link" data-scroll-target="#flatten-dimensions">Flatten dimensions</a></li>
+  <li><a href="#unflatten-a-dimension" id="toc-unflatten-a-dimension" class="nav-link" data-scroll-target="#unflatten-a-dimension">Unflatten a dimension</a></li>
+  <li><a href="#remove-empty-dimension-labels" id="toc-remove-empty-dimension-labels" class="nav-link" data-scroll-target="#remove-empty-dimension-labels">Remove empty dimension labels</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../documentation/cube_operations.html">CUBE OPERATIONS</a></li><li class="breadcrumb-item"><a href="../../documentation/cube_operations/cube_manipulations.html">Cube Manipulations</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Cube Manipulations</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>The cube-manipulation processes defined in this section allow you to modify the structure of data cubes without altering the underlying scientific content. It includes processes for merging cubes, adding or dropping dimensions, renaming labels, and flattening or unflattening dimensions. Please note that several operations described in the <a href="../../documentation/cube_operations/spatial_operations.html">spatial</a>, <a href="../../documentation/cube_operations/temporal_operations.html">temporal</a>, and <a href="../../documentation/cube_operations/spectral_operations.html">spectral</a> can also be considered as cube-manipulation processes. However, their primary purpose is often analysis along that dimension rather than structural modification.</p>
+<div class="tag-filter-ui" id="tag-filter-ui">
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Backend support overview
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>The buttons above let you filter processes supported by different backends. Selecting or deselecting a backend will show or hide the relevant sections in the documentation. However, please note that it is based on the latest documentation rendering. Thus, please refer to the <a href="https://hub.openeo.org/">openEO Hub</a> for the most up-to-date information.</p>
+</div>
+</div>
+</div>
+<section id="create-an-empty-data-cube" class="level2 tag-filter-item" data-process="create_data_cube">
+<h2 class="anchored" data-anchor-id="create-an-empty-data-cube">Create an empty data cube</h2>
+<p><code>create_data_cube</code> creates a data cube without dimensions. Add dimensions with <code>add_dimension</code> before using it in a workflow.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>empty_cube <span class="op">=</span> openeo.processes.create_data_cube()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="merge-cubes" class="level2 tag-filter-item" data-process="merge_cubes">
+<h2 class="anchored" data-anchor-id="merge-cubes">Merge cubes</h2>
+<p>The <code>merge_cubes</code> process combines two compatible cubes. The data cubes must be compatible, meaning they share a common subset of equal dimensions. To conveniently obtain such a subset of equal dimensions, the process implicitly aligns the horizontal spatial dimensions (axes x and y) with resample_cube_spatial if required. cube1 is the target data cube for resampling, and the default parameters of resample_cube_spatial apply. The equality for geometries follows the definition in the OGC Simple Features standard.</p>
+<p>All dimensions share the same properties, such as name, type, reference system, and resolution. Dimensions can have disjoint or overlapping labels. If there is any overlap between the dimension labels, the parameter overlap_resolver must be specified to combine the two values for these overlapping labels. A merge operation without overlap should be reversible with (a set of) filter operations for each of the two cubes, if no implicit resampling were applied.</p>
+<p>It is not possible to merge a vector and a raster data cube. Merging vector data cubes with different base geometry types (points, lines/line strings, polygons) is not possible and throws the IncompatibleGeometryTypes exception. The base geometry types can be merged with their corresponding multi-geometry types.</p>
+<p>After the merge, the dimensions with a natural/inherent label order (in this reference system, each spatial and temporal dimension) still have all dimension labels sorted. For other dimensions without inherent order, including bands, the dimension labels retain the order they appear in the original data cubes, and the dimension labels of cube2 are appended to those of cube1.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># For example: stack two non-overlapping seasonal cubes.</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>full_year <span class="op">=</span> spring_cube.merge_cubes(summer_cube)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># For example: stack two non-overlapping seasonal cubes.</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>full_year <span class="ot">&lt;-</span> <span class="fu">merge_cubes</span>(spring_cube, summer_cube)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">// For example: stack two non-overlapping seasonal cubes.</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> full_year <span class="op">=</span> <span class="fu">mergeCubes</span>(spring_cube<span class="op">,</span> summer_cube)<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Use <code>merge_cubes</code> to union compatible data. Use <code>resample_cube_spatial</code> or <code>resample_cube_temporal</code> first when grids or time labels must be aligned.</p>
+</div>
+</div>
+</section>
+<section id="add-a-dimension" class="level2 tag-filter-item" data-process="add_dimension">
+<h2 class="anchored" data-anchor-id="add-a-dimension">Add a dimension</h2>
+<p>The <code>add_dimension</code> process adds a new dimension to a data cube, which can be useful for organising data into bands, categories, or other structural elements.</p>
+<p>Afterwards, the dimension can be referenced with the specified name. If a dimension with the specified name exists, the process fails with a DimensionExists error. The dimension label is set to the specified label.</p>
+<p>This call does not modify the datacube in place, but returns a new datacube with the additional dimension.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add a named band dimension to a single-band derived raster.</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>with_band <span class="op">=</span> derived.add_dimension(name<span class="op">=</span><span class="st">"NDVI"</span>, label<span class="op">=</span><span class="st">"bands"</span>, <span class="bu">type</span><span class="op">=</span><span class="st">"bands"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add a named band dimension to a single-band derived raster.</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>with_band <span class="ot">&lt;-</span> <span class="fu">add_dimension</span>(derived, <span class="at">name=</span><span class="st">"NDVI"</span>, <span class="at">label=</span><span class="st">"bands"</span>, <span class="at">type=</span><span class="st">"bands"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Add a named band dimension to a single-band derived raster.</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> with_band <span class="op">=</span> <span class="fu">addDimension</span>(derived<span class="op">,</span> {<span class="dt">name</span><span class="op">:</span> <span class="st">"NDVI"</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"bands"</span><span class="op">,</span> <span class="dt">type</span><span class="op">:</span> <span class="st">"bands"</span>})<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+</section>
+<section id="drop-a-singleton-dimension" class="level2 tag-filter-item" data-process="drop_dimension">
+<h2 class="anchored" data-anchor-id="drop-a-singleton-dimension">Drop a singleton dimension</h2>
+<p>The <code>drop_dimension</code> process removes a dimension from a data cube only if it contains a single label. Dropping a dimension only works on dimensions with a single remaining dimension label; otherwise, the process fails with a DimensionLabelCountMismatch exception. Dimension values can be reduced to a single value with a filter such as filter_bands or the reduce_dimension process. If a dimension with the specified name does not exist, the process fails with a DimensionNotAvailable exception.</p>
+<p>Please note that it is different from <code>reduce_dimension</code>, which can reduce a dimension to a single value but does not remove the dimension itself.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>without_singleton <span class="ot">&lt;-</span> <span class="fu">drop_dimension</span>(cube, <span class="at">dimension=</span><span class="st">"bands"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Drop a singleton dimension from a data cube.</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> without_singleton <span class="op">=</span> <span class="fu">dropDimension</span>(cube<span class="op">,</span> {<span class="dt">dimension</span><span class="op">:</span> <span class="st">"bands"</span>})<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+</section>
+<section id="rename-dimension-labels" class="level2 tag-filter-item" data-process="rename_labels">
+<h2 class="anchored" data-anchor-id="rename-dimension-labels">Rename dimension labels</h2>
+<p>The <code>rename_labels</code> process renames the labels of the specified dimension in the data cube from source to target.</p>
+<p>If the array for the source labels is empty (the default), the dimension labels are enumerated with zero-based numbering (0,1,2,3,…) so that the dimension labels directly map to the indices of the array specified for the parameter target. Otherwise, the number of the source and target labels must be equal. If none of these requirements is fulfilled, the LabelMismatch exception is thrown.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>renamed <span class="ot">&lt;-</span> <span class="fu">rename_labels</span>(with_band, <span class="at">dimension=</span><span class="st">"bands"</span>, <span class="at">target=</span><span class="fu">c</span>(<span class="st">"vegetation_index"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Rename dimension labels of a data cube.</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> renamed <span class="op">=</span> <span class="fu">renameLabels</span>(with_band<span class="op">,</span> {<span class="dt">dimension</span><span class="op">:</span> <span class="st">"bands"</span><span class="op">,</span> <span class="dt">target</span><span class="op">:</span> [<span class="st">"vegetation_index"</span>]})<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+</section>
+<section id="rename-a-dimension" class="level2 tag-filter-item" data-process="rename_dimension">
+<h2 class="anchored" data-anchor-id="rename-a-dimension">Rename a dimension</h2>
+<p>Use <code>rename_dimension</code> to make a dimension name match the vocabulary expected by a later process or output consumer. The labels and values remain unchanged. It is different from <code>rename_labels</code>, which changes the labels of a dimension but keeps the dimension name the same. For example, if a cube has a dimension named “bands” and you want to rename it to “spectral”, you would use <code>rename_dimension</code>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>renamed <span class="op">=</span> cube.rename_dimension(dimension<span class="op">=</span><span class="st">"bands"</span>, target<span class="op">=</span><span class="st">"spectral"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="read-dimension-labels" class="level2 tag-filter-item" data-process="dimension_labels">
+<h2 class="anchored" data-anchor-id="read-dimension-labels">Read dimension labels</h2>
+<p>For usecase scenarios where you need to examine or manipulate the labels of a specific dimension, such as selecting particular bands or time steps, <code>dimension_labels</code> provides a convenient way to access these labels.</p>
+<p>The user can call <code>dimension_labels</code> with the desired dimension name to retrieve its labels. For example, to get the labels of the “bands” dimension:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-5-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-1" role="tab" aria-controls="tabset-5-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-2" role="tab" aria-controls="tabset-5-2" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-5-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-5-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>labels <span class="ot">&lt;-</span> <span class="fu">dimension_labels</span>(cube, <span class="at">dimension=</span><span class="st">"bands"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-5-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Get dimension labels of a data cube.</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> labels <span class="op">=</span> <span class="fu">dimensionLabels</span>(cube<span class="op">,</span> {<span class="dt">dimension</span><span class="op">:</span> <span class="st">"bands"</span>})<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+</section>
+<section id="filter-dimension-labels" class="level2 tag-filter-item" data-process="filter_labels">
+<h2 class="anchored" data-anchor-id="filter-dimension-labels">Filter dimension labels</h2>
+<p>Similar to <code>dimension_labels</code>, <code>filter_labels</code> operates on the labels of a specific dimension, but instead of just retrieving them, it allows you to select a subset based on a condition. Therefore, it is recommended to use this process when you need to work with only a specific subset of dimension labels, such as excluding certain bands or selecting particular time steps.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-6-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-1" role="tab" aria-controls="tabset-6-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-2" role="tab" aria-controls="tabset-6-2" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-6-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-6-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>selected <span class="ot">&lt;-</span> <span class="fu">filter_labels</span>(cube, <span class="at">dimension=</span><span class="st">"bands"</span>, <span class="at">condition=</span><span class="cf">function</span>(label) label <span class="sc">!=</span> <span class="st">"QA"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-6-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Filter dimension labels of a data cube.</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> selected <span class="op">=</span> <span class="fu">filterLabels</span>(cube<span class="op">,</span> {<span class="dt">dimension</span><span class="op">:</span> <span class="st">"bands"</span><span class="op">,</span> <span class="dt">condition</span><span class="op">:</span> label <span class="kw">=&gt;</span> label <span class="op">!==</span> <span class="st">"QA"</span>})<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+</section>
+<section id="flatten-dimensions" class="level2 tag-filter-item" data-process="flatten_dimensions">
+<h2 class="anchored" data-anchor-id="flatten-dimensions">Flatten dimensions</h2>
+<p>The <code>flatten_dimensions</code> process combines multiple given dimensions into a single dimension by flattening the values and merging the dimension labels with the given label_separator. Non-string dimension labels will be converted to strings. This process is the opposite of the unflatten_dimension process, but executing both processes sequentially doesn’t necessarily produce a data cube equal to the original data cube.</p>
+<p>Example: Executing the process with a data cube with two dimensions A (labels: 2020 and 2021) and B (labels: B1 and B2) and the data [[1,2],[3,4]] and the parameters dimensions = [A, B] and target_dimension = X will result in a data cube with one dimension X (labels: 2020~B1, 2020~B2, 2021~B1 and 2021~B2) and the data [1,2,3,4].</p>
+<p>Use <code>flatten_dimensions</code> when a downstream model expects a single feature axis instead of separate spatial or categorical dimensions. Keep the original labels in case you need to reverse the operation.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-7-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-1" role="tab" aria-controls="tabset-7-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-7-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-2" role="tab" aria-controls="tabset-7-2" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-7-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-7-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>flattened <span class="ot">&lt;-</span> <span class="fu">flatten_dimensions</span>(cube, <span class="at">dimension_names=</span><span class="fu">c</span>(<span class="st">"x"</span>, <span class="st">"y"</span>), <span class="at">target_dimension=</span><span class="st">"pixels"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-7-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-7-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Flatten dimensions of a data cube.</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> flattened <span class="op">=</span> <span class="fu">flattenDimensions</span>(cube<span class="op">,</span> {<span class="dt">dimensionNames</span><span class="op">:</span> [<span class="st">"x"</span><span class="op">,</span> <span class="st">"y"</span>]<span class="op">,</span> <span class="dt">targetDimension</span><span class="op">:</span> <span class="st">"pixels"</span>})<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+</section>
+<section id="unflatten-a-dimension" class="level2 tag-filter-item" data-process="unflatten_dimension">
+<h2 class="anchored" data-anchor-id="unflatten-a-dimension">Unflatten a dimension</h2>
+<p>The <code>unflatten_dimension</code> process splits a single dimension into multiple dimensions by systematically extracting values and splitting the dimension labels by the given label_separator. This process is the opposite of the flatten_dimensions process, but executing both processes sequentially doesn’t necessarily produce a data cube equal to the original data cube.</p>
+<p>Example: Executing the process with a data cube with one dimension X (labels: 2020~B1, 2020~B2, 2021~B1 and 2021~B2) and the data [1,2,3,4] and the parameters dimension = X and target_dimensions = [A, B] will result in a data cube with two dimensions A (labels: 2020 and 2021) and B (labels: B1 and B2) and the data [[1,2],[3,4]].</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-8-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-1" role="tab" aria-controls="tabset-8-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-8-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-2" role="tab" aria-controls="tabset-8-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-8-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-3" role="tab" aria-controls="tabset-8-3" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-8-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-8-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>unflattened <span class="op">=</span> flattened.unflatten_dimension(dimension<span class="op">=</span><span class="st">"pixels"</span>, target_dimensions<span class="op">=</span>[<span class="st">"x"</span>, <span class="st">"y"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-8-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-8-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>unflattened <span class="ot">&lt;-</span> <span class="fu">unflatten_dimension</span>(flattened, <span class="at">dimension=</span><span class="st">"pixels"</span>, <span class="at">target_dimensions=</span><span class="fu">c</span>(<span class="st">"x"</span>, <span class="st">"y"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-8-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-8-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Unflatten a dimension of a data cube.</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> unflattened <span class="op">=</span> <span class="fu">unflattenDimension</span>(flattened<span class="op">,</span> {<span class="dt">dimension</span><span class="op">:</span> <span class="st">"pixels"</span><span class="op">,</span> <span class="dt">targetDimensions</span><span class="op">:</span> [<span class="st">"x"</span><span class="op">,</span> <span class="st">"y"</span>]})<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+</section>
+<section id="remove-empty-dimension-labels" class="level2 tag-filter-item" data-process="trim_cube">
+<h2 class="anchored" data-anchor-id="remove-empty-dimension-labels">Remove empty dimension labels</h2>
+<p><code>trim_cube</code> removes dimension labels that solely contain no-data values. It is useful for cleaning up a cube after filtering or masking operations that leave behind labels (e.g.&nbsp;time steps or bands) with no valid data, so that subsequent processing only iterates over labels that actually contain data.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-9-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-9-1" role="tab" aria-controls="tabset-9-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-9-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-9-2" role="tab" aria-controls="tabset-9-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-9-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-9-3" role="tab" aria-controls="tabset-9-3" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-9-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-9-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>trimmed <span class="op">=</span> cube.trim_cube()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-9-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-9-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>trimmed <span class="ot">&lt;-</span> <span class="fu">trim_cube</span>(cube)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-9-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-9-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Remove dimension labels that only contain no-data values.</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> trimmed <span class="op">=</span> <span class="fu">trimCube</span>(cube)<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+</section>
+
+
+
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/open-eo\.github\.io\/openeo-docs\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../documentation/cube_operations/spectral_operations.html" class="pagination-link" aria-label="Spectral Operations">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Spectral Operations</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../documentation/cube_operations/udf.html" class="pagination-link" aria-label="User Defined Functions">
+        <span class="nav-page-text">User Defined Functions</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+<script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

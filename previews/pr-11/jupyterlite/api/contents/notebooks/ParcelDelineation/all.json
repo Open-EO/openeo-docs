@@ -1,0 +1,71 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2026-09-18T14:08:49.374763Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:08:46.301994Z",
+      "mimetype": null,
+      "name": "Parcel delineation.ipynb",
+      "path": "notebooks/ParcelDelineation/Parcel delineation.ipynb",
+      "size": 2965930,
+      "type": "notebook",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2026-09-18T14:08:49.381642Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:08:46.303022Z",
+      "mimetype": "text/x-python",
+      "name": "udf_sobel_felzenszwalb.py",
+      "path": "notebooks/ParcelDelineation/udf_sobel_felzenszwalb.py",
+      "size": 1340,
+      "type": "file",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2026-09-18T14:08:49.381344Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:08:46.302988Z",
+      "mimetype": "text/x-python",
+      "name": "udf_segmentation.py",
+      "path": "notebooks/ParcelDelineation/udf_segmentation.py",
+      "size": 7301,
+      "type": "file",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2026-09-18T14:08:49.381027Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:08:46.302953Z",
+      "mimetype": "text/markdown",
+      "name": "README.md",
+      "path": "notebooks/ParcelDelineation/README.md",
+      "size": 958,
+      "type": "file",
+      "writable": true
+    }
+  ],
+  "created": "2026-09-18T14:08:49.381344Z",
+  "format": "json",
+  "hash": null,
+  "hash_algorithm": null,
+  "last_modified": "2026-09-18T14:08:49.381344Z",
+  "mimetype": null,
+  "name": "ParcelDelineation",
+  "path": "notebooks/ParcelDelineation",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}

@@ -1,0 +1,57 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2026-09-18T14:08:49.433025Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:08:46.310996Z",
+      "mimetype": null,
+      "name": "TesseraEmbedding.ipynb",
+      "path": "notebooks/TesseraEmbedding/TesseraEmbedding.ipynb",
+      "size": 674654,
+      "type": "notebook",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2026-09-18T14:08:49.432739Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:08:46.310955Z",
+      "mimetype": "text/markdown",
+      "name": "README.md",
+      "path": "notebooks/TesseraEmbedding/README.md",
+      "size": 3929,
+      "type": "file",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2026-09-18T14:08:49.434694Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:08:46.311329Z",
+      "mimetype": "text/x-python",
+      "name": "udf_tessera_embedding.py",
+      "path": "notebooks/TesseraEmbedding/udf_tessera_embedding.py",
+      "size": 24723,
+      "type": "file",
+      "writable": true
+    }
+  ],
+  "created": "2026-09-18T14:08:49.433591Z",
+  "format": "json",
+  "hash": null,
+  "hash_algorithm": null,
+  "last_modified": "2026-09-18T14:08:49.433591Z",
+  "mimetype": null,
+  "name": "TesseraEmbedding",
+  "path": "notebooks/TesseraEmbedding",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}

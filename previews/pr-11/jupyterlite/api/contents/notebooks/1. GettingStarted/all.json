@@ -1,0 +1,29 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2026-09-18T14:08:49.235591Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:08:46.280591Z",
+      "mimetype": null,
+      "name": "GettingStarted.ipynb",
+      "path": "notebooks/1. GettingStarted/GettingStarted.ipynb",
+      "size": 3682211,
+      "type": "notebook",
+      "writable": true
+    }
+  ],
+  "created": "2026-09-18T14:08:49.235505Z",
+  "format": "json",
+  "hash": null,
+  "hash_algorithm": null,
+  "last_modified": "2026-09-18T14:08:49.235505Z",
+  "mimetype": null,
+  "name": "1. GettingStarted",
+  "path": "notebooks/1. GettingStarted",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}

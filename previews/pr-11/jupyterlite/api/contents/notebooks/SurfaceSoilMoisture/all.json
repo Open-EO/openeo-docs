@@ -1,0 +1,29 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2026-09-18T14:08:49.430544Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:08:46.310604Z",
+      "mimetype": null,
+      "name": "SoilMoisture.ipynb",
+      "path": "notebooks/SurfaceSoilMoisture/SoilMoisture.ipynb",
+      "size": 913081,
+      "type": "notebook",
+      "writable": true
+    }
+  ],
+  "created": "2026-09-18T14:08:49.430544Z",
+  "format": "json",
+  "hash": null,
+  "hash_algorithm": null,
+  "last_modified": "2026-09-18T14:08:49.430544Z",
+  "mimetype": null,
+  "name": "SurfaceSoilMoisture",
+  "path": "notebooks/SurfaceSoilMoisture",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}

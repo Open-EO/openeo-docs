@@ -1,0 +1,43 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2026-09-18T14:08:49.299499Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:08:46.290317Z",
+      "mimetype": null,
+      "name": "ForestFire.ipynb",
+      "path": "notebooks/ForestFire/ForestFire.ipynb",
+      "size": 1477074,
+      "type": "notebook",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2026-09-18T14:08:49.304591Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:08:46.292591Z",
+      "mimetype": "image/png",
+      "name": "gt.png",
+      "path": "notebooks/ForestFire/gt.png",
+      "size": 8799563,
+      "type": "file",
+      "writable": true
+    }
+  ],
+  "created": "2026-09-18T14:08:49.301591Z",
+  "format": "json",
+  "hash": null,
+  "hash_algorithm": null,
+  "last_modified": "2026-09-18T14:08:49.301591Z",
+  "mimetype": null,
+  "name": "ForestFire",
+  "path": "notebooks/ForestFire",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}

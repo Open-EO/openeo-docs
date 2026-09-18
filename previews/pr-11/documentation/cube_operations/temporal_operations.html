@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Temporal Operations – openEO</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../documentation/cube_operations/spectral_operations.html" rel="next">
+<link href="../../documentation/cube_operations/spatial_operations.html" rel="prev">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-5db03c06400178421883125b8393055e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css?family=Roboto+Mono|Source+Sans+Pro:300,400,600" rel="stylesheet">
+<meta name="zd-site-verification" content="xj9koofr1crilmoclgxsjd">
+
+<script type="text/javascript">
+
+
+    function setActiveClassForCurrentUrl() {
+        // Find all links in the navbarCollapse div where the href attribute is set to the current URL
+        let anchorTag = document.querySelector('#navbarCollapse a[href="' + window.location.href + '"]');
+
+        if (anchorTag) {
+
+            // Find the closest parent of the navigation
+            let parentUl = anchorTag.closest('li.nav-item')?.querySelector('a.nav-link');
+
+            if (parentUl) {
+                // Add active class to both the anchor tag and the parent ul
+                anchorTag.classList.add('active');
+                parentUl.classList.add('active');
+            }
+        }
+    }
+
+    window.addEventListener('popstate', setActiveClassForCurrentUrl);
+    window.addEventListener('hashchange', setActiveClassForCurrentUrl);
+
+    document.addEventListener("DOMContentLoaded", async function () {
+        const items = Array.from(document.querySelectorAll(".tag-filter-item"));
+        const filterUi = document.querySelector(".tag-filter-ui");
+        if (items.length === 0 || !filterUi) return;
+        const staticBadges = Array.from(document.querySelectorAll(".tag-filter-badge"));
+        const hasLiveProcesses = items.some((item) => item.hasAttribute("data-process"));
+        let support = null;
+        if (hasLiveProcesses) {
+            try {
+                const url = new URL("../../_data/backend_process_support.json", window.location.href);
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                support = await response.json();
+            } catch (error) { console.warn("Could not load backend process support data.", error); }
+        }
+        const getExplicitTags = (item) => new Set((item.getAttribute("data-tags") || "").toLowerCase().split(/\s+/).filter(Boolean));
+        const getDefaultTags = () => new Set(staticBadges.map((badge) => badge.dataset.tag).filter(Boolean));
+        const getTags = (item) => {
+            const explicitTags = getExplicitTags(item);
+            if (support && item.hasAttribute("data-process")) {
+                const liveTags = new Set(item.getAttribute("data-process").split(/[\s,]+/).flatMap((id) => support.processes[id] || []));
+                return liveTags.size > 0 ? liveTags : explicitTags.size > 0 ? explicitTags : getDefaultTags();
+            }
+            return explicitTags.size > 0 ? explicitTags : getDefaultTags();
+        };
+        let badges = staticBadges;
+        if (support) {
+            const availableTags = [...new Set(items.flatMap((item) => [...getTags(item)]))].sort();
+            filterUi.replaceChildren();
+            badges = availableTags.map((tag) => {
+                const button = document.createElement("button");
+                button.className = "tag-filter-badge active";
+                button.dataset.tag = tag;
+                button.textContent = support.backends[tag]?.label || tag;
+                filterUi.appendChild(button);
+                return button;
+            });
+        }
+        if (badges.length === 0) return;
+        const tocLinks = Array.from(document.querySelectorAll("#TOC a[data-scroll-target]"));
+        const applyFilter = () => {
+            const selectedTags = new Set(badges.filter((badge) => badge.classList.contains("active")).map((badge) => badge.dataset.tag));
+            items.forEach((item) => {
+                const tags = getTags(item);
+                const visible = [...selectedTags].some((tag) => tags.has(tag));
+                item.hidden = !visible;
+                const tocLink = tocLinks.find((link) => link.dataset.scrollTarget === `#${item.id}`);
+                tocLink?.closest("li")?.toggleAttribute("hidden", !visible);
+            });
+        };
+        badges.forEach((badge) => badge.addEventListener("click", function (event) {
+            event.preventDefault(); this.classList.toggle("active"); this.classList.toggle("inactive"); applyFilter();
+        }));
+        applyFilter();
+    });
+    window.onload = () => {
+        const brand = document.querySelector('.navbar-brand');
+        if (brand) {
+            // Keep local/preview behavior, but use the GitHub Pages project root in production.
+            const brandHref = window.location.hostname === 'open-eo.github.io'
+                ? '/openeo-docs/'
+                : '/index.html';
+            brand.setAttribute('href', brandHref);
+        }
+        setActiveClassForCurrentUrl();
+    }
+
+ 
+</script>
+
+
+<link rel="stylesheet" href="../../custom.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../news/images/openeo_logo.png" alt="openEO logo" class="navbar-logo light-content">
+    <img src="../../news/images/openeo_logo.png" alt="openEO logo" class="navbar-logo dark-content">
+    </a>
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">openEO</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-about" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">About</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-about">    
+        <li>
+    <a class="dropdown-item" href="../../about.html">
+ <span class="dropdown-text">About openEO</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../psc.html">
+ <span class="dropdown-text">Project Steering Committee (PSC)</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="https://hub.openeo.org/" target="_blank"> 
+<span class="menu-text">Services</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-community" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Community</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-community">    
+        <li>
+    <a class="dropdown-item" href="../../news/news.html">
+ <span class="dropdown-text">News</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../meetings.html">
+ <span class="dropdown-text">Meetings</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../events/events.html">
+ <span class="dropdown-text">Events</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-user-documentation" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">User Documentation</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-user-documentation">    
+        <li>
+    <a class="dropdown-item" href="../../documentation/cookbook.html">
+ <span class="dropdown-text">COOKBOOK</span></a>
+  </li>  
+        <li><hr class="dropdown-divider"></li>
+        <li class="dropdown-header">KEY CONCEPTS</li>
+        <li>
+    <a class="dropdown-item" href="../../documentation/key_concepts/glossary.html">
+ <span class="dropdown-text">Glossary</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../documentation/key_concepts/backend.html">
+ <span class="dropdown-text">Backends</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../documentation/key_concepts/datacube.html">
+ <span class="dropdown-text">Datacube</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../documentation/key_concepts/processes.html">
+ <span class="dropdown-text">Processes</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../documentation/key_concepts/architecture.html">
+ <span class="dropdown-text">Architecture</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../documentation/setup.html">
+ <span class="dropdown-text">SETUP</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../documentation/data_discovery.html">
+ <span class="dropdown-text">DATA DISCOVERY</span></a>
+  </li>  
+        <li><hr class="dropdown-divider"></li>
+        <li class="dropdown-header">CUBE OPERATIONS</li>
+        <li>
+    <a class="dropdown-item" href="../../documentation/cube_operations/general_operations.html">
+ <span class="dropdown-text">General Operations</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../documentation/cube_operations/preprocessing.html">
+ <span class="dropdown-text">Preprocessing</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../documentation/cube_operations/spatial_operations.html">
+ <span class="dropdown-text">Spatial Operations</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../documentation/cube_operations/temporal_operations.html">
+ <span class="dropdown-text">Temporal Operations</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../documentation/cube_operations/spectral_operations.html">
+ <span class="dropdown-text">Spectral Operations</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../documentation/cube_operations/cube_manipulations.html">
+ <span class="dropdown-text">Cube Manipulations</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../documentation/cube_operations/udf.html">
+ <span class="dropdown-text">User Defined Functions</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../documentation/cube_operations/machine_learning.html">
+ <span class="dropdown-text">Machine Learning</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../documentation/cube_operations/udp.html">
+ <span class="dropdown-text">User Defined Processes</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../documentation/cube_operations/execute_jobs.html">
+ <span class="dropdown-text">Execute openEO Jobs</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../documentation/export_formats.html">
+ <span class="dropdown-text">EXPORT FORMATS</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-developers" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Developers</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-developers">    
+        <li>
+    <a class="dropdown-item" href="https://api.openeo.org/">
+ <span class="dropdown-text">REST API Reference</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../404-not-found.html">
+ <span class="dropdown-text">Xarray/Dask Guide</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../404-not-found.html">
+ <span class="dropdown-text">Backend Development</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-support" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Support</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-support">    
+        <li>
+    <a class="dropdown-item" href="../../contact.html">
+ <span class="dropdown-text">Contact</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://forum.dataspace.copernicus.eu/c/openeo/28">
+ <span class="dropdown-text">CDSE Forum</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../examples.html">
+ <span class="dropdown-text">Notebook examples</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools tools-wide">
+    <a href="mailto:openeo.psc@uni-muenster.de" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-envelope"></i></a>
+    <a href="https://www.linkedin.com/company/openeospec/" title="" class="quarto-navigation-tool px-1" aria-label="" target="_blank"><i class="bi bi-linkedin"></i></a>
+    <a href="https://bsky.app/profile/openeo.org" title="" class="quarto-navigation-tool px-1" aria-label="" target="_blank"><i class="bi bi-bluesky"></i></a>
+    <a href="https://github.com/Open-EO" title="" class="quarto-navigation-tool px-1" aria-label="" target="_blank"><i class="bi bi-github"></i></a>
+    <a href="https://www.youtube.com/channel/UCMJQil8j9sHBQkcSlSaEsvQ" title="" class="quarto-navigation-tool px-1" aria-label="" target="_blank"><i class="bi bi-youtube"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../documentation/cube_operations.html">CUBE OPERATIONS</a></li><li class="breadcrumb-item"><a href="../../documentation/cube_operations/temporal_operations.html">Temporal Operations</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/cookbook.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">COOKBOOK</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false">
+ <span class="menu-text">KEY CONCEPTS</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/key_concepts/glossary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Glossary</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/key_concepts/backend.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Backends</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/key_concepts/datacube.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Datacube</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/key_concepts/processes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Processes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/key_concepts/architecture.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Architecture</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">SETUP</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/data_discovery.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">DATA DISCOVERY</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../documentation/cube_operations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">CUBE OPERATIONS</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/cube_operations/general_operations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">General Operations</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/cube_operations/preprocessing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preprocessing</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/cube_operations/spatial_operations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Spatial Operations</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/cube_operations/temporal_operations.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Temporal Operations</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/cube_operations/spectral_operations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Spectral Operations</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/cube_operations/cube_manipulations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Cube Manipulations</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/cube_operations/udf.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">User Defined Functions</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/cube_operations/machine_learning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Machine Learning</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/cube_operations/udp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">User Defined Processes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/cube_operations/execute_jobs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Execute openEO Jobs</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documentation/export_formats.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">EXPORT FORMATS</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#select-a-time-range" id="toc-select-a-time-range" class="nav-link active" data-scroll-target="#select-a-time-range">Select a time range</a></li>
+  <li><a href="#aggregate-data-based-on-temporal-periods" id="toc-aggregate-data-based-on-temporal-periods" class="nav-link" data-scroll-target="#aggregate-data-based-on-temporal-periods">Aggregate data based on temporal periods</a></li>
+  <li><a href="#aggregate-data-over-explicit-time-intervals" id="toc-aggregate-data-over-explicit-time-intervals" class="nav-link" data-scroll-target="#aggregate-data-over-explicit-time-intervals">Aggregate data over explicit time intervals</a></li>
+  <li><a href="#reduce-time-dimension" id="toc-reduce-time-dimension" class="nav-link" data-scroll-target="#reduce-time-dimension">Reduce time dimension</a></li>
+  <li><a href="#align-temporal-labels" id="toc-align-temporal-labels" class="nav-link" data-scroll-target="#align-temporal-labels">Align temporal labels</a></li>
+  <li><a href="#apply-a-process-along-time" id="toc-apply-a-process-along-time" class="nav-link" data-scroll-target="#apply-a-process-along-time">Apply a process along time</a></li>
+  <li><a href="#count-observations-over-time" id="toc-count-observations-over-time" class="nav-link" data-scroll-target="#count-observations-over-time">Count observations over time</a></li>
+  <li><a href="#fit-a-temporal-curve" id="toc-fit-a-temporal-curve" class="nav-link" data-scroll-target="#fit-a-temporal-curve">Fit a temporal curve</a></li>
+  <li><a href="#predict-from-a-temporal-curve" id="toc-predict-from-a-temporal-curve" class="nav-link" data-scroll-target="#predict-from-a-temporal-curve">Predict from a temporal curve</a></li>
+  <li><a href="#calculate-a-climatological-normal" id="toc-calculate-a-climatological-normal" class="nav-link" data-scroll-target="#calculate-a-climatological-normal">Calculate a climatological normal</a></li>
+  <li><a href="#calculate-temporal-anomalies" id="toc-calculate-temporal-anomalies" class="nav-link" data-scroll-target="#calculate-temporal-anomalies">Calculate temporal anomalies</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../documentation/cube_operations.html">CUBE OPERATIONS</a></li><li class="breadcrumb-item"><a href="../../documentation/cube_operations/temporal_operations.html">Temporal Operations</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Temporal Operations</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>This page provides an overview of several temporal processes offered by openEO for analyzing and manipulating time dimension in an EO application. These processes can be handy for tasks such as filtering observations by date, building temporal composites, and applying calculations along the time dimension.</p>
+<p><em>Note: Not all temporal processes might be covered in this page. For a complete list, refer to the <a href="https://processes.openeo.org/">openEO processes documentation</a>.</em></p>
+<div class="tag-filter-ui" id="tag-filter-ui">
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Backend support overview
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>The buttons above let you filter processes supported by different backends. Selecting or deselecting a backend will show or hide the relevant sections in the documentation. However, please note that it is based on the latest documentation rendering. Thus, please refer to the <a href="https://hub.openeo.org/">openEO Hub</a> for the most up-to-date information.</p>
+</div>
+</div>
+</div>
+<section id="select-a-time-range" class="level2 tag-filter-item" data-process="filter_temporal">
+<h2 class="anchored" data-anchor-id="select-a-time-range">Select a time range</h2>
+<p>When working with the satellite data, the temporal frequency of observation can vary for different sensors and acquisition strategies. While some sensors may provide daily observations, others might only capture data every few weeks. To make it easier for analysis, openEO provides temporal filtering capabilities through the <code>filter_temporal</code> process. While user can define temporal extent when loading the collection using <code>load_collection</code>, <code>filter_temporal</code> allows further refinement of the time range.</p>
+<p>It limits the data cube to the specified interval of dates and/or times. More precisely, the filter checks whether each of the temporal dimension labels is greater than or equal to the lower boundary (start date/time) and less than the value of the upper boundary (end date/time). This corresponds to a left-closed interval, which contains the lower boundary but not the upper boundary.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> openeo</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>connection <span class="op">=</span> openeo.<span class="ex">connect</span>(<span class="st">"openeofed.dataspace.copernicus.eu"</span>).authenticate_oidc()</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>cube <span class="op">=</span> connection.load_collection(<span class="st">"SENTINEL2_L2A"</span>, bands<span class="op">=</span>[<span class="st">"B04"</span>, <span class="st">"B08"</span>])</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>growing_season <span class="op">=</span> cube.filter_temporal([<span class="st">"2024-04-01"</span>, <span class="st">"2024-10-01"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(openeo)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>connection <span class="ot">&lt;-</span> <span class="fu">connect</span>(<span class="st">"openeofed.dataspace.copernicus.eu"</span>) <span class="sc">%&gt;%</span> <span class="fu">authenticate_oidc</span>()</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>cube <span class="ot">&lt;-</span> connection <span class="sc">%&gt;%</span> <span class="fu">load_collection</span>(<span class="st">"SENTINEL2_L2A"</span>, <span class="at">bands=</span><span class="fu">c</span>(<span class="st">"B04"</span>, <span class="st">"B08"</span>))</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>growing_season <span class="ot">&lt;-</span> cube <span class="sc">%&gt;%</span> <span class="fu">filter_temporal</span>(<span class="fu">c</span>(<span class="st">"2024-04-01"</span>, <span class="st">"2024-10-01"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> OpenEO <span class="im">from</span> <span class="st">"openeo-js-client"</span><span class="op">;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> connection <span class="op">=</span> <span class="cf">await</span> OpenEO<span class="op">.</span><span class="fu">connect</span>(<span class="st">"openeofed.dataspace.copernicus.eu"</span>)<span class="op">.</span><span class="fu">authenticate_oidc</span>()<span class="op">;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> cube <span class="op">=</span> connection<span class="op">.</span><span class="fu">load_collection</span>(<span class="st">"SENTINEL2_L2A"</span><span class="op">,</span> { <span class="dt">bands</span><span class="op">:</span> [<span class="st">"B04"</span><span class="op">,</span> <span class="st">"B08"</span>] })<span class="op">;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> growing_season <span class="op">=</span> cube<span class="op">.</span><span class="fu">filter_temporal</span>([<span class="st">"2024-04-01"</span><span class="op">,</span> <span class="st">"2024-10-01"</span>])<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<p>This results in a datacube restricted to the specified temporal extent. The dimensions and dimension properties (name, type, labels, reference system and resolution) remain unchanged, except that the temporal dimensions (determined by dimensions parameter) may have less dimension labels.</p>
+</section>
+<section id="aggregate-data-based-on-temporal-periods" class="level2 tag-filter-item" data-process="aggregate_temporal_period">
+<h2 class="anchored" data-anchor-id="aggregate-data-based-on-temporal-periods">Aggregate data based on temporal periods</h2>
+<p>It is often noticed that clouds and irregular acquisition dates makes satellite data difficult to compare or there are usecases where one is interested in aggregating data over specific temporal periods. For such scenarios, <code>aggregate_temporal_period</code> is particularly useful. The <code>aggregate_temporal_period</code> process computes a temporal aggregation based on calendar hierarchies such as years, months or seasons.</p>
+<p>For each interval, all data along the dimension will be passed through the reducer. If the dimension is not set or is set to null, the data cube is expected to only have one temporal dimension.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>monthly_median <span class="op">=</span> growing_season.aggregate_temporal_period(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    period<span class="op">=</span><span class="st">"month"</span>,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    reducer<span class="op">=</span><span class="st">"median"</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>monthly_median.download(<span class="st">"monthly_median.tif"</span>, <span class="bu">format</span><span class="op">=</span><span class="st">"GTiff"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>monthly_median <span class="ot">&lt;-</span> growing_season <span class="sc">%&gt;%</span> <span class="fu">aggregate_temporal_period</span>(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">period=</span><span class="st">"month"</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">reducer=</span><span class="st">"median"</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">download_result</span>(monthly_median, <span class="st">"monthly_median.tif"</span>, <span class="at">format=</span><span class="st">"GTiff"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> monthly_median <span class="op">=</span> growing_season<span class="op">.</span><span class="fu">aggregate_temporal_period</span>({</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">period</span><span class="op">:</span> <span class="st">"month"</span><span class="op">,</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">reducer</span><span class="op">:</span> <span class="st">"median"</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> monthly_median<span class="op">.</span><span class="fu">download</span>(<span class="st">"monthly_median.tif"</span><span class="op">,</span> { <span class="dt">format</span><span class="op">:</span> <span class="st">"GTiff"</span> })<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+</section>
+<section id="aggregate-data-over-explicit-time-intervals" class="level2 tag-filter-item" data-process="aggregate_temporal">
+<h2 class="anchored" data-anchor-id="aggregate-data-over-explicit-time-intervals">Aggregate data over explicit time intervals</h2>
+<p>In contrast to <code>aggregate_temporal_period</code>, which aggregates over regular calendar periods, <code>aggregate_temporal</code> allows you to define custom intervals for aggregation. It computes a temporal aggregation based on an array of date and/or time intervals.</p>
+<p>Calendar hierarchies such as year, month, week etc. must be transformed into specific intervals by the clients. For each interval, all data along the dimension will be passed through the reducer. The computed values will be projected to the labels, so the number of labels and the number of intervals need to be equal.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>seasonal <span class="ot">&lt;-</span> growing_season <span class="sc">%&gt;%</span> <span class="fu">aggregate_temporal</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">intervals=</span><span class="fu">list</span>(<span class="fu">c</span>(<span class="st">"2024-04-01"</span>, <span class="st">"2024-06-01"</span>)),</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">reducer=</span><span class="st">"mean"</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> seasonal <span class="op">=</span> growing_season<span class="op">.</span><span class="fu">aggregate_temporal</span>({</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">intervals</span><span class="op">:</span> [[<span class="st">"2024-04-01"</span><span class="op">,</span> <span class="st">"2024-06-01"</span>]]<span class="op">,</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">reducer</span><span class="op">:</span> <span class="st">"mean"</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+</section>
+<section id="reduce-time-dimension" class="level2 tag-filter-item" data-process="reduce_dimension">
+<h2 class="anchored" data-anchor-id="reduce-time-dimension">Reduce time dimension</h2>
+<p>The <code>reduce_dimension</code> process with dimension=“t” collapses the time dimension by applying a specified reducer, such as “max” or “mean”. In other words when using <code>reduce_dimension</code> with <code>dimension="t"</code>, you end up with a single raster for each band, representing the aggregated result over the entire time series. This process is useful for generating summary statistics or single-value representations of temporal data.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-3" role="tab" aria-controls="tabset-4-3" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>seasonal_maximum <span class="op">=</span> growing_season.reduce_dimension(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    dimension<span class="op">=</span><span class="st">"t"</span>,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    reducer<span class="op">=</span><span class="st">"max"</span>,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>seasonal_maximum <span class="ot">&lt;-</span> growing_season <span class="sc">%&gt;%</span> <span class="fu">reduce_dimension</span>(</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">dimension=</span><span class="st">"t"</span>,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">reducer=</span><span class="st">"max"</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-4-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> seasonal_maximum <span class="op">=</span> growing_season<span class="op">.</span><span class="fu">reduce_dimension</span>({</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">dimension</span><span class="op">:</span> <span class="st">"t"</span><span class="op">,</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">reducer</span><span class="op">:</span> <span class="st">"max"</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Keep time when you need a time series
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>aggregate_temporal_period</code> retains a time dimension with one label per period. <code>reduce_dimension</code> removes the reduced dimension entirely. Choose the former for a monthly series and the latter for a single seasonal product.</p>
+</div>
+</div>
+</section>
+<section id="align-temporal-labels" class="level2 tag-filter-item" data-process="resample_cube_temporal">
+<h2 class="anchored" data-anchor-id="align-temporal-labels">Align temporal labels</h2>
+<p>The process <code>resample_cube_temporal</code> can be used to align the temporal labels of one cube with another, ensuring that observations from different cubes correspond to the same points in time. Resamples one or more given temporal dimensions from a source data cube to align with the corresponding dimensions of the given target data cube using the nearest neighbor method. Returns a new data cube with the resampled dimensions.</p>
+<p>By default, this process simply takes the nearest neighbor independent of the value (including no-data values). Depending on the data cubes this may lead to values being assigned to two target timestamps. To only consider valid values in a specific range around the target timestamps, use the parameter valid_within.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-5-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-1" role="tab" aria-controls="tabset-5-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-2" role="tab" aria-controls="tabset-5-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-3" role="tab" aria-controls="tabset-5-3" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-5-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-5-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>aligned <span class="op">=</span> source.resample_cube_temporal(target)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-5-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>aligned <span class="ot">&lt;-</span> source <span class="sc">%&gt;%</span> <span class="fu">resample_cube_temporal</span>(target)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-5-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> aligned <span class="op">=</span> source<span class="op">.</span><span class="fu">resample_cube_temporal</span>(target)<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+</section>
+<section id="apply-a-process-along-time" class="level2 tag-filter-item" data-process="apply_dimension">
+<h2 class="anchored" data-anchor-id="apply-a-process-along-time">Apply a process along time</h2>
+<p>Use <code>apply_dimension</code> with <code>dimension="t"</code> when every pixel needs the same custom time-series calculation, such as smoothing or a threshold-based event detector. The callback describes an openEO graph; it is not arbitrary local Python execution.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>smoothed <span class="op">=</span> cube.apply_dimension(</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  dimension<span class="op">=</span><span class="st">"t"</span>,</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  process<span class="op">=</span><span class="kw">lambda</span> series: series.median(),</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="count-observations-over-time" class="level2 tag-filter-item" data-process="count_time">
+<h2 class="anchored" data-anchor-id="count-observations-over-time">Count observations over time</h2>
+<p>The <code>count_time</code> process counts the number of images with a valid mask in a time series for all bands of the input dataset. This is useful for understanding the data coverage and quality over time.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-6-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-1" role="tab" aria-controls="tabset-6-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-2" role="tab" aria-controls="tabset-6-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-3" role="tab" aria-controls="tabset-6-3" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-6-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-6-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>observation_count <span class="op">=</span> cube.count_time()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-6-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>observation_count <span class="ot">&lt;-</span> cube <span class="sc">%&gt;%</span> <span class="fu">count_time</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-6-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> observation_count <span class="op">=</span> cube<span class="op">.</span><span class="fu">count_time</span>()<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+</section>
+<section id="fit-a-temporal-curve" class="level2 tag-filter-item" data-process="fit_curve">
+<h2 class="anchored" data-anchor-id="fit-a-temporal-curve">Fit a temporal curve</h2>
+<p>The <code>fit_curve</code> process uses non-linear least squares to fit a model function y = f(x, parameters) to data. It throws an InvalidValues exception if invalid values are encountered. It is recommended to use <code>fit_curve</code> when a time series should be represented by a model, such as a linear trend or seasonal curve. The fitted parameters can then be passed to <code>predict_curve</code>.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-7-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-1" role="tab" aria-controls="tabset-7-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-7-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-2" role="tab" aria-controls="tabset-7-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-7-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-3" role="tab" aria-controls="tabset-7-3" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-7-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-7-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> cube.fit_curve(reducer<span class="op">=</span><span class="st">"linear"</span>, parameters<span class="op">=</span>{<span class="st">"order"</span>: <span class="dv">1</span>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-7-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-7-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> cube <span class="sc">%&gt;%</span> <span class="fu">fit_curve</span>(<span class="at">reducer=</span><span class="st">"linear"</span>, <span class="at">parameters=</span><span class="fu">list</span>(<span class="at">order=</span><span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-7-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-7-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> model <span class="op">=</span> cube<span class="op">.</span><span class="fu">fit_curve</span>({<span class="dt">reducer</span><span class="op">:</span><span class="st">"linear"</span><span class="op">,</span> <span class="dt">parameters</span><span class="op">:</span>{<span class="dt">order</span><span class="op">:</span><span class="dv">1</span>}})<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+</section>
+<section id="predict-from-a-temporal-curve" class="level2 tag-filter-item" data-process="predict_curve">
+<h2 class="anchored" data-anchor-id="predict-from-a-temporal-curve">Predict from a temporal curve</h2>
+<p>The process <code>predict_curve</code> predicts values using a model function and pre-computed parameters. The process is intended to compute values for new labels. It can be used to evaluate a model created by <code>fit_curve</code> at new timestamps or labels. This can fill a regular time axis or estimate values at dates not directly observed.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-8-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-1" role="tab" aria-controls="tabset-8-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-8-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-2" role="tab" aria-controls="tabset-8-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-8-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-3" role="tab" aria-controls="tabset-8-3" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-8-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-8-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>prediction <span class="op">=</span> model.predict_curve(labels<span class="op">=</span>[<span class="st">"2025-01-01"</span>, <span class="st">"2025-07-01"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-8-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-8-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>prediction <span class="ot">&lt;-</span> model <span class="sc">%&gt;%</span> <span class="fu">predict_curve</span>(<span class="at">labels=</span><span class="fu">c</span>(<span class="st">"2025-01-01"</span>, <span class="st">"2025-07-01"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-8-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-8-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> prediction <span class="op">=</span> model<span class="op">.</span><span class="fu">predict_curve</span>({<span class="dt">labels</span><span class="op">:</span>[<span class="st">"2025-01-01"</span><span class="op">,</span> <span class="st">"2025-07-01"</span>]})<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+</section>
+<section id="calculate-a-climatological-normal" class="level2 tag-filter-item" data-process="climatological_normal">
+<h2 class="anchored" data-anchor-id="calculate-a-climatological-normal">Calculate a climatological normal</h2>
+<p>Use <code>climatological_normal</code> to calculate a typical value for recurring periods, such as the mean NDVI for each month across several years. It provides the baseline needed for anomaly analysis. In climatology, the climatological normal period is usually a 30 year average of a weather variable. Climatological normals are used as an average or baseline to evaluate climate events and provide context for yearly, monthly, daily or seasonal variability.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-9-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-9-1" role="tab" aria-controls="tabset-9-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-9-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-9-2" role="tab" aria-controls="tabset-9-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-9-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-9-3" role="tab" aria-controls="tabset-9-3" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-9-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-9-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>normal <span class="op">=</span> cube.climatological_normal(period<span class="op">=</span><span class="st">"month"</span>, reducer<span class="op">=</span><span class="st">"mean"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-9-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-9-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>normal <span class="ot">&lt;-</span> cube <span class="sc">%&gt;%</span> <span class="fu">climatological_normal</span>(<span class="at">period=</span><span class="st">"month"</span>, <span class="at">reducer=</span><span class="st">"mean"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-9-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-9-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> normal <span class="op">=</span> cube<span class="op">.</span><span class="fu">climatological_normal</span>({<span class="dt">period</span><span class="op">:</span><span class="st">"month"</span><span class="op">,</span> <span class="dt">reducer</span><span class="op">:</span><span class="st">"mean"</span>})<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+</section>
+<section id="calculate-temporal-anomalies" class="level2 tag-filter-item" data-process="anomaly">
+<h2 class="anchored" data-anchor-id="calculate-temporal-anomalies">Calculate temporal anomalies</h2>
+<p>The <code>anomaly</code> process computes anomalies based on normals for temporal periods. It compares the data for each label in the temporal dimension with the corresponding data in the normals data cube by subtracting the normal from the data. Therefore, it is recommended to first calculate a climatological normal using <code>climatological_normal</code> before computing anomalies. Positive and negative values then indicate conditions above or below the expected baseline.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-10-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-10-1" role="tab" aria-controls="tabset-10-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-10-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-10-2" role="tab" aria-controls="tabset-10-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-10-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-10-3" role="tab" aria-controls="tabset-10-3" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-10-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-10-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>anomalies <span class="op">=</span> cube.anomaly(normal<span class="op">=</span>normal)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-10-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-10-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>anomalies <span class="ot">&lt;-</span> cube <span class="sc">%&gt;%</span> <span class="fu">anomaly</span>(<span class="at">normal=</span>normal)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-10-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-10-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> anomalies <span class="op">=</span> cube<span class="op">.</span><span class="fu">anomaly</span>({<span class="dt">normal</span><span class="op">:</span>normal})<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Example notebooks
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ul>
+<li><a href="../../client_examples/openeo-community-examples/python/Anomaly_Detection/Anomaly_Detection.ipynb">Regional Benchmarking Service for Anomaly Identification</a></li>
+<li><a href="../../client_examples/openeo-community-examples/python/Heatwave/HeatwaveNL.ipynb">Heatwave in the Netherlands</a></li>
+<li><a href="../../client_examples/openeo-community-examples/python/NDDI/NDDI_Drought.ipynb">Comparing the Summer Drought in Serbia (NDDI)</a></li>
+</ul>
+<p>More notebooks are listed on the <a href="../../examples.html">sample notebooks page</a>.</p>
+</div>
+</div>
+</div>
+</section>
+
+
+
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/open-eo\.github\.io\/openeo-docs\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../documentation/cube_operations/spatial_operations.html" class="pagination-link" aria-label="Spatial Operations">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Spatial Operations</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../documentation/cube_operations/spectral_operations.html" class="pagination-link" aria-label="Spectral Operations">
+        <span class="nav-page-text">Spectral Operations</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+<script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>
