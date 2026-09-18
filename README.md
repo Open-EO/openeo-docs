@@ -34,7 +34,9 @@ Run:
 quarto preview
 ```
 
-The local preview is configured to use [http://localhost](http://localhost). Quarto watches the source files and rebuilds the pages when they change. Use `Ctrl+C` to stop it.
+The local preview is configured to use port `5555` (see `project.preview.port` in `_quarto.yml`), so it opens at [http://localhost:5555](http://localhost:5555). Quarto watches the source files and rebuilds the pages when they change. Use `Ctrl+C` to stop it. Please feel free to change the port if needed.
+
+*5555 is for hahahaha fun purposes, hehehehe*
 
 To produce a complete local build without the preview server, run:
 
@@ -48,10 +50,12 @@ The generated website is written to `_site/`, which is not committed.
 
 - `index.qmd` – homepage
 - `documentation/` – user documentation and cookbook content
+- `examples.qmd` – categorized, filterable catalog of the community example notebooks
 - `news/`, `events/`, and `meetings.qmd` – project communication
 - `custom.css` and `custom.html` – shared presentation and browser behaviour
 - `_quarto.yml` – Quarto site configuration, navigation, rendering rules, and pre-render hooks
 - `news/images/` – shared image assets, including the navbar logo
+- `images/notebook_previews/` – static preview images extracted from example notebooks, used by `examples.qmd`
 
 Use `.qmd` files for new Quarto content. Quarto resolves relative links and images from the location of the source file.
 
@@ -59,7 +63,7 @@ Use `.qmd` files for new Quarto content. Quarto resolves relative links and imag
 
 `client_examples/openeo-community-examples` is a Git submodule pointing to the [openEO community examples](https://github.com/Open-EO/openeo-community-examples) repository. It contains notebooks and supporting material used by the documentation.
 
-The submodule is deliberately excluded from Quarto's normal render input. Update an example in its own repository, then update the submodule pointer in this repository:
+The submodule is excluded from Quarto's normal render input, except for the curated notebooks under `python/**`, which Quarto renders to standalone HTML pages (using each notebook's existing stored outputs, without re-executing any code) so that entries in [examples.qmd](examples.qmd) link to a rendered page instead of a raw `.ipynb` file. Update an example in its own repository, then update the submodule pointer in this repository:
 
 ```powershell
 cd client_examples/openeo-community-examples
@@ -69,6 +73,16 @@ git add client_examples/openeo-community-examples
 ```
 
 Commit the updated pointer together with any documentation links that use the example.
+
+### Notebook examples catalog
+
+`examples.qmd` lists every notebook under `client_examples/openeo-community-examples/python/`, grouped into categories (e.g. Data Access, Preprocessing, SAR Processing, Machine Learning) with `filter-ui`/`sort-ui`/`categories` enabled. Several documentation pages under `documentation/` also link directly to the most relevant notebook for a given process (e.g. `temporal_operations.qmd` links to the anomaly-detection notebooks).
+
+Most entries reference a static preview image under `images/notebook_previews/`, extracted from each notebook's own stored output (a couple of entries instead reference an image hosted by the community-examples project's own site). Re-generate these previews after updating the submodule with:
+
+```powershell
+python py_scripts/extract_notebook_previews.py
+```
 
 ## Generated version and Hub data
 
@@ -105,7 +119,7 @@ The GitHub Pages workflows build an openEO-hosted JupyterLite site at:
 
 `https://open-eo.github.io/openeo-docs/jupyterlite/`
 
-The current showcase bundles the Random Forest training notebook only. It is intended for exploring the notebook interface; helper files, datasets, and scientific dependencies are not preinstalled. See [jupyterlite/README.md](jupyterlite/README.md) for details.
+Every notebook under `client_examples/openeo-community-examples/python/` is bundled into the showcase (copied in during the CI build, see `.github/workflows/*.yml`). It is intended for exploring the notebook interface; helper files, datasets, and scientific dependencies are not preinstalled, and cloud-authenticated workflows are not expected to run end-to-end there. See [jupyterlite/README.md](jupyterlite/README.md) for details.
 
 ## Publishing
 

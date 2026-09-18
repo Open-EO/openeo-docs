@@ -1,15 +1,23 @@
 ---
 title: "Data Discovery and Loading"
+filters:
+  - pyodide
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    toc-title: "On this page"
+    number-sections: false
+    theme: cosmo
+    smooth-scroll: true
+    code-fold: false
+    code-tools: false
+page-layout: article
 ---
 
 ```{=html}
+
 <div class="tag-filter-ui" id="tag-filter-ui">
-    <button class="tag-filter-badge active" data-tag="vito">VITO</button>
-    <button class="tag-filter-badge active" data-tag="eodc">EODC</button>
-	<button class="tag-filter-badge inactive" data-tag="cdse">CDSE</button>
-	<button class="tag-filter-badge inactive" data-tag="federation">Federation</button>
-    <button class="tag-filter-badge active" data-tag="sentinelhub">Sentinel Hub</button>
-    <button class="tag-filter-badge inactive" data-tag="gee">Google Earth Engine</button>
 </div>
 ```
 
@@ -31,13 +39,36 @@ Before loading data as a datacube, it is recommended to inspect the collection's
 
 #### Python
 
-```python
+```{pyodide-python}
+#| autorun: false
+
+import micropip
+
+await micropip.install("openeo")
+
+await micropip.install("pyodide-http")
+
+import pyodide_http
+pyodide_http.patch_all()  # Make requests work in Pyodide.
 import openeo
 
-connection = openeo.connect("openeofed.dataspace.copernicus.eu")
-collections = connection.list_collections()
-metadata = connection.describe_collection("SENTINEL2_L2A")
+endpoint = "openeofed.dataspace.copernicus.eu"
+connection = openeo.connect(endpoint)
+collection_id = "SENTINEL2_L2A"
+metadata = connection.describe_collection(collection_id)
 
+print(f"Collection: {metadata['id']}")
+print(f"Title: {metadata.get('title', 'Not provided')}")
+
+# Build an openEO process graph without executing it on the backend.
+cube = connection.load_collection(
+    collection_id,
+    spatial_extent={"west": 4.30, "south": 51.20, "east": 4.60, "north": 51.40},
+    temporal_extent=["2024-06-01", "2024-06-30"],
+    bands=["B04", "B08"],
+)
+
+cube.print_json()
 ```
 
 
@@ -193,6 +224,19 @@ Next, a wider range of operations can be applied to this datacube. Some common u
 
 For complete parameters, see the official
 [`load_collection` process reference](https://processes.openeo.org/#load_collection).
+
+::: {.callout-tip collapse="true"}
+## Example notebooks
+
+- [Access PROBA-V Collection](../client_examples/openeo-community-examples/python/AccessPROBA-V/PROBA_V.ipynb)
+- [Accessing and Analysing Sentinel-5P Products](../client_examples/openeo-community-examples/python/AccessSentinel5P/Access_&_Analyse_Sentinel5P_Products.ipynb)
+- [Exploring CLMS Datasets with openEO](../client_examples/openeo-community-examples/python/Access_CLMS/CLMS_layers_using_openEO.ipynb)
+- [Explore Sentinel-5P Products with openEO (Air Quality)](../client_examples/openeo-community-examples/python/AirQuality/AirQuality.ipynb)
+- [Access MODIS Data using openEO](../client_examples/openeo-community-examples/python/MODIS/MODIS_data_using_openEO.ipynb)
+- [Advanced Use of Federated Processing](../client_examples/openeo-community-examples/python/Federation/FederatedProcessing.ipynb)
+
+More notebooks are listed on the [sample notebooks page](../examples.qmd).
+:::
 :::
 
 ::: {.tag-filter-item data-process="load_stac"}
@@ -270,6 +314,154 @@ backend supports it. Do not include access tokens or other secrets in notebooks
 or documentation.
 
 For more details about the process itself, see the [`load_stac` process reference](https://processes.openeo.org/#load_stac) page. 
+
+::: {.callout-tip collapse="true"}
+## Example notebooks
+
+- [Loading a Single STAC Item](../client_examples/openeo-community-examples/python/LoadStac/load-stac-item-example.ipynb)
+- [Using load_stac for External Datasets (Landsat 8)](../client_examples/openeo-community-examples/python/LoadStac/LoadLandsatSTAC.ipynb)
+- [Using load_stac for External Datasets (Biomass)](../client_examples/openeo-community-examples/python/LoadStac/LoadBiomassSTAC.ipynb)
+
+More notebooks are listed on the [sample notebooks page](../examples.qmd).
+:::
+:::
+
+::: {.tag-filter-item data-process="load_geojson"}
+### Load GeoJSON as a vector data cube
+
+`load_geojson` converts inline GeoJSON data into a vector data cube, preserving feature properties. It is the recommended way to bring point, line, or polygon geometries (e.g. field boundaries or sampling locations) into a process graph so they can be used with processes such as `aggregate_spatial`, `filter_spatial`, or `mask_polygon`.
+
+::: {.panel-tabset}
+#### Python
+
+```python
+geometries = {
+    "type": "FeatureCollection",
+    "features": [{
+        "type": "Feature",
+        "properties": {"parcel_id": "A01"},
+        "geometry": {
+            "type": "Polygon",
+            "coordinates": [[[4.35, 50.85], [4.38, 50.85], [4.38, 50.87],
+                             [4.35, 50.87], [4.35, 50.85]]],
+        },
+    }],
+}
+
+vector_cube = connection.load_geojson(geometries, properties=["parcel_id"])
+```
+
+#### R
+
+```r
+geometries <- list(
+    type = "FeatureCollection",
+    features = list(list(
+        type = "Feature",
+        properties = list(parcel_id = "A01"),
+        geometry = list(
+            type = "Polygon",
+            coordinates = list(list(c(4.35, 50.85), c(4.38, 50.85), c(4.38, 50.87),
+                                    c(4.35, 50.87), c(4.35, 50.85)))
+        )
+    ))
+)
+
+vector_cube <- load_geojson(connection, data = geometries, properties = c("parcel_id"))
+```
+
+#### JavaScript
+
+```javascript
+const geometries = {
+    type: "FeatureCollection",
+    features: [{
+        type: "Feature",
+        properties: { parcel_id: "A01" },
+        geometry: {
+            type: "Polygon",
+            coordinates: [[[4.35, 50.85], [4.38, 50.85], [4.38, 50.87],
+                           [4.35, 50.87], [4.35, 50.85]]],
+        },
+    }],
+};
+
+const vectorCube = await connection.loadGeoJson(geometries, { properties: ["parcel_id"] });
+```
+:::
+:::
+
+::: {.tag-filter-item data-process="load_uploaded_files"}
+### Load files from the user workspace
+
+`load_uploaded_files` reads one or more files that were previously uploaded to the authenticated user's server-side workspace and returns them as a single data cube. Use it to reuse auxiliary data (e.g. a custom raster mask or a CSV of sample points) that you uploaded to the backend rather than hosting it externally.
+
+::: {.panel-tabset}
+#### Python
+
+```python
+cube = connection.load_uploaded_files(
+    paths=["my_folder/aoi_mask.tif"],
+    format="GTiff",
+)
+```
+
+#### R
+
+```r
+cube <- load_uploaded_files(
+    connection,
+    paths = c("my_folder/aoi_mask.tif"),
+    format = "GTiff"
+)
+```
+
+#### JavaScript
+
+```javascript
+const cube = await connection.loadUploadedFiles({
+    paths: ["my_folder/aoi_mask.tif"],
+    format: "GTiff",
+});
+```
+:::
+
+Support for uploading and loading user workspace files is backend-specific and marked experimental in the openEO process specification, so check the connected backend's process support before relying on it.
+:::
+
+::: {.tag-filter-item data-process="load_url"}
+### Load a file from a URL
+
+`load_url` reads a file directly from an HTTP or HTTPS URL, without needing to register it as a collection first. It is commonly used to fetch an externally hosted GeoJSON geometry (e.g. for `filter_spatial`) or another remotely hosted input file.
+
+::: {.panel-tabset}
+#### Python
+
+```python
+geometry = connection.load_url(
+    "https://example.com/geometry.geojson", format="GeoJSON"
+)
+```
+
+#### R
+
+```r
+geometry <- load_url(
+    connection,
+    url = "https://example.com/geometry.geojson",
+    format = "GeoJSON"
+)
+```
+
+#### JavaScript
+
+```javascript
+const geometry = await connection.loadUrl(
+    "https://example.com/geometry.geojson",
+    { format: "GeoJSON" }
+);
+```
+:::
 :::
 
 ## Next steps

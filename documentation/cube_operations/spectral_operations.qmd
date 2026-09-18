@@ -11,37 +11,33 @@ format:
 page-layout: article
 ---
 
-::: {.lead}
-
-Spectral operations work across a sensor's bands. They let you select the information that matters, calculate indices, and add derived bands to a cube.
-:::
+This page provides an overview of spectral operations available in openEO for manipulating and analysing geospatial data cubes.
+Users can use these operations to focus on specific bands, calculate indices like NDVI, and create new derived bands.
 
 ```{=html}
+
 <div class="tag-filter-ui" id="tag-filter-ui">
-  <button class="tag-filter-badge active" data-tag="vito">VITO</button>
-  <button class="tag-filter-badge active" data-tag="eodc">EODC</button>
-  <button class="tag-filter-badge active" data-tag="cdse">CDSE</button>
-  <button class="tag-filter-badge active" data-tag="sentinelhub">Sentinel Hub</button>
-  <button class="tag-filter-badge inactive" data-tag="gee">Google Earth Engine</button>
 </div>
 ```
 
-::: {.callout-note}
+
+::: {.callout-note collapse="true"}
+
 ## Backend support overview
 
-The buttons on this page are a documentation aid, not a live capability registry. Use the [openEO Hub](https://hub.openeo.org/) for a cross-backend overview: open **Filters**, select a process under **Processes**, and the Hub shows only matching services. The Hub data is crawled and cached.
+The buttons above let you filter processes supported by different backends. Selecting or deselecting a backend will show or hide the relevant sections in the documentation. However, please note that it is based on the latest documentation rendering. Thus, please refer to the [openEO Hub](https://hub.openeo.org/) for the most up-to-date information.
+
 :::
 
-::: {.callout-note}
-## About backend labels
-
-The labels identify backends associated with these examples, not a permanent guarantee of capability. Check the backend process listing for its current support.
-:::
 
 ::: {.tag-filter-item data-process="filter_bands"}
 ## Select only the required bands
 
+A collection can contain multiple spectral bands, but often only a subset is relevant for a specific analysis. Selecting only the required bands helps reduce data volume and simplifies subsequent processing steps. User can choose bands based on their analysis needs, such as focusing on red and near-infrared bands for vegetation indices by simply filtering using `filter_bands` process.
+
 `filter_bands` reduces a cube to named bands or to a wavelength range. Selecting bands early makes a process graph clearer and can substantially reduce processing volume.
+
+::: {.panel-tabset}
 
 ### Python
 
@@ -57,15 +53,47 @@ sentinel2 = connection.load_collection(
 red_nir = sentinel2.filter_bands(["B04", "B08"])
 ```
 
-Band names are collection-specific. Check the collection metadata rather than assuming that every backend uses the same Sentinel band labels.
+### R 
+```r
+library(openeo)
+
+connection <- openeo::connect("openeofed.dataspace.copernicus.eu") %>% openeo::authenticate_oidc()
+sentinel2 <- connection$load_collection(
+    "SENTINEL2_L2A",
+    spatial_extent=list(west=4.30, east=4.55, south=50.80, north=50.98),
+    temporal_extent=c("2024-06-01", "2024-06-30")
+)
+red_nir <- sentinel2$filter_bands(c("B04", "B08"))
+```
+
+### JavaScript
+```javascript
+import OpenEO from "openeo";
+
+const connection = await OpenEO.connect("openeofed.dataspace.copernicus.eu").authenticate_oidc();
+const sentinel2 = connection.load_collection(
+    "SENTINEL2_L2A",
+    {
+        spatial_extent: {west: 4.30, east: 4.55, south: 50.80, north: 50.98},
+        temporal_extent: ["2024-06-01", "2024-06-30"]
+    }
+);
+const red_nir = sentinel2.filter_bands(["B04", "B08"]);
+```
+
 :::
 
----
+Please note that the band names used in the examples above are specific to the Sentinel-2 collection in CDSE backend and may differ for other collections or backends. Check the collection metadata for the correct band names.
+
+Alternatively, user can specify the band names directly when using `load_collection` by providing the `bands` parameter. The `filter_bands` step can be handy when you have multiple bands generated in your analysis resulting a different datacube and want to focus on a subset for subsequent processing.
+
 
 ::: {.tag-filter-item data-process="ndvi"}
 ## Calculate NDVI
 
-`ndvi` is a convenience process for the normalized difference between near-infrared and red reflectance. It adds an NDVI band while retaining the cube's spatial and temporal dimensions.
+One of the most commonly used vegetation indices in the EO domain is the Normalized Difference Vegetation Index (NDVI). The NDVI is a  metric for quantifying the health and density of vegetation using sensor data. Thus, to make it easier for the openEO users, it is defined within the API as a dedicated process.The `ndvi` process computes and adds an NDVI band while retaining the cube's spatial and temporal dimensions.
+
+::: {.panel-tabset}
 
 ### Python
 
@@ -74,55 +102,80 @@ ndvi = red_nir.ndvi(nir="B08", red="B04", target_band="NDVI")
 ndvi.download("ndvi.tif", format="GTiff")
 ```
 
+### R
+
+```r
+ndvi <- red_nir$ndvi(nir="B08", red="B04", target_band="NDVI")
+ndvi$download("ndvi.tif", format="GTiff")
+```
+
+### JavaScript
+
+```javascript
+const ndvi = red_nir.ndvi({nir: "B08", red: "B04", target_band: "NDVI"});
+await ndvi.download("ndvi.tif", {format: "GTiff"});
+```
+:::
+
 For indices without a dedicated process, use `normalized_difference` or an `apply_dimension` callback with arithmetic processes. For example, normalized difference is suitable for NDWI and NBR when you supply the appropriate pair of input bands.
 :::
 
----
 
-::: {.tag-filter-item data-process="ndvi"}
-## Workflow: combine an index with a temporal composite
 
-Spectral and temporal operations are normally chained. Here the index is calculated for each acquisition and then reduced to a monthly median; this is generally more meaningful than calculating the index from separately aggregated red and NIR bands.
+::: {.callout-tip collapse="true"}
+## Indices with temporal aggregation
 
-### Python
-
-```python
-monthly_ndvi = (
-    red_nir.ndvi(nir="B08", red="B04", target_band="NDVI")
-    .aggregate_temporal_period(period="month", reducer="median")
-)
-```
-
-This is a workflow example rather than a separate process: `ndvi` is calculated per acquisition and `aggregate_temporal_period` then creates the monthly product. The temporal process is documented in the [Temporal Operations](temporal_operations.qmd) page.
+Spectral and temporal operations are often chained together. For example, one might want to analyse the vegetation health over time using NDVI. In such cases, the NDVI is first calculated for each acquisition and then aggregated over time using `aggregate_temporal_period` to observe trends and patterns. For more details, see the [Temporal Operations](temporal_operations.qmd) page.
 :::
-## Spectral process details
-
-Each process below has its own backend filter. Generic dimension processes are shown here with `dimension="bands"`.
 
 ::: {.tag-filter-item data-process="normalized_difference"}
 ## Calculate a normalized difference
 
-Use `normalized_difference` for a two-band index when no dedicated convenience process exists. For example, it can create NDWI from green and near-infrared bands or NBR from near-infrared and shortwave-infrared bands.
+The `normalized_difference` process defined in the openEO API calculates the normalized difference between two specified bands. It is useful for creating indices like NDWI and NBR when no dedicated process exists. For example, it can create NDWI from green and near-infrared bands or NBR from near-infrared and shortwave-infrared bands.
+
+::: {.panel-tabset}
+
+### Python
 
 ```python
 ndwi = cube.normalized_difference(first_band="B03", second_band="B08")
 ```
-:::
+### R
 
-::: {.tag-filter-item data-process="aggregate_temporal_period"}
-## Aggregate an index over time
+```r
+ndwi <- cube$normalized_difference(first_band="B03", second_band="B08")
+```
+### JavaScript
 
-`aggregate_temporal_period` groups an index into calendar periods such as monthly medians.
-
-```python
-monthly_ndvi = ndvi.aggregate_temporal_period(period="month", reducer="median")
+```javascript
+const ndwi = cube.normalized_difference({first_band: "B03", second_band: "B08"});
 ```
 :::
 
+::: {.callout-tip collapse="true"}
+## Example notebooks
+
+- [WorldCereal Product Download](../../client_examples/openeo-community-examples/python/WorldCereal/WorldCereal.ipynb)
+- [Using the BioPAR openEO Service](../../client_examples/openeo-community-examples/python/BioPAR/biopar_service.ipynb)
+- [Comparing the Summer Drought in Serbia (NDDI)](../../client_examples/openeo-community-examples/python/NDDI/NDDI_Drought.ipynb)
+- [NDVI-based Approach to Study Landslide Areas](../../client_examples/openeo-community-examples/python/LandslideNDVI/LandslidesNDVI.ipynb)
+
+More notebooks are listed on the [sample notebooks page](../../examples.qmd).
+:::
+:::
+
+
 ::: {.tag-filter-item data-process="apply_dimension"}
+
 ## Apply a process across bands
 
-Use `apply_dimension` with `dimension="bands"` when the calculation needs a custom combination of the band array. Prefer a dedicated index process when one exists because its band semantics are clearer.
+The `apply_dimension` process can be used to apply a process(custom functions also known as UDF in openEO) across a specified dimension(such as "time" or "bands") to produce a new series of values for that dimension. In this page, we showcase how to apply a process across the band dimension. 
+
+To apply a custom operation across the band dimension, use `apply_dimension` with `dimension="bands"`. This will return a new series of values for the band dimension based on the specified process.
+
+::: {.panel-tabset}
+
+### Python
 
 ```python
 derived = cube.apply_dimension(
@@ -130,44 +183,117 @@ derived = cube.apply_dimension(
   process=lambda bands: bands[1] / bands[0],
 )
 ```
+### R
+
+```r
+derived <- cube$apply_dimension(
+  dimension="bands",
+  process=function(bands) { bands[2] / bands[1] }
+)
+```
+### JavaScript
+
+```javascript
+const derived = cube.apply_dimension({
+  dimension: "bands",
+  process: bands => bands[1] / bands[0]
+});
+```
+:::
 :::
 
 ::: {.tag-filter-item data-process="reduce_dimension"}
 ## Reduce the band dimension
 
-Use `reduce_dimension` with `dimension="bands"` to collapse several bands into one value, for example a mean brightness or maximum response. The process removes the reduced dimension.
+Similar to `apply_dimension`, the `reduce_dimension` process operates on either the time or the band dimension, but instead of returning a new series of values, it collapses the dimension into a single value using a reducer function.
 
+To reduce the band dimension, specify the `dimension` as `"bands"` and provide a reducer function, such as `"mean"`, `"max"` or `"median"`. It will result in a single value, for example the mean brightness or maximum response across all bands of the cube with time and spatial dimensions preserved.
+
+::: {.panel-tabset}
+### Python
 ```python
 brightness = cube.reduce_dimension(dimension="bands", reducer="mean")
 ```
+
+### R
+
+```r
+brightness <- cube$reduce_dimension(dimension="bands", reducer="mean")
+```
+### JavaScript
+
+```javascript
+const brightness = cube.reduce_dimension({dimension: "bands", reducer: "mean"});
+```
+:::
 :::
 
 ::: {.tag-filter-item data-process="linear_scale_range"}
-## Scale spectral values
+## Scale spectral values 
 
-Use `linear_scale_range` to convert stored digital numbers into a physical range before calculating indices or exporting data. Confirm the source scaling in the collection metadata first.
+Before applying any analysis or exporting the data, it is often necessary to convert the raw digital numbers to a physical range.
+To scale spectral values from their original digital number range to a physical range, a process like `linear_scale_range` can be used.
+However, always confirm the source scaling in the collection metadata first before applying `linear_scale_range`.
+
+::: {.panel-tabset}
 
 ```python
 reflectance = cube.linear_scale_range(
   input_min=0, input_max=10000, output_min=0, output_max=1
 )
 ```
+### R
+
+```r
+reflectance <- cube$linear_scale_range(
+  input_min=0, input_max=10000, output_min=0, output_max=1
+)
+```
+### JavaScript
+
+```javascript
+const reflectance = cube.linear_scale_range({
+  input_min: 0, input_max: 10000, output_min: 0, output_max: 1
+});
+```
+
+:::
 :::
 
 ::: {.tag-filter-item data-process="array_element"}
 ## Select an array element
 
-Use `array_element` when a callback returns an array and the workflow needs one position, such as selecting a particular component from a model result.
+The process `array_element` can be useful to extract a specific element from an array. It returns the element with the specified index or label from the array. Please note that either the parameter `index` or `label` must be specified, otherwise the `ArrayElementParameterMissing` exception is thrown. If both parameters are set the `ArrayElementParameterConflict` exception is thrown.
+
+::: {.panel-tabset}
+
+### Python
 
 ```python
 red = openeo.processes.array_element(data=band_array, index=0)
 ```
+### R
+
+```r
+red <- openeo::array_element(data = band_array, index = 0)
+```
+### JavaScript
+
+```javascript
+const red = openeo.processes.array_element({data: band_array, index: 0});
+
+```
+:::
 :::
 
 ::: {.tag-filter-item data-process="array_apply"}
 ## Apply a process to an array
 
-Use `array_apply` when every element of an array should receive the same process graph, for example scaling each value before converting the array back into a cube dimension.
+The process `array_apply` is used to apply a process to each individual value in an array, for example scaling each value before converting the array back into a cube dimension. This is basically what other languages call either a for each loop or a map function.
+
+::: {.panel-tabset}
+
+### Python
 
 ```python
 scaled = openeo.processes.array_apply(
@@ -175,4 +301,21 @@ scaled = openeo.processes.array_apply(
   process=lambda value: value.multiply(0.0001),
 )
 ```
+### R
+
+```r
+scaled <- openeo::array_apply(
+  data = band_array,
+  process = function(value) value * 0.0001
+)
+```
+### JavaScript
+
+```javascript
+const scaled = openeo.processes.array_apply({
+  data: band_array,
+  process: value => value * 0.0001
+});
+```
+:::
 :::

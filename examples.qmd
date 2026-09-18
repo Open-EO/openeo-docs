@@ -3,21 +3,206 @@ title: "Explore openEO Sample Notebooks"
 toc: false
 listing: 
   - id: examples
+    categories: true
+    sort-ui: true
+    filter-ui: true
     contents:
-    - path: https://github.com/Open-EO/openeo-community-examples/blob/9ee2197c8830e5c97bf8c2e4ac340aad897277b4/python/ParcelDelineation/Parcel%20delineation.ipynb
-      image: https://documentation.dataspace.copernicus.eu/APIs/openEO/openeo-community-examples/python/ParcelDelineation/Parcel%20delineation_files/figure-html/cell-14-output-1.png
-      title: "Parcel Delination using openEO API"   
-    - path: https://github.com/Open-EO/openeo-community-examples/blob/9ee2197c8830e5c97bf8c2e4ac340aad897277b4/python/SurfaceSoilMoisture/SoilMoisture.ipynb
-      image: https://documentation.dataspace.copernicus.eu/APIs/openEO/openeo-community-examples/python/SurfaceSoilMoisture/SoilMoisture_files/figure-html/cell-14-output-2.png
-      title: "Soil Surface Moisture using openEO API"  
-    - path: client_examples/openeo-community-examples/python/Heatwave/HeatwaveNL.ipynb
+    # Getting Started
+    - path: "client_examples/openeo-community-examples/python/1. GettingStarted/GettingStarted.ipynb"
+      image: images/notebook_previews/getting-started.png
+      title: "Getting Started with openEO"
+      categories: [Getting Started]
+    # Data Access & Collections
+    - path: client_examples/openeo-community-examples/python/AccessPROBA-V/PROBA_V.ipynb
+      title: "Access PROBA-V Collection"
+      categories: [Data Access & Collections]
+    - path: "client_examples/openeo-community-examples/python/AccessSentinel5P/Access_&_Analyse_Sentinel5P_Products.ipynb"
+      image: images/notebook_previews/access-sentinel5p.png
+      title: "Accessing and Analysing Sentinel-5P Products"
+      categories: [Data Access & Collections]
+    - path: client_examples/openeo-community-examples/python/Access_CLMS/CLMS_layers_using_openEO.ipynb
+      image: images/notebook_previews/access-clms.png
+      title: "Exploring CLMS Datasets with openEO"
+      categories: [Data Access & Collections]
+    - path: client_examples/openeo-community-examples/python/AirQuality/AirQuality.ipynb
+      image: images/notebook_previews/air-quality.png
+      title: "Explore Sentinel-5P Products with openEO"
+      categories: [Data Access & Collections]
+    - path: client_examples/openeo-community-examples/python/Federation/FederatedProcessing.ipynb
+      image: images/notebook_previews/federation.png
+      title: "Advanced Use of Federated Processing"
+      categories: [Data Access & Collections]
+    - path: client_examples/openeo-community-examples/python/LoadStac/load-stac-item-example.ipynb
+      image: images/notebook_previews/load-stac-item.png
+      title: "Loading a Single STAC Item"
+      categories: [Data Access & Collections]
+    - path: client_examples/openeo-community-examples/python/LoadStac/LoadLandsatSTAC.ipynb
+      image: images/notebook_previews/load-landsat-stac.png
+      title: "Using load_stac for External Datasets (Landsat 8)"
+      categories: [Data Access & Collections]
+    - path: client_examples/openeo-community-examples/python/LoadStac/LoadBiomassSTAC.ipynb
+      image: images/notebook_previews/load-biomass-stac.png
+      title: "Using load_stac for External Datasets (Biomass)"
+      categories: [Data Access & Collections]
+    - path: client_examples/openeo-community-examples/python/MODIS/MODIS_data_using_openEO.ipynb
+      title: "Access MODIS Data using openEO"
+      categories: [Data Access & Collections]
+    # Preprocessing & Data Preparation
+    - path: client_examples/openeo-community-examples/python/BasicSentinelMerge/sentinel_merge.ipynb
+      title: "Creating a Multi-Mission, Multi-Temporal Datacube"
+      categories: [Preprocessing & Data Preparation]
+    - path: "client_examples/openeo-community-examples/python/Corsa/CORSA processes.ipynb"
+      image: images/notebook_previews/corsa.png
+      title: "CORSA: Near-Lossless Image Compression for Sentinel-2"
+      categories: [Preprocessing & Data Preparation]
     - path: client_examples/openeo-community-examples/python/Hillshade/Hillshade.ipynb
+      title: "Hillshade from Copernicus 30 m DEM"
+      categories: [Preprocessing & Data Preparation]
+    - path: client_examples/openeo-community-examples/python/RankComposites/rank_composites.ipynb
+      image: images/notebook_previews/rank-composites.png
+      title: "Rank Composites"
+      categories: [Preprocessing & Data Preparation]
+    - path: client_examples/openeo-community-examples/python/RankComposites/bap_composite.ipynb
+      image: images/notebook_previews/bap-composite.png
+      title: "Best Available Pixel Composite"
+      categories: [Preprocessing & Data Preparation]
+    - path: client_examples/openeo-community-examples/python/SCLDilationMask/to_scl_dilation_mask.ipynb
+      image: images/notebook_previews/scl-dilation-mask.png
+      title: "Sentinel-2 SCL Dilation Mask"
+      categories: [Preprocessing & Data Preparation]
+    - path: client_examples/openeo-community-examples/python/StatisticalDataFill/StatisticalDataFill.ipynb
+      image: images/notebook_previews/statistical-data-fill.png
+      title: "Filling Missing Time Series Data with Lowess Regression"
+      categories: [Preprocessing & Data Preparation]
+    # Vegetation & Agriculture
+    - path: client_examples/openeo-community-examples/python/BioPAR/biopar_service.ipynb
+      image: images/notebook_previews/biopar.png
+      title: "Using the BioPAR openEO Service"
+      categories: [Vegetation & Agriculture]
+    - path: client_examples/openeo-community-examples/python/MODIS/CarbonProduces.ipynb
+      image: images/notebook_previews/modis-carbon.png
+      title: "Exploring Carbon Dynamics from MODIS Products"
+      categories: [Vegetation & Agriculture]
+    - path: client_examples/openeo-community-examples/python/MODIS/Environmental_productivity.ipynb
+      image: images/notebook_previews/modis-productivity.png
+      title: "Analyse Vegetation Productivity from MODIS Products"
+      categories: [Vegetation & Agriculture]
+    - path: "client_examples/openeo-community-examples/python/ParcelDelineation/Parcel delineation.ipynb"
+      image: https://documentation.dataspace.copernicus.eu/APIs/openEO/openeo-community-examples/python/ParcelDelineation/Parcel%20delineation_files/figure-html/cell-14-output-1.png
+      title: "Parcel Delineation using openEO API"
+      categories: [Vegetation & Agriculture]
+    - path: client_examples/openeo-community-examples/python/WorldCereal/WorldCereal.ipynb
+      title: "WorldCereal Product Download"
+      categories: [Vegetation & Agriculture]
+    # Land Cover Mapping
+    - path: "client_examples/openeo-community-examples/python/DynamicLandCoverMapping/Dynamic land cover mapping.ipynb"
+      image: images/notebook_previews/dynamic-land-cover.png
+      title: "Dynamic Land Cover Mapping"
+      categories: [Land Cover Mapping]
+    - path: client_examples/openeo-community-examples/python/LandCoverStatistics/land_cover_country_lcfm.ipynb
+      image: images/notebook_previews/land-cover-statistics.png
+      title: "Land Cover Statistics Extraction (LCFM)"
+      categories: [Land Cover Mapping]
+    # Climate & Extreme Events
+    - path: client_examples/openeo-community-examples/python/Anomaly_Detection/Anomaly_Detection.ipynb
+      image: images/notebook_previews/anomaly-detection.png
+      title: "Regional Benchmarking Service for Anomaly Identification"
+      categories: [Climate & Extreme Events]
+    - path: client_examples/openeo-community-examples/python/Heatwave/HeatwaveNL.ipynb
+      image: images/notebook_previews/heatwave-nl.png
+      title: "Heatwave in the Netherlands"
+      categories: [Climate & Extreme Events]
+    - path: client_examples/openeo-community-examples/python/NDDI/NDDI_Drought.ipynb
+      image: images/notebook_previews/nddi-drought.png
+      title: "Comparing the Summer Drought in Serbia"
+      categories: [Climate & Extreme Events]
+    # Water & Disaster Monitoring
+    - path: client_examples/openeo-community-examples/python/FloodNDWI/flood_SAR.ipynb
+      image: images/notebook_previews/flood-sar.png
+      title: "Identifying Flooded Areas with Sentinel-1 Data"
+      categories: [Water & Disaster Monitoring]
+    - path: client_examples/openeo-community-examples/python/FloodNDWI/flood_ndwi.ipynb
+      title: "Before/After Flash Flood Comparison using NDWI"
+      categories: [Water & Disaster Monitoring]
+    - path: client_examples/openeo-community-examples/python/GlobalFloodMonitoring/Global_Flood_Monitoring.ipynb
+      image: images/notebook_previews/global-flood-monitoring.png
+      title: "openEO Flood Monitoring: Pakistan Flooding of 2022"
+      categories: [Water & Disaster Monitoring]
+    - path: client_examples/openeo-community-examples/python/LandslideNDVI/LandslidesNDVI.ipynb
+      image: images/notebook_previews/landslide-ndvi.png
+      title: "NDVI-based Approach to Study Landslide Areas"
+      categories: [Water & Disaster Monitoring]
     - path: client_examples/openeo-community-examples/python/OilSpill/OilSpillMapping.ipynb
+      image: images/notebook_previews/oil-spill.png
+      title: "Oil Spill Mapping using Sentinel-1"
+      categories: [Water & Disaster Monitoring]
+    # Fire Monitoring
+    - path: client_examples/openeo-community-examples/python/BurntMapping/burntmapping.ipynb
+      image: images/notebook_previews/burnt-mapping.png
+      title: "Burnt Area Mapping using apply_polygon on a UDF"
+      categories: [Fire Monitoring]
+    - path: client_examples/openeo-community-examples/python/ForestFire/ForestFire.ipynb
+      image: images/notebook_previews/forest-fire.png
+      title: "Forest Fire Analysis: Saving Multiple Results in One Job"
+      categories: [Fire Monitoring]
+    # SAR Processing
+    - path: client_examples/openeo-community-examples/python/RVI/RVI.ipynb
+      image: images/notebook_previews/rvi.png
+      title: "Calculate Radar Vegetation Index (RVI)"
+      categories: [SAR Processing]
+    - path: client_examples/openeo-community-examples/python/SAR_in_openEO/Interferogram_deformation_map.ipynb
+      image: images/notebook_previews/insar-deformation.png
+      title: "Analysing openEO-Generated Interferograms for Surface Deformation"
+      categories: [SAR Processing]
+    - path: client_examples/openeo-community-examples/python/SAR_in_openEO/Coherence_for_harvestdays.ipynb
+      image: images/notebook_previews/sar-coherence-harvest.png
+      title: "Analysing Coherence Output for Harvest-Day Detection"
+      categories: [SAR Processing]
+    - path: client_examples/openeo-community-examples/python/Sentinel1_Stats/Sentinel1_Stats.ipynb
+      image: images/notebook_previews/sentinel1-stats.png
+      title: "Publishing an openEO Workflow as a User-Defined Process"
+      categories: [SAR Processing]
+    - path: client_examples/openeo-community-examples/python/SurfaceSoilMoisture/SoilMoisture.ipynb
+      image: https://documentation.dataspace.copernicus.eu/APIs/openEO/openeo-community-examples/python/SurfaceSoilMoisture/SoilMoisture_files/figure-html/cell-14-output-2.png
+      title: "Soil Surface Moisture using openEO API"
+      categories: [SAR Processing]
+    # Machine Learning
+    - path: "client_examples/openeo-community-examples/python/DimensionalityReduction/Dimensionality Reduction.ipynb"
+      image: images/notebook_previews/dimensionality-reduction.png
+      title: "Dimensionality Reduction using Sentinel-2 (PCA)"
+      categories: [Machine Learning]
+    - path: client_examples/openeo-community-examples/python/ExtractingTrainingData/ML_ready_data_extraction.ipynb
+      image: images/notebook_previews/ml-ready-data-extraction.png
+      title: "ML-Ready Data Preparation using openEO"
+      categories: [Machine Learning]
+    - path: client_examples/openeo-community-examples/python/OnnxMLInference/Onnx_ML_Inference.ipynb
+      image: images/notebook_previews/onnx-ml-inference.png
+      title: "Running ML Inference with an ONNX Model"
+      categories: [Machine Learning]
+    - path: client_examples/openeo-community-examples/python/RandomForest-ForestFire/RandomForestModelTraining.ipynb
+      image: images/notebook_previews/random-forest-training.png
+      title: "Forest Fire Mapping using Random Forest"
+      categories: [Machine Learning]
+    - path: client_examples/openeo-community-examples/python/RandomForest-ForestFire/RandomForestModelInference_AsUDP.ipynb
+      title: "Reusing openEO Workflows Saved as UDPs"
+      categories: [Machine Learning]
+    - path: client_examples/openeo-community-examples/python/TesseraEmbedding/TesseraEmbedding.ipynb
+      image: images/notebook_previews/tessera-embedding.png
+      title: "TESSERA Pixel Embeddings from Sentinel-1/2"
+      categories: [Machine Learning]
+    # Job Management & Utilities
+    - path: client_examples/openeo-community-examples/python/ManagingMultipleLargeScaleJobs/VisualisingMultipleOpeneoJobs.ipynb
+      title: "Geospatial Job Management and Visualisation"
+      categories: [Job Management & Utilities]
     - path: client_examples/openeo-community-examples/python/ManagingMultipleLargeScaleJobs/ManagingMultipleLargeScaleJobs.ipynb
+      image: images/notebook_previews/managing-large-scale-jobs.png
+      title: "EO Data Processing with the openEO MultiBackendJobManager"
+      categories: [Job Management & Utilities]
     type: grid
-    page-size: 3
+    page-size: 12
 ---
 
+These sample notebooks are maintained in the [openEO community examples](https://github.com/Open-EO/openeo-community-examples/tree/main/python) repository. Use the category filters below to browse by topic, or the search box to find a specific use case.
 
 ::: {#examples}
 :::
@@ -25,5 +210,4 @@ listing:
 <div style="display:flex;justify-content: center;margin-top: 2rem;">
 [Go to community examples repository](https://github.com/Open-EO/openeo-community-examples/tree/main/python){.uiButton}
 </div>
-
 

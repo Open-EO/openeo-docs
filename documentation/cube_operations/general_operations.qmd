@@ -1,0 +1,366 @@
+---
+title: "General Operations"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    toc-title: "On this page"
+    number-sections: false
+    theme: cosmo
+    smooth-scroll: true
+page-layout: article
+---
+
+General operations are reusable building blocks for calculations, comparisons, logic, arrays, dates, text, and statistical reductions. They can be used directly on values or inside cube operations such as `apply`, `apply_dimension`, and `reduce_dimension`.
+
+```{=html}
+<div class="tag-filter-ui" id="tag-filter-ui"></div>
+```
+
+::: {.callout-note collapse="true"}
+## Backend support overview
+
+The buttons above filter processes supported by the tracked backends. Availability can differ between backends, so check the connected backend before using a process in a workflow.
+:::
+
+## Mathematical operations
+
+::: {.tag-filter-item data-process="absolute"}
+### `absolute`
+
+Returns the absolute value of a number.
+
+::: {.panel-tabset}
+
+### Python
+
+```python
+result = openeo.processes.absolute(x=-5)
+```
+
+### R
+
+```r
+result <- absolute(x = -5)
+```
+
+### JavaScript
+
+```javascript
+const result = builder.absolute({ x: -5 });
+```
+
+:::
+:::
+
+::: {.tag-filter-item data-process="sgn"}
+### `sgn`
+
+Returns the signum of a number: `1` if it is positive, `-1` if it is negative, and `0` if it is zero.
+
+::: {.panel-tabset}
+
+### Python
+
+```python
+result = openeo.processes.sgn(x=-2)
+```
+
+### R
+
+```r
+result <- sgn(x = -2)
+```
+
+### JavaScript
+
+```javascript
+const result = builder.sgn({ x: -2 });
+```
+
+:::
+:::
+
+::: {.tag-filter-item data-process="arccos arcosh arcsin arctan arctan2 arsinh artanh cos cosh sin sinh tan tanh"}
+### Trigonometric functions
+
+The `arccos`, `arcosh`, `arcsin`, `arctan`, `arctan2`, `arsinh`, `artanh`, `cos`, `cosh`, `sin`, `sinh`, `tan`, and `tanh` processes calculate trigonometric and inverse trigonometric values. Angles are expressed in radians.
+:::
+
+::: {.tag-filter-item data-process="ceil floor int round"}
+### Rounding
+
+The `ceil`, `floor`, `int`, and `round` processes convert or round numerical values with different rounding rules and precision options.
+:::
+
+::: {.tag-filter-item data-process="add divide mod multiply subtract"}
+### Arithmetic
+
+The `add`, `divide`, `mod`, `multiply`, and `subtract` processes perform basic arithmetic on numerical values.
+
+::: {.panel-tabset}
+
+### Python
+
+```python
+result = openeo.processes.add(x=2, y=3)
+```
+
+### R
+
+```r
+result <- add(x = 2, y = 3)
+```
+
+### JavaScript
+
+```javascript
+const result = builder.add({ x: 2, y: 3 });
+```
+
+:::
+:::
+
+::: {.tag-filter-item data-process="e exp ln log power pi"}
+### Constants and exponentials
+
+The `e` and `pi` processes provide mathematical constants. The `exp`, `ln`, `log`, and `power` processes perform exponential and logarithmic calculations.
+:::
+
+::: {.tag-filter-item data-process="clip sqrt"}
+### Ranges and roots
+
+The `clip` process limits a value to a range, while `sqrt` calculates its square root.
+:::
+
+::: {.tag-filter-item data-process="is_nan is_infinite"}
+### Special numerical values
+
+The `is_nan` and `is_infinite` processes test whether a value is NaN or an infinite number.
+:::
+
+## Comparisons and logic
+
+::: {.tag-filter-item data-process="between date_between eq neq gt gte lt lte"}
+### Comparisons
+
+The `between`, `date_between`, `eq`, `neq`, `gt`, `gte`, `lt`, and `lte` processes compare values or test whether values fall within a range.
+
+::: {.panel-tabset}
+
+### Python
+
+```python
+result = openeo.processes.between(x=5, min=0, max=10)
+```
+
+### R
+
+```r
+result <- between(x = 5, min = 0, max = 10)
+```
+
+### JavaScript
+
+```javascript
+const result = builder.between({ x: 5, min: 0, max: 10 });
+```
+
+:::
+:::
+
+::: {.tag-filter-item data-process="and any all not or xor if"}
+### Boolean logic
+
+The `and`, `any`, `all`, `not`, `or`, `xor`, and `if` processes combine conditions or select values conditionally.
+
+::: {.panel-tabset}
+
+### Python
+
+```python
+result = openeo.processes.if_(value=True, accept="yes", reject="no")
+```
+
+### R
+
+```r
+result <- if_(value = TRUE, accept = "yes", reject = "no")
+```
+
+### JavaScript
+
+```javascript
+const result = builder.if({ value: true, accept: "yes", reject: "no" });
+```
+
+:::
+:::
+
+::: {.tag-filter-item data-process="is_valid is_nodata"}
+### Validity checks
+
+The `is_valid` and `is_nodata` processes inspect values and no-data status.
+:::
+
+## Arrays and reducers
+
+::: {.tag-filter-item data-process="array_append array_concat array_create array_create_labeled array_modify"}
+### Create and modify arrays
+
+The `array_append`, `array_concat`, `array_create`, `array_create_labeled`, and `array_modify` processes create arrays or change their elements and labels.
+
+::: {.panel-tabset}
+
+### Python
+
+```python
+result = openeo.processes.array_append(data=[1, 2], value=3)
+```
+
+### R
+
+```r
+result <- array_append(data = c(1, 2), value = 3)
+```
+
+### JavaScript
+
+```javascript
+const result = builder.arrayAppend({ data: [1, 2], value: 3 });
+```
+
+:::
+:::
+
+::: {.tag-filter-item data-process="array_contains array_element array_find array_find_label array_labels"}
+### Inspect arrays
+
+The `array_contains`, `array_element`, `array_find`, `array_find_label`, and `array_labels` processes find values, labels, indices, or metadata in arrays.
+:::
+
+::: {.tag-filter-item data-process="array_apply array_filter array_interpolate_linear"}
+### Transform arrays
+
+The `array_apply`, `array_filter`, and `array_interpolate_linear` processes transform or filter array elements and fill internal gaps by linear interpolation.
+:::
+
+::: {.tag-filter-item data-process="count extrema first last max mean median min product quantiles sd sum variance"}
+### Statistical reducers
+
+The `count`, `extrema`, `first`, `last`, `max`, `mean`, `median`, `min`, `product`, `quantiles`, `sd`, `sum`, and `variance` processes reduce arrays of values to statistical summaries.
+
+::: {.panel-tabset}
+
+### Python
+
+```python
+result = openeo.processes.mean(data=[1, 2, 3])
+```
+
+### R
+
+```r
+result <- mean(data = c(1, 2, 3))
+```
+
+### JavaScript
+
+```javascript
+const result = builder.mean({ data: [1, 2, 3] });
+```
+
+:::
+:::
+
+::: {.tag-filter-item data-process="cummax cummin cumproduct cumsum order rearrange sort"}
+### Ordering and cumulative operations
+
+The `cummax`, `cummin`, `cumproduct`, and `cumsum` processes calculate cumulative results. The `order`, `rearrange`, and `sort` processes order array values or rearrange them using a permutation.
+:::
+
+## Dates and text
+
+::: {.tag-filter-item data-process="date_difference date_shift"}
+### Date and time calculations
+
+The `date_difference` process calculates the difference between two temporal values. The `date_shift` process shifts a date or time by a specified amount.
+
+::: {.panel-tabset}
+
+### Python
+
+```python
+result = openeo.processes.date_shift(date="2024-01-01", value=1, unit="month")
+```
+
+### R
+
+```r
+result <- date_shift(date = "2024-01-01", value = 1, unit = "month")
+```
+
+### JavaScript
+
+```javascript
+const result = builder.dateShift({ date: "2024-01-01", value: 1, unit: "month" });
+```
+
+:::
+:::
+
+::: {.tag-filter-item data-process="text_begins text_concat text_contains text_ends text_find"}
+### Text operations
+
+The `text_begins`, `text_concat`, `text_contains`, `text_ends`, and `text_find` processes inspect and combine text values.
+
+::: {.panel-tabset}
+
+### Python
+
+```python
+result = openeo.processes.text_contains(data="openEO documentation", pattern="EO")
+```
+
+### R
+
+```r
+result <- text_contains(data = "openEO documentation", pattern = "EO")
+```
+
+### JavaScript
+
+```javascript
+const result = builder.textContains({ data: "openEO documentation", pattern: "EO" });
+```
+
+:::
+:::
+
+::: {.tag-filter-item data-process="nan constant"}
+### Special constants
+
+The `nan` process creates a NaN value, while `constant` defines a value that can be reused in a process graph.
+:::
+
+## Extended and backend-specific operations
+
+The following processes are advertised by one or more tracked backends. They are included here so that the complete backend process inventory is represented in the cube-operations documentation. Their exact parameters and behavior are backend-specific; consult the backend process endpoint before using them.
+
+::: {.tag-filter-item data-process="bit bitwise_and bitwise_not bitwise_or bitwise_xor cast convert_data_type divide_floor max_binary min_binary scale"}
+### Extended numerical operations
+
+The `bit`, `bitwise_and`, `bitwise_not`, `bitwise_or`, and `bitwise_xor` processes perform bit-level operations. The `cast`, `convert_data_type`, `divide_floor`, `max_binary`, `min_binary`, and `scale` processes provide backend-specific type conversion, arithmetic, and scaling operations.
+:::
+
+::: {.tag-filter-item data-process="sd_pop variance_pop"}
+### Population statistics
+
+The `sd_pop` and `variance_pop` processes calculate population standard deviation and population variance.
+:::
+
+
+
+::: {.callout-tip}
+For complete parameter definitions, data types, examples, and errors, consult the [openEO process reference](https://processes.openeo.org/2.0.0-rc.2/).
+:::

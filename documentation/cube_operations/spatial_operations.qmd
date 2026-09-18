@@ -11,228 +11,662 @@ format:
 page-layout: article
 ---
 
-::: {.lead}
-
-Spatial processes define **where** an analysis runs. Use them early to reduce the data a backend must read, then use them to align cubes or produce statistics for geographic features.
-:::
+This page provides an overview of spatial operations available in openEO for manipulating and analysing geospatial data cubes. These processes answer the question of **where** in space the analysis should be applied. 
 
 ```{=html}
+
 <div class="tag-filter-ui" id="tag-filter-ui">
-  <button class="tag-filter-badge active" data-tag="vito">VITO</button>
-  <button class="tag-filter-badge active" data-tag="eodc">EODC</button>
-  <button class="tag-filter-badge active" data-tag="cdse">CDSE</button>
-  <button class="tag-filter-badge active" data-tag="sentinelhub">Sentinel Hub</button>
-  <button class="tag-filter-badge inactive" data-tag="gee">Google Earth Engine</button>
 </div>
 ```
 
-::: {.callout-note}
+
+::: {.callout-note collapse="true"}
 ## Backend support overview
 
 The buttons on this page are a documentation aid, not a live capability registry. Use the [openEO Hub](https://hub.openeo.org/) for a cross-backend overview: open **Filters**, select a process under **Processes**, and the Hub shows only matching services. The Hub data is crawled and cached.
 :::
 
-::: {.callout-note}
-## About backend labels
 
-The labels show backends for which this first documentation version provides a relevant example. Process availability, parameter support, collection identifiers, and limits can change; inspect the backend's process listing before using a workflow in production.
-:::
-
-::: {.tag-filter-item data-process="filter_bbox"}
 ## Filter an area of interest
 
-`filter_bbox` keeps only pixels within a bounding box. It is the usual first spatial operation because it reduces data transfer and processing before later, more expensive processes. Use `filter_spatial` when your area is an irregular GeoJSON geometry instead.
+openEO provides several spatial operations to manipulate the geospatial extent of the datacube. It allows users to load only the relevant spatial subset of the data, reducing unnecessary data transfer and processing. There are two main approaches: filtering by a bounding box or by an irregular geometry, using either of the following processes:
 
-### Python
+* [`filter_bbox`](https://processes.openeo.org/2.0.0-rc.2/#filter_bbox) keeps only pixels within a bounding box.
+* [`filter_spatial`](https://processes.openeo.org/2.0.0-rc.2/#filter_spatial) keeps only pixels within an irregular GeoJSON geometry.
+
+::: {.tag-filter-item data-process="filter_bbox"}
+
+### Filter by bounding box
+
+`filter_bbox` is typically the first spatial operation applied because it reduces data transfer and processing by focusing only on the area of interest. It is suitable for rectangular regions and is computationally efficient.
+
+::: {.panel-tabset}
+
+#### Python
 
 ```python
 import openeo
 
 connection = openeo.connect("openeofed.dataspace.copernicus.eu").authenticate_oidc()
 cube = connection.load_collection(
-    "SENTINEL2_L2A",
-    temporal_extent=["2024-06-01", "2024-06-30"],
-    bands=["B04", "B08"],
+    "SENTINEL2_L2A",
+    temporal_extent=["2024-06-01", "2024-06-30"],
+    bands=["B04", "B08"],
 )
 
 study_area = cube.filter_bbox(
-    west=4.30, east=4.55, south=50.80, north=50.98, crs="EPSG:4326"
+    west=4.30, east=4.55, south=50.80, north=50.98, crs="EPSG:4326"
 )
 ```
+#### R
 
-### When the boundary is not rectangular
+```r
+library(openeo)
 
-Pass a GeoJSON polygon or feature collection to `filter_spatial`. This keeps the original grid but marks pixels outside the geometry as no-data. For a quick rectangular crop, prefer `filter_bbox`.
+connection <- connect("openeofed.dataspace.copernicus.eu") |> authenticate_oidc()
+cube <- connection$load_collection(
+    "SENTINEL2_L2A",
+    temporal_extent=c("2024-06-01", "2024-06-30"),
+    bands=c("B04", "B08")
+)
 
-```python
-boundary = {
-    "type": "Polygon",
-    "coordinates": [[[4.31, 50.81], [4.54, 50.81], [4.54, 50.97],
-                     [4.31, 50.97], [4.31, 50.81]]],
-}
-study_area = cube.filter_spatial(boundary)
+study_area <- cube$filter_bbox(
+    west=4.30, east=4.55, south=50.80, north=50.98, crs="EPSG:4326"
+)
+
 ```
+#### JavaScript
+
+```javascript
+import openeo from "openeo";
+
+const connection = await openeo.connect("openeofed.dataspace.copernicus.eu").authenticate_oidc();
+const cube = connection.load_collection(
+    "SENTINEL2_L2A",
+    {temporal_extent: ["2024-06-01", "2024-06-30"], bands: ["B04", "B08"]}
+);
+
+const study_area = cube.filter_bbox({
+ west: 4.30, east: 4.55, south: 50.80, north: 50.98, crs: "EPSG:4326"
+});
+``` 
+:::
+
 :::
 
 ::: {.tag-filter-item data-process="filter_spatial"}
-## Filter with a geometry
 
-`filter_spatial` selects data using an irregular GeoJSON geometry while preserving the cube grid.
+### Filter by irregular geometry
+
+Alternatively, when the area of interest is not rectangular, use `filter_spatial`, which lets the user pass a GeoJSON geometry to define it. This preserves the original grid but marks pixels outside the geometry as no data. For a quick rectangular crop, prefer `filter_bbox`.
+
+
+::: {.panel-tabset}
+#### Python
 
 ```python
+boundary = {
+    "type": "Polygon",
+    "coordinates": [[[4.31, 50.81], [4.54, 50.81], [4.54, 50.97],
+                     [4.31, 50.97], [4.31, 50.81]]],
+}
 study_area = cube.filter_spatial(boundary)
+```
+#### R
+
+```r
+boundary <- list(
+    type = "Polygon",
+    coordinates = list(list(c(4.31, 50.81), c(4.54, 50.81), c(4.54, 50.97),
+                            c(4.31, 50.97), c(4.31, 50.81)))
+)
+study_area <- cube$filter_spatial(boundary)
+```
+#### JavaScript
+
+```javascript
+const boundary = {
+ type: "Polygon",
+ coordinates: [[[4.31, 50.81], [4.54, 50.81], [4.54, 50.97],
+ [4.31, 50.97], [4.31, 50.81]]],
+};
+const study_area = cube.filter_spatial(boundary);
 ```
 :::
 
----
+Additionally, if the geometry is stored and hosted externally, you can fetch it using the standard `load_url` process and then pass it to `filter_spatial`. This enables dynamic, flexible spatial filtering using external GeoJSON resources.
+
+::: {.panel-tabset}
+#### Python
+
+```python
+import openeo
+
+connection = openeo.connect("openeofed.dataspace.copernicus.eu").authenticate_oidc()
+cube = connection.load_collection(
+    "SENTINEL2_L2A",
+    {temporal_extent: ["2024-06-01", "2024-06-30"], bands: ["B04", "B08"]}
+)
+
+geojson_url = "https://example.com/geometry.geojson"
+geometry = cube.load_url(geojson_url)
+study_area = cube.filter_spatial(geometry)
+```
+#### R
+
+```r
+library(openeo)
+
+connection <- openeo::connect("openeofed.dataspace.copernicus.eu")$authenticate_oidc()
+cube <- connection$load_collection(
+    "SENTINEL2_L2A",
+    list(temporal_extent = c("2024-06-01", "2024-06-30"), bands = c("B04", "B08"))
+)
+
+geojson_url <- "https://example.com/geometry.geojson"
+geometry <- cube$load_url(geojson_url)
+study_area <- cube$filter_spatial(geometry)
+```
+#### JavaScript
+
+```javascript
+import openeo from "openeo";
+
+const connection = await openeo.connect("openeofed.dataspace.copernicus.eu").authenticate_oidc();
+const cube = connection.load_collection(
+    "SENTINEL2_L2A",
+    {temporal_extent: ["2024-06-01", "2024-06-30"], bands: ["B04", "B08"]}
+);
+
+const geojson_url = "https://example.com/geometry.geojson";
+const geometry = await cube.load_url(geojson_url);
+const study_area = cube.filter_spatial(geometry);
+```
+:::
+:::
+
+While the `filter_bbox` and `filter_spatial` processes can be used once the datacube is loaded, it is recommended to apply spatial filtering when [loading the datacube](../data_discovery.qmd#load-data) to reduce the amount of data being processed and improve performance. This is particularly important for large datasets or when working with limited computational resources.
+
 
 ::: {.tag-filter-item data-process="resample_spatial"}
-## Resample or reproject a cube
+## Resample a cube spatially
 
-`resample_spatial` changes the spatial resolution and, optionally, the coordinate reference system. This is useful when combining datasets with different grids or when a coarser output is sufficient. The interpolation method matters: use `near` for classes and masks, and a continuous-data method such as `bilinear` for reflectance or temperature.
+
+With the [`resample_spatial`](https://processes.openeo.org/2.0.0-rc.2/#resample_spatial) process, you can adjust the spatial resolution and projection of a datacube to match your analysis requirements. In other words, `resample_spatial` changes the spatial resolution and, optionally, the coordinate reference system. This is useful when combining datasets with different grids or when a coarser output is sufficient. The interpolation method matters: use `near` for classes and masks, and a continuous-data method such as `bilinear` for reflectance or temperature.
+
+::: {.panel-tabset}
 
 ### Python
 
 ```python
 aligned = study_area.resample_spatial(
-    resolution=20,
-    projection="EPSG:3857",
-    method="bilinear",
+    resolution=20,
+    projection="EPSG:3857",
+    method="bilinear",
 )
 ```
 
-::: {.callout-tip}
-## Align to another cube
+### R
 
-When a second cube is the target grid, use `resample_cube_spatial` rather than guessing a projection and resolution. It preserves the target cube's spatial layout.
+```r
+aligned <- study_area$resample_spatial(
+    resolution = 20,
+    projection = "EPSG:3857",
+    method = "bilinear"
+)
+```
+
+### JavaScript
+
+```javascript
+const aligned = study_area.resample_spatial({
+ resolution: 20,
+ projection: "EPSG:3857",
+ method: "bilinear"
+});
+```
+
 :::
+
+::: {.callout-note collapse="true"}
+
+## Align to another cube
+When a second cube is the target grid, use the [`resample_cube_spatial`](https://processes.openeo.org/2.0.0-rc.2/#resample_cube_spatial) process rather than guessing a projection and resolution. It preserves the target cube's spatial layout.
+
+:::
+
 :::
 
 ::: {.tag-filter-item data-process="resample_cube_spatial"}
-## Align to another cube
 
-`resample_cube_spatial` aligns a cube with the spatial grid of a target cube.
+[`resample_cube_spatial`](https://processes.openeo.org/2.0.0-rc.2/#resample_cube_spatial) aligns a cube with the spatial grid of a target cube. This process can be used as an alternative to specifying the resolution and projection, ensuring perfect alignment with the target cube.
 
+::: {.panel-tabset}
+
+### Python
 ```python
 aligned = source.resample_cube_spatial(target)
 ```
+
+### R
+
+```r
+aligned <- source$resample_cube_spatial(target)
+```
+
+### JavaScript
+
+```javascript
+const aligned = source.resample_cube_spatial(target);
+```
+
 :::
 
----
+:::
+
 
 ::: {.tag-filter-item data-process="aggregate_spatial"}
-## Calculate statistics for polygons
 
-`aggregate_spatial` summarizes raster values for each feature in a GeoJSON or vector collection. A common example is a mean NDVI per agricultural parcel. The result is a vector cube: each input feature receives its own value or time series.
+## Zonal statistics
+
+To calculate numerical summaries (e.g., mean, sum) for each polygon in a vector dataset, you can use the `aggregate_spatial` process. This is commonly referred to as performing zonal statistics in geospatial analysis.
+
+[`aggregate_spatial`](https://processes.openeo.org/2.0.0-rc.2/#aggregate_spatial) summarises raster values for each feature in a GeoJSON or vector collection. A common example is the mean NDVI per agricultural parcel. The result is a vector cube: each input feature receives its own value or time series.
+
+::: {.panel-tabset}
 
 ### Python
 
 ```python
 parcels = {
-    "type": "FeatureCollection",
-    "features": [{
-        "type": "Feature",
-        "properties": {"parcel_id": "A01"},
-        "geometry": {
-            "type": "Polygon",
-            "coordinates": [[[4.35, 50.85], [4.38, 50.85], [4.38, 50.87],
-                             [4.35, 50.87], [4.35, 50.85]]],
-        },
-    }],
+    "type": "FeatureCollection",
+    "features": [{
+        "type": "Feature",
+        "properties": {"parcel_id": "A01"},
+        "geometry": {
+            "type": "Polygon",
+            "coordinates": [[[4.35, 50.85], [4.38, 50.85], [4.38, 50.87],
+                             [4.35, 50.87], [4.35, 50.85]]],
+        },
+    }],
 }
 
 parcel_means = aligned.aggregate_spatial(geometries=parcels, reducer="mean")
 parcel_means.download("parcel_means.geojson", format="GeoJSON")
 ```
 
-For exact parameter definitions, see [`filter_bbox`](https://processes.openeo.org/), [`filter_spatial`](https://processes.openeo.org/), [`resample_spatial`](https://processes.openeo.org/), and [`aggregate_spatial`](https://processes.openeo.org/) in the official process reference.
-:::
-## Spatial process details
+### R
 
-Each process below has its own backend filter. The official [process reference](https://processes.openeo.org/) remains the source for exact parameters and return schemas.
+```r
+parcel_means <- aligned$aggregate_spatial(geometries = parcels, reducer = "mean")
+parcel_means$download("parcel_means.geojson", format = "GeoJSON")
+```
+
+### JavaScript
+
+```javascript
+const parcelMeans = aligned.aggregate_spatial({ geometries: parcels, reducer: "mean" });
+parcelMeans.download("parcel_means.geojson", { format: "GeoJSON" });
+```
+
+:::
+
+::: {.callout-tip collapse="true"}
+## Example notebook
+
+[Parcel Delineation using openEO API](https://github.com/Open-EO/openeo-community-examples/blob/main/python/ParcelDelineation/Parcel%20delineation.ipynb) uses `aggregate_spatial` to compute zonal statistics per parcel.
+:::
+
+:::
 
 ::: {.tag-filter-item data-process="filter_vector"}
+
 ## Filter vector features
 
-Use `filter_vector` when the input is already a vector cube and you want to keep only features intersecting a geometry. It filters feature records rather than raster pixels.
+The [`filter_vector`](https://processes.openeo.org/2.0.0-rc.2/#filter_vector) process limits the vector data cube to the specified geometries. The process operates on geometries as defined in the OGC Simple Features standard. All geometries that were empty or have become empty will be removed from the data cube. Alternatively, use [`filter_bbox`](#filter-by-bounding-box) to filter with a bounding box or [`filter_spatial`](#filter-by-irregular-geometry) to filter a raster data cube based on geometries.
+
+::: {.panel-tabset}
+
+### Python
 
 ```python
 selected = vector_cube.filter_vector(geometries=study_area)
 ```
+
+### R
+
+```r
+selected <- vector_cube$filter_vector(geometries = study_area)
+```
+
+### JavaScript
+
+```javascript
+const selected = vector_cube.filter_vector({ geometries: study_area });
+```
+:::
 :::
 
 ::: {.tag-filter-item data-process="reduce_spatial"}
+
 ## Reduce pixels within one geometry
 
-Use `reduce_spatial` when one geometry should produce one value per remaining cube label. It is useful for a single region summary, while `aggregate_spatial` is better when many features should each receive a result.
+The user can use `reduce_spatial` to summarise raster values for a single geometry, for example, to calculate the mean value for a single study area. However, use `aggregate_spatial` instead when you have multiple features and want a separate result for each one.
+
+::: {.panel-tabset}
+
+### Python
 
 ```python
 mean_value = cube.reduce_spatial(geometries=study_area, reducer="mean")
 ```
+### R
+
+```r
+mean_value <- cube$reduce_spatial(geometries = study_area, reducer = "mean")
+```
+
+### JavaScript
+
+```javascript
+const meanValue = cube.reduce_spatial({ geometries: study_area, reducer: "mean" });
+```
+
+:::
 :::
 
 ::: {.tag-filter-item data-process="aggregate_spatial_window"}
+
 ## Aggregate spatial windows
 
-Use `aggregate_spatial_window` for regularly sized windows over a raster, for example to create a local mean or maximum product. Choose it when the analysis is grid-based rather than driven by irregular vector features.
+If the intention is to aggregate values over regularly sized spatial windows rather than irregular vector geometries, `aggregate_spatial_window` is the appropriate choice. It is particularly useful for grid-based analyses where each window has the same dimensions.
+
+::: {.panel-tabset}
+
+### Python
 
 ```python
 windowed = cube.aggregate_spatial_window(size=5, reducer="mean")
 ```
+### R
+
+```r
+windowed <- cube$aggregate_spatial_window(size = 5, reducer = "mean")
+```
+
+### JavaScript
+
+```javascript
+const windowed = cube.aggregate_spatial_window({ size: 5, reducer: "mean" });
+```
+:::
 :::
 
 ::: {.tag-filter-item data-process="apply_kernel"}
 ## Apply a spatial kernel
 
-Use `apply_kernel` for a fixed convolution such as smoothing, sharpening, or edge detection. The kernel defines the weights applied around each pixel and is preferable to a custom neighbourhood callback when the weights are known in advance.
+Usecases that require a fixed convolution over the spatial neighbourhood, such as smoothing, sharpening, or edge detection, can benefit from the `apply_kernel` process. The kernel defines the weights applied around each pixel and is preferable to a custom neighbourhood callback when the weights are known in advance.
+
+::: {.panel-tabset}
+
+### Python
 
 ```python
 smoothed = cube.apply_kernel(kernel=[[1, 1, 1], [1, 1, 1], [1, 1, 1]])
 ```
+### R
+
+```r
+smoothed <- cube$apply_kernel(kernel = matrix(1, nrow = 3, ncol = 3))
+```
+
+### JavaScript
+
+```javascript
+const smoothed = cube.apply_kernel({ kernel: [[1, 1, 1], [1, 1, 1], [1, 1, 1]] });
+```
+:::
 :::
 
 ::: {.tag-filter-item data-process="apply_neighborhood"}
-## Apply a neighbourhood callback
+## Process spatial neighborhoods
 
-Use `apply_neighborhood` when each moving window needs a custom process graph, for example a local percentile or a conditional texture measure. Set overlap so neighbouring windows have enough context at tile boundaries.
+With the `apply_neighborhood` process, you can define a custom operation for each moving window over the spatial neighbourhood, for example, a local percentile or a conditional texture measure. 
+
+In other words, this process applies a process to a neighbourhood of pixels in a sliding-window fashion with (optional) overlap. In this case, data chunking is explicitly controlled by the user. Dimensions and number of labels are fully preserved. This is the most versatile and widely used function to work with UDF’s.
+
+::: {.panel-tabset}
+### Python
+
 
 ```python
+udf = openeo.UDF(
+"""
+import xarray
+
+def apply_datacube(cube: xarray.DataArray, context: dict) -> xarray.DataArray:
+ #### PYTHON UDF EXAMPLE with an operation on the data cube
+ return cube
+"""
+)
 neighborhood_result = cube.apply_neighborhood(
-    size=[3, 3],
-    overlap=[1, 1],
-    process=lambda neighborhood: neighborhood.reduce_dimension(dimension="x", reducer="mean"),
+    process=udf,
+    size=[
+        {"dimension": "x", "value": 384, "unit": "px"},
+        {"dimension": "y", "value": 384, "unit": "px"},
+    ],
+    overlap=[
+        {"dimension": "x", "value": 64, "unit": "px"},
+        {"dimension": "y", "value": 64, "unit": "px"},
+    ]
 )
 ```
+### R
+
+```r
+udf <- openeo::UDF(
+"
+library(xarray)
+
+apply_datacube <- function(cube, context) {
+ #### R UDF EXAMPLE with an operation on the data cube
+ return(cube)
+}
+"
+)
+neighborhood_result <- cube$apply_neighborhood(
+  process = udf,
+  size = list(
+    list(dimension = "x", value = 384, unit = "px"),
+    list(dimension = "y", value = 384, unit = "px")
+  ),
+  overlap = list(
+    list(dimension = "x", value = 64, unit = "px"),
+    list(dimension = "y", value = 64, unit = "px")
+  )
+)
+```
+:::
+
+::: {.callout-tip collapse="true"}
+## Example notebook
+
+[Hillshade from Copernicus 30 m DEM](../../client_examples/openeo-community-examples/python/Hillshade/Hillshade.ipynb) derives slope, aspect, and hillshade with `apply_neighborhood`-style band math over a DEM.
+:::
+
 :::
 
 ::: {.tag-filter-item data-process="mask_polygon"}
 ## Mask outside a polygon
 
-Use `mask_polygon` to restrict a raster cube to an irregular study area while preserving its spatial grid. For a rectangular extent, use `filter_bbox` instead; for a quality-band mask, use `mask` on the preprocessing page.
+While [`mask`](preprocessing.qmd#mask-a-cube) mentioned in the preprocessing section is used for applying a mask on a raster cube, `mask_polygon` is specifically used to restrict the cube to an irregular study area defined by vector geometries. All pixels for which the point at the pixel centre does not intersect with any polygon (as defined in the Simple Features standard by the OGC) are replaced. This behaviour can be inverted by setting the parameter inside to true.
+
+::: {.panel-tabset}
+
+### Python
+
 
 ```python
 masked = cube.mask_polygon(geometries=study_area)
 ```
+### R
+
+```r
+masked <- cube$mask_polygon(geometries = study_area)
+```
+### JavaScript
+
+```javascript
+let masked = cube.mask_polygon({geometries: study_area});
+```
+
+:::
 :::
 
 ::: {.tag-filter-item data-process="vector_buffer"}
 ## Buffer vector geometries
 
-Use `vector_buffer` to expand or contract geometries before filtering or aggregating. A positive distance creates an area around a feature; a negative distance can create an interior buffer where supported.
+A well-known task when working with vector geometries is to create buffers around features to account for spatial uncertainty or to define areas of influence. Users can use `vector_buffer` to expand or contract geometries before filtering or aggregating. A positive distance creates an area around a feature; a negative distance can create an interior buffer where supported.
+
+
+::: {.panel-tabset}
+
+### Python
 
 ```python
 buffered = openeo.processes.vector_buffer(data=geometry, distance=100)
 ```
+
+### R
+
+```r
+buffered <- openeo.processes.vector_buffer(data = geometry, distance = 100)
+```
+### JavaScript
+
+```javascript
+let buffered = openeo.processes.vector_buffer({data: geometry, distance: 100});
+```
+:::
+
 :::
 
 ::: {.tag-filter-item data-process="vector_reproject"}
 ## Reproject vector geometries
 
-Use `vector_reproject` when a geometry's CRS does not match the cube or the process that will consume it. Reproject the vector rather than silently interpreting coordinates in the wrong CRS.
+When working with vector geometry-related tasks, such as vector buffering using `vector_buffer`, it is important to ensure that the geometries are in the correct coordinate reference system (CRS). If the spatial reference system unit is not meters, a UnitMismatch error is thrown. Use vector_reproject() to convert the geometries to a suitable spatial reference system.
+
+::: {.panel-tabset}
+
+### Python
 
 ```python
 reprojected = openeo.processes.vector_reproject(
-    data=geometry, target_crs="EPSG:3035"
+    data=geometry, target_crs="EPSG:3035"
 )
 ```
+### R
+
+```r
+reprojected <- openeo.processes.vector_reproject(data = geometry, target_crs = "EPSG:3035")
+```
+### JavaScript
+
+```javascript
+let reprojected = openeo.processes.vector_reproject({data: geometry, target_crs: "EPSG:3035"});
+```
+:::
+
+:::
+
+::: {.tag-filter-item data-process="apply_polygon"}
+## Apply a process per polygon
+
+`apply_polygon` applies a process to the sub data cube covered by each polygon in a set of geometries, rather than masking the cube once and running a separate process afterwards. This is useful when a per-parcel operation (e.g. a custom smoothing or classification step) needs to run independently for every polygon, while pixels outside of each polygon are replaced with `mask_value`.
+
+::: {.panel-tabset}
+
+### Python
+
+```python
+per_parcel = cube.apply_polygon(
+    geometries=parcels,
+    process=lambda data: data.linear_scale_range(0, 1, 0, 255),
+)
+```
+
+### R
+
+```r
+per_parcel <- cube$apply_polygon(
+    geometries = parcels,
+    process = function(data) linear_scale_range(data, inputMin = 0, inputMax = 1, outputMin = 0, outputMax = 255)
+)
+```
+
+### JavaScript
+
+```javascript
+const perParcel = cube.apply_polygon({
+  geometries: parcels,
+  process: data => data.linearScaleRange(0, 1, 0, 255),
+});
+```
+:::
+:::
+
+::: {.tag-filter-item data-process="vector_to_random_points"}
+## Sample random points from geometries
+
+`vector_to_random_points` generates a vector data cube of points by sampling random locations from within input geometries. It is useful for building training or validation point sets from polygons, for example to extract pixel values for a classifier.
+
+::: {.panel-tabset}
+
+### Python
+
+```python
+sample_points = openeo.processes.vector_to_random_points(
+    data=parcels, geometry_count=10, seed=42
+)
+```
+
+### R
+
+```r
+sample_points <- openeo.processes.vector_to_random_points(data = parcels, geometry_count = 10, seed = 42)
+```
+
+### JavaScript
+
+```javascript
+let samplePoints = openeo.processes.vector_to_random_points({data: parcels, geometry_count: 10, seed: 42});
+```
+:::
+:::
+
+::: {.tag-filter-item data-process="vector_to_regular_points"}
+## Sample regularly spaced points from geometries
+
+`vector_to_regular_points` generates a vector data cube of points spaced at a fixed minimum distance within input geometries, which is useful for building a regular sampling grid over a study area instead of random points.
+
+::: {.panel-tabset}
+
+### Python
+
+```python
+grid_points = openeo.processes.vector_to_regular_points(data=parcels, distance=100)
+```
+
+### R
+
+```r
+grid_points <- openeo.processes.vector_to_regular_points(data = parcels, distance = 100)
+```
+
+### JavaScript
+
+```javascript
+let gridPoints = openeo.processes.vector_to_regular_points({data: parcels, distance: 100});
+```
+:::
 :::
