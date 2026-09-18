@@ -28,6 +28,16 @@ The buttons above let you filter processes supported by different backends. Sele
 :::
 
 
+::: {.tag-filter-item data-process="create_data_cube"}
+## Create an empty data cube
+
+`create_data_cube` creates a data cube without dimensions. Add dimensions with `add_dimension` before using it in a workflow.
+
+```python
+empty_cube = openeo.processes.create_data_cube()
+```
+:::
+
 ::: {.tag-filter-item data-process="merge_cubes"}
 
 ## Merge cubes
@@ -288,6 +298,34 @@ unflattened <- unflatten_dimension(flattened, dimension="pixels", target_dimensi
 ```javascript
 // Unflatten a dimension of a data cube.
 const unflattened = unflattenDimension(flattened, {dimension: "pixels", targetDimensions: ["x", "y"]});
+```
+:::
+:::
+
+::: {.tag-filter-item data-process="trim_cube"}
+## Remove empty dimension labels
+
+`trim_cube` removes dimension labels that solely contain no-data values. It is useful for cleaning up a cube after filtering or masking operations that leave behind labels (e.g. time steps or bands) with no valid data, so that subsequent processing only iterates over labels that actually contain data.
+
+::: {.panel-tabset}
+
+### Python
+
+```python
+trimmed = cube.trim_cube()
+```
+
+### R
+
+```r
+trimmed <- trim_cube(cube)
+```
+
+### JavaScript
+
+```javascript
+// Remove dimension labels that only contain no-data values.
+const trimmed = trimCube(cube);
 ```
 :::
 :::

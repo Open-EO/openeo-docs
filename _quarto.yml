@@ -107,6 +107,8 @@ website:
           - section: CUBE OPERATIONS
             href: documentation/cube_operations.qmd
             contents:
+              - href: documentation/cube_operations/general_operations.qmd
+                text: General Operations
               - href: documentation/cube_operations/preprocessing.qmd
                 text: Preprocessing 
               - href: documentation/cube_operations/spatial_operations.qmd

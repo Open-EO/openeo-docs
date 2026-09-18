@@ -303,6 +303,144 @@ or documentation.
 For more details about the process itself, see the [`load_stac` process reference](https://processes.openeo.org/#load_stac) page. 
 :::
 
+::: {.tag-filter-item data-process="load_geojson"}
+### Load GeoJSON as a vector data cube
+
+`load_geojson` converts inline GeoJSON data into a vector data cube, preserving feature properties. It is the recommended way to bring point, line, or polygon geometries (e.g. field boundaries or sampling locations) into a process graph so they can be used with processes such as `aggregate_spatial`, `filter_spatial`, or `mask_polygon`.
+
+::: {.panel-tabset}
+#### Python
+
+```python
+geometries = {
+    "type": "FeatureCollection",
+    "features": [{
+        "type": "Feature",
+        "properties": {"parcel_id": "A01"},
+        "geometry": {
+            "type": "Polygon",
+            "coordinates": [[[4.35, 50.85], [4.38, 50.85], [4.38, 50.87],
+                             [4.35, 50.87], [4.35, 50.85]]],
+        },
+    }],
+}
+
+vector_cube = connection.load_geojson(geometries, properties=["parcel_id"])
+```
+
+#### R
+
+```r
+geometries <- list(
+    type = "FeatureCollection",
+    features = list(list(
+        type = "Feature",
+        properties = list(parcel_id = "A01"),
+        geometry = list(
+            type = "Polygon",
+            coordinates = list(list(c(4.35, 50.85), c(4.38, 50.85), c(4.38, 50.87),
+                                    c(4.35, 50.87), c(4.35, 50.85)))
+        )
+    ))
+)
+
+vector_cube <- load_geojson(connection, data = geometries, properties = c("parcel_id"))
+```
+
+#### JavaScript
+
+```javascript
+const geometries = {
+    type: "FeatureCollection",
+    features: [{
+        type: "Feature",
+        properties: { parcel_id: "A01" },
+        geometry: {
+            type: "Polygon",
+            coordinates: [[[4.35, 50.85], [4.38, 50.85], [4.38, 50.87],
+                           [4.35, 50.87], [4.35, 50.85]]],
+        },
+    }],
+};
+
+const vectorCube = await connection.loadGeoJson(geometries, { properties: ["parcel_id"] });
+```
+:::
+:::
+
+::: {.tag-filter-item data-process="load_uploaded_files"}
+### Load files from the user workspace
+
+`load_uploaded_files` reads one or more files that were previously uploaded to the authenticated user's server-side workspace and returns them as a single data cube. Use it to reuse auxiliary data (e.g. a custom raster mask or a CSV of sample points) that you uploaded to the backend rather than hosting it externally.
+
+::: {.panel-tabset}
+#### Python
+
+```python
+cube = connection.load_uploaded_files(
+    paths=["my_folder/aoi_mask.tif"],
+    format="GTiff",
+)
+```
+
+#### R
+
+```r
+cube <- load_uploaded_files(
+    connection,
+    paths = c("my_folder/aoi_mask.tif"),
+    format = "GTiff"
+)
+```
+
+#### JavaScript
+
+```javascript
+const cube = await connection.loadUploadedFiles({
+    paths: ["my_folder/aoi_mask.tif"],
+    format: "GTiff",
+});
+```
+:::
+
+Support for uploading and loading user workspace files is backend-specific and marked experimental in the openEO process specification, so check the connected backend's process support before relying on it.
+:::
+
+::: {.tag-filter-item data-process="load_url"}
+### Load a file from a URL
+
+`load_url` reads a file directly from an HTTP or HTTPS URL, without needing to register it as a collection first. It is commonly used to fetch an externally hosted GeoJSON geometry (e.g. for `filter_spatial`) or another remotely hosted input file.
+
+::: {.panel-tabset}
+#### Python
+
+```python
+geometry = connection.load_url(
+    "https://example.com/geometry.geojson", format="GeoJSON"
+)
+```
+
+#### R
+
+```r
+geometry <- load_url(
+    connection,
+    url = "https://example.com/geometry.geojson",
+    format = "GeoJSON"
+)
+```
+
+#### JavaScript
+
+```javascript
+const geometry = await connection.loadUrl(
+    "https://example.com/geometry.geojson",
+    { format: "GeoJSON" }
+);
+```
+:::
+:::
+
 ## Next steps
 
 Once a datacube is loaded, explore the [Cube Operations](cube_operations.qmd)

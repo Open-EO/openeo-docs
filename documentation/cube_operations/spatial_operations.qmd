@@ -31,8 +31,8 @@ The buttons on this page are a documentation aid, not a live capability registry
 
 openEO provides several spatial operations to manipulate the geospatial extent of the datacube. It allows users to load only the relevant spatial subset of the data, reducing unnecessary data transfer and processing. There are two main approaches: filtering by a bounding box or by an irregular geometry, using either of the following processes:
 
-* [`filter_bbox`](https://openeo.org/documentation/1.0/processes.html#filter_bbox) keeps only pixels within a bounding box. 
-* [`filter_spatial`](https://openeo.org/documentation/1.0/processes.html#filter_spatial) keeps only pixels within an irregular GeoJSON geometry.
+* [`filter_bbox`](https://processes.openeo.org/2.0.0-rc.2/#filter_bbox) keeps only pixels within a bounding box.
+* [`filter_spatial`](https://processes.openeo.org/2.0.0-rc.2/#filter_spatial) keeps only pixels within an irregular GeoJSON geometry.
 
 ::: {.tag-filter-item data-process="filter_bbox"}
 
@@ -192,7 +192,7 @@ While the `filter_bbox` and `filter_spatial` processes can be used once the data
 ## Resample a cube spatially
 
 
-With the [`resample_spatial`](https://openeo.org/documentation/1.0/processes.html#resample_spatial) process, you can adjust the spatial resolution and projection of a datacube to match your analysis requirements. In other words, `resample_spatial` changes the spatial resolution and, optionally, the coordinate reference system. This is useful when combining datasets with different grids or when a coarser output is sufficient. The interpolation method matters: use `near` for classes and masks, and a continuous-data method such as `bilinear` for reflectance or temperature.
+With the [`resample_spatial`](https://processes.openeo.org/2.0.0-rc.2/#resample_spatial) process, you can adjust the spatial resolution and projection of a datacube to match your analysis requirements. In other words, `resample_spatial` changes the spatial resolution and, optionally, the coordinate reference system. This is useful when combining datasets with different grids or when a coarser output is sufficient. The interpolation method matters: use `near` for classes and masks, and a continuous-data method such as `bilinear` for reflectance or temperature.
 
 ::: {.panel-tabset}
 
@@ -231,7 +231,7 @@ const aligned = study_area.resample_spatial({
 ::: {.callout-note collapse="true"}
 
 ## Align to another cube
-When a second cube is the target grid, use the [`resample_cube_spatial`](https://openeo.org/documentation/1.0/processes.html#resample_cube_spatial) process rather than guessing a projection and resolution. It preserves the target cube's spatial layout.
+When a second cube is the target grid, use the [`resample_cube_spatial`](https://processes.openeo.org/2.0.0-rc.2/#resample_cube_spatial) process rather than guessing a projection and resolution. It preserves the target cube's spatial layout.
 
 :::
 
@@ -239,7 +239,7 @@ When a second cube is the target grid, use the [`resample_cube_spatial`](https:/
 
 ::: {.tag-filter-item data-process="resample_cube_spatial"}
 
-[`resample_cube_spatial`](https://openeo.org/documentation/1.0/processes.html#resample_cube_spatial) aligns a cube with the spatial grid of a target cube. This process can be used as an alternative to specifying the resolution and projection, ensuring perfect alignment with the target cube.
+[`resample_cube_spatial`](https://processes.openeo.org/2.0.0-rc.2/#resample_cube_spatial) aligns a cube with the spatial grid of a target cube. This process can be used as an alternative to specifying the resolution and projection, ensuring perfect alignment with the target cube.
 
 ::: {.panel-tabset}
 
@@ -271,7 +271,7 @@ const aligned = source.resample_cube_spatial(target);
 
 To calculate numerical summaries (e.g., mean, sum) for each polygon in a vector dataset, you can use the `aggregate_spatial` process. This is commonly referred to as performing zonal statistics in geospatial analysis.
 
-[`aggregate_spatial`](https://openeo.org/documentation/1.0/processes.html#aggregate_spatial) summarises raster values for each feature in a GeoJSON or vector collection. A common example is the mean NDVI per agricultural parcel. The result is a vector cube: each input feature receives its own value or time series.
+[`aggregate_spatial`](https://processes.openeo.org/2.0.0-rc.2/#aggregate_spatial) summarises raster values for each feature in a GeoJSON or vector collection. A common example is the mean NDVI per agricultural parcel. The result is a vector cube: each input feature receives its own value or time series.
 
 ::: {.panel-tabset}
 
@@ -313,12 +313,11 @@ parcelMeans.download("parcel_means.geojson", { format: "GeoJSON" });
 
 :::
 
-
 ::: {.tag-filter-item data-process="filter_vector"}
 
 ## Filter vector features
 
-The [`filter_vector`](https://openeo.org/documentation/1.0/processes.html#filter_vector) process limits the vector data cube to the specified geometries. The process operates on geometries as defined in the OGC Simple Features standard. All geometries that were empty or have become empty will be removed from the data cube. Alternatively, use [`filter_bbox`](#filter-by-bounding-box) to filter with a bounding box or [`filter_spatial`](#filter-by-irregular-geometry) to filter a raster data cube based on geometries. 
+The [`filter_vector`](https://processes.openeo.org/2.0.0-rc.2/#filter_vector) process limits the vector data cube to the specified geometries. The process operates on geometries as defined in the OGC Simple Features standard. All geometries that were empty or have become empty will be removed from the data cube. Alternatively, use [`filter_bbox`](#filter-by-bounding-box) to filter with a bounding box or [`filter_spatial`](#filter-by-irregular-geometry) to filter a raster data cube based on geometries.
 
 ::: {.panel-tabset}
 
@@ -566,4 +565,96 @@ let reprojected = openeo.processes.vector_reproject({data: geometry, target_crs:
 ```
 :::
 
+:::
+
+::: {.tag-filter-item data-process="apply_polygon"}
+## Apply a process per polygon
+
+`apply_polygon` applies a process to the sub data cube covered by each polygon in a set of geometries, rather than masking the cube once and running a separate process afterwards. This is useful when a per-parcel operation (e.g. a custom smoothing or classification step) needs to run independently for every polygon, while pixels outside of each polygon are replaced with `mask_value`.
+
+::: {.panel-tabset}
+
+### Python
+
+```python
+per_parcel = cube.apply_polygon(
+    geometries=parcels,
+    process=lambda data: data.linear_scale_range(0, 1, 0, 255),
+)
+```
+
+### R
+
+```r
+per_parcel <- cube$apply_polygon(
+    geometries = parcels,
+    process = function(data) linear_scale_range(data, inputMin = 0, inputMax = 1, outputMin = 0, outputMax = 255)
+)
+```
+
+### JavaScript
+
+```javascript
+const perParcel = cube.apply_polygon({
+  geometries: parcels,
+  process: data => data.linearScaleRange(0, 1, 0, 255),
+});
+```
+:::
+:::
+
+::: {.tag-filter-item data-process="vector_to_random_points"}
+## Sample random points from geometries
+
+`vector_to_random_points` generates a vector data cube of points by sampling random locations from within input geometries. It is useful for building training or validation point sets from polygons, for example to extract pixel values for a classifier.
+
+::: {.panel-tabset}
+
+### Python
+
+```python
+sample_points = openeo.processes.vector_to_random_points(
+    data=parcels, geometry_count=10, seed=42
+)
+```
+
+### R
+
+```r
+sample_points <- openeo.processes.vector_to_random_points(data = parcels, geometry_count = 10, seed = 42)
+```
+
+### JavaScript
+
+```javascript
+let samplePoints = openeo.processes.vector_to_random_points({data: parcels, geometry_count: 10, seed: 42});
+```
+:::
+:::
+
+::: {.tag-filter-item data-process="vector_to_regular_points"}
+## Sample regularly spaced points from geometries
+
+`vector_to_regular_points` generates a vector data cube of points spaced at a fixed minimum distance within input geometries, which is useful for building a regular sampling grid over a study area instead of random points.
+
+::: {.panel-tabset}
+
+### Python
+
+```python
+grid_points = openeo.processes.vector_to_regular_points(data=parcels, distance=100)
+```
+
+### R
+
+```r
+grid_points <- openeo.processes.vector_to_regular_points(data = parcels, distance = 100)
+```
+
+### JavaScript
+
+```javascript
+let gridPoints = openeo.processes.vector_to_regular_points({data: parcels, distance: 100});
+```
+:::
 :::

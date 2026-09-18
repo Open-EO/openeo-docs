@@ -96,7 +96,7 @@ The process is backend-specific and is not available on every backend. An openEO
 
 ## Atmospheric Correction
 
-[Atmospheric correction](https://processes.openeo.org/draft/#atmospheric_correction) accounts for atmospheric scattering, absorption, and haze in optical observations. It converts top-of-atmosphere measurements into surface reflectance, which is more suitable for comparing observations across dates and locations.
+[Atmospheric correction](https://processes.openeo.org/2.0.0-rc.2/#atmospheric_correction) accounts for atmospheric scattering, absorption, and haze in optical observations. It converts top-of-atmosphere measurements into surface reflectance, which is more suitable for comparing observations across dates and locations.
 
 The atmospheric correction process can apply a chosen method to raw ‘L1C’ data. The supported methods and input datasets depend on the backend, because not every method is validated or works with every dataset, and different backends offer a variety of options. This gives you, as a user, more options to run and compare different methods, and select the most suitable one for your case.
 
@@ -216,7 +216,7 @@ surface_reflectance = l1c.ard_surface_reflectance()
 ::: {.tag-filter-item data-process="ard_normalized_radar_backscatter"}
 ## CARD4L normalised radar backscatter
 
-Data from synthetic aperture radar sensors requires significant preprocessing to be calibrated and normalised for terrain. This is referred to as backscatter computation, and supported by [`sar_backscatter`](#compute-sar-backscatter) and the CARD4L compliant variant [`ard_normalized_radar_backscatter`](https://openeo.org/documentation/1.0/processes.html#ard_normalized_radar_backscatter).
+Data from synthetic aperture radar sensors requires significant preprocessing to be calibrated and normalised for terrain. This is referred to as backscatter computation, and supported by [`sar_backscatter`](#compute-sar-backscatter) and the CARD4L compliant variant [`ard_normalized_radar_backscatter`](https://processes.openeo.org/2.0.0-rc.2/#ard_normalized_radar_backscatter).
 
 SAR backscatter processing calibrates raw radar observations and can apply terrain correction and normalisation. The resulting measurements are commonly expressed as sigma0 or gamma0 in linear or decibel scale. Terrain correction is especially important in areas with varied topography.
 
@@ -336,7 +336,7 @@ for (const asset of Object.values(results.assets)) {
 ::: {.tag-filter-item data-process="sar_backscatter"}
 ## SAR backscatter
 
-`sar_backscatter` calibrates radar observations and can produce a chosen backscatter coefficient, such as `gamma0-terrain`. Use it when you need explicit control over calibration, terrain correction, elevation data, or noise removal, rather than the higher-level CARD4L process. For more information, refer to the process documentation [here](https://openeo.org/documentation/1.0/processes.html#sar_backscatter).
+`sar_backscatter` calibrates radar observations and can produce a chosen backscatter coefficient, such as `gamma0-terrain`. Use it when you need explicit control over calibration, terrain correction, elevation data, or noise removal, rather than the higher-level CARD4L process. For more information, refer to the process documentation [here](https://processes.openeo.org/2.0.0-rc.2/#sar_backscatter).
 
 :::{.panel-tabset}
 ### Python

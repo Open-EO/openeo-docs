@@ -479,3 +479,79 @@ a small area first, then submit the final workflow as a batch job. Inspect job
 logs when a backend reports an error.
 
 :::
+
+## Export results to STAC and cloud workspaces
+
+Besides downloading result files directly, a batch job's STAC result metadata can be exported to a collection or a cloud workspace, or be patched in place. These processes are applied to the STAC resource produced by `save_result`, typically as the last step of a process graph.
+
+::: {.tag-filter-item data-process="export_workspace"}
+### Export results to a cloud workspace
+
+`export_workspace` copies the STAC resource (and the assets it references) produced by a job to a cloud workspace registered with the backend. Use it to make results directly available in object storage that other applications or users can access, without a separate download step.
+
+::: {.panel-tabset}
+#### Python
+
+```python
+result = cube.save_result(format="GTiff")
+exported = openeo.processes.export_workspace(data=result, workspace="my-workspace")
+```
+
+#### R
+
+```r
+result <- p$save_result(data = cube, format = "GTiff")
+exported <- openeo::export_workspace(data = result, workspace = "my-workspace")
+```
+:::
+:::
+
+::: {.tag-filter-item data-process="export_collection"}
+### Export results to an openEO collection
+
+`export_collection` publishes a STAC resource to a named openEO collection on the backend, creating the collection from the STAC metadata if it does not exist yet, or adding to it otherwise. Use it to accumulate job outputs (e.g. repeated monthly composites) into a single, growing collection that can later be loaded with `load_collection` or `load_stac`.
+
+::: {.panel-tabset}
+#### Python
+
+```python
+result = cube.save_result(format="GTiff")
+collection_id = openeo.processes.export_collection(data=result, collection="monthly-ndvi")
+```
+
+#### R
+
+```r
+result <- p$save_result(data = cube, format = "GTiff")
+collection_id <- openeo::export_collection(data = result, collection = "monthly-ndvi")
+```
+:::
+:::
+
+::: {.tag-filter-item data-process="stac_modify"}
+### Patch an existing STAC resource
+
+`stac_modify` updates an existing STAC resource (e.g. a Collection or Item) by merging in a partial changeset, following the [JSON Merge Patch](https://www.rfc-editor.org/rfc/rfc7386.html) specification. Use it to correct or extend metadata (e.g. add a description or a new property) on a previously exported STAC resource without recreating it from scratch.
+
+::: {.panel-tabset}
+#### Python
+
+```python
+updated = openeo.processes.stac_modify(
+    data=existing_stac_item,
+    changes={"description": "Monthly median NDVI composite for 2024"},
+)
+```
+
+#### R
+
+```r
+updated <- openeo::stac_modify(
+    data = existing_stac_item,
+    changes = list(description = "Monthly median NDVI composite for 2024")
+)
+```
+:::
+
+These three processes are experimental and their availability depends on the backend; check process support before relying on them in a production workflow.
+:::

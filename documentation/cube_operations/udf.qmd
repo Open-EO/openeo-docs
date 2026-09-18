@@ -93,6 +93,7 @@ It is recommended to start with a small batch job to verify the UDF's behaviour 
 
 ## Logging from UDFs
 
+::: {.tag-filter-item data-process="inspect"}
 From time to time, when things are not working as expected, you may want to log additional debug information from your UDF, inspect the data being processed, or log warnings. This can be done using the `inspect() `function.
 
 For example, to discover the shape of the data cube chunk that you receive in your UDF function:
@@ -107,7 +108,7 @@ import xarray
 
 def apply_datacube(cube: xarray.DataArray, context: dict) -> xarray.DataArray:
  inspect(data=[cube.shape], message="UDF input chunk shape")
-  return cube * 0.0001
+  return cube * 0.0001
 ```
 
 ### R
@@ -122,7 +123,6 @@ apply_datacube <- function(cube, context) {
 ```
 
 :::
-After the batch job completes or fails, retrieve its logs with the Python client:
 
 ::: {.panel-tabset}
 
@@ -208,6 +208,48 @@ result = openeo.processes.run_udf_externally(data=cube, udf=udf_code)
 result <- openeo::run_udf_externally(data=cube, udf=udf_code)
 ```
 :::
+:::
+
+::: {.tag-filter-item data-process="run_ogcapi"}
+## Run an OGC API process hosted by the backend
+
+`run_ogcapi` invokes an OGC API - Processes process that the connected backend offers through its own OGC API - Processes deployment (Part 2: Deploy, Replace, Undeploy). Use it to reuse a process the backend already deployed under OGC API - Processes, instead of re-implementing the same logic as a UDF.
+
+::: {.panel-tabset}
+### Python
+```python
+result = openeo.processes.run_ogcapi(data=cube, id="ogc-process-id")
+```
+
+### R
+```r
+result <- openeo::run_ogcapi(data = cube, id = "ogc-process-id")
+```
+:::
+:::
+
+::: {.tag-filter-item data-process="run_ogcapi_externally"}
+## Run an externally hosted OGC API process
+
+`run_ogcapi_externally` runs an OGC API - Processes process hosted outside the connected backend, either by another service provider or on the user's own machine. This is useful for calling a process that is only available at a third-party OGC API - Processes endpoint.
+
+::: {.panel-tabset}
+### Python
+```python
+result = openeo.processes.run_ogcapi_externally(
+    data=cube, url="https://example.org/ogcapi", id="ogc-process-id"
+)
+```
+
+### R
+```r
+result <- openeo::run_ogcapi_externally(
+    data = cube, url = "https://example.org/ogcapi", id = "ogc-process-id"
+)
+```
+:::
+
+Both processes are experimental and depend on the backend (or external service) implementing OGC API - Processes; check process support before relying on them in production.
 :::
 
 ::: {.tag-filter-item data-process="apply"}
