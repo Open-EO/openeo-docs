@@ -15,8 +15,12 @@ project:
     - "*.ipynb"
     - "!*.rmd"
     - "!*.Rmd"
-    - "!client_examples/**"
-    - "client_examples/openeo-community-examples/python/**/*.ipynb"
+    - "!client_examples/openeo-community-examples/javascript/**"
+    - "!client_examples/openeo-community-examples/r/**"
+    - "!client_examples/openeo-community-examples/other/**"
+    - "!client_examples/openeo-community-examples/processes/**"
+    - "!client_examples/openeo-community-examples/README.md"
+    - "!client_examples/openeo-community-examples/python/README.md"
     - "!py_scripts/**"
 
 # Load variables from _variables.yml (auto-loaded by Quarto)
