@@ -292,7 +292,7 @@ This makes the explained variance ratio a crucial diagnostic tool in PCA-based w
 
 ##### Explained Variance Ratio
 
-This visualization helps understand how many principal components are needed to capture most of the variance in the data.  
+This visualization helps understand how many principal components are needed to capture most of the variance in the data.\
 If the first few bars are tall and the rest are small, it means those components explain most of the variance, and dimensionality reduction can be effective.
 
 ![](ExplainedVarianceRatio.png)
@@ -301,7 +301,7 @@ ExplainedVarianceRatio.png
 
 ##### Cumulative Explained Variance
 
-This plot helps you decide how many principal components to keep in your analysis by showing the cumulative amount of variance explained.  
+This plot helps you decide how many principal components to keep in your analysis by showing the cumulative amount of variance explained.\
 For example, if the curve reaches 90% explained variance at the 4th component, you might choose to keep only the first 4 components for dimensionality reduction, but this is now already reached with 3 components.
 
 ![](CumulativeExplainedVariance.png)
@@ -310,8 +310,8 @@ CumulativeExplainedVariance.png
 
 ##### Band Significance curve
 
-This code helps identify which original spectral bands (features) are most influential in the PCA model by examining the loadings.  
-It filters out bands with insignificant contributions and visually ranks bands by their maximum contribution to any principal component.  
+This code helps identify which original spectral bands (features) are most influential in the PCA model by examining the loadings.\
+It filters out bands with insignificant contributions and visually ranks bands by their maximum contribution to any principal component.\
 This can guide to feature extraction, interpretation, or further analysis by focusing on the most important spectral bands.
 
 Only bands with a loading of at least 0.01 are shown. You can see here while NDVI doesn’t reach this threshold, that its soucres bands B04 & B08 reach very high loadings.
@@ -322,8 +322,8 @@ BandSignificanceCurve.png
 
 ##### Significant Band Loadings Heatmap
 
-This heatmap visually summarizes which spectral bands contribute strongly to which principal components and whether the contribution is positive or negative.  
-By filtering for significant bands, the plot focuses on the most meaningful relationships (weight \> 0.20 for at least one of the components) in the PCA,  
+This heatmap visually summarizes which spectral bands contribute strongly to which principal components and whether the contribution is positive or negative.\
+By filtering for significant bands, the plot focuses on the most meaningful relationships (weight \> 0.20 for at least one of the components) in the PCA,\
 helping you interpret how each component is formed by combinations of original bands.
 
 ![](AbsoluteSignificantBandLoadingsHeatmap.png)
@@ -334,7 +334,7 @@ AbsoluteSignificantBandLoadingsHeatmap.png
 
 #### UDF: select significant bands by pca loadings
 
-Based on the previous curves we decide to only keep 18 bands (weight \> 0.20 on the heatmap). The underlying UDF selects those features based on our PCA model.  
+Based on the previous curves we decide to only keep 18 bands (weight \> 0.20 on the heatmap). The underlying UDF selects those features based on our PCA model.\
 In case you want to keep bands based on the loading, you can also give a threshold betweeen 0 and 1 of how big the loading needs to be.
 
 e.g.*context={“threshold”: 0.20}*
@@ -538,3 +538,5 @@ plot_components(pca_job_data_array, "PCA")
     <class 'xarray.core.dataarray.DataArray'>
 
 ![](Dimensionality%20Reduction_files/figure-html/cell-20-output-2.png)
+
+Back to top

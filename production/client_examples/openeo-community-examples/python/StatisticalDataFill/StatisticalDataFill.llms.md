@@ -183,3 +183,5 @@ plt.show()
 ![](StatisticalDataFill_files/figure-html/cell-11-output-1.png)
 
 Therefore, it is noticeable that the gaps observed in the original observations have been successfully filled. Furthermore, the model effectively preserves the overall trend of the observations with smoothening due to the nature of lowess function.
+
+Back to top

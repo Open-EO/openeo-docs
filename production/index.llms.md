@@ -131,7 +131,7 @@ API-oriented publishing view for reusable services.
 **Best for:** operational teams and repeatable workflows\
 **Data used:** Sentinel-2 L2A **Outcome:** reusable UDP service
 
-[Publish workflow →](client_examples/openeo-community-examples/python/RandomForest-ForestFire/RandomForestModelInference_AsUDP.ipynb)\
+[Publish workflow →](client_examples/openeo-community-examples/python/RandomForest-ForestFire/RandomForestModelInference_AsUDP.llms.md)\
 [Run notebook (experimental) →](jupyterlite/lab/index.html?path=notebooks/RandomForest-ForestFire/RandomForestModelInference_AsUDP.ipynb)
 
 ## Large-scale Processing
@@ -147,7 +147,7 @@ Batch processing view for multi-job execution.
 **Best for:** regional to continental scale analysis\
 **Data used:** Sentinel-2 L2A **Outcome:** batch job results and summaries
 
-[Scale workloads →](client_examples/openeo-community-examples/python/ManagingMultipleLargeScaleJobs/ManagingMultipleLargeScaleJobs.ipynb)
+[Scale workloads →](client_examples/openeo-community-examples/python/ManagingMultipleLargeScaleJobs/ManagingMultipleLargeScaleJobs.llms.md)
 
 ## Using Random Forest
 
@@ -162,7 +162,7 @@ Model training output with classification-ready features.
 **Best for:** classification and model-driven EO analysis\
 **Data used:** Sentinel-2 L2A and Sentinel-1 GRD **Outcome:** trained model and inference maps
 
-[View notebook →](client_examples/openeo-community-examples/python/RandomForest-ForestFire/RandomForestModelTraining.ipynb)\
+[View notebook →](client_examples/openeo-community-examples/python/RandomForest-ForestFire/RandomForestModelTraining.llms.md)\
 [Run notebook (experimental) →](jupyterlite/lab/index.html?path=notebooks/RandomForest-ForestFire/RandomForestModelTraining.ipynb)
 
 Get started

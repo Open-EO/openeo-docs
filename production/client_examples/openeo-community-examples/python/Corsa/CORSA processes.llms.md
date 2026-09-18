@@ -271,3 +271,5 @@ print(f"Compression ratio:           {round(compression_ratio, 2)}x smaller")
     Compression ratio:           24.92x smaller
 
 This notebook covered a very simple use case of using the CORSA processes in an openEO workflow. For a more detailed use case and analysis of the CORSA method, please refer to the [CORSA project repository](https://github.com/VITO-RS-CORSA/CORSA-S2-openEO)
+
+Back to top

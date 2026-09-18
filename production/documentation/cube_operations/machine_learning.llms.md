@@ -159,12 +159,12 @@ const model = connection.load_ml_model({model_id: "my-model"});
 
 > **TIP:**
 >
-> - [Forest Fire Mapping using Random Forest](../../client_examples/openeo-community-examples/python/RandomForest-ForestFire/RandomForestModelTraining.ipynb)
-> - [Reusing openEO Workflows Saved as UDPs](../../client_examples/openeo-community-examples/python/RandomForest-ForestFire/RandomForestModelInference_AsUDP.ipynb)
-> - [Running ML Inference with an ONNX Model](../../client_examples/openeo-community-examples/python/OnnxMLInference/Onnx_ML_Inference.ipynb)
-> - [Dimensionality Reduction using Sentinel-2 (PCA)](../../client_examples/openeo-community-examples/python/DimensionalityReduction/Dimensionality%20Reduction.ipynb)
-> - [ML-Ready Data Preparation using openEO](../../client_examples/openeo-community-examples/python/ExtractingTrainingData/ML_ready_data_extraction.ipynb)
-> - [TESSERA Pixel Embeddings from Sentinel-1/2](../../client_examples/openeo-community-examples/python/TesseraEmbedding/TesseraEmbedding.ipynb)
+> - [Forest Fire Mapping using Random Forest](../../client_examples/openeo-community-examples/python/RandomForest-ForestFire/RandomForestModelTraining.llms.md)
+> - [Reusing openEO Workflows Saved as UDPs](../../client_examples/openeo-community-examples/python/RandomForest-ForestFire/RandomForestModelInference_AsUDP.llms.md)
+> - [Running ML Inference with an ONNX Model](../../client_examples/openeo-community-examples/python/OnnxMLInference/Onnx_ML_Inference.llms.md)
+> - [Dimensionality Reduction using Sentinel-2 (PCA)](../../client_examples/openeo-community-examples/python/DimensionalityReduction/Dimensionality%20Reduction.llms.md)
+> - [ML-Ready Data Preparation using openEO](../../client_examples/openeo-community-examples/python/ExtractingTrainingData/ML_ready_data_extraction.llms.md)
+> - [TESSERA Pixel Embeddings from Sentinel-1/2](../../client_examples/openeo-community-examples/python/TesseraEmbedding/TesseraEmbedding.llms.md)
 >
 > More notebooks are listed on the [sample notebooks page](../../examples.llms.md).
 

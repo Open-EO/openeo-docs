@@ -2,11 +2,11 @@
   "content": [
     {
       "content": null,
-      "created": "2026-09-18T14:12:11.190394Z",
+      "created": "2026-09-18T14:46:56.698204Z",
       "format": null,
       "hash": null,
       "hash_algorithm": null,
-      "last_modified": "2026-09-18T14:12:08.253379Z",
+      "last_modified": "2026-09-18T14:46:53.669137Z",
       "mimetype": null,
       "name": "GettingStarted.ipynb",
       "path": "notebooks/1. GettingStarted/GettingStarted.ipynb",
@@ -15,11 +15,11 @@
       "writable": true
     }
   ],
-  "created": "2026-09-18T14:12:11.190340Z",
+  "created": "2026-09-18T14:46:56.698179Z",
   "format": "json",
   "hash": null,
   "hash_algorithm": null,
-  "last_modified": "2026-09-18T14:12:11.190340Z",
+  "last_modified": "2026-09-18T14:46:56.698179Z",
   "mimetype": null,
   "name": "1. GettingStarted",
   "path": "notebooks/1. GettingStarted",

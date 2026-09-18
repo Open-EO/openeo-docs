@@ -288,9 +288,9 @@ const anomalies = cube.anomaly({normal:normal});
 
 > **TIP:**
 >
-> - [Regional Benchmarking Service for Anomaly Identification](../../client_examples/openeo-community-examples/python/Anomaly_Detection/Anomaly_Detection.ipynb)
-> - [Heatwave in the Netherlands](../../client_examples/openeo-community-examples/python/Heatwave/HeatwaveNL.ipynb)
-> - [Comparing the Summer Drought in Serbia (NDDI)](../../client_examples/openeo-community-examples/python/NDDI/NDDI_Drought.ipynb)
+> - [Regional Benchmarking Service for Anomaly Identification](../../client_examples/openeo-community-examples/python/Anomaly_Detection/Anomaly_Detection.llms.md)
+> - [Heatwave in the Netherlands](../../client_examples/openeo-community-examples/python/Heatwave/HeatwaveNL.llms.md)
+> - [Comparing the Summer Drought in Serbia (NDDI)](../../client_examples/openeo-community-examples/python/NDDI/NDDI_Drought.llms.md)
 >
 > More notebooks are listed on the [sample notebooks page](../../examples.llms.md).
 

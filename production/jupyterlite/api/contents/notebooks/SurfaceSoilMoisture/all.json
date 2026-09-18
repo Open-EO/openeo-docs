@@ -2,11 +2,11 @@
   "content": [
     {
       "content": null,
-      "created": "2026-09-18T14:12:11.383112Z",
+      "created": "2026-09-18T14:46:56.890888Z",
       "format": null,
       "hash": null,
       "hash_algorithm": null,
-      "last_modified": "2026-09-18T14:12:08.281870Z",
+      "last_modified": "2026-09-18T14:46:53.698022Z",
       "mimetype": null,
       "name": "SoilMoisture.ipynb",
       "path": "notebooks/SurfaceSoilMoisture/SoilMoisture.ipynb",
@@ -15,11 +15,11 @@
       "writable": true
     }
   ],
-  "created": "2026-09-18T14:12:11.383112Z",
+  "created": "2026-09-18T14:46:56.890888Z",
   "format": "json",
   "hash": null,
   "hash_algorithm": null,
-  "last_modified": "2026-09-18T14:12:11.383112Z",
+  "last_modified": "2026-09-18T14:46:56.890888Z",
   "mimetype": null,
   "name": "SurfaceSoilMoisture",
   "path": "notebooks/SurfaceSoilMoisture",

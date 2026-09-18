@@ -150,3 +150,5 @@ plt.show()
 ![](Anomaly_Detection_files/figure-html/cell-12-output-1.png)
 
 Through the visualized curves, you can study the crop type behaviour of the field in comparison with the regional average.
+
+Back to top

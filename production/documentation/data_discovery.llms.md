@@ -152,12 +152,12 @@ For complete parameters, see the official [`load_collection` process reference](
 
 > **TIP:**
 >
-> - [Access PROBA-V Collection](../client_examples/openeo-community-examples/python/AccessPROBA-V/PROBA_V.ipynb)
-> - [Accessing and Analysing Sentinel-5P Products](../client_examples/openeo-community-examples/python/AccessSentinel5P/Access_&_Analyse_Sentinel5P_Products.ipynb)
-> - [Exploring CLMS Datasets with openEO](../client_examples/openeo-community-examples/python/Access_CLMS/CLMS_layers_using_openEO.ipynb)
-> - [Explore Sentinel-5P Products with openEO (Air Quality)](../client_examples/openeo-community-examples/python/AirQuality/AirQuality.ipynb)
-> - [Access MODIS Data using openEO](../client_examples/openeo-community-examples/python/MODIS/MODIS_data_using_openEO.ipynb)
-> - [Advanced Use of Federated Processing](../client_examples/openeo-community-examples/python/Federation/FederatedProcessing.ipynb)
+> - [Access PROBA-V Collection](../client_examples/openeo-community-examples/python/AccessPROBA-V/PROBA_V.llms.md)
+> - [Accessing and Analysing Sentinel-5P Products](../client_examples/openeo-community-examples/python/AccessSentinel5P/Access_&_Analyse_Sentinel5P_Products.llms.md)
+> - [Exploring CLMS Datasets with openEO](../client_examples/openeo-community-examples/python/Access_CLMS/CLMS_layers_using_openEO.llms.md)
+> - [Explore Sentinel-5P Products with openEO (Air Quality)](../client_examples/openeo-community-examples/python/AirQuality/AirQuality.llms.md)
+> - [Access MODIS Data using openEO](../client_examples/openeo-community-examples/python/MODIS/MODIS_data_using_openEO.llms.md)
+> - [Advanced Use of Federated Processing](../client_examples/openeo-community-examples/python/Federation/FederatedProcessing.llms.md)
 >
 > More notebooks are listed on the [sample notebooks page](../examples.llms.md).
 
@@ -222,9 +222,9 @@ For more details about the process itself, see the [`load_stac` process referenc
 
 > **TIP:**
 >
-> - [Loading a Single STAC Item](../client_examples/openeo-community-examples/python/LoadStac/load-stac-item-example.ipynb)
-> - [Using load_stac for External Datasets (Landsat 8)](../client_examples/openeo-community-examples/python/LoadStac/LoadLandsatSTAC.ipynb)
-> - [Using load_stac for External Datasets (Biomass)](../client_examples/openeo-community-examples/python/LoadStac/LoadBiomassSTAC.ipynb)
+> - [Loading a Single STAC Item](../client_examples/openeo-community-examples/python/LoadStac/load-stac-item-example.llms.md)
+> - [Using load_stac for External Datasets (Landsat 8)](../client_examples/openeo-community-examples/python/LoadStac/LoadLandsatSTAC.llms.md)
+> - [Using load_stac for External Datasets (Biomass)](../client_examples/openeo-community-examples/python/LoadStac/LoadBiomassSTAC.llms.md)
 >
 > More notebooks are listed on the [sample notebooks page](../examples.llms.md).
 

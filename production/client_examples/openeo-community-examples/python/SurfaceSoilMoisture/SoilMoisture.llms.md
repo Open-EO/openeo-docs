@@ -131,8 +131,8 @@ data[0].plot.imshow(ax=axes, vmax=0.6, vmin=0)
 axes.set_title("Surface Soil Moisture")
 ```
 
-    Text(0.5, 1.0, 'Surface Soil Moisture')
-
-![](SoilMoisture_files/figure-html/cell-14-output-2.png)
+![](SoilMoisture_files/figure-html/cell-14-output-1.png)
 
 As suggested [here](https://custom-scripts.sentinel-hub.com/custom-scripts/sentinel-1/soil_moisture_estimation/), to avoid the effect of outliers, the soil moisture ranges from 0 to 0.6 is plotted. Here the white colour represents the masked-out area, including permanent water bodies and urban areas.
+
+Back to top

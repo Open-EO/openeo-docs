@@ -9,7 +9,7 @@ In this example, we’ll illustrate a fairly simple case of combining two collec
 ``` python
 import openeo
 
-c = openeo.connect("openeo.vito.be").authenticate_oidc()
+c = openeo.connect("openeofed.dataspace.copernicus.eu").authenticate_oidc()
 ```
 
     Authenticated using refresh token.
@@ -62,23 +62,26 @@ job = combined.execute_batch(
 )
 ```
 
-    0:00:00 Job 'vito-j-0e6bd54acb9d4de2b6b6e03a5bb120dd': send 'start'
-    0:00:22 Job 'vito-j-0e6bd54acb9d4de2b6b6e03a5bb120dd': queued (progress N/A)
-    0:00:28 Job 'vito-j-0e6bd54acb9d4de2b6b6e03a5bb120dd': queued (progress N/A)
-    0:00:35 Job 'vito-j-0e6bd54acb9d4de2b6b6e03a5bb120dd': queued (progress N/A)
-    0:00:43 Job 'vito-j-0e6bd54acb9d4de2b6b6e03a5bb120dd': queued (progress N/A)
-    0:01:18 Job 'vito-j-0e6bd54acb9d4de2b6b6e03a5bb120dd': queued (progress N/A)
-    0:01:31 Job 'vito-j-0e6bd54acb9d4de2b6b6e03a5bb120dd': queued (progress N/A)
-    0:01:47 Job 'vito-j-0e6bd54acb9d4de2b6b6e03a5bb120dd': queued (progress N/A)
-    0:02:06 Job 'vito-j-0e6bd54acb9d4de2b6b6e03a5bb120dd': queued (progress N/A)
-    0:02:30 Job 'vito-j-0e6bd54acb9d4de2b6b6e03a5bb120dd': queued (progress N/A)
-    0:03:00 Job 'vito-j-0e6bd54acb9d4de2b6b6e03a5bb120dd': queued (progress N/A)
-    0:03:54 Job 'vito-j-0e6bd54acb9d4de2b6b6e03a5bb120dd': running (progress N/A)
-    0:04:42 Job 'vito-j-0e6bd54acb9d4de2b6b6e03a5bb120dd': running (progress N/A)
-    0:05:40 Job 'vito-j-0e6bd54acb9d4de2b6b6e03a5bb120dd': running (progress N/A)
-    0:06:41 Job 'vito-j-0e6bd54acb9d4de2b6b6e03a5bb120dd': running (progress N/A)
-    0:07:41 Job 'vito-j-0e6bd54acb9d4de2b6b6e03a5bb120dd': finished (progress N/A)
+    0:00:00 Job 'terrascope-j-2607131817324a3a95738f7ded2475db': send 'start'
+    0:00:29 Job 'terrascope-j-2607131817324a3a95738f7ded2475db': queued (progress 0%)
+    0:00:34 Job 'terrascope-j-2607131817324a3a95738f7ded2475db': queued (progress 0%)
+    0:00:43 Job 'terrascope-j-2607131817324a3a95738f7ded2475db': queued (progress 0%)
+    0:00:52 Job 'terrascope-j-2607131817324a3a95738f7ded2475db': queued (progress 0%)
+    0:01:02 Job 'terrascope-j-2607131817324a3a95738f7ded2475db': queued (progress 0%)
+    0:01:15 Job 'terrascope-j-2607131817324a3a95738f7ded2475db': running (progress 7.9%)
+    0:01:30 Job 'terrascope-j-2607131817324a3a95738f7ded2475db': running (progress 10.1%)
+    0:01:54 Job 'terrascope-j-2607131817324a3a95738f7ded2475db': running (progress 13.1%)
+    0:02:27 Job 'terrascope-j-2607131817324a3a95738f7ded2475db': running (progress 16.8%)
+    0:02:57 Job 'terrascope-j-2607131817324a3a95738f7ded2475db': running (progress 20.4%)
+    0:03:35 Job 'terrascope-j-2607131817324a3a95738f7ded2475db': running (progress 24.2%)
+    0:04:22 Job 'terrascope-j-2607131817324a3a95738f7ded2475db': running (progress 28.4%)
+    0:05:20 Job 'terrascope-j-2607131817324a3a95738f7ded2475db': finished (progress 100%)
 
 ``` python
 job.get_results().download_files()
 ```
+
+    [PosixPath('/home/pratixa/notebook-samples/openeo-samples/python/WorldCereal/openEO.tif'),
+     PosixPath('/home/pratixa/notebook-samples/openeo-samples/python/WorldCereal/job-results.json')]
+
+Back to top

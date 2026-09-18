@@ -181,13 +181,13 @@ With our split tiles and job definition set up, we can now run the jobs using th
 
     **Caution:** If the tracker file already exists, `on_exists="skip"` reuses it instead of overwriting it. Delete the file first if you want to start from a clean slate.
 
-  
+\
 
 2.  Initialize the MultiBackendJobManager: We create an instance of the `MultiBackendJobManager` and add a backend of our choice, which will be responsible for executing the jobs.
 
     **Caution:** The number of parallel jobs refers to how many jobs the job manager tracks at once. However, the backend itself limits the actual number of jobs that can start and run at the same time to 2.
 
-  
+\
 
 3.  Run Multiple Jobs: Use `manager.run_jobs` to create the desired jobs and send them to the backend. The selected job tracker will be updated with the actual job statuses and usage metrics.
 
@@ -300,3 +300,5 @@ visualize_output(output_df)
 ```
 
 ![](ManagingMultipleLargeScaleJobs_files/figure-html/cell-8-output-1.png)
+
+Back to top

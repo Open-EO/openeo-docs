@@ -496,3 +496,5 @@ plt.show()
 Please note that the example provided here is a basic demonstration of how to use the `load_stac` feature in openEO.
 
 Users can also chose to use the Landsat-8 data available in CDSE directly, or access other external datasets using the `load_stac` feature for further analysis. In addition, the [Harmonized Landsat Sentinel-2 (HLS)](https://planetarycomputer.microsoft.com/dataset/storage/hls)(is it possible to perform this type of processing with openeo processes instead?) dataset could be directly used instead of above usecase, when available as a STAC collection.
+
+Back to top

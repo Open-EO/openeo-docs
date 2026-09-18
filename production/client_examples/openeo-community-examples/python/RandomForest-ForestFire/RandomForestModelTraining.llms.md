@@ -330,3 +330,5 @@ Make this Notebook Trusted to load map: File -\> Trust Notebook
 Therefore, the notebook presented a complete workflow for forest fire mapping using Random Forest classification using openEO. By combining Sentinel-1 and Sentinel-2 features and leveraging openEO’s cloud-based processing, we demonstrated a reproducible and scalable approach for burnt area mapping.
 
 As seen in the cell above, the model, when evaluated on a separate test dataset, achieved an accuracy of approx. **90%**.
+
+Back to top

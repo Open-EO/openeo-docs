@@ -160,3 +160,5 @@ axes.axes.get_yaxis().set_visible(False)
 If we compare with the available manually mapped ground truth shown in the image below, we can conclude that our workflow effectively showed the oil spill in the selected area of interest.
 
 ![](gt.png) )
+
+Back to top

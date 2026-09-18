@@ -189,3 +189,5 @@ xr.plot.imshow(rgb_array,vmin=0,vmax=0.18,rgb="bands",col='t',col_wrap=2)
 ```
 
 ![](bap_composite_files/figure-html/cell-17-output-1.png)
+
+Back to top

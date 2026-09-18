@@ -8,7 +8,7 @@ It’s content is as follows: 1. Getting an example GTiff file from openEO 2. Cr
 
 First we download a simple GTiff file containing ndvi data from an openEO provider.
 
-We calculate the NDVI from the S2 bands for the month of June 2021 and download the result as a GTiff file.  
+We calculate the NDVI from the S2 bands for the month of June 2021 and download the result as a GTiff file.\
 *Note: the `temporal_extend` can be set as “2021-06” without specifying the days. More info [here](https://open-eo.github.io/openeo-python-client/data_access.html#single-string-temporal-extents).*
 
 ``` python
@@ -74,7 +74,7 @@ ndvi_job.start_and_wait().get_results().download_file("ndvi-file.tif")
     WindowsPath('ndvi-file.tif')
 
 ``` python
-with rasterio.open("ndvi-file.tiff") as src:
+with rasterio.open("ndvi-file.tif") as src:
     show(src)
 ```
 
@@ -169,3 +169,5 @@ with rasterio.open("ndvi-from-stac.tiff") as src:
 ```
 
 ![](load-stac-item-example_files/figure-html/cell-9-output-1.png)
+
+Back to top

@@ -414,3 +414,5 @@ plt.show()
 ![](land_cover_country_lcfm_files/figure-html/cell-14-output-1.png)
 
 Limitations of the demo: - NUTS regions with higher details (scale lower than 10M) - In order to upscale to large regions (e.g. US), it might be necessary to increase memory limits.
+
+Back to top

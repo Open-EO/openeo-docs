@@ -115,3 +115,5 @@ The red region corresponds to an area where notably large landslides were record
 ![](LandslidesNDVI_files/figure-html/96104e13-7311-467c-bb39-a19729554fa0-1-558bdf6d-3eaa-4c79-9d26-f32a0d8ae61d.png)
 
 image.png
+
+Back to top

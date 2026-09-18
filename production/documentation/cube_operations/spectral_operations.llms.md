@@ -115,10 +115,10 @@ const ndwi = cube.normalized_difference({first_band: "B03", second_band: "B08"})
 
 > **TIP:**
 >
-> - [WorldCereal Product Download](../../client_examples/openeo-community-examples/python/WorldCereal/WorldCereal.ipynb)
-> - [Using the BioPAR openEO Service](../../client_examples/openeo-community-examples/python/BioPAR/biopar_service.ipynb)
-> - [Comparing the Summer Drought in Serbia (NDDI)](../../client_examples/openeo-community-examples/python/NDDI/NDDI_Drought.ipynb)
-> - [NDVI-based Approach to Study Landslide Areas](../../client_examples/openeo-community-examples/python/LandslideNDVI/LandslidesNDVI.ipynb)
+> - [WorldCereal Product Download](../../client_examples/openeo-community-examples/python/WorldCereal/WorldCereal.llms.md)
+> - [Using the BioPAR openEO Service](../../client_examples/openeo-community-examples/python/BioPAR/biopar_service.llms.md)
+> - [Comparing the Summer Drought in Serbia (NDDI)](../../client_examples/openeo-community-examples/python/NDDI/NDDI_Drought.llms.md)
+> - [NDVI-based Approach to Study Landslide Areas](../../client_examples/openeo-community-examples/python/LandslideNDVI/LandslidesNDVI.llms.md)
 >
 > More notebooks are listed on the [sample notebooks page](../../examples.llms.md).
 

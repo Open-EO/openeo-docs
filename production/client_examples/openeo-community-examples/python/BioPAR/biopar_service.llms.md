@@ -24,7 +24,6 @@ The service: \* Uses Sentinel-2 Level-2A data from CDSE \* Perform cloud masking
 
 The only package required to run this service is the `openeo` Python client, which can be installed via pip:
 
-
     pip install openeo
 
 ``` python
@@ -47,7 +46,7 @@ Before using the BioPAR openEO service, it is useful to understand the general s
 
 Most openEO workflows follow the same high-level pattern: 1. Connect to an openEO backend 2. Load collection for a specific spatial and temporal extent 3. Build a processing workflow (also called a *process graph*) using openEO processes 4. Execute the workflow on the backend
 
-For a full introduction to these concepts, please refer to the official openEO *Getting Started* notebook:  
+For a full introduction to these concepts, please refer to the official openEO *Getting Started* notebook:\
 https://github.com/Open-EO/openeo-community-examples/blob/main/python/1.%20GettingStarted/GettingStarted.ipynb
 
 ### From workflows to services
@@ -385,3 +384,5 @@ plt.show()
 ```
 
 ![](biopar_service_files/figure-html/cell-9-output-1.png)
+
+Back to top

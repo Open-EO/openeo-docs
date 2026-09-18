@@ -692,3 +692,5 @@ plt.contourf(X, Y, d_small, cmap='Blues')
 ![](Global_Flood_Monitoring_files/figure-html/cell-19-output-1.png)
 
 The notebook gives an example of how to use the GFM dataset in openEO to explore the flooded areas of Pakistan in 2022. Based on the notebook, further processing can be done by adapting or expanding the spatio-temporal requests.
+
+Back to top

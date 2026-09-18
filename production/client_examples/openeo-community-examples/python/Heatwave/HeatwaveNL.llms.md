@@ -207,8 +207,8 @@ data.plot.imshow(vmin=0, vmax=10, ax=axes, cmap="hot_r")
 axes.set_title("# of Days with Heatwave in 2023")
 ```
 
-    Text(0.5, 1.0, '# of Days with Heatwave in 2023')
-
-![](HeatwaveNL_files/figure-html/cell-19-output-2.png)
+![](HeatwaveNL_files/figure-html/cell-19-output-1.png)
 
 The above plot shows the number of days with a heatwave in the area of interest in the specified time interval.
+
+Back to top

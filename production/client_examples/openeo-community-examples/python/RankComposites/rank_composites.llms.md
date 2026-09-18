@@ -924,3 +924,5 @@ xarray.plot.imshow(rgb_array.isel(t=0),vmin=0,vmax=0.18,rgb="bands",col_wrap=2)
 ```
 
 ![](rank_composites_files/figure-html/cell-14-output-1.png)
+
+Back to top

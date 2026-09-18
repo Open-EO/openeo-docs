@@ -2,11 +2,11 @@
   "content": [
     {
       "content": null,
-      "created": "2026-09-18T14:12:11.294681Z",
+      "created": "2026-09-18T14:46:56.802621Z",
       "format": null,
       "hash": null,
       "hash_algorithm": null,
-      "last_modified": "2026-09-18T14:12:08.268591Z",
+      "last_modified": "2026-09-18T14:46:53.684849Z",
       "mimetype": null,
       "name": "NDDI_Drought.ipynb",
       "path": "notebooks/NDDI/NDDI_Drought.ipynb",
@@ -15,11 +15,11 @@
       "writable": true
     }
   ],
-  "created": "2026-09-18T14:12:11.294681Z",
+  "created": "2026-09-18T14:46:56.802621Z",
   "format": "json",
   "hash": null,
   "hash_algorithm": null,
-  "last_modified": "2026-09-18T14:12:11.294681Z",
+  "last_modified": "2026-09-18T14:46:56.802621Z",
   "mimetype": null,
   "name": "NDDI",
   "path": "notebooks/NDDI",

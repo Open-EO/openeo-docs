@@ -183,3 +183,5 @@ For validation of output: https://rapidmapping.emergency.copernicus.eu/EMSR671/
 Therefore, this notebook demonstrated how to create, register, and execute a reusable User-Defined Process (UDP) for forest fire mapping using openEO.
 
 It supports seamless scaling, sharing and reuse by saving the entire workflow—from data extraction to model inference—as an openEO User‑Defined Process (UDP). That means external users can simply plug in their own spatial or temporal extents and run your forest‑fire predictor with minimal effort—no need to stitch together several different code snippets or data transformation steps. This method ensures reproducibility and significantly lowers the reuse barrier.
+
+Back to top

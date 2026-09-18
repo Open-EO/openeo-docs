@@ -405,7 +405,7 @@ neighborhood_result <- cube$apply_neighborhood(
 
 > **TIP:**
 >
-> [Hillshade from Copernicus 30 m DEM](../../client_examples/openeo-community-examples/python/Hillshade/Hillshade.ipynb) derives slope, aspect, and hillshade with `apply_neighborhood`-style band math over a DEM.
+> [Hillshade from Copernicus 30 m DEM](../../client_examples/openeo-community-examples/python/Hillshade/Hillshade.llms.md) derives slope, aspect, and hillshade with `apply_neighborhood`-style band math over a DEM.
 
 ## Mask outside a polygon
 

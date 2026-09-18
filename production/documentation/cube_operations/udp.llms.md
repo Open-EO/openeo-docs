@@ -165,8 +165,8 @@ Do not confuse a UDP with a [User Defined Function](../../documentation/cube_ope
 
 > **TIP:**
 >
-> - [Publishing an openEO Workflow as a User-Defined Process](../../client_examples/openeo-community-examples/python/Sentinel1_Stats/Sentinel1_Stats.ipynb)
-> - [Reusing openEO Workflows Saved as UDPs](../../client_examples/openeo-community-examples/python/RandomForest-ForestFire/RandomForestModelInference_AsUDP.ipynb)
+> - [Publishing an openEO Workflow as a User-Defined Process](../../client_examples/openeo-community-examples/python/Sentinel1_Stats/Sentinel1_Stats.llms.md)
+> - [Reusing openEO Workflows Saved as UDPs](../../client_examples/openeo-community-examples/python/RandomForest-ForestFire/RandomForestModelInference_AsUDP.llms.md)
 >
 > More notebooks are listed on the [sample notebooks page](../../examples.llms.md).
 

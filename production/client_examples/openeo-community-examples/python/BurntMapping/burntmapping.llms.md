@@ -140,3 +140,5 @@ plt.show()
 ![](burntmapping_files/figure-html/cell-9-output-1.png)
 
 The bound set for the legend are based on the description provided in the UN SPIDER guideline.
+
+Back to top

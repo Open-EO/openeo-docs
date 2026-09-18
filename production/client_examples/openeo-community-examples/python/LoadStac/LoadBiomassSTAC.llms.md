@@ -18,7 +18,7 @@ connection = openeo.connect("openeofed.dataspace.copernicus.eu").authenticate_oi
 
 This step sets up the required connection to the CDSE federation backend.
 
-In this example, we want to explore the relationship between **belowground biomass** (as an indicator of vegetation or forest cover) and **elevation** (DEM data).  
+In this example, we want to explore the relationship between **belowground biomass** (as an indicator of vegetation or forest cover) and **elevation** (DEM data).\
 Combining these two datasets—biomass from 2010 and digital elevation model (DEM) data—we can examine how belowground biomass distribution varies with elevation. This could help in understanding patterns of forest cover in mountainous regions or how vegetation responds to terrain changes, such as slopes or valleys.
 
 The Harmonized Global Biomass for 2010 is available from the Microsoft Planetary Computer STAC, and the Copernicus DEM is available from the CDSE backend.
@@ -95,10 +95,10 @@ ax.set_xlabel("Elevation (m)")
 ax.set_ylabel("Biomass Carbon Density")
 ```
 
-    Text(0, 0.5, 'Biomass Carbon Density')
-
-![](LoadBiomassSTAC_files/figure-html/cell-9-output-2.png)
+![](LoadBiomassSTAC_files/figure-html/cell-9-output-1.png)
 
 From this example plot we can see that in our study area the below-ground carbon biomass is mostly located at the elevation of 150-200 meters with value in the range of 200-400 kg/ha. Even though higher elevation also has biomass it is rarely below the range of 100 kg/ha. This shows an example of how we can combine different sources of data in OpenEO to perform a data assimilation and analysis.
 
 This example highlights the flexibility of openEO in accessing and combining external datasets via STAC. This was a simple example, but the same approach can be used for more complex analyses involving multiple datasets from different sources.
+
+Back to top

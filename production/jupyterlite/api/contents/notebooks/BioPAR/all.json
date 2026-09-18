@@ -2,11 +2,11 @@
   "content": [
     {
       "content": null,
-      "created": "2026-09-18T14:12:11.217429Z",
+      "created": "2026-09-18T14:46:56.725103Z",
       "format": null,
       "hash": null,
       "hash_algorithm": null,
-      "last_modified": "2026-09-18T14:12:08.256845Z",
+      "last_modified": "2026-09-18T14:46:53.673159Z",
       "mimetype": null,
       "name": "biopar_service.ipynb",
       "path": "notebooks/BioPAR/biopar_service.ipynb",
@@ -15,11 +15,11 @@
       "writable": true
     }
   ],
-  "created": "2026-09-18T14:12:11.217429Z",
+  "created": "2026-09-18T14:46:56.725103Z",
   "format": "json",
   "hash": null,
   "hash_algorithm": null,
-  "last_modified": "2026-09-18T14:12:11.217429Z",
+  "last_modified": "2026-09-18T14:46:56.725103Z",
   "mimetype": null,
   "name": "BioPAR",
   "path": "notebooks/BioPAR",

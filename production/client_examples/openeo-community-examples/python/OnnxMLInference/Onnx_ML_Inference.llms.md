@@ -53,10 +53,10 @@ model_url = "https://artifactory.vgt.vito.be:443/auxdata-public/openeo/test_onnx
 
 Next we load the udf that will run the model. Make sure to take a look at [the udf code](./onnx_udf.py) to understand how and why the loading of the model is cached to reduce your processing costs, how you can work with the named dimensions of an Xarray and how to run a model on each separate timestep.
 
-We use the process `apply_neighborhood` to apply the udf. The model accepts a window of 256x256 pixels. In order to get a smooth result, we apply the model on overlapping windows. The values included in the overlap will not be modified.  
+We use the process `apply_neighborhood` to apply the udf. The model accepts a window of 256x256 pixels. In order to get a smooth result, we apply the model on overlapping windows. The values included in the overlap will not be modified.\
 In this case an overlap of 16 pixels is used on both sides, so the remaining size of 224x224 pixels will be modified each step.
 
-Other models might perform pixel-wise predictions (e.g. random forests) in which case you can simply use the `apply` process. The openEO backend will then automatically handle the chunking and stitching of the results.  
+Other models might perform pixel-wise predictions (e.g. random forests) in which case you can simply use the `apply` process. The openEO backend will then automatically handle the chunking and stitching of the results.\
 In case you only want to keep your prediction, instead of using `apply` you can use the `reduce dimension` process to only keep the prediction and not the input bands.
 
 ``` python
@@ -121,3 +121,5 @@ with rasterio.open("results/output.tiff") as image:
 ```
 
 ![](Onnx_ML_Inference_files/figure-html/cell-7-output-1.png)
+
+Back to top

@@ -204,3 +204,5 @@ As we can see, the location of the forest fire is quite prominent in the post-ev
 As a validation of this workflow, we have a map provided by Copernicus Emergency Management Service (CEMS) is shown below:
 
 ![Ground Truth](gt.png)
+
+Back to top

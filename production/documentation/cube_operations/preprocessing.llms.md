@@ -300,11 +300,11 @@ The returned values are calibrated radar measurements, usually expressed on a li
 
 > **TIP:**
 >
-> - [Identifying Flooded Areas with Sentinel-1 Data](../../client_examples/openeo-community-examples/python/FloodNDWI/flood_SAR.ipynb)
-> - [Oil Spill Mapping using Sentinel-1](../../client_examples/openeo-community-examples/python/OilSpill/OilSpillMapping.ipynb)
-> - [Analysing openEO-Generated Interferograms for Surface Deformation](../../client_examples/openeo-community-examples/python/SAR_in_openEO/Interferogram_deformation_map.ipynb)
-> - [Analysing Coherence Output for Harvest-Day Detection](../../client_examples/openeo-community-examples/python/SAR_in_openEO/Coherence_for_harvestdays.ipynb)
-> - [Publishing an openEO Workflow as a User-Defined Process (Sentinel-1 stats)](../../client_examples/openeo-community-examples/python/Sentinel1_Stats/Sentinel1_Stats.ipynb)
+> - [Identifying Flooded Areas with Sentinel-1 Data](../../client_examples/openeo-community-examples/python/FloodNDWI/flood_SAR.llms.md)
+> - [Oil Spill Mapping using Sentinel-1](../../client_examples/openeo-community-examples/python/OilSpill/OilSpillMapping.llms.md)
+> - [Analysing openEO-Generated Interferograms for Surface Deformation](../../client_examples/openeo-community-examples/python/SAR_in_openEO/Interferogram_deformation_map.llms.md)
+> - [Analysing Coherence Output for Harvest-Day Detection](../../client_examples/openeo-community-examples/python/SAR_in_openEO/Coherence_for_harvestdays.llms.md)
+> - [Publishing an openEO Workflow as a User-Defined Process (Sentinel-1 stats)](../../client_examples/openeo-community-examples/python/Sentinel1_Stats/Sentinel1_Stats.llms.md)
 > - [Soil Surface Moisture using openEO API](https://github.com/Open-EO/openeo-community-examples/blob/main/python/SurfaceSoilMoisture/SoilMoisture.ipynb)
 >
 > More notebooks are listed on the [sample notebooks page](../../examples.llms.md).

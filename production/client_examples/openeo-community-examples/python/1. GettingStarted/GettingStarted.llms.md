@@ -176,3 +176,5 @@ As we conclude, we encourage further exploration into additional materials for t
 - [Examples](https://github.com/eu-cdse/notebook-samples/blob/main/openeo/UDF.ipynb) of including self-defined functions as [user-defined-functions (UDF)](https://open-eo.github.io/openeo-python-client/udf.html) in openEO workflow.
 - Learn more on [user-defined-process](https://open-eo.github.io/openeo-python-client/udp.html) to build your own library of reusable algorithms.
 - [Examples](https://github.com/Open-EO/openeo-community-examples/blob/main/python/README.md) on more comprehensive EO applications, including techniques such as resampling,reduce_dimension, apply_neighborhood and many more.
+
+Back to top

@@ -30,7 +30,7 @@ plt.rcParams["figure.dpi"] = 75
 Connect to the openEO Platform backend (at [openeo.cloud](https://openeo.cloud/)) and authenticate with OIDC.
 
 ``` python
-connection = openeo.connect("openeo.cloud").authenticate_oidc()
+connection = openeo.connect("openeofed.dataspace.copernicus.eu").authenticate_oidc()
 ```
 
     Authenticated using refresh token.
@@ -52,10 +52,16 @@ bbox = eoMap.getBbox()
 print("west", bbox[0], "\neast", bbox[2], "\nsouth", bbox[1], "\nnorth", bbox[3])
 ```
 
-    west 11.3409 
-    east 11.353779 
-    south 46.48772 
-    north 46.493924
+``` python
+spatial_extent = {
+    "west": 11.3409 ,
+    "east": 11.353779 ,
+    "south": 46.48772 ,
+    "north": 46.493924,
+    "crs": 4326,
+}
+temporal_extent = ["2023-05-01", "2023-07-01"]
+```
 
 ``` python
 spatial_extent = {
@@ -70,7 +76,7 @@ temporal_extent = ["2023-05-01", "2023-07-01"]
 
 ``` python
 s1_raw = connection.load_collection(
-    collection_id="SENTINEL1_GRD_SIGMA0",
+    collection_id="SENTINEL1_GRD",
     temporal_extent=temporal_extent,
     spatial_extent=spatial_extent,
     bands=["VH", "VV"],
@@ -86,8 +92,8 @@ This download command triggers the actual processing on the back-end: it sends t
 s1_raw.download("s1sar-raw.nc")
 ```
 
-    CPU times: user 36 ms, sys: 12 ms, total: 48 ms
-    Wall time: 1min 3s
+    CPU times: user 12.6 ms, sys: 9.67 ms, total: 22.3 ms
+    Wall time: 46.5 s
 
 However, [batch job-based execution](https://open-eo.github.io/openeo-python-client/batch_jobs.html) is preferred when it is relatively larger spatial/temporal extent and the process may take some time to process.
 
@@ -96,19 +102,21 @@ ds = xarray.load_dataset("s1sar-raw.nc")
 ds
 ```
 
+    sh: line 1: getfattr: command not found
+
 ![](data:image/svg+xml;base64,PHN2ZyBzdHlsZT0icG9zaXRpb246IGFic29sdXRlOyB3aWR0aDogMDsgaGVpZ2h0OiAwOyBvdmVyZmxvdzogaGlkZGVuIj4KPGRlZnM+CjxzeW1ib2wgaWQ9Imljb24tZGF0YWJhc2UiIHZpZXdib3g9IjAgMCAzMiAzMiI+CjxwYXRoIGQ9Ik0xNiAwYy04LjgzNyAwLTE2IDIuMjM5LTE2IDV2NGMwIDIuNzYxIDcuMTYzIDUgMTYgNXMxNi0yLjIzOSAxNi01di00YzAtMi43NjEtNy4xNjMtNS0xNi01eiIgLz4KPHBhdGggZD0iTTE2IDE3Yy04LjgzNyAwLTE2LTIuMjM5LTE2LTV2NmMwIDIuNzYxIDcuMTYzIDUgMTYgNXMxNi0yLjIzOSAxNi01di02YzAgMi43NjEtNy4xNjMgNS0xNiA1eiIgLz4KPHBhdGggZD0iTTE2IDI2Yy04LjgzNyAwLTE2LTIuMjM5LTE2LTV2NmMwIDIuNzYxIDcuMTYzIDUgMTYgNXMxNi0yLjIzOSAxNi01di02YzAgMi43NjEtNy4xNjMgNS0xNiA1eiIgLz4KPC9zeW1ib2w+CjxzeW1ib2wgaWQ9Imljb24tZmlsZS10ZXh0MiIgdmlld2JveD0iMCAwIDMyIDMyIj4KPHBhdGggZD0iTTI4LjY4MSA3LjE1OWMtMC42OTQtMC45NDctMS42NjItMi4wNTMtMi43MjQtMy4xMTZzLTIuMTY5LTIuMDMwLTMuMTE2LTIuNzI0Yy0xLjYxMi0xLjE4Mi0yLjM5My0xLjMxOS0yLjg0MS0xLjMxOWgtMTUuNWMtMS4zNzggMC0yLjUgMS4xMjEtMi41IDIuNXYyN2MwIDEuMzc4IDEuMTIyIDIuNSAyLjUgMi41aDIzYzEuMzc4IDAgMi41LTEuMTIyIDIuNS0yLjV2LTE5LjVjMC0wLjQ0OC0wLjEzNy0xLjIzLTEuMzE5LTIuODQxek0yNC41NDMgNS40NTdjMC45NTkgMC45NTkgMS43MTIgMS44MjUgMi4yNjggMi41NDNoLTQuODExdi00LjgxMWMwLjcxOCAwLjU1NiAxLjU4NCAxLjMwOSAyLjU0MyAyLjI2OHpNMjggMjkuNWMwIDAuMjcxLTAuMjI5IDAuNS0wLjUgMC41aC0yM2MtMC4yNzEgMC0wLjUtMC4yMjktMC41LTAuNXYtMjdjMC0wLjI3MSAwLjIyOS0wLjUgMC41LTAuNSAwIDAgMTUuNDk5LTAgMTUuNSAwdjdjMCAwLjU1MiAwLjQ0OCAxIDEgMWg3djE5LjV6IiAvPgo8cGF0aCBkPSJNMjMgMjZoLTE0Yy0wLjU1MiAwLTEtMC40NDgtMS0xczAuNDQ4LTEgMS0xaDE0YzAuNTUyIDAgMSAwLjQ0OCAxIDFzLTAuNDQ4IDEtMSAxeiIgLz4KPHBhdGggZD0iTTIzIDIyaC0xNGMtMC41NTIgMC0xLTAuNDQ4LTEtMXMwLjQ0OC0xIDEtMWgxNGMwLjU1MiAwIDEgMC40NDggMSAxcy0wLjQ0OCAxLTEgMXoiIC8+CjxwYXRoIGQ9Ik0yMyAxOGgtMTRjLTAuNTUyIDAtMS0wLjQ0OC0xLTFzMC40NDgtMSAxLTFoMTRjMC41NTIgMCAxIDAuNDQ4IDEgMXMtMC40NDggMS0xIDF6IiAvPgo8L3N5bWJvbD4KPC9kZWZzPgo8L3N2Zz4=)
 
 ``` xr-text-repr-fallback
-<xarray.Dataset>
-Dimensions:  (t: 10, x: 102, y: 72)
+<xarray.Dataset> Size: 2MB
+Dimensions:  (t: 15, x: 102, y: 72)
 Coordinates:
-  * t        (t) datetime64[ns] 2023-05-03 2023-05-10 ... 2023-06-20 2023-06-27
-  * x        (x) float64 6.796e+05 6.796e+05 6.797e+05 ... 6.806e+05 6.806e+05
-  * y        (y) float64 5.152e+06 5.152e+06 5.152e+06 ... 5.151e+06 5.151e+06
+  * t        (t) datetime64[ns] 120B 2023-05-03 2023-05-10 ... 2023-06-28
+  * x        (x) float64 816B 6.796e+05 6.796e+05 ... 6.806e+05 6.806e+05
+  * y        (y) float64 576B 5.152e+06 5.152e+06 ... 5.151e+06 5.151e+06
 Data variables:
-    crs      |S1 b''
-    VH       (t, y, x) float32 0.3498 0.2405 0.2339 ... 0.003244 0.003791
-    VV       (t, y, x) float32 0.356 0.356 0.809 ... 0.08211 0.01796 0.02538
+    crs      |S1 1B b''
+    VH       (t, y, x) float64 881kB 0.3058 0.2208 0.285 ... 0.06232 0.06846
+    VV       (t, y, x) float64 881kB 0.2863 0.4197 1.002 ... 1.068 1.072 1.145
 Attributes:
     Conventions:  CF-1.9
     institution:  openEO platform
@@ -118,7 +126,7 @@ xarray.Dataset
 
 Dimensions:
 
-- t: 10
+- t: 15
 - x: 102
 - y: 72
 
@@ -130,7 +138,7 @@ t
 
 datetime64\[ns\]
 
-2023-05-03 ... 2023-06-27
+2023-05-03 ... 2023-06-28
 
 ![](data:image/svg+xml;base64,PHN2ZyBjbGFzcz0iaWNvbiB4ci1pY29uLWZpbGUtdGV4dDIiPjx1c2UgaHJlZj0iI2ljb24tZmlsZS10ZXh0MiIgLz48L3N2Zz4=)
 
@@ -146,11 +154,13 @@ axis :
 T
 
     array(['2023-05-03T00:00:00.000000000', '2023-05-10T00:00:00.000000000',
-           '2023-05-15T00:00:00.000000000', '2023-05-22T00:00:00.000000000',
+           '2023-05-11T00:00:00.000000000', '2023-05-15T00:00:00.000000000',
+           '2023-05-22T00:00:00.000000000', '2023-05-23T00:00:00.000000000',
            '2023-05-27T00:00:00.000000000', '2023-06-03T00:00:00.000000000',
-           '2023-06-08T00:00:00.000000000', '2023-06-15T00:00:00.000000000',
-           '2023-06-20T00:00:00.000000000', '2023-06-27T00:00:00.000000000'],
-          dtype='datetime64[ns]')
+           '2023-06-04T00:00:00.000000000', '2023-06-08T00:00:00.000000000',
+           '2023-06-15T00:00:00.000000000', '2023-06-16T00:00:00.000000000',
+           '2023-06-20T00:00:00.000000000', '2023-06-27T00:00:00.000000000',
+           '2023-06-28T00:00:00.000000000'], dtype='datetime64[ns]')
 
 x
 
@@ -246,9 +256,9 @@ VH
 
 (t, y, x)
 
-float32
+float64
 
-0.3498 0.2405 ... 0.003244 0.003791
+0.3058 0.2208 ... 0.06232 0.06846
 
 ![](data:image/svg+xml;base64,PHN2ZyBjbGFzcz0iaWNvbiB4ci1pY29uLWZpbGUtdGV4dDIiPjx1c2UgaHJlZj0iI2ljb24tZmlsZS10ZXh0MiIgLz48L3N2Zz4=)
 
@@ -262,55 +272,55 @@ units :
 grid_mapping :  
 crs
 
-    array([[[0.3497991 , 0.240497  , 0.23386185, ..., 0.00583607,
-             0.01114625, 0.01180739],
-            [0.21625957, 0.22582962, 0.27404746, ..., 0.01413637,
-             0.01605362, 0.02861624],
-            [0.21343715, 0.15391256, 0.1240928 , ..., 0.01913997,
-             0.02732791, 0.06749884],
+    array([[[0.30578476, 0.22083062, 0.28495011, ..., 0.00601044,
+             0.01257194, 0.00817836],
+            [0.20336124, 0.22264814, 0.28441703, ..., 0.00559112,
+             0.02342164, 0.03505036],
+            [0.20157108, 0.13497874, 0.1068417 , ..., 0.02194775,
+             0.04301089, 0.07700071],
             ...,
-            [0.00975169, 0.00683461, 0.00614753, ..., 0.00683165,
-             0.00199292, 0.01335612],
-            [0.00809784, 0.00810335, 0.0087291 , ..., 0.00491569,
-             0.00386301, 0.01294566],
-            [0.00524675, 0.01154147, 0.0111153 , ..., 0.0089683 ,
-             0.00496414, 0.00955531]],
+            [0.00973709, 0.00503796, 0.00837925, ..., 0.00031839,
+             0.00376074, 0.02171872],
+            [0.00837886, 0.00856237, 0.01204343, ..., 0.00277543,
+             0.00142006, 0.02297933],
+            [0.00856518, 0.01122371, 0.01542545, ..., 0.00726967,
+             0.00068292, 0.01957845]],
 
-           [[0.05656133, 0.07117188, 0.12068269, ..., 0.03960535,
-             0.02495288, 0.01579268],
-            [0.09063352, 0.06542234, 0.06321717, ..., 0.074268  ,
-             0.04379695, 0.02947565],
-            [0.08322202, 0.05983272, 0.06086417, ..., 0.06582635,
-             0.04827164, 0.05478774],
+           [[0.07469705, 0.09299496, 0.14772725, ..., 0.03957959,
+             0.02613423, 0.01661777],
+            [0.05525584, 0.05894169, 0.07370081, ..., 0.07654878,
+             0.04764543, 0.03578481],
+            [0.10178098, 0.07179623, 0.05917186, ..., 0.07292594,
+             0.04804473, 0.05707282],
     ...
-            [0.02081406, 0.01660735, 0.00927989, ..., 0.00631161,
-             0.00305758, 0.01555643],
-            [0.01103931, 0.01278648, 0.0059051 , ..., 0.00733566,
-             0.00785622, 0.01034456],
-            [0.01053969, 0.01614342, 0.01426238, ..., 0.00684131,
-             0.00470488, 0.00610361]],
+            [0.03130125, 0.03628872, 0.03952755, ..., 0.00169996,
+             0.00723861, 0.00780787],
+            [0.02120653, 0.02419831, 0.04764988, ..., 0.00525496,
+             0.00357877, 0.00879617],
+            [0.01029695, 0.01121287, 0.01648132, ..., 0.00856866,
+             0.00248022, 0.00702397]],
 
-           [[0.11626446, 0.10056856, 0.11683535, ..., 0.02819041,
-             0.01466341, 0.0131486 ],
-            [0.0842052 , 0.09308649, 0.08042921, ..., 0.0202127 ,
-             0.01330222, 0.02162029],
-            [0.11007892, 0.10168418, 0.07600641, ..., 0.01328301,
-             0.06286687, 0.09713611],
+           [[0.04733023, 0.06280609, 0.06999058, ..., 0.00641829,
+             0.01117368, 0.01003172],
+            [0.02434754, 0.03060355, 0.04246219, ..., 0.01287112,
+             0.01378713, 0.01353737],
+            [0.02164285, 0.02079906, 0.02840142, ..., 0.01395037,
+             0.01381883, 0.01567465],
             ...,
-            [0.02943419, 0.03480869, 0.03886167, ..., 0.00179048,
-             0.01113027, 0.00225721],
-            [0.01721563, 0.02312371, 0.05103515, ..., 0.00179926,
-             0.00703626, 0.00816311],
-            [0.01056776, 0.01323224, 0.01524322, ..., 0.01825097,
-             0.00324418, 0.00379148]]], dtype=float32)
+            [0.01505244, 0.01991274, 0.01542514, ..., 0.15768652,
+             0.14829549, 0.14109968],
+            [0.02350285, 0.02351517, 0.00995847, ..., 0.10264232,
+             0.08775876, 0.0746175 ],
+            [0.0228368 , 0.02192629, 0.01359094, ..., 0.05828236,
+             0.06231741, 0.06846032]]])
 
 VV
 
 (t, y, x)
 
-float32
+float64
 
-0.356 0.356 ... 0.01796 0.02538
+0.2863 0.4197 1.002 ... 1.072 1.145
 
 ![](data:image/svg+xml;base64,PHN2ZyBjbGFzcz0iaWNvbiB4ci1pY29uLWZpbGUtdGV4dDIiPjx1c2UgaHJlZj0iI2ljb24tZmlsZS10ZXh0MiIgLz48L3N2Zz4=)
 
@@ -324,47 +334,47 @@ units :
 grid_mapping :  
 crs
 
-    array([[[0.35600373, 0.3559536 , 0.80896807, ..., 0.3317161 ,
-             0.16445988, 0.04160649],
-            [0.61769664, 0.5578946 , 0.5050262 , ..., 0.22054403,
-             0.10073389, 0.06029705],
-            [0.84790504, 0.6570914 , 0.58305556, ..., 0.16478802,
-             0.05791532, 0.0579203 ],
+    array([[[0.28627682, 0.41974923, 1.00157261, ..., 0.24680357,
+             0.08568972, 0.04044454],
+            [0.67165387, 0.57030499, 0.51492178, ..., 0.1744507 ,
+             0.05387724, 0.0682224 ],
+            [0.76104087, 0.60692006, 0.56552398, ..., 0.12725115,
+             0.05432061, 0.08109142],
             ...,
-            [0.1073544 , 0.10243879, 0.09812227, ..., 0.02534649,
-             0.00922628, 0.01754627],
-            [0.05122279, 0.06052506, 0.06034074, ..., 0.02414759,
-             0.01439755, 0.01660094],
-            [0.04778335, 0.05747797, 0.06184885, ..., 0.02491218,
-             0.02271986, 0.01123959]],
+            [0.08845934, 0.09865014, 0.08305532, ..., 0.01240802,
+             0.00882796, 0.0460228 ],
+            [0.05161391, 0.05707713, 0.04829733, ..., 0.02078906,
+             0.01053583, 0.04757012],
+            [0.0522717 , 0.06540528, 0.06209464, ..., 0.02206398,
+             0.01228463, 0.02849091]],
 
-           [[0.4726906 , 0.47493017, 0.82746756, ..., 0.22725   ,
-             0.10644101, 0.04749625],
-            [0.39489403, 0.413578  , 0.57773596, ..., 0.22964555,
-             0.12250378, 0.06308025],
-            [0.4349608 , 0.4983854 , 0.8121271 , ..., 0.14484774,
-             0.11491019, 0.10635231],
+           [[0.59334594, 0.63139158, 1.20176804, ..., 0.21536502,
+             0.10467153, 0.04661704],
+            [0.36914822, 0.38960469, 0.56326002, ..., 0.23207396,
+             0.13010627, 0.07558577],
+            [0.3913084 , 0.50614417, 0.81718516, ..., 0.14858565,
+             0.11662126, 0.10953296],
     ...
-            [0.10983685, 0.09603946, 0.08231169, ..., 0.07407534,
-             0.02241934, 0.17368278],
-            [0.05511827, 0.04872738, 0.0588784 , ..., 0.10989355,
-             0.01494858, 0.09516722],
-            [0.03997884, 0.03643978, 0.03698706, ..., 0.09584986,
-             0.01911887, 0.03895752]],
+            [0.07546599, 0.08640213, 0.08373421, ..., 0.02884771,
+             0.01888795, 0.0666521 ],
+            [0.05208195, 0.11719208, 0.15254971, ..., 0.03226842,
+             0.01245109, 0.06072526],
+            [0.07249771, 0.09560843, 0.06773217, ..., 0.03674552,
+             0.0215037 , 0.04752812]],
 
-           [[0.54582274, 0.8157599 , 1.0333498 , ..., 0.10145897,
-             0.07532571, 0.0363849 ],
-            [0.5309309 , 0.97571516, 1.3032748 , ..., 0.1301856 ,
-             0.08703941, 0.06910698],
-            [0.2805328 , 0.6426719 , 0.9920144 , ..., 0.13717869,
-             0.18444583, 0.2799541 ],
+           [[0.4608672 , 0.47568667, 0.46542484, ..., 0.10046628,
+             0.07250372, 0.06289441],
+            [0.26003391, 0.32770583, 0.40199661, ..., 0.08007107,
+             0.03525665, 0.04549096],
+            [0.24082465, 0.31407189, 0.37282252, ..., 0.11711237,
+             0.03557625, 0.05282841],
             ...,
-            [0.07433109, 0.08866205, 0.08638017, ..., 0.01586673,
-             0.04167084, 0.0467084 ],
-            [0.06121723, 0.12546135, 0.15904632, ..., 0.01122087,
-             0.02190844, 0.06850047],
-            [0.08498283, 0.09475873, 0.06337849, ..., 0.08210503,
-             0.01796073, 0.02538092]]], dtype=float32)
+            [0.1110431 , 0.10369646, 0.13788435, ..., 0.50082976,
+             0.52201301, 0.47967386],
+            [0.07739844, 0.09985465, 0.10789572, ..., 0.69436234,
+             0.81499875, 0.93010664],
+            [0.12480994, 0.07786189, 0.11251473, ..., 1.06845927,
+             1.07151592, 1.14460146]]])
 
 Indexes: (3)
 
@@ -374,9 +384,10 @@ PandasIndex
 
 ![](data:image/svg+xml;base64,PHN2ZyBjbGFzcz0iaWNvbiB4ci1pY29uLWRhdGFiYXNlIj48dXNlIGhyZWY9IiNpY29uLWRhdGFiYXNlIiAvPjwvc3ZnPg==)
 
-    PandasIndex(DatetimeIndex(['2023-05-03', '2023-05-10', '2023-05-15', '2023-05-22',
-                   '2023-05-27', '2023-06-03', '2023-06-08', '2023-06-15',
-                   '2023-06-20', '2023-06-27'],
+    PandasIndex(DatetimeIndex(['2023-05-03', '2023-05-10', '2023-05-11', '2023-05-15',
+                   '2023-05-22', '2023-05-23', '2023-05-27', '2023-06-03',
+                   '2023-06-04', '2023-06-08', '2023-06-15', '2023-06-16',
+                   '2023-06-20', '2023-06-27', '2023-06-28'],
                   dtype='datetime64[ns]', name='t', freq=None))
 
 x
@@ -427,11 +438,13 @@ ds.coords["t"].values
 ```
 
     array(['2023-05-03T00:00:00.000000000', '2023-05-10T00:00:00.000000000',
-           '2023-05-15T00:00:00.000000000', '2023-05-22T00:00:00.000000000',
+           '2023-05-11T00:00:00.000000000', '2023-05-15T00:00:00.000000000',
+           '2023-05-22T00:00:00.000000000', '2023-05-23T00:00:00.000000000',
            '2023-05-27T00:00:00.000000000', '2023-06-03T00:00:00.000000000',
-           '2023-06-08T00:00:00.000000000', '2023-06-15T00:00:00.000000000',
-           '2023-06-20T00:00:00.000000000', '2023-06-27T00:00:00.000000000'],
-          dtype='datetime64[ns]')
+           '2023-06-04T00:00:00.000000000', '2023-06-08T00:00:00.000000000',
+           '2023-06-15T00:00:00.000000000', '2023-06-16T00:00:00.000000000',
+           '2023-06-20T00:00:00.000000000', '2023-06-27T00:00:00.000000000',
+           '2023-06-28T00:00:00.000000000'], dtype='datetime64[ns]')
 
 A quick plot for visual inspection.
 
@@ -439,7 +452,7 @@ A quick plot for visual inspection.
 ds["VH"].isel(t=0).plot(vmin=0, vmax=0.5)
 ```
 
-![](Sentinel1_Stats_files/figure-html/cell-12-output-1.png)
+![](Sentinel1_Stats_files/figure-html/cell-13-output-1.png)
 
 This section presented a straightforward example of retrieving and analyzing a `S1_GRD_SIGMA0_ASCENDING` data cube from the backend within a defined area of interest during a specified time frame.
 
@@ -507,55 +520,59 @@ job = s1_stats.execute_batch(
 # results.download_files("output/batch_job")
 ```
 
-    0:00:00 Job 'vito-j-231106d381904baaae522c536de54d94': send 'start'
-    0:00:20 Job 'vito-j-231106d381904baaae522c536de54d94': queued (progress N/A)
-    0:00:26 Job 'vito-j-231106d381904baaae522c536de54d94': queued (progress N/A)
-    0:00:33 Job 'vito-j-231106d381904baaae522c536de54d94': queued (progress N/A)
-    0:00:42 Job 'vito-j-231106d381904baaae522c536de54d94': queued (progress N/A)
-    0:00:52 Job 'vito-j-231106d381904baaae522c536de54d94': queued (progress N/A)
-    0:01:05 Job 'vito-j-231106d381904baaae522c536de54d94': queued (progress N/A)
-    0:01:21 Job 'vito-j-231106d381904baaae522c536de54d94': queued (progress N/A)
-    0:01:41 Job 'vito-j-231106d381904baaae522c536de54d94': queued (progress N/A)
-    0:02:05 Job 'vito-j-231106d381904baaae522c536de54d94': queued (progress N/A)
-    0:02:36 Job 'vito-j-231106d381904baaae522c536de54d94': finished (progress N/A)
+    0:00:00 Job 'cdse-j-2607131822044818b59ca5d7a2247f8b': send 'start'
+    0:00:03 Job 'cdse-j-2607131822044818b59ca5d7a2247f8b': queued (progress 0%)
+    0:00:08 Job 'cdse-j-2607131822044818b59ca5d7a2247f8b': queued (progress 0%)
+    0:00:15 Job 'cdse-j-2607131822044818b59ca5d7a2247f8b': queued (progress 0%)
+    0:00:23 Job 'cdse-j-2607131822044818b59ca5d7a2247f8b': queued (progress 0%)
+    0:00:33 Job 'cdse-j-2607131822044818b59ca5d7a2247f8b': queued (progress 0%)
+    0:00:46 Job 'cdse-j-2607131822044818b59ca5d7a2247f8b': queued (progress 0%)
+    0:01:01 Job 'cdse-j-2607131822044818b59ca5d7a2247f8b': queued (progress 0%)
+    0:01:21 Job 'cdse-j-2607131822044818b59ca5d7a2247f8b': running (progress N/A)
+    0:01:45 Job 'cdse-j-2607131822044818b59ca5d7a2247f8b': running (progress N/A)
+    0:02:15 Job 'cdse-j-2607131822044818b59ca5d7a2247f8b': running (progress N/A)
+    0:02:52 Job 'cdse-j-2607131822044818b59ca5d7a2247f8b': running (progress N/A)
+    0:03:39 Job 'cdse-j-2607131822044818b59ca5d7a2247f8b': finished (progress 100%)
 
 ``` python
 assets = job.get_results().get_assets()
 print(assets[0].href)
 ```
 
-    https://openeo.vito.be/openeo/1.1/jobs/j-231106d381904baaae522c536de54d94/results/assets/MjUyNTRjNGRiMTkzMGNhNzQwNjg0OTJmM2NhOWIyZjM0N2JhMWU3ZTI0ZTAzY2U0OTMzOTlmZWE1NmVhOTQzN0BlZ2kuZXU%3D/2b1da7b8285e21cfcb5367297761fd95/openEO.nc?expires=1699889359
+    https://s3.waw3-1.openeo.v1.dataspace.copernicus.eu/openeo-data-prod-waw4-1/batch_jobs/j-2607131822044818b59ca5d7a2247f8b/openEO.nc?X-Proxy-Head-As-Get=true&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=92e5a22641de41939bd6e0089c8504c2%2F20260713%2Fwaw4-1%2Fs3%2Faws4_request&X-Amz-Date=20260713T182545Z&X-Amz-Expires=86400&X-Amz-SignedHeaders=host&X-Amz-Security-Token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2FybiI6ImFybjpvcGVuZW93czppYW06Ojpyb2xlL29wZW5lby1kYXRhLXByb2Qtd2F3NC0xLXdvcmtzcGFjZSIsImluaXRpYWxfaXNzdWVyIjoib3BlbmVvLnByb2Qud2F3My0xLm9wZW5lby1pbnQudjEuZGF0YXNwYWNlLmNvcGVybmljdXMuZXUiLCJodHRwczovL2F3cy5hbWF6b24uY29tL3RhZ3MiOnsicHJpbmNpcGFsX3RhZ3MiOnsiam9iX2lkIjpbImotMjYwNzEzMTgyMjA0NDgxOGI1OWNhNWQ3YTIyNDdmOGIiXSwidXNlcl9pZCI6WyIzZTI0ZTI1MS0yZTlhLTQzOGYtOTBhOS1kNDUwMGU1NzY1NzQiXX0sInRyYW5zaXRpdmVfdGFnX2tleXMiOlsidXNlcl9pZCIsImpvYl9pZCJdfSwiaXNzIjoic3RzLndhdzMtMS5vcGVuZW8udjEuZGF0YXNwYWNlLmNvcGVybmljdXMuZXUiLCJzdWIiOiJvcGVuZW8tZHJpdmVyIiwiZXhwIjoxNzg0MDEwMzQ0LCJuYmYiOjE3ODM5NjcxNDQsImlhdCI6MTc4Mzk2NzE0NCwianRpIjoiNjNmMTliMTAtYzIyNC00YzBlLTk4YzktYmUzNDk3OTI1ODZhIiwiYWNjZXNzX2tleV9pZCI6IjkyZTVhMjI2NDFkZTQxOTM5YmQ2ZTAwODljODUwNGMyIn0.VT7D-agN_LsEmOWF2CYhT5X5KzVPbjvNLDps35XhhgMUKJr8DkmV1g6nNkE0Hwn5Drb0AV46UlNy5qpBrmkeEMe0-w_z5YEGZmpe7TmrobVGTergXODcF_nBIpxJS-YyzNFfLMNjQmX7KKG5ft_4tAQ3nMMzWNJVsIa25-nmpg41qHZYUDj2pO9IQFqBi3o22G29l8vAWBh92Z6FmgDO__7_3Nu43iGwG0KMYXQO8IlgvwoEhFskBExXFHr0aGLVZzB_pK3n3zukhCpn7m1ZAWfV8LUObuNutRMr_VEx89AAy_gZHWEBZ5VlfPuNin3UXFL3ycJjTJ752tsFA9_ATQ&X-Amz-Signature=11f0a73b55323cc5567ca0751f1c804fd6ec9c8600ea5eed28e8de96f28c077d
 
 ``` python
 ds = xarray.load_dataset("S1grd-stats.nc").drop_vars("crs")
 ds
 ```
 
+    sh: line 1: getfattr: command not found
+
 ![](data:image/svg+xml;base64,PHN2ZyBzdHlsZT0icG9zaXRpb246IGFic29sdXRlOyB3aWR0aDogMDsgaGVpZ2h0OiAwOyBvdmVyZmxvdzogaGlkZGVuIj4KPGRlZnM+CjxzeW1ib2wgaWQ9Imljb24tZGF0YWJhc2UiIHZpZXdib3g9IjAgMCAzMiAzMiI+CjxwYXRoIGQ9Ik0xNiAwYy04LjgzNyAwLTE2IDIuMjM5LTE2IDV2NGMwIDIuNzYxIDcuMTYzIDUgMTYgNXMxNi0yLjIzOSAxNi01di00YzAtMi43NjEtNy4xNjMtNS0xNi01eiIgLz4KPHBhdGggZD0iTTE2IDE3Yy04LjgzNyAwLTE2LTIuMjM5LTE2LTV2NmMwIDIuNzYxIDcuMTYzIDUgMTYgNXMxNi0yLjIzOSAxNi01di02YzAgMi43NjEtNy4xNjMgNS0xNiA1eiIgLz4KPHBhdGggZD0iTTE2IDI2Yy04LjgzNyAwLTE2LTIuMjM5LTE2LTV2NmMwIDIuNzYxIDcuMTYzIDUgMTYgNXMxNi0yLjIzOSAxNi01di02YzAgMi43NjEtNy4xNjMgNS0xNiA1eiIgLz4KPC9zeW1ib2w+CjxzeW1ib2wgaWQ9Imljb24tZmlsZS10ZXh0MiIgdmlld2JveD0iMCAwIDMyIDMyIj4KPHBhdGggZD0iTTI4LjY4MSA3LjE1OWMtMC42OTQtMC45NDctMS42NjItMi4wNTMtMi43MjQtMy4xMTZzLTIuMTY5LTIuMDMwLTMuMTE2LTIuNzI0Yy0xLjYxMi0xLjE4Mi0yLjM5My0xLjMxOS0yLjg0MS0xLjMxOWgtMTUuNWMtMS4zNzggMC0yLjUgMS4xMjEtMi41IDIuNXYyN2MwIDEuMzc4IDEuMTIyIDIuNSAyLjUgMi41aDIzYzEuMzc4IDAgMi41LTEuMTIyIDIuNS0yLjV2LTE5LjVjMC0wLjQ0OC0wLjEzNy0xLjIzLTEuMzE5LTIuODQxek0yNC41NDMgNS40NTdjMC45NTkgMC45NTkgMS43MTIgMS44MjUgMi4yNjggMi41NDNoLTQuODExdi00LjgxMWMwLjcxOCAwLjU1NiAxLjU4NCAxLjMwOSAyLjU0MyAyLjI2OHpNMjggMjkuNWMwIDAuMjcxLTAuMjI5IDAuNS0wLjUgMC41aC0yM2MtMC4yNzEgMC0wLjUtMC4yMjktMC41LTAuNXYtMjdjMC0wLjI3MSAwLjIyOS0wLjUgMC41LTAuNSAwIDAgMTUuNDk5LTAgMTUuNSAwdjdjMCAwLjU1MiAwLjQ0OCAxIDEgMWg3djE5LjV6IiAvPgo8cGF0aCBkPSJNMjMgMjZoLTE0Yy0wLjU1MiAwLTEtMC40NDgtMS0xczAuNDQ4LTEgMS0xaDE0YzAuNTUyIDAgMSAwLjQ0OCAxIDFzLTAuNDQ4IDEtMSAxeiIgLz4KPHBhdGggZD0iTTIzIDIyaC0xNGMtMC41NTIgMC0xLTAuNDQ4LTEtMXMwLjQ0OC0xIDEtMWgxNGMwLjU1MiAwIDEgMC40NDggMSAxcy0wLjQ0OCAxLTEgMXoiIC8+CjxwYXRoIGQ9Ik0yMyAxOGgtMTRjLTAuNTUyIDAtMS0wLjQ0OC0xLTFzMC40NDgtMSAxLTFoMTRjMC41NTIgMCAxIDAuNDQ4IDEgMXMtMC40NDggMS0xIDF6IiAvPgo8L3N5bWJvbD4KPC9kZWZzPgo8L3N2Zz4=)
 
 ``` xr-text-repr-fallback
-<xarray.Dataset>
+<xarray.Dataset> Size: 413kB
 Dimensions:  (x: 102, y: 72)
 Coordinates:
-  * x        (x) float64 6.796e+05 6.796e+05 6.797e+05 ... 6.806e+05 6.806e+05
-  * y        (y) float64 5.152e+06 5.152e+06 5.152e+06 ... 5.151e+06 5.151e+06
+  * x        (x) float64 816B 6.796e+05 6.796e+05 ... 6.806e+05 6.806e+05
+  * y        (y) float64 576B 5.152e+06 5.152e+06 ... 5.151e+06 5.151e+06
 Data variables: (12/14)
-    VH_min   (y, x) float32 0.05656 0.07117 0.1168 ... 0.003244 0.003747
-    VH_max   (y, x) float32 0.3573 0.2405 0.2681 ... 0.01825 0.009648 0.01772
-    VH_mean  (y, x) float32 0.1938 0.1531 0.1831 ... 0.01131 0.006023 0.008333
-    VH_sd    (y, x) float32 0.1234 0.05839 0.05198 ... 0.002023 0.004678
-    VH_q10   (y, x) float32 0.05941 0.07411 0.1172 ... 0.003359 0.003751
-    VH_q50   (y, x) float32 0.133 0.1501 0.1768 ... 0.00909 0.005713 0.006541
+    VH_min   (y, x) float32 29kB 0.02674 0.03061 0.02567 ... 0.0006829 0.004903
+    VH_max   (y, x) float32 29kB 0.3667 0.2318 0.3059 ... 0.3418 0.3337 0.3239
+    VH_mean  (y, x) float32 29kB 0.1429 0.115 0.1543 ... 0.06667 0.06222 0.06416
+    VH_sd    (y, x) float32 29kB 0.1133 0.06834 0.1001 ... 0.1083 0.1061 0.09657
+    VH_q10   (y, x) float32 29kB 0.03353 0.0385 0.03229 ... 0.001945 0.007251
+    VH_q50   (y, x) float32 29kB 0.1021 0.1019 0.1477 ... 0.005219 0.01378
     ...       ...
-    VV_max   (y, x) float32 1.072 0.8158 1.447 3.338 ... 0.1091 0.03152 0.07446
-    VV_mean  (y, x) float32 0.5529 0.5677 0.9432 ... 0.05799 0.02198 0.0379
-    VV_sd    (y, x) float32 0.2939 0.1981 0.2196 ... 0.03274 0.007118 0.0214
-    VV_q10   (y, x) float32 0.2752 0.3114 0.7015 ... 0.02147 0.009028 0.01147
-    VV_q50   (y, x) float32 0.4215 0.5806 0.868 1.512 ... 0.06002 0.02159 0.0371
-    VV_q90   (y, x) float32 1.067 0.8109 1.411 3.236 ... 0.1078 0.03147 0.0742
+    VV_max   (y, x) float32 29kB 1.049 0.8286 1.335 2.946 ... 2.422 2.065 1.579
+    VV_mean  (y, x) float32 29kB 0.4665 0.539 0.8925 ... 0.4588 0.4244 0.4193
+    VV_sd    (y, x) float32 29kB 0.2784 0.1475 0.3444 ... 0.7121 0.6607 0.593
+    VV_q10   (y, x) float32 29kB 0.2126 0.3474 0.4901 ... 0.01284 0.02607
+    VV_q50   (y, x) float32 29kB 0.3489 0.5193 0.9696 ... 0.04894 0.0215 0.04818
+    VV_q90   (y, x) float32 29kB 0.9063 0.6914 1.309 2.694 ... 1.286 1.305 1.391
 Attributes:
     Conventions:  CF-1.9
-    institution:  openEO platform - Geotrellis backend: 0.18.0a1
+    institution:  Copernicus Data Space Ecosystem openEO API - 0.73.0a13.dev2...
     description:  
     title:        
 ```
@@ -645,7 +662,7 @@ VH_min
 
 float32
 
-0.05656 0.07117 ... 0.003747
+0.02674 0.03061 ... 0.004903
 
 ![](data:image/svg+xml;base64,PHN2ZyBjbGFzcz0iaWNvbiB4ci1pY29uLWZpbGUtdGV4dDIiPjx1c2UgaHJlZj0iI2ljb24tZmlsZS10ZXh0MiIgLz48L3N2Zz4=)
 
@@ -659,19 +676,19 @@ units :
 grid_mapping :  
 crs
 
-    array([[0.05656133, 0.07117188, 0.11683535, ..., 0.00583607, 0.01081081,
-            0.00508684],
-           [0.07500888, 0.06542234, 0.06321717, ..., 0.01094758, 0.01196851,
-            0.01167572],
-           [0.07982897, 0.05711685, 0.05155696, ..., 0.01328301, 0.027206  ,
-            0.02724834],
+    array([[0.02674182, 0.03060655, 0.02567101, ..., 0.00601044, 0.00778116,
+            0.00501412],
+           [0.02434754, 0.01943763, 0.02222876, ..., 0.00559112, 0.00838348,
+            0.0070325 ],
+           [0.02164285, 0.02079906, 0.01872039, ..., 0.01395037, 0.01381883,
+            0.01567465],
            ...,
-           [0.00846185, 0.00683461, 0.00614753, ..., 0.00179048, 0.00129333,
-            0.00225721],
-           [0.00809784, 0.00810335, 0.0053619 , ..., 0.00179926, 0.00333473,
-            0.00225653],
-           [0.00524675, 0.01053381, 0.01038756, ..., 0.00545653, 0.00324418,
-            0.00374676]], dtype=float32)
+           [0.00795914, 0.00503796, 0.00608822, ..., 0.00031839, 0.00015682,
+            0.00452761],
+           [0.00796834, 0.00705737, 0.00658798, ..., 0.00277543, 0.00119612,
+            0.00067009],
+           [0.00856518, 0.00747212, 0.00880753, ..., 0.0048942 , 0.00068292,
+            0.00490338]], dtype=float32)
 
 VH_max
 
@@ -679,7 +696,7 @@ VH_max
 
 float32
 
-0.3573 0.2405 ... 0.009648 0.01772
+0.3667 0.2318 ... 0.3337 0.3239
 
 ![](data:image/svg+xml;base64,PHN2ZyBjbGFzcz0iaWNvbiB4ci1pY29uLWZpbGUtdGV4dDIiPjx1c2UgaHJlZj0iI2ljb24tZmlsZS10ZXh0MiIgLz48L3N2Zz4=)
 
@@ -693,19 +710,19 @@ units :
 grid_mapping :  
 crs
 
-    array([[0.35734206, 0.240497  , 0.26810205, ..., 0.03960535, 0.04652854,
-            0.03217617],
-           [0.27547497, 0.22582962, 0.27438593, ..., 0.074268  , 0.0501226 ,
-            0.05067734],
-           [0.21343715, 0.15391256, 0.20813324, ..., 0.06582635, 0.06727563,
-            0.09713611],
+    array([[0.3666854 , 0.23177792, 0.3058646 , ..., 0.0439763 , 0.04094   ,
+            0.02975207],
+           [0.21195813, 0.22264814, 0.30923468, ..., 0.07654878, 0.0534571 ,
+            0.04696089],
+           [0.20157108, 0.13497874, 0.17935418, ..., 0.07292594, 0.05113525,
+            0.10425825],
            ...,
-           [0.03269713, 0.03480869, 0.03886167, ..., 0.01295399, 0.01236935,
-            0.02895651],
-           [0.03411233, 0.02388769, 0.05103515, ..., 0.01585265, 0.01147545,
-            0.01942277],
-           [0.02799423, 0.03830879, 0.03787919, ..., 0.01825097, 0.00964783,
-            0.01771976]], dtype=float32)
+           [0.04003721, 0.03628872, 0.03952755, ..., 0.23259598, 0.2580061 ,
+            0.27623877],
+           [0.03373394, 0.02419831, 0.04764988, ..., 0.33312795, 0.33749843,
+            0.36123085],
+           [0.02758772, 0.0249892 , 0.03029031, ..., 0.34179702, 0.3337454 ,
+            0.32388407]], dtype=float32)
 
 VH_mean
 
@@ -713,7 +730,7 @@ VH_mean
 
 float32
 
-0.1938 0.1531 ... 0.006023 0.008333
+0.1429 0.115 ... 0.06222 0.06416
 
 ![](data:image/svg+xml;base64,PHN2ZyBjbGFzcz0iaWNvbiB4ci1pY29uLWZpbGUtdGV4dDIiPjx1c2UgaHJlZj0iI2ljb24tZmlsZS10ZXh0MiIgLz48L3N2Zz4=)
 
@@ -727,19 +744,19 @@ units :
 grid_mapping :  
 crs
 
-    array([[0.19379085, 0.15306295, 0.18312563, ..., 0.02910196, 0.0209428 ,
-            0.01723359],
-           [0.14099422, 0.14379239, 0.18332611, ..., 0.0316726 , 0.02414871,
-            0.02805693],
-           [0.12428942, 0.1015469 , 0.10913865, ..., 0.02867122, 0.04174799,
-            0.06203262],
+    array([[0.14288546, 0.11500914, 0.1542739 , ..., 0.02665137, 0.01882942,
+            0.01449044],
+           [0.09936215, 0.10387021, 0.14328857, ..., 0.02899301, 0.02413673,
+            0.0235579 ],
+           [0.09552318, 0.07660887, 0.08098979, ..., 0.03156895, 0.03469853,
+            0.04495636],
            ...,
-           [0.02315117, 0.02049922, 0.01756792, ..., 0.00845076, 0.00658812,
-            0.01444702],
-           [0.01737622, 0.01484519, 0.01687199, ..., 0.00770858, 0.00725461,
-            0.01071056],
-           [0.01501316, 0.01779779, 0.02084686, ..., 0.01131313, 0.00602277,
-            0.00833274]], dtype=float32)
+           [0.02376825, 0.02101665, 0.01800491, ..., 0.06174954, 0.06418014,
+            0.07215327],
+           [0.01827349, 0.01482338, 0.01564552, ..., 0.06816787, 0.06432707,
+            0.06720016],
+           [0.01598492, 0.01483757, 0.01873437, ..., 0.06667353, 0.0622225 ,
+            0.06415994]], dtype=float32)
 
 VH_sd
 
@@ -747,7 +764,7 @@ VH_sd
 
 float32
 
-0.1234 0.05839 ... 0.004678
+0.1133 0.06834 ... 0.1061 0.09657
 
 ![](data:image/svg+xml;base64,PHN2ZyBjbGFzcz0iaWNvbiB4ci1pY29uLWZpbGUtdGV4dDIiPjx1c2UgaHJlZj0iI2ljb24tZmlsZS10ZXh0MiIgLz48L3N2Zz4=)
 
@@ -761,19 +778,19 @@ units :
 grid_mapping :  
 crs
 
-    array([[0.1234301 , 0.05839253, 0.05198416, ..., 0.01116493, 0.01174154,
-            0.00802417],
-           [0.07352218, 0.0530638 , 0.0823708 , ..., 0.01750424, 0.01386139,
-            0.01197202],
-           [0.05126064, 0.02968998, 0.04590503, ..., 0.01585866, 0.01459462,
-            0.018599  ],
+    array([[0.11326765, 0.06834466, 0.100072  , ..., 0.01225379, 0.00961442,
+            0.00768412],
+           [0.06348489, 0.06585505, 0.1056164 , ..., 0.01743488, 0.01358465,
+            0.01294326],
+           [0.05166667, 0.03636026, 0.04513597, ..., 0.01570882, 0.01219403,
+            0.02381209],
            ...,
-           [0.00902716, 0.010062  , 0.01015026, ..., 0.00390621, 0.00422678,
-            0.00737783],
-           [0.00868381, 0.00717187, 0.01325622, ..., 0.00384475, 0.00265791,
-            0.00501948],
-           [0.00654324, 0.00838748, 0.0088279 , ..., 0.00490586, 0.0020231 ,
-            0.00467761]], dtype=float32)
+           [0.00898491, 0.00823746, 0.00930954, ..., 0.0841855 , 0.09135819,
+            0.08867288],
+           [0.00716817, 0.0061248 , 0.01017574, ..., 0.10467196, 0.10538495,
+            0.10317834],
+           [0.00546202, 0.00567765, 0.00694082, ..., 0.10834996, 0.10610394,
+            0.09657337]], dtype=float32)
 
 VH_q10
 
@@ -781,7 +798,7 @@ VH_q10
 
 float32
 
-0.05941 0.07411 ... 0.003751
+0.03353 0.0385 ... 0.007251
 
 ![](data:image/svg+xml;base64,PHN2ZyBjbGFzcz0iaWNvbiB4ci1pY29uLWZpbGUtdGV4dDIiPjx1c2UgaHJlZj0iI2ljb24tZmlsZS10ZXh0MiIgLz48L3N2Zz4=)
 
@@ -795,19 +812,19 @@ units :
 grid_mapping :  
 crs
 
-    array([[0.05940933, 0.07411155, 0.11722008, ..., 0.00716483, 0.01084435,
-            0.0057589 ],
-           [0.07568569, 0.06818876, 0.06493837, ..., 0.01126646, 0.01207127,
-            0.01214764],
-           [0.08016828, 0.05738844, 0.05248768, ..., 0.01339516, 0.02721819,
-            0.02920248],
+    array([[0.03353042, 0.03850244, 0.03228896, ..., 0.00999628, 0.0090665 ,
+            0.0063625 ],
+           [0.03058114, 0.03268816, 0.03500263, ..., 0.01178256, 0.01240073,
+            0.0118051 ],
+           [0.0348209 , 0.0259043 , 0.0312931 , ..., 0.01518946, 0.01893369,
+            0.02146387],
            ...,
-           [0.00859083, 0.00720239, 0.006311  , ..., 0.00196476, 0.00136329,
-            0.00259918],
-           [0.00819345, 0.00810346, 0.00541622, ..., 0.0021109 , 0.00338756,
-            0.00268728],
-           [0.00577605, 0.01063458, 0.01046034, ..., 0.00556804, 0.00335882,
-            0.00375124]], dtype=float32)
+           [0.01186323, 0.01226142, 0.0081033 , ..., 0.00176324, 0.00373246,
+            0.01022064],
+           [0.00930115, 0.00779835, 0.00810983, ..., 0.0059328 , 0.00201939,
+            0.00809731],
+           [0.01025093, 0.00794533, 0.01099781, ..., 0.00728927, 0.00194547,
+            0.00725082]], dtype=float32)
 
 VH_q50
 
@@ -815,7 +832,7 @@ VH_q50
 
 float32
 
-0.133 0.1501 ... 0.005713 0.006541
+0.1021 0.1019 ... 0.005219 0.01378
 
 ![](data:image/svg+xml;base64,PHN2ZyBjbGFzcz0iaWNvbiB4ci1pY29uLWZpbGUtdGV4dDIiPjx1c2UgaHJlZj0iI2ljb24tZmlsZS10ZXh0MiIgLz48L3N2Zz4=)
 
@@ -829,19 +846,19 @@ units :
 grid_mapping :  
 crs
 
-    array([[0.13300729, 0.15007433, 0.17675401, ..., 0.03204274, 0.01529548,
-            0.01519107],
-           [0.09407672, 0.13539955, 0.17731631, ..., 0.03274555, 0.0182677 ,
-            0.02632112],
-           [0.10193632, 0.10380882, 0.10318546, ..., 0.02546695, 0.03829441,
-            0.06536277],
+    array([[0.10211158, 0.1019193 , 0.14772725, ..., 0.02832318, 0.01862846,
+            0.01214658],
+           [0.08645285, 0.09305815, 0.15053682, ..., 0.02688267, 0.02116134,
+            0.01902985],
+           [0.09481071, 0.08545977, 0.07932476, ..., 0.02895101, 0.03637188,
+            0.03904133],
            ...,
-           [0.02484563, 0.01899279, 0.01615147, ..., 0.00888117, 0.00703254,
-            0.01407467],
-           [0.01674017, 0.01109307, 0.01389441, ..., 0.00752113, 0.00739714,
-            0.01085477],
-           [0.01335989, 0.01628395, 0.02012532, ..., 0.00908964, 0.00571314,
-            0.00654103]], dtype=float32)
+           [0.02471455, 0.02156118, 0.01542514, ..., 0.00869222, 0.00739777,
+            0.02117217],
+           [0.01880951, 0.01355901, 0.01245657, ..., 0.00900793, 0.00728122,
+            0.01722938],
+           [0.01388785, 0.01467958, 0.01659229, ..., 0.01092308, 0.00521852,
+            0.01378132]], dtype=float32)
 
 VH_q90
 
@@ -849,7 +866,7 @@ VH_q90
 
 float32
 
-0.3566 0.2373 ... 0.009549 0.01733
+0.2987 0.215 ... 0.2179 0.1921
 
 ![](data:image/svg+xml;base64,PHN2ZyBjbGFzcz0iaWNvbiB4ci1pY29uLWZpbGUtdGV4dDIiPjx1c2UgaHJlZj0iI2ljb24tZmlsZS10ZXh0MiIgLz48L3N2Zz4=)
 
@@ -863,19 +880,19 @@ units :
 grid_mapping :  
 crs
 
-    array([[0.35658777, 0.23734617, 0.26467803, ..., 0.03950901, 0.0454438 ,
-            0.03181273],
-           [0.26955342, 0.22517808, 0.27435207, ..., 0.0703794 , 0.04949003,
-            0.05011839],
-           [0.21303499, 0.15208827, 0.20175149, ..., 0.06331098, 0.06683476,
-            0.09504365],
+    array([[0.29867756, 0.21499813, 0.28266963, ..., 0.04046655, 0.03015675,
+            0.026499  ],
+           [0.19474691, 0.19185518, 0.29532525, ..., 0.0421317 , 0.04530496,
+            0.04015889],
+           [0.16524318, 0.11452919, 0.1298617 , ..., 0.04846318, 0.04770849,
+            0.07075449],
            ...,
-           [0.03268131, 0.0345371 , 0.03776738, ..., 0.01293681, 0.01228781,
-            0.02810093],
-           [0.03357601, 0.02388243, 0.04815632, ..., 0.01540591, 0.01140328,
-            0.01917945],
-           [0.02728007, 0.0370444 , 0.03717419, ..., 0.01816397, 0.00954943,
-            0.01732791]], dtype=float32)
+           [0.03293557, 0.02840455, 0.03003761, ..., 0.18306498, 0.1981852 ,
+            0.20082626],
+           [0.0245586 , 0.02267605, 0.02323536, ..., 0.22076672, 0.21559213,
+            0.19790171],
+           [0.02199888, 0.02201751, 0.02875963, ..., 0.23092027, 0.21794802,
+            0.19206661]], dtype=float32)
 
 VV_min
 
@@ -883,7 +900,7 @@ VV_min
 
 float32
 
-0.2706 0.3071 ... 0.008148 0.01124
+0.1402 0.2987 ... 0.007998 0.01725
 
 ![](data:image/svg+xml;base64,PHN2ZyBjbGFzcz0iaWNvbiB4ci1pY29uLWZpbGUtdGV4dDIiPjx1c2UgaHJlZj0iI2ljb24tZmlsZS10ZXh0MiIgLz48L3N2Zz4=)
 
@@ -897,19 +914,19 @@ units :
 grid_mapping :  
 crs
 
-    array([[0.27061334, 0.3071222 , 0.695984  , ..., 0.10145897, 0.06688334,
-            0.02374299],
-           [0.22295584, 0.20867158, 0.395954  , ..., 0.09766635, 0.06968673,
-            0.05215759],
-           [0.2805328 , 0.3170197 , 0.28509635, ..., 0.10177591, 0.05791532,
-            0.0579203 ],
+    array([[0.14019679, 0.29865152, 0.28363422, ..., 0.06331535, 0.03262557,
+            0.01858132],
+           [0.16940908, 0.31863624, 0.24485376, ..., 0.07898029, 0.03525665,
+            0.02794796],
+           [0.24082465, 0.28383112, 0.24884047, ..., 0.09419372, 0.03557625,
+            0.0369344 ],
            ...,
-           [0.05919972, 0.04508727, 0.04939938, ..., 0.01586673, 0.00922628,
-            0.01754627],
-           [0.01951935, 0.04062539, 0.0460576 , ..., 0.01122087, 0.01439755,
-            0.01660094],
-           [0.03997884, 0.03643978, 0.03698706, ..., 0.02123374, 0.00814751,
-            0.01123959]], dtype=float32)
+           [0.04434901, 0.05066326, 0.0458343 , ..., 0.01240802, 0.00370447,
+            0.02267214],
+           [0.03579092, 0.04549251, 0.04555964, ..., 0.01389879, 0.00963537,
+            0.02748128],
+           [0.03958815, 0.03769322, 0.03675687, ..., 0.02074386, 0.0079982 ,
+            0.01724508]], dtype=float32)
 
 VV_max
 
@@ -917,7 +934,7 @@ VV_max
 
 float32
 
-1.072 0.8158 ... 0.03152 0.07446
+1.049 0.8286 1.335 ... 2.065 1.579
 
 ![](data:image/svg+xml;base64,PHN2ZyBjbGFzcz0iaWNvbiB4ci1pY29uLWZpbGUtdGV4dDIiPjx1c2UgaHJlZj0iI2ljb24tZmlsZS10ZXh0MiIgLz48L3N2Zz4=)
 
@@ -931,19 +948,19 @@ units :
 grid_mapping :  
 crs
 
-    array([[1.0719821 , 0.8157599 , 1.4465231 , ..., 0.33690315, 0.19723721,
-            0.07042488],
-           [0.8385794 , 0.97571516, 1.3032748 , ..., 0.2828829 , 0.12840499,
-            0.11779951],
-           [0.84790504, 0.66477776, 0.9920144 , ..., 0.2696955 , 0.18787171,
-            0.2799541 ],
+    array([[1.0493535 , 0.82862014, 1.3347877 , ..., 0.25439578, 0.1374378 ,
+            0.09287846],
+           [0.72565496, 0.96587086, 1.2862892 , ..., 0.23207396, 0.13379517,
+            0.11052042],
+           [0.7708433 , 0.724252  , 0.92534196, ..., 0.3143082 , 0.24172042,
+            0.19969708],
            ...,
-           [0.15173328, 0.21506543, 0.2475289 , ..., 0.07407534, 0.10700826,
-            0.17368278],
-           [0.12819055, 0.31527394, 0.30131364, ..., 0.10989355, 0.06801304,
-            0.09516722],
-           [0.22751552, 0.40916196, 0.44688013, ..., 0.10911988, 0.03151594,
-            0.07445894]], dtype=float32)
+           [0.18325597, 0.1907593 , 0.29473734, ..., 1.6887966 , 2.0245907 ,
+            2.1313047 ],
+           [0.1463719 , 0.2585449 , 0.27819204, ..., 2.6331792 , 2.714679  ,
+            2.5341723 ],
+           [0.29118454, 0.36602065, 0.37356612, ..., 2.4218872 , 2.0654576 ,
+            1.5792611 ]], dtype=float32)
 
 VV_mean
 
@@ -951,7 +968,7 @@ VV_mean
 
 float32
 
-0.5529 0.5677 ... 0.02198 0.0379
+0.4665 0.539 ... 0.4244 0.4193
 
 ![](data:image/svg+xml;base64,PHN2ZyBjbGFzcz0iaWNvbiB4ci1pY29uLWZpbGUtdGV4dDIiPjx1c2UgaHJlZj0iI2ljb24tZmlsZS10ZXh0MiIgLz48L3N2Zz4=)
 
@@ -965,19 +982,19 @@ units :
 grid_mapping :  
 crs
 
-    array([[0.5528725 , 0.5677464 , 0.943177  , ..., 0.18943602, 0.10289548,
-            0.04630637],
-           [0.5078519 , 0.53124654, 0.6385149 , ..., 0.16875158, 0.10148996,
-            0.07470229],
-           [0.55347466, 0.5266556 , 0.5807746 , ..., 0.16240971, 0.12200638,
-            0.15296336],
+    array([[0.46648738, 0.53899664, 0.8925202 , ..., 0.13969284, 0.0759951 ,
+            0.05299051],
+           [0.45733884, 0.49542317, 0.56161284, ..., 0.14232773, 0.0816595 ,
+            0.06533601],
+           [0.49459115, 0.4776926 , 0.50387233, ..., 0.15782706, 0.10720854,
+            0.11489608],
            ...,
-           [0.09600382, 0.10248156, 0.10659529, ..., 0.0411635 , 0.0423783 ,
-            0.06334069],
-           [0.06717557, 0.10029311, 0.11722443, ..., 0.04212674, 0.03074012,
-            0.05524332],
-           [0.09754252, 0.12261887, 0.12331397, ..., 0.05799466, 0.02197856,
-            0.03790025]], dtype=float32)
+           [0.10469471, 0.10448772, 0.11769362, ..., 0.31995645, 0.3485685 ,
+            0.3862137 ],
+           [0.07841541, 0.09408469, 0.10966484, ..., 0.41748032, 0.4250287 ,
+            0.45460498],
+           [0.11616257, 0.10161167, 0.10746226, ..., 0.4588026 , 0.42443722,
+            0.41931656]], dtype=float32)
 
 VV_sd
 
@@ -985,7 +1002,7 @@ VV_sd
 
 float32
 
-0.2939 0.1981 ... 0.007118 0.0214
+0.2784 0.1475 ... 0.6607 0.593
 
 ![](data:image/svg+xml;base64,PHN2ZyBjbGFzcz0iaWNvbiB4ci1pY29uLWZpbGUtdGV4dDIiPjx1c2UgaHJlZj0iI2ljb24tZmlsZS10ZXh0MiIgLz48L3N2Zz4=)
 
@@ -999,19 +1016,19 @@ units :
 grid_mapping :  
 crs
 
-    array([[0.29392862, 0.19808702, 0.21960482, ..., 0.08753916, 0.04366262,
-            0.0147506 ],
-           [0.20480074, 0.21877526, 0.280819  , ..., 0.06148675, 0.01930615,
-            0.02179322],
-           [0.20626569, 0.12942038, 0.19957876, ..., 0.05477447, 0.04675601,
-            0.07778829],
+    array([[0.27841237, 0.14745179, 0.34437087, ..., 0.06012796, 0.02991889,
+            0.02088385],
+           [0.16951475, 0.17175552, 0.26635963, ..., 0.04731377, 0.03447982,
+            0.02140912],
+           [0.17129715, 0.13476618, 0.1936407 , ..., 0.06078154, 0.05113195,
+            0.04449951],
            ...,
-           [0.02826963, 0.04480741, 0.05676578, ..., 0.02299318, 0.03381887,
-            0.04750483],
-           [0.03085829, 0.07947312, 0.07652301, ..., 0.03100377, 0.01888482,
-            0.02674902],
-           [0.05362873, 0.10700163, 0.1192916 , ..., 0.0327389 , 0.00711785,
-            0.021403  ]], dtype=float32)
+           [0.04057432, 0.03630581, 0.06312171, ..., 0.5146163 , 0.59392166,
+            0.5953689 ],
+           [0.0369882 , 0.05282037, 0.06334678, ..., 0.7285251 , 0.7573787 ,
+            0.71854514],
+           [0.06417554, 0.07890163, 0.08239751, ..., 0.71209246, 0.66065097,
+            0.5929938 ]], dtype=float32)
 
 VV_q10
 
@@ -1019,7 +1036,7 @@ VV_q10
 
 float32
 
-0.2752 0.3114 ... 0.009028 0.01147
+0.2126 0.3474 ... 0.01284 0.02607
 
 ![](data:image/svg+xml;base64,PHN2ZyBjbGFzcz0iaWNvbiB4ci1pY29uLWZpbGUtdGV4dDIiPjx1c2UgaHJlZj0iI2ljb24tZmlsZS10ZXh0MiIgLz48L3N2Zz4=)
 
@@ -1033,19 +1050,19 @@ units :
 grid_mapping :  
 crs
 
-    array([[0.2751771 , 0.31138933, 0.7014966 , ..., 0.10362278, 0.06716368,
-            0.02494995],
-           [0.22528493, 0.22181997, 0.39913344, ..., 0.09886947, 0.07085913,
-            0.05229818],
-           [0.2871844 , 0.32297683, 0.2972333 , ..., 0.10357276, 0.0590695 ,
-            0.06047119],
+    array([[0.21261172, 0.34743842, 0.49005735, ..., 0.08692311, 0.04234186,
+            0.03029387],
+           [0.27373675, 0.3255348 , 0.32698345, ..., 0.0881958 , 0.04158782,
+            0.04459156],
+           [0.31633413, 0.33494526, 0.30596238, ..., 0.10867397, 0.050297  ,
+            0.05588451],
            ...,
-           [0.05939193, 0.04718   , 0.05108054, ..., 0.01605947, 0.0092452 ,
-            0.0176414 ],
-           [0.02235149, 0.04143558, 0.04733969, ..., 0.01158348, 0.01445265,
-            0.01682445],
-           [0.0407593 , 0.0385436 , 0.03947324, ..., 0.02146513, 0.00902846,
-            0.01147327]], dtype=float32)
+           [0.06260646, 0.07090059, 0.05708602, ..., 0.02009165, 0.01006144,
+            0.04484886],
+           [0.04793053, 0.05190809, 0.04691131, ..., 0.02068214, 0.01119935,
+            0.03875778],
+           [0.04816738, 0.05794685, 0.05891509, ..., 0.02165532, 0.01283511,
+            0.02606884]], dtype=float32)
 
 VV_q50
 
@@ -1053,7 +1070,7 @@ VV_q50
 
 float32
 
-0.4215 0.5806 ... 0.02159 0.0371
+0.3489 0.5193 ... 0.0215 0.04818
 
 ![](data:image/svg+xml;base64,PHN2ZyBjbGFzcz0iaWNvbiB4ci1pY29uLWZpbGUtdGV4dDIiPjx1c2UgaHJlZj0iI2ljb24tZmlsZS10ZXh0MiIgLz48L3N2Zz4=)
 
@@ -1067,19 +1084,19 @@ units :
 grid_mapping :  
 crs
 
-    array([[0.42152   , 0.5805598 , 0.86803246, ..., 0.14398697, 0.09079412,
-            0.04239713],
-           [0.556627  , 0.50202835, 0.5410211 , ..., 0.15162778, 0.09911549,
-            0.06609362],
-           [0.48160863, 0.5312781 , 0.56976897, ..., 0.14168528, 0.1205292 ,
-            0.12686422],
+    array([[0.3488692 , 0.5192621 , 0.969603  , ..., 0.12270404, 0.07250372,
+            0.04695785],
+           [0.44175318, 0.4679004 , 0.5149218 , ..., 0.1301802 , 0.07635964,
+            0.06538481],
+           [0.4275158 , 0.4543993 , 0.48266268, ..., 0.14400242, 0.10413335,
+            0.12262902],
            ...,
-           [0.09715581, 0.0989629 , 0.08927221, ..., 0.03616992, 0.03204508,
-            0.04744019],
-           [0.05867583, 0.08330473, 0.10578761, ..., 0.03562438, 0.02128811,
-            0.06257379],
-           [0.08331519, 0.09137604, 0.07936722, ..., 0.06001542, 0.02159299,
-            0.03710367]], dtype=float32)
+           [0.0974353 , 0.09865014, 0.10969326, ..., 0.0393924 , 0.0395264 ,
+            0.10231223],
+           [0.06333554, 0.08768404, 0.10789572, ..., 0.03861215, 0.0284642 ,
+            0.06759839],
+           [0.10041548, 0.07786189, 0.08261804, ..., 0.04893823, 0.0215037 ,
+            0.04818135]], dtype=float32)
 
 VV_q90
 
@@ -1087,7 +1104,7 @@ VV_q90
 
 float32
 
-1.067 0.8109 ... 0.03147 0.0742
+0.9063 0.6914 1.309 ... 1.305 1.391
 
 ![](data:image/svg+xml;base64,PHN2ZyBjbGFzcz0iaWNvbiB4ci1pY29uLWZpbGUtdGV4dDIiPjx1c2UgaHJlZj0iI2ljb24tZmlsZS10ZXh0MiIgLz48L3N2Zz4=)
 
@@ -1101,19 +1118,19 @@ units :
 grid_mapping :  
 crs
 
-    array([[1.0667812 , 0.81092757, 1.4112619 , ..., 0.33638445, 0.19395947,
-            0.07008593],
-           [0.82598644, 0.95338386, 1.2640164 , ..., 0.27755916, 0.12781487,
-            0.11575763],
-           [0.8462007 , 0.6643335 , 0.97402567, ..., 0.26723295, 0.18752912,
-            0.2781414 ],
+    array([[0.9063469 , 0.6913692 , 1.3087583 , ..., 0.23422815, 0.11266159,
+            0.07735866],
+           [0.69916624, 0.64584655, 0.85971904, ..., 0.20752184, 0.1306962 ,
+            0.0891365 ],
+           [0.7468773 , 0.65454054, 0.7554172 , ..., 0.24152495, 0.15977135,
+            0.1656553 ],
            ...,
-           [0.14797401, 0.20554605, 0.23791873, ..., 0.07333827, 0.10493214,
-            0.16572711],
-           [0.12596807, 0.2962927 , 0.2870869 , ..., 0.10658363, 0.06703736,
-            0.09342997],
-           [0.21806926, 0.3837865 , 0.41725355, ..., 0.10779288, 0.03146961,
-            0.07420164]], dtype=float32)
+           [0.1680559 , 0.14842111, 0.17786023, ..., 1.0161972 , 1.0729179 ,
+            1.0630019 ],
+           [0.13973843, 0.13285719, 0.1529504 , ..., 1.1123298 , 1.1440662 ,
+            1.2479637 ],
+           [0.16913494, 0.13975853, 0.16091974, ..., 1.285539  , 1.3047844 ,
+            1.3909923 ]], dtype=float32)
 
 Indexes: (2)
 
@@ -1156,17 +1173,11 @@ Conventions :
 CF-1.9
 
 institution :  
-openEO platform - Geotrellis backend: 0.18.0a1
+Copernicus Data Space Ecosystem openEO API - 0.73.0a13.dev20260622+3737
 
 description :  
 
 title :  
-
-``` python
-ds[["VH_mean", "VV_mean"]].to_array().plot.imshow(col="variable", vmin=0, vmax=1)
-```
-
-![](Sentinel1_Stats_files/figure-html/cell-18-output-1.png)
 
 ## Build S1 SAR stats UDP
 
@@ -1201,11 +1212,12 @@ spatial_extent = Parameter(
 
 ``` python
 s1_raw = connection.load_collection(
-    collection_id="S1_GRD_SIGMA0_ASCENDING",
+    collection_id="SENTINEL1_GRD",
     temporal_extent=temporal_extent,
     spatial_extent=spatial_extent,
     bands=["VH", "VV"],
 )
+s1_raw = s1_raw.sar_backscatter(coefficient="sigma0-ellipsoid")
 
 # Unlike above, where we defined the `apply_dimension` process
 # through a regular python function, we do it here compactily with a single "lambda".
@@ -1241,13 +1253,9 @@ udp_sar = connection.save_user_defined_process(
 )
 ```
 
-When saving a process, please note that saved processes are private by default, nonetheless can be used multiple times by an individual. Therefore, to share with a large audience, you will need a public URL that can be achieved once the process is saved as public.
+    Preflight process graph validation raised: [UpstreamValidationInfo] Backend 'cdse' reported validation errors [ProcessParameterRequired] Process 'n/a' parameter 'spatial_extent' is required.
 
-``` python
-public_url, _ = [
-    l["href"] for l in udp_sar.describe()["links"] if l["rel"] == "canonical"
-]
-```
+When saving a process, please note that saved processes are private by default, nonetheless can be used multiple times by an individual. Therefore, to share with a large audience, you will need a public URL that can be achieved once the process is saved as public.
 
 ## Use the saved UDP in the Python Client
 
@@ -1273,28 +1281,30 @@ ds = xarray.load_dataset("sar_udp.nc").drop_vars("crs")
 ds
 ```
 
+    sh: line 1: getfattr: command not found
+
 ![](data:image/svg+xml;base64,PHN2ZyBzdHlsZT0icG9zaXRpb246IGFic29sdXRlOyB3aWR0aDogMDsgaGVpZ2h0OiAwOyBvdmVyZmxvdzogaGlkZGVuIj4KPGRlZnM+CjxzeW1ib2wgaWQ9Imljb24tZGF0YWJhc2UiIHZpZXdib3g9IjAgMCAzMiAzMiI+CjxwYXRoIGQ9Ik0xNiAwYy04LjgzNyAwLTE2IDIuMjM5LTE2IDV2NGMwIDIuNzYxIDcuMTYzIDUgMTYgNXMxNi0yLjIzOSAxNi01di00YzAtMi43NjEtNy4xNjMtNS0xNi01eiIgLz4KPHBhdGggZD0iTTE2IDE3Yy04LjgzNyAwLTE2LTIuMjM5LTE2LTV2NmMwIDIuNzYxIDcuMTYzIDUgMTYgNXMxNi0yLjIzOSAxNi01di02YzAgMi43NjEtNy4xNjMgNS0xNiA1eiIgLz4KPHBhdGggZD0iTTE2IDI2Yy04LjgzNyAwLTE2LTIuMjM5LTE2LTV2NmMwIDIuNzYxIDcuMTYzIDUgMTYgNXMxNi0yLjIzOSAxNi01di02YzAgMi43NjEtNy4xNjMgNS0xNiA1eiIgLz4KPC9zeW1ib2w+CjxzeW1ib2wgaWQ9Imljb24tZmlsZS10ZXh0MiIgdmlld2JveD0iMCAwIDMyIDMyIj4KPHBhdGggZD0iTTI4LjY4MSA3LjE1OWMtMC42OTQtMC45NDctMS42NjItMi4wNTMtMi43MjQtMy4xMTZzLTIuMTY5LTIuMDMwLTMuMTE2LTIuNzI0Yy0xLjYxMi0xLjE4Mi0yLjM5My0xLjMxOS0yLjg0MS0xLjMxOWgtMTUuNWMtMS4zNzggMC0yLjUgMS4xMjEtMi41IDIuNXYyN2MwIDEuMzc4IDEuMTIyIDIuNSAyLjUgMi41aDIzYzEuMzc4IDAgMi41LTEuMTIyIDIuNS0yLjV2LTE5LjVjMC0wLjQ0OC0wLjEzNy0xLjIzLTEuMzE5LTIuODQxek0yNC41NDMgNS40NTdjMC45NTkgMC45NTkgMS43MTIgMS44MjUgMi4yNjggMi41NDNoLTQuODExdi00LjgxMWMwLjcxOCAwLjU1NiAxLjU4NCAxLjMwOSAyLjU0MyAyLjI2OHpNMjggMjkuNWMwIDAuMjcxLTAuMjI5IDAuNS0wLjUgMC41aC0yM2MtMC4yNzEgMC0wLjUtMC4yMjktMC41LTAuNXYtMjdjMC0wLjI3MSAwLjIyOS0wLjUgMC41LTAuNSAwIDAgMTUuNDk5LTAgMTUuNSAwdjdjMCAwLjU1MiAwLjQ0OCAxIDEgMWg3djE5LjV6IiAvPgo8cGF0aCBkPSJNMjMgMjZoLTE0Yy0wLjU1MiAwLTEtMC40NDgtMS0xczAuNDQ4LTEgMS0xaDE0YzAuNTUyIDAgMSAwLjQ0OCAxIDFzLTAuNDQ4IDEtMSAxeiIgLz4KPHBhdGggZD0iTTIzIDIyaC0xNGMtMC41NTIgMC0xLTAuNDQ4LTEtMXMwLjQ0OC0xIDEtMWgxNGMwLjU1MiAwIDEgMC40NDggMSAxcy0wLjQ0OCAxLTEgMXoiIC8+CjxwYXRoIGQ9Ik0yMyAxOGgtMTRjLTAuNTUyIDAtMS0wLjQ0OC0xLTFzMC40NDgtMSAxLTFoMTRjMC41NTIgMCAxIDAuNDQ4IDEgMXMtMC40NDggMS0xIDF6IiAvPgo8L3N5bWJvbD4KPC9kZWZzPgo8L3N2Zz4=)
 
 ``` xr-text-repr-fallback
-<xarray.Dataset>
+<xarray.Dataset> Size: 25MB
 Dimensions:  (x: 798, y: 558)
 Coordinates:
-  * x        (x) float64 4.857e+05 4.857e+05 4.857e+05 ... 4.936e+05 4.936e+05
-  * y        (y) float64 4.922e+06 4.922e+06 4.922e+06 ... 4.916e+06 4.916e+06
+  * x        (x) float64 6kB 4.857e+05 4.857e+05 ... 4.936e+05 4.936e+05
+  * y        (y) float64 4kB 4.922e+06 4.922e+06 ... 4.916e+06 4.916e+06
 Data variables: (12/14)
-    VH_min   (y, x) float32 0.007442 0.01634 0.02477 ... 0.0002788 0.0003386
-    VH_max   (y, x) float32 0.03604 0.0584 0.08822 ... 0.003115 0.006632
-    VH_mean  (y, x) float32 0.01978 0.03318 0.05122 ... 0.001801 0.003237
-    VH_sd    (y, x) float32 0.009419 0.01686 0.0247 ... 0.0009503 0.00193
-    VH_q10   (y, x) float32 0.007442 0.01634 0.02477 ... 0.0002788 0.0003386
-    VH_q50   (y, x) float32 0.01642 0.02946 0.04615 ... 0.001851 0.003168
+    VH_min   (y, x) float32 2MB 0.005179 0.0006744 ... 0.0002321 0.0003233
+    VH_max   (y, x) float32 2MB 0.0437 0.0614 0.08774 ... 0.1194 0.0495 0.0811
+    VH_mean  (y, x) float32 2MB 0.01742 0.01655 0.02166 ... 0.004266 0.005588
+    VH_sd    (y, x) float32 2MB 0.009777 0.01646 0.02353 ... 0.009046 0.01441
+    VH_q10   (y, x) float32 2MB 0.008391 0.002142 ... 0.0004121 0.000853
+    VH_q50   (y, x) float32 2MB 0.01468 0.01079 0.01708 ... 0.001963 0.002638
     ...       ...
-    VV_max   (y, x) float32 0.2145 0.352 0.4421 ... 0.02347 0.02271 0.04126
-    VV_mean  (y, x) float32 0.09626 0.1365 0.1872 ... 0.01012 0.01103 0.01548
-    VV_sd    (y, x) float32 0.05409 0.09378 0.1112 ... 0.006371 0.006519 0.01286
-    VV_q10   (y, x) float32 0.03823 0.0581 0.09845 ... 0.003309 0.002925
-    VV_q50   (y, x) float32 0.08684 0.1051 0.1579 ... 0.008462 0.009489 0.01156
-    VV_q90   (y, x) float32 0.2145 0.352 0.4421 ... 0.02347 0.02271 0.04126
+    VV_max   (y, x) float32 2MB 0.2511 0.3178 0.4048 ... 1.687 0.2311 0.05796
+    VV_mean  (y, x) float32 2MB 0.07481 0.06502 0.07854 ... 0.02349 0.02043
+    VV_sd    (y, x) float32 2MB 0.04468 0.06506 0.08718 ... 0.0407 0.01377
+    VV_q10   (y, x) float32 2MB 0.0343 0.01257 0.006335 ... 0.005751 0.007017
+    VV_q50   (y, x) float32 2MB 0.06718 0.03864 0.04281 ... 0.01496 0.01626
+    VV_q90   (y, x) float32 2MB 0.113 0.1201 0.1538 ... 0.03544 0.03565 0.03735
 Attributes:
     Conventions:  CF-1.9
     institution:  openEO platform
@@ -1363,7 +1373,7 @@ VH_min
 
 float32
 
-0.007442 0.01634 ... 0.0003386
+0.005179 0.0006744 ... 0.0003233
 
 ![](data:image/svg+xml;base64,PHN2ZyBjbGFzcz0iaWNvbiB4ci1pY29uLWZpbGUtdGV4dDIiPjx1c2UgaHJlZj0iI2ljb24tZmlsZS10ZXh0MiIgLz48L3N2Zz4=)
 
@@ -1377,19 +1387,19 @@ units :
 grid_mapping :  
 crs
 
-    array([[7.4415309e-03, 1.6343007e-02, 2.4772413e-02, ..., 5.5835072e-02,
-            4.0328607e-02, 3.1856596e-02],
-           [9.0845078e-03, 1.8613091e-02, 3.0874813e-02, ..., 5.9993275e-02,
-            5.3687811e-02, 4.7377892e-02],
-           [1.0651190e-02, 1.9190351e-02, 3.1387392e-02, ..., 8.2894199e-02,
-            7.3106125e-02, 4.1296154e-02],
+    array([[5.1790150e-03, 6.7435059e-04, 3.5491666e-05, ..., 1.4843310e-03,
+            6.5751430e-03, 8.2683116e-03],
+           [2.6808402e-03, 6.8866118e-04, 4.7362540e-04, ..., 7.0360961e-04,
+            4.6409522e-03, 1.2251703e-02],
+           [1.6895927e-03, 5.7533314e-04, 6.1662577e-04, ..., 2.5348314e-03,
+            2.8690544e-03, 1.3530747e-02],
            ...,
-           [3.2187731e-05, 4.6482327e-04, 4.1350679e-04, ..., 3.3551207e-04,
-            1.4962933e-04, 7.3057665e-05],
-           [1.5885655e-05, 3.9615774e-05, 1.2235668e-04, ..., 3.0250914e-04,
-            7.5182226e-04, 1.5585287e-04],
-           [1.5885615e-05, 4.6827008e-05, 2.3712554e-04, ..., 1.6382546e-04,
-            2.7883082e-04, 3.3861815e-04]], dtype=float32)
+           [5.2149335e-06, 1.3619781e-05, 4.2276206e-06, ..., 3.1443514e-04,
+            6.1937229e-05, 6.9807669e-05],
+           [1.0691515e-05, 7.4738605e-06, 6.8401428e-06, ..., 4.2155088e-04,
+            3.6849501e-04, 7.0850976e-05],
+           [2.8010245e-06, 1.2153989e-06, 2.1162425e-05, ..., 5.4035721e-05,
+            2.3213204e-04, 3.2328154e-04]], dtype=float32)
 
 VH_max
 
@@ -1397,7 +1407,7 @@ VH_max
 
 float32
 
-0.03604 0.0584 ... 0.006632
+0.0437 0.0614 ... 0.0495 0.0811
 
 ![](data:image/svg+xml;base64,PHN2ZyBjbGFzcz0iaWNvbiB4ci1pY29uLWZpbGUtdGV4dDIiPjx1c2UgaHJlZj0iI2ljb24tZmlsZS10ZXh0MiIgLz48L3N2Zz4=)
 
@@ -1411,19 +1421,19 @@ units :
 grid_mapping :  
 crs
 
-    array([[0.03604072, 0.05839535, 0.08822469, ..., 0.32693267, 0.2599725 ,
-            0.16062291],
-           [0.06696388, 0.10971747, 0.14447221, ..., 0.31547707, 0.19647637,
-            0.10249937],
-           [0.10121775, 0.13220015, 0.14859372, ..., 0.24435118, 0.16842037,
-            0.11494572],
+    array([[0.04369812, 0.06139704, 0.08773565, ..., 0.29503146, 0.23575717,
+            0.10494611],
+           [0.07613949, 0.10430614, 0.13548432, ..., 0.21424744, 0.12483119,
+            0.07347236],
+           [0.1064273 , 0.12625267, 0.1408355 , ..., 0.16185929, 0.11942944,
+            0.08524383],
            ...,
-           [0.00431482, 0.00388348, 0.00630981, ..., 0.00496825, 0.01302709,
-            0.0066534 ],
-           [0.00336156, 0.00744628, 0.00588296, ..., 0.00518299, 0.00960913,
-            0.00696922],
-           [0.00348909, 0.00444956, 0.00253593, ..., 0.00662928, 0.00311544,
-            0.0066321 ]], dtype=float32)
+           [0.0054121 , 0.00664679, 0.00421263, ..., 0.07956106, 0.0891263 ,
+            0.07002673],
+           [0.003332  , 0.00606422, 0.00471943, ..., 0.09593336, 0.0576453 ,
+            0.06981783],
+           [0.00481099, 0.00488732, 0.0039305 , ..., 0.11942604, 0.04950251,
+            0.08110013]], dtype=float32)
 
 VH_mean
 
@@ -1431,7 +1441,7 @@ VH_mean
 
 float32
 
-0.01978 0.03318 ... 0.003237
+0.01742 0.01655 ... 0.005588
 
 ![](data:image/svg+xml;base64,PHN2ZyBjbGFzcz0iaWNvbiB4ci1pY29uLWZpbGUtdGV4dDIiPjx1c2UgaHJlZj0iI2ljb24tZmlsZS10ZXh0MiIgLz48L3N2Zz4=)
 
@@ -1445,19 +1455,19 @@ units :
 grid_mapping :  
 crs
 
-    array([[0.01978468, 0.03317526, 0.05122132, ..., 0.1278438 , 0.11206219,
-            0.07862695],
-           [0.02983127, 0.05295548, 0.07390182, ..., 0.1544519 , 0.11919038,
-            0.08003806],
-           [0.04661358, 0.07003686, 0.08838344, ..., 0.1496976 , 0.11252023,
-            0.07457688],
+    array([[0.01741548, 0.01655145, 0.02166374, ..., 0.06092047, 0.05539886,
+            0.03781578],
+           [0.01671887, 0.02131754, 0.02888809, ..., 0.06094961, 0.04995695,
+            0.03515729],
+           [0.02092094, 0.02824179, 0.03675164, ..., 0.05068799, 0.04236713,
+            0.03358325],
            ...,
-           [0.00155804, 0.00161588, 0.00264122, ..., 0.00329824, 0.00361542,
-            0.00206712],
-           [0.00155148, 0.00217963, 0.00238249, ..., 0.00290533, 0.00317651,
-            0.00251921],
-           [0.00116949, 0.00165877, 0.00139102, ..., 0.00218505, 0.00180075,
-            0.00323711]], dtype=float32)
+           [0.00125552, 0.00162496, 0.0016311 , ..., 0.00644752, 0.00565294,
+            0.00463481],
+           [0.00119254, 0.00124422, 0.00126841, ..., 0.0073044 , 0.00508048,
+            0.00489696],
+           [0.00172758, 0.0013916 , 0.00107616, ..., 0.0068505 , 0.00426559,
+            0.00558802]], dtype=float32)
 
 VH_sd
 
@@ -1465,7 +1475,7 @@ VH_sd
 
 float32
 
-0.009419 0.01686 ... 0.00193
+0.009777 0.01646 ... 0.01441
 
 ![](data:image/svg+xml;base64,PHN2ZyBjbGFzcz0iaWNvbiB4ci1pY29uLWZpbGUtdGV4dDIiPjx1c2UgaHJlZj0iI2ljb24tZmlsZS10ZXh0MiIgLz48L3N2Zz4=)
 
@@ -1479,19 +1489,19 @@ units :
 grid_mapping :  
 crs
 
-    array([[0.00941931, 0.01685729, 0.02469561, ..., 0.08591115, 0.06487104,
-            0.03994398],
-           [0.01842893, 0.03180607, 0.03907879, ..., 0.07538059, 0.04117164,
-            0.01954442],
-           [0.03133715, 0.03918692, 0.04057009, ..., 0.05113091, 0.03679396,
-            0.02576428],
+    array([[0.00977687, 0.0164646 , 0.02353494, ..., 0.07095637, 0.05595946,
+            0.02619051],
+           [0.01536347, 0.02411691, 0.03456507, ..., 0.06206268, 0.04097066,
+            0.01728314],
+           [0.02447785, 0.03241063, 0.04142125, ..., 0.04792081, 0.03154533,
+            0.01647938],
            ...,
-           [0.00141927, 0.00125762, 0.0018592 , ..., 0.00169285, 0.00433611,
-            0.00202067],
-           [0.00116786, 0.00235026, 0.0020393 , ..., 0.00185387, 0.00289492,
-            0.0024544 ],
-           [0.00133604, 0.0017832 , 0.00104416, ..., 0.00226273, 0.00095033,
-            0.00192955]], dtype=float32)
+           [0.00114314, 0.00137188, 0.0011653 , ..., 0.01467543, 0.01591976,
+            0.01265947],
+           [0.00088183, 0.00122855, 0.00129493, ..., 0.01803518, 0.01054358,
+            0.01262773],
+           [0.0015041 , 0.00136845, 0.00095486, ..., 0.02155257, 0.00904604,
+            0.01440865]], dtype=float32)
 
 VH_q10
 
@@ -1499,7 +1509,7 @@ VH_q10
 
 float32
 
-0.007442 0.01634 ... 0.0003386
+0.008391 0.002142 ... 0.000853
 
 ![](data:image/svg+xml;base64,PHN2ZyBjbGFzcz0iaWNvbiB4ci1pY29uLWZpbGUtdGV4dDIiPjx1c2UgaHJlZj0iI2ljb24tZmlsZS10ZXh0MiIgLz48L3N2Zz4=)
 
@@ -1513,19 +1523,19 @@ units :
 grid_mapping :  
 crs
 
-    array([[7.4415309e-03, 1.6343007e-02, 2.4772413e-02, ..., 5.5835072e-02,
-            4.0328607e-02, 3.1856596e-02],
-           [9.0845078e-03, 1.8613091e-02, 3.0874813e-02, ..., 5.9993275e-02,
-            5.3687811e-02, 4.7377892e-02],
-           [1.0651190e-02, 1.9190351e-02, 3.1387392e-02, ..., 8.2894199e-02,
-            7.3106125e-02, 4.1296154e-02],
+    array([[8.3911344e-03, 2.1424016e-03, 2.3070923e-03, ..., 3.6896435e-03,
+            7.8630270e-03, 1.1912103e-02],
+           [4.3198224e-03, 1.4414280e-03, 1.1491117e-03, ..., 2.9722620e-03,
+            8.5382750e-03, 1.5247992e-02],
+           [2.7094425e-03, 2.1519477e-03, 1.5253305e-03, ..., 5.4725041e-03,
+            1.3184761e-02, 1.6802395e-02],
            ...,
-           [3.2187731e-05, 4.6482327e-04, 4.1350679e-04, ..., 3.3551207e-04,
-            1.4962933e-04, 7.3057665e-05],
-           [1.5885655e-05, 3.9615774e-05, 1.2235668e-04, ..., 3.0250914e-04,
-            7.5182226e-04, 1.5585287e-04],
-           [1.5885615e-05, 4.6827008e-05, 2.3712554e-04, ..., 1.6382546e-04,
-            2.7883082e-04, 3.3861815e-04]], dtype=float32)
+           [1.8675165e-04, 4.9796078e-04, 1.7651130e-04, ..., 9.6274621e-04,
+            4.0755581e-04, 5.7852990e-04],
+           [1.1161680e-04, 1.3260319e-04, 1.4015246e-04, ..., 7.1107986e-04,
+            9.8702637e-04, 2.8157691e-04],
+           [1.7756959e-04, 5.7891462e-05, 9.7337863e-05, ..., 9.8372204e-04,
+            4.1209668e-04, 8.5302879e-04]], dtype=float32)
 
 VH_q50
 
@@ -1533,7 +1543,7 @@ VH_q50
 
 float32
 
-0.01642 0.02946 ... 0.003168
+0.01468 0.01079 ... 0.002638
 
 ![](data:image/svg+xml;base64,PHN2ZyBjbGFzcz0iaWNvbiB4ci1pY29uLWZpbGUtdGV4dDIiPjx1c2UgaHJlZj0iI2ljb24tZmlsZS10ZXh0MiIgLz48L3N2Zz4=)
 
@@ -1547,19 +1557,19 @@ units :
 grid_mapping :  
 crs
 
-    array([[0.01641532, 0.02945656, 0.04615069, ..., 0.09937736, 0.09957799,
-            0.06773166],
-           [0.02633959, 0.05312615, 0.07025553, ..., 0.1448748 , 0.11684266,
-            0.08433955],
-           [0.04026382, 0.06566416, 0.09043089, ..., 0.12782589, 0.10272062,
-            0.07347739],
+    array([[0.01468267, 0.01079342, 0.01708473, ..., 0.01948099, 0.02511071,
+            0.03023804],
+           [0.01263583, 0.01671381, 0.01445456, ..., 0.02617684, 0.03053429,
+            0.03173785],
+           [0.00794464, 0.01316131, 0.01624785, ..., 0.0285993 , 0.02525841,
+            0.02988026],
            ...,
-           [0.0014457 , 0.0012235 , 0.00271203, ..., 0.00357926, 0.00242533,
-            0.00159997],
-           [0.00157032, 0.00178378, 0.00173404, ..., 0.003209  , 0.00216497,
-            0.00176098],
-           [0.00079205, 0.00095888, 0.00126258, ..., 0.00131919, 0.00185058,
-            0.0031679 ]], dtype=float32)
+           [0.00112736, 0.00113136, 0.00172897, ..., 0.00314602, 0.00232967,
+            0.00223056],
+           [0.00098514, 0.0009467 , 0.00079053, ..., 0.00256502, 0.00234279,
+            0.00244587],
+           [0.00126289, 0.0006234 , 0.00078776, ..., 0.00168159, 0.00196348,
+            0.0026382 ]], dtype=float32)
 
 VH_q90
 
@@ -1567,7 +1577,7 @@ VH_q90
 
 float32
 
-0.03604 0.0584 ... 0.006632
+0.03195 0.03547 ... 0.006035
 
 ![](data:image/svg+xml;base64,PHN2ZyBjbGFzcz0iaWNvbiB4ci1pY29uLWZpbGUtdGV4dDIiPjx1c2UgaHJlZj0iI2ljb24tZmlsZS10ZXh0MiIgLz48L3N2Zz4=)
 
@@ -1581,19 +1591,19 @@ units :
 grid_mapping :  
 crs
 
-    array([[0.03604072, 0.05839535, 0.08822469, ..., 0.32693267, 0.2599725 ,
-            0.16062291],
-           [0.06696388, 0.10971747, 0.14447221, ..., 0.31547707, 0.19647637,
-            0.10249937],
-           [0.10121775, 0.13220015, 0.14859372, ..., 0.24435118, 0.16842037,
-            0.11494572],
+    array([[0.03195012, 0.03546856, 0.04195141, ..., 0.13144307, 0.11525625,
+            0.07022735],
+           [0.03509531, 0.05296517, 0.07517841, ..., 0.13203068, 0.0990926 ,
+            0.05953676],
+           [0.04749506, 0.0683267 , 0.08865102, ..., 0.10454184, 0.08601395,
+            0.05255165],
            ...,
-           [0.00431482, 0.00388348, 0.00630981, ..., 0.00496825, 0.01302709,
-            0.0066534 ],
-           [0.00336156, 0.00744628, 0.00588296, ..., 0.00518299, 0.00960913,
-            0.00696922],
-           [0.00348909, 0.00444956, 0.00253593, ..., 0.00662928, 0.00311544,
-            0.0066321 ]], dtype=float32)
+           [0.00223277, 0.0032354 , 0.00339026, ..., 0.00647877, 0.00555456,
+            0.00485078],
+           [0.00247719, 0.0023786 , 0.00295119, ..., 0.00651465, 0.00635541,
+            0.00559724],
+           [0.00406873, 0.00309753, 0.00230574, ..., 0.00634639, 0.00551407,
+            0.00603464]], dtype=float32)
 
 VV_min
 
@@ -1601,7 +1611,7 @@ VV_min
 
 float32
 
-0.03823 0.0581 ... 0.002925
+0.02391 0.005213 ... 0.004197
 
 ![](data:image/svg+xml;base64,PHN2ZyBjbGFzcz0iaWNvbiB4ci1pY29uLWZpbGUtdGV4dDIiPjx1c2UgaHJlZj0iI2ljb24tZmlsZS10ZXh0MiIgLz48L3N2Zz4=)
 
@@ -1615,19 +1625,19 @@ units :
 grid_mapping :  
 crs
 
-    array([[3.82329002e-02, 5.81044294e-02, 9.84530300e-02, ...,
-            3.23727041e-01, 3.41812849e-01, 2.77307868e-01],
-           [5.36972843e-02, 1.16618790e-01, 1.23972796e-01, ...,
-            3.44944984e-01, 3.67321134e-01, 2.42612064e-01],
-           [8.68130922e-02, 1.28296837e-01, 2.05426112e-01, ...,
-            2.49633417e-01, 1.32964298e-01, 9.90427136e-02],
+    array([[0.02390507, 0.00521277, 0.00404566, ..., 0.01073809, 0.01970434,
+            0.04344405],
+           [0.01335756, 0.00581965, 0.00225224, ..., 0.01661292, 0.019276  ,
+            0.03547296],
+           [0.00724073, 0.00448705, 0.00288456, ..., 0.0120812 , 0.02887361,
+            0.03648873],
            ...,
-           [4.80704126e-04, 8.40302615e-04, 8.09344347e-04, ...,
-            3.48369405e-03, 5.71828044e-04, 3.22331092e-03],
-           [2.80205859e-03, 2.71117990e-03, 1.38480763e-03, ...,
-            4.25597979e-03, 1.65972699e-04, 4.20906581e-03],
-           [2.71791941e-03, 4.16423287e-03, 2.36033788e-03, ...,
-            3.97732435e-03, 3.30928364e-03, 2.92523764e-03]], dtype=float32)
+           [0.00058921, 0.00042484, 0.00086914, ..., 0.00373092, 0.00325532,
+            0.00280475],
+           [0.00050547, 0.0005377 , 0.0012994 , ..., 0.0022422 , 0.00110214,
+            0.00271663],
+           [0.00039152, 0.00049753, 0.00123949, ..., 0.00250965, 0.00194878,
+            0.00419681]], dtype=float32)
 
 VV_max
 
@@ -1635,7 +1645,7 @@ VV_max
 
 float32
 
-0.2145 0.352 ... 0.02271 0.04126
+0.2511 0.3178 ... 0.2311 0.05796
 
 ![](data:image/svg+xml;base64,PHN2ZyBjbGFzcz0iaWNvbiB4ci1pY29uLWZpbGUtdGV4dDIiPjx1c2UgaHJlZj0iI2ljb24tZmlsZS10ZXh0MiIgLz48L3N2Zz4=)
 
@@ -1649,19 +1659,19 @@ units :
 grid_mapping :  
 crs
 
-    array([[0.21453455, 0.35201532, 0.44206226, ..., 0.7745028 , 0.7224579 ,
-            0.58535093],
-           [0.19568719, 0.3464168 , 0.5093019 , ..., 0.9756379 , 0.802884  ,
-            0.6578531 ],
-           [0.25700998, 0.40784222, 0.5935021 , ..., 1.0759932 , 0.7719225 ,
-            0.54108393],
+    array([[0.25112742, 0.31777614, 0.4047884 , ..., 0.7809679 , 0.7363567 ,
+            0.47340414],
+           [0.2294258 , 0.31974527, 0.44147012, ..., 0.76368874, 0.67648566,
+            0.40874177],
+           [0.26340145, 0.3639898 , 0.5107174 , ..., 0.75768167, 0.63088334,
+            0.3060644 ],
            ...,
-           [0.01855026, 0.0191953 , 0.02520283, ..., 0.04316558, 0.04142256,
-            0.03178509],
-           [0.01793688, 0.01629219, 0.02929817, ..., 0.02198837, 0.02662462,
-            0.03337206],
-           [0.02471384, 0.02900133, 0.03170837, ..., 0.02347184, 0.02271392,
-            0.04125684]], dtype=float32)
+           [0.02670128, 0.02142781, 0.02463174, ..., 0.13321447, 0.12495995,
+            0.10285159],
+           [0.03128415, 0.01972793, 0.0268227 , ..., 0.7568402 , 0.13538426,
+            0.04758164],
+           [0.02613304, 0.02938594, 0.02403203, ..., 1.6866078 , 0.23107743,
+            0.05796338]], dtype=float32)
 
 VV_mean
 
@@ -1669,7 +1679,7 @@ VV_mean
 
 float32
 
-0.09626 0.1365 ... 0.01103 0.01548
+0.07481 0.06502 ... 0.02349 0.02043
 
 ![](data:image/svg+xml;base64,PHN2ZyBjbGFzcz0iaWNvbiB4ci1pY29uLWZpbGUtdGV4dDIiPjx1c2UgaHJlZj0iI2ljb24tZmlsZS10ZXh0MiIgLz48L3N2Zz4=)
 
@@ -1683,19 +1693,19 @@ units :
 grid_mapping :  
 crs
 
-    array([[0.09625705, 0.13647287, 0.18718082, ..., 0.5496613 , 0.51692694,
-            0.4102068 ],
-           [0.09961063, 0.1633609 , 0.2353696 , ..., 0.6605072 , 0.56492525,
-            0.41471007],
-           [0.14946699, 0.25105995, 0.3585353 , ..., 0.6142653 , 0.45950067,
-            0.3498352 ],
+    array([[0.07481217, 0.0650217 , 0.07854302, ..., 0.24052969, 0.23712713,
+            0.18436556],
+           [0.0639153 , 0.07567065, 0.10576686, ..., 0.26281   , 0.22954036,
+            0.15893254],
+           [0.07485904, 0.09993037, 0.14651379, ..., 0.2439552 , 0.2082663 ,
+            0.15894765],
            ...,
-           [0.00574651, 0.00542928, 0.00741474, ..., 0.01460892, 0.01497063,
-            0.0144419 ],
-           [0.0078292 , 0.00740209, 0.00846404, ..., 0.01040112, 0.01174255,
-            0.01500158],
-           [0.00813532, 0.00973692, 0.00984371, ..., 0.01012099, 0.01102888,
-            0.01548478]], dtype=float32)
+           [0.00674983, 0.00599584, 0.00619983, ..., 0.02454171, 0.02304699,
+            0.02160381],
+           [0.00705473, 0.00620282, 0.00637595, ..., 0.04153206, 0.0205185 ,
+            0.01969542],
+           [0.00671834, 0.00678353, 0.0067207 , ..., 0.07232488, 0.02349177,
+            0.02042829]], dtype=float32)
 
 VV_sd
 
@@ -1703,7 +1713,7 @@ VV_sd
 
 float32
 
-0.05409 0.09378 ... 0.01286
+0.04468 0.06506 ... 0.0407 0.01377
 
 ![](data:image/svg+xml;base64,PHN2ZyBjbGFzcz0iaWNvbiB4ci1pY29uLWZpbGUtdGV4dDIiPjx1c2UgaHJlZj0iI2ljb24tZmlsZS10ZXh0MiIgLz48L3N2Zz4=)
 
@@ -1717,19 +1727,19 @@ units :
 grid_mapping :  
 crs
 
-    array([[0.05409231, 0.09378087, 0.11117973, ..., 0.17954879, 0.14689186,
-            0.10922512],
-           [0.0447595 , 0.07611188, 0.11615117, ..., 0.22754364, 0.17713465,
-            0.14189446],
-           [0.06593374, 0.08556262, 0.11674429, ..., 0.25365794, 0.22763157,
-            0.141367  ],
+    array([[0.04467699, 0.0650629 , 0.08718428, ..., 0.24212098, 0.22354597,
+            0.1375417 ],
+           [0.05274361, 0.07710483, 0.11632709, ..., 0.26233742, 0.20125628,
+            0.10303202],
+           [0.07868785, 0.11076809, 0.16625147, ..., 0.24707831, 0.17260341,
+            0.08196335],
            ...,
-           [0.00583977, 0.00600125, 0.0081784 , ..., 0.01263162, 0.01270936,
-            0.01037051],
-           [0.00507251, 0.00514195, 0.00953319, ..., 0.00733791, 0.0082898 ,
-            0.01043584],
-           [0.0070393 , 0.00821903, 0.0096691 , ..., 0.00637131, 0.00651885,
-            0.01285903]], dtype=float32)
+           [0.00609069, 0.00545064, 0.00566327, ..., 0.03062076, 0.02194226,
+            0.01801645],
+           [0.00640967, 0.00465139, 0.00536858, ..., 0.13562985, 0.02469136,
+            0.0127027 ],
+           [0.00594661, 0.00568424, 0.00463514, ..., 0.30508226, 0.04070332,
+            0.01377046]], dtype=float32)
 
 VV_q10
 
@@ -1737,7 +1747,7 @@ VV_q10
 
 float32
 
-0.03823 0.0581 ... 0.002925
+0.0343 0.01257 ... 0.007017
 
 ![](data:image/svg+xml;base64,PHN2ZyBjbGFzcz0iaWNvbiB4ci1pY29uLWZpbGUtdGV4dDIiPjx1c2UgaHJlZj0iI2ljb24tZmlsZS10ZXh0MiIgLz48L3N2Zz4=)
 
@@ -1751,19 +1761,19 @@ units :
 grid_mapping :  
 crs
 
-    array([[3.82329002e-02, 5.81044294e-02, 9.84530300e-02, ...,
-            3.23727041e-01, 3.41812849e-01, 2.77307868e-01],
-           [5.36972843e-02, 1.16618790e-01, 1.23972796e-01, ...,
-            3.44944984e-01, 3.67321134e-01, 2.42612064e-01],
-           [8.68130922e-02, 1.28296837e-01, 2.05426112e-01, ...,
-            2.49633417e-01, 1.32964298e-01, 9.90427136e-02],
+    array([[0.03430496, 0.01256511, 0.00633504, ..., 0.01995801, 0.0316762 ,
+            0.0487122 ],
+           [0.01507588, 0.00823221, 0.00616359, ..., 0.02197921, 0.03716285,
+            0.05351951],
+           [0.00887945, 0.00646014, 0.00581567, ..., 0.02167627, 0.04302126,
+            0.05518135],
            ...,
-           [4.80704126e-04, 8.40302615e-04, 8.09344347e-04, ...,
-            3.48369405e-03, 5.71828044e-04, 3.22331092e-03],
-           [2.80205859e-03, 2.71117990e-03, 1.38480763e-03, ...,
-            4.25597979e-03, 1.65972699e-04, 4.20906581e-03],
-           [2.71791941e-03, 4.16423287e-03, 2.36033788e-03, ...,
-            3.97732435e-03, 3.30928364e-03, 2.92523764e-03]], dtype=float32)
+           [0.00182068, 0.00159823, 0.00143851, ..., 0.00497847, 0.00796662,
+            0.00665838],
+           [0.00166041, 0.00206962, 0.00220824, ..., 0.0045406 , 0.00547958,
+            0.00432789],
+           [0.00175499, 0.00223989, 0.00232416, ..., 0.00385345, 0.00575079,
+            0.00701721]], dtype=float32)
 
 VV_q50
 
@@ -1771,7 +1781,7 @@ VV_q50
 
 float32
 
-0.08684 0.1051 ... 0.009489 0.01156
+0.06718 0.03864 ... 0.01496 0.01626
 
 ![](data:image/svg+xml;base64,PHN2ZyBjbGFzcz0iaWNvbiB4ci1pY29uLWZpbGUtdGV4dDIiPjx1c2UgaHJlZj0iI2ljb24tZmlsZS10ZXh0MiIgLz48L3N2Zz4=)
 
@@ -1785,19 +1795,19 @@ units :
 grid_mapping :  
 crs
 
-    array([[0.08684144, 0.10507031, 0.15785766, ..., 0.5336267 , 0.4663303 ,
-            0.41561162],
-           [0.08269721, 0.1327595 , 0.201277  , ..., 0.68295944, 0.514695  ,
-            0.4009375 ],
-           [0.12596725, 0.24027355, 0.34175518, ..., 0.5718068 , 0.4059891 ,
-            0.34461385],
+    array([[0.06717545, 0.03863911, 0.0428113 , ..., 0.12390707, 0.1333968 ,
+            0.11266621],
+           [0.0514466 , 0.04761094, 0.05935188, ..., 0.13716178, 0.14292823,
+            0.13210353],
+           [0.03065991, 0.0265301 , 0.03832125, ..., 0.08813316, 0.13120368,
+            0.13690317],
            ...,
-           [0.00349785, 0.00344953, 0.0037301 , ..., 0.01074719, 0.01242693,
-            0.01454905],
-           [0.00563643, 0.00465483, 0.00359291, ..., 0.00712057, 0.01076274,
-            0.01551143],
-           [0.0061425 , 0.00736981, 0.00503082, ..., 0.00846156, 0.00948913,
-            0.01156005]], dtype=float32)
+           [0.00474584, 0.00396075, 0.00485182, ..., 0.01903854, 0.01967191,
+            0.01795328],
+           [0.0051854 , 0.00483886, 0.00442317, ..., 0.0164674 , 0.01324176,
+            0.01717496],
+           [0.00571051, 0.00461331, 0.00541438, ..., 0.01450604, 0.01496293,
+            0.01626071]], dtype=float32)
 
 VV_q90
 
@@ -1805,7 +1815,7 @@ VV_q90
 
 float32
 
-0.2145 0.352 ... 0.02271 0.04126
+0.113 0.1201 ... 0.03565 0.03735
 
 ![](data:image/svg+xml;base64,PHN2ZyBjbGFzcz0iaWNvbiB4ci1pY29uLWZpbGUtdGV4dDIiPjx1c2UgaHJlZj0iI2ljb24tZmlsZS10ZXh0MiIgLz48L3N2Zz4=)
 
@@ -1819,19 +1829,19 @@ units :
 grid_mapping :  
 crs
 
-    array([[0.21453455, 0.35201532, 0.44206226, ..., 0.7745028 , 0.7224579 ,
-            0.58535093],
-           [0.19568719, 0.3464168 , 0.5093019 , ..., 0.9756379 , 0.802884  ,
-            0.6578531 ],
-           [0.25700998, 0.40784222, 0.5935021 , ..., 1.0759932 , 0.7719225 ,
-            0.54108393],
+    array([[0.11303069, 0.12011835, 0.15379867, ..., 0.5399144 , 0.5564473 ,
+            0.38504428],
+           [0.13325769, 0.16899867, 0.24364921, ..., 0.60198945, 0.49766067,
+            0.34298924],
+           [0.19181928, 0.24064352, 0.4064072 , ..., 0.5966895 , 0.39402968,
+            0.27405775],
            ...,
-           [0.01855026, 0.0191953 , 0.02520283, ..., 0.04316558, 0.04142256,
-            0.03178509],
-           [0.01793688, 0.01629219, 0.02929817, ..., 0.02198837, 0.02662462,
-            0.03337206],
-           [0.02471384, 0.02900133, 0.03170837, ..., 0.02347184, 0.02271392,
-            0.04125684]], dtype=float32)
+           [0.01432398, 0.01624354, 0.01274676, ..., 0.03367758, 0.03424421,
+            0.03272589],
+           [0.0139405 , 0.0114498 , 0.01192626, ..., 0.0323368 , 0.03275811,
+            0.03861197],
+           [0.01121384, 0.0127006 , 0.01155272, ..., 0.03543746, 0.03564724,
+            0.03735264]], dtype=float32)
 
 Indexes: (2)
 
@@ -1869,30 +1879,6 @@ CF-1.9
 institution :  
 openEO platform
 
-``` python
-ds[["VH_mean", "VV_mean"]].to_array().plot.imshow(col="variable", vmin=0, vmax=1)
-```
-
-![](Sentinel1_Stats_files/figure-html/cell-27-output-1.png)
-
-Furthermore, you can directly can open the saved process directly by visiting the link:
-
-https://editor.openeo.cloud/?wizard=UDP&wizard~process=s1_stats&discover=0
-
-## Use the saved UDP in the openEO Platform Editor
-
-Alternatively, we can also switch into the openEO Platform Editor to run the newly created UDP in a graphical web interface. Open **<https://editor.openeo.cloud?discover=0>** in your web browser. It opens the editor, connects you to openEO Platform and asks you to login. Once you’ve logged in, you can explore the offerings of openEO Platform and the data associcated with your user account, including batch jobs and UDPs (“Custom Processes” in the Editor).
-
-The easiest way to run your UDP is to use the Wizard: 1. In the menu bar at the top you’ll find the “Wizard”. Click it to open. 2. You’ll see a list of wizards, choose the “Run UDP” wizard. 3. It will show all your UDPs, choose the one you just created. 4. You’ll now be asked to fill the parameters that you defined for your UDP. 5. After providing the parameters, you can click “Next” at the right bottom. 6. It will now open a list that allows to select the processing mode of your UDP: 1. Batch Jobs 2. Synchronous Processing 3. Web Services 4. Don’t execute
-
-Select “Synchronous Processing” (for small tasks, recommended for this tutorial) or “Batch Jobs” (for larger tasks). 7. Click “Create” and the Editor will send your processing task to the backend. Once completed the result will be shown or downloaded.
-
-![](Sentinel1_Stats_files/figure-html/77b9e147-1-image.png)
-
-image.png
-
-There are two other ways to interact with your UDP: 1. On the left side the UDP is listed in the “Processes” list. You can type your UDP name into the search area to find it. You could then drag and drop it in the Visual Model Builder and use it as part of other workflows. 2. In the lower part of the Editor, there’s a tab with the title “Custom Processes”. Here you can view, update and delete your UDPs.
-
 ## Publishing your service online
 
 Once the UDP defined above is saved within the openEO platform, a user also has the option to add this service to the openEO Marketplace. To register a User Defined Process (UDP), you must have a public URL for your service. You’ll also need to provide the saved process ID, which can be located within the public URL.
@@ -1912,3 +1898,5 @@ Every openEO user is provided with a specific amount of credits. It’s importan
 You can estimate the credits your service might use by reviewing the job information in the web editor.
 
 With refernce to the documentation available [here](https://docs.openeo.cloud/federation/accounting.html#platform-credit-rates), you can calculate the possible service usage per square kilometer. Suppose, in my case, for 1 square kilometer, it amounted to 2273 CPU seconds and 5,457,138 megabytes-seconds, equivalent to approximately 0.9 and 1.45 credits, respectively. Hence, the total credits consumed by this process come to approximately 2.35 credits.
+
+Back to top

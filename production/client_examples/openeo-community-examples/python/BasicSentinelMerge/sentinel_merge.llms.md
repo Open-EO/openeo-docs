@@ -466,3 +466,5 @@ description :
 title :  
 
 You can also inspect the result in the openEO editor: ![Result in openEO editor](result.png "Batch job result")
+
+Back to top

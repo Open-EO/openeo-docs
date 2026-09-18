@@ -2,11 +2,11 @@
   "content": [
     {
       "content": null,
-      "created": "2026-09-18T14:12:11.291595Z",
+      "created": "2026-09-18T14:46:56.799527Z",
       "format": null,
       "hash": null,
       "hash_algorithm": null,
-      "last_modified": "2026-09-18T14:12:08.268121Z",
+      "last_modified": "2026-09-18T14:46:53.684361Z",
       "mimetype": null,
       "name": "ManagingMultipleLargeScaleJobs.ipynb",
       "path": "notebooks/ManagingMultipleLargeScaleJobs/ManagingMultipleLargeScaleJobs.ipynb",
@@ -16,11 +16,11 @@
     },
     {
       "content": null,
-      "created": "2026-09-18T14:12:11.294323Z",
+      "created": "2026-09-18T14:46:56.802264Z",
       "format": null,
       "hash": null,
       "hash_algorithm": null,
-      "last_modified": "2026-09-18T14:12:08.268520Z",
+      "last_modified": "2026-09-18T14:46:53.684760Z",
       "mimetype": null,
       "name": "VisualisingMultipleOpeneoJobs.ipynb",
       "path": "notebooks/ManagingMultipleLargeScaleJobs/VisualisingMultipleOpeneoJobs.ipynb",
@@ -29,11 +29,11 @@
       "writable": true
     }
   ],
-  "created": "2026-09-18T14:12:11.293395Z",
+  "created": "2026-09-18T14:46:56.801207Z",
   "format": "json",
   "hash": null,
   "hash_algorithm": null,
-  "last_modified": "2026-09-18T14:12:11.293395Z",
+  "last_modified": "2026-09-18T14:46:56.801207Z",
   "mimetype": null,
   "name": "ManagingMultipleLargeScaleJobs",
   "path": "notebooks/ManagingMultipleLargeScaleJobs",

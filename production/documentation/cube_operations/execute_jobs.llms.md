@@ -126,9 +126,9 @@ await job.startJob();
 
 > **TIP:**
 >
-> - [Forest Fire Analysis: Saving Multiple Results in One Job](../../client_examples/openeo-community-examples/python/ForestFire/ForestFire.ipynb)
-> - [EO Data Processing with the openEO MultiBackendJobManager](../../client_examples/openeo-community-examples/python/ManagingMultipleLargeScaleJobs/ManagingMultipleLargeScaleJobs.ipynb)
-> - [Geospatial Job Management and Visualisation](../../client_examples/openeo-community-examples/python/ManagingMultipleLargeScaleJobs/VisualisingMultipleOpeneoJobs.ipynb)
+> - [Forest Fire Analysis: Saving Multiple Results in One Job](../../client_examples/openeo-community-examples/python/ForestFire/ForestFire.llms.md)
+> - [EO Data Processing with the openEO MultiBackendJobManager](../../client_examples/openeo-community-examples/python/ManagingMultipleLargeScaleJobs/ManagingMultipleLargeScaleJobs.llms.md)
+> - [Geospatial Job Management and Visualisation](../../client_examples/openeo-community-examples/python/ManagingMultipleLargeScaleJobs/VisualisingMultipleOpeneoJobs.llms.md)
 >
 > More notebooks are listed on the [sample notebooks page](../../examples.llms.md).
 
