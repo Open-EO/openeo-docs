@@ -1,0 +1,1538 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Exploring Copernicus Land Monitoring Service (CLMS) Datasets with openEO in CDSE – openEO</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="../../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../../">
+<script src="../../../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../../site_libs/bootstrap/bootstrap-f7b31f555e83651d4eb6f45835aa384a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css?family=Roboto+Mono|Source+Sans+Pro:300,400,600" rel="stylesheet">
+<meta name="zd-site-verification" content="xj9koofr1crilmoclgxsjd">
+
+<script type="text/javascript">
+
+
+    function setActiveClassForCurrentUrl() {
+        // Find all links in the navbarCollapse div where the href attribute is set to the current URL
+        let anchorTag = document.querySelector('#navbarCollapse a[href="' + window.location.href + '"]');
+
+        if (anchorTag) {
+
+            // Find the closest parent of the navigation
+            let parentUl = anchorTag.closest('li.nav-item')?.querySelector('a.nav-link');
+
+            if (parentUl) {
+                // Add active class to both the anchor tag and the parent ul
+                anchorTag.classList.add('active');
+                parentUl.classList.add('active');
+            }
+        }
+    }
+
+    window.addEventListener('popstate', setActiveClassForCurrentUrl);
+    window.addEventListener('hashchange', setActiveClassForCurrentUrl);
+
+    document.addEventListener("DOMContentLoaded", async function () {
+        const items = Array.from(document.querySelectorAll(".tag-filter-item"));
+        const filterUi = document.querySelector(".tag-filter-ui");
+        if (items.length === 0 || !filterUi) return;
+        const staticBadges = Array.from(document.querySelectorAll(".tag-filter-badge"));
+        const hasLiveProcesses = items.some((item) => item.hasAttribute("data-process"));
+        let support = null;
+        if (hasLiveProcesses) {
+            try {
+                const url = new URL("../../_data/backend_process_support.json", window.location.href);
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                support = await response.json();
+            } catch (error) { console.warn("Could not load backend process support data.", error); }
+        }
+        const getExplicitTags = (item) => new Set((item.getAttribute("data-tags") || "").toLowerCase().split(/\s+/).filter(Boolean));
+        const getDefaultTags = () => new Set(staticBadges.map((badge) => badge.dataset.tag).filter(Boolean));
+        const getTags = (item) => {
+            const explicitTags = getExplicitTags(item);
+            if (support && item.hasAttribute("data-process")) {
+                const liveTags = new Set(item.getAttribute("data-process").split(/[\s,]+/).flatMap((id) => support.processes[id] || []));
+                return liveTags.size > 0 ? liveTags : explicitTags.size > 0 ? explicitTags : getDefaultTags();
+            }
+            return explicitTags.size > 0 ? explicitTags : getDefaultTags();
+        };
+        let badges = staticBadges;
+        if (support) {
+            const availableTags = [...new Set(items.flatMap((item) => [...getTags(item)]))].sort();
+            filterUi.replaceChildren();
+            badges = availableTags.map((tag) => {
+                const button = document.createElement("button");
+                button.className = "tag-filter-badge active";
+                button.dataset.tag = tag;
+                button.textContent = support.backends[tag]?.label || tag;
+                filterUi.appendChild(button);
+                return button;
+            });
+        }
+        if (badges.length === 0) return;
+        const tocLinks = Array.from(document.querySelectorAll("#TOC a[data-scroll-target]"));
+        const applyFilter = () => {
+            const selectedTags = new Set(badges.filter((badge) => badge.classList.contains("active")).map((badge) => badge.dataset.tag));
+            items.forEach((item) => {
+                const tags = getTags(item);
+                const visible = [...selectedTags].some((tag) => tags.has(tag));
+                item.hidden = !visible;
+                const tocLink = tocLinks.find((link) => link.dataset.scrollTarget === `#${item.id}`);
+                tocLink?.closest("li")?.toggleAttribute("hidden", !visible);
+            });
+        };
+        badges.forEach((badge) => badge.addEventListener("click", function (event) {
+            event.preventDefault(); this.classList.toggle("active"); this.classList.toggle("inactive"); applyFilter();
+        }));
+        applyFilter();
+    });
+    window.onload = () => {
+        const brand = document.querySelector('.navbar-brand');
+        if (brand) {
+            // Keep local/preview behavior, but use the GitHub Pages project root in production.
+            const brandHref = window.location.hostname === 'open-eo.github.io'
+                ? '/openeo-docs/'
+                : '/index.html';
+            brand.setAttribute('href', brandHref);
+        }
+        setActiveClassForCurrentUrl();
+    }
+
+ 
+</script>
+
+
+<link rel="stylesheet" href="../../../../custom.css">
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../../../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../../../news/images/openeo_logo.png" alt="openEO logo" class="navbar-logo light-content">
+    <img src="../../../../news/images/openeo_logo.png" alt="openEO logo" class="navbar-logo dark-content">
+    </a>
+    <a class="navbar-brand" href="../../../../index.html">
+    <span class="navbar-title">openEO</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-about" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">About</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-about">    
+        <li>
+    <a class="dropdown-item" href="../../../../about.html">
+ <span class="dropdown-text">About openEO</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../psc.html">
+ <span class="dropdown-text">Project Steering Committee (PSC)</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="https://hub.openeo.org/" target="_blank"> 
+<span class="menu-text">Services</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-community" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Community</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-community">    
+        <li>
+    <a class="dropdown-item" href="../../../../news/news.html">
+ <span class="dropdown-text">News</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../meetings.html">
+ <span class="dropdown-text">Meetings</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../events/events.html">
+ <span class="dropdown-text">Events</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-user-documentation" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">User Documentation</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-user-documentation">    
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/cookbook.html">
+ <span class="dropdown-text">COOKBOOK</span></a>
+  </li>  
+        <li><hr class="dropdown-divider"></li>
+        <li class="dropdown-header">KEY CONCEPTS</li>
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/key_concepts/glossary.html">
+ <span class="dropdown-text">Glossary</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/key_concepts/backend.html">
+ <span class="dropdown-text">Backends</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/key_concepts/datacube.html">
+ <span class="dropdown-text">Datacube</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/key_concepts/processes.html">
+ <span class="dropdown-text">Processes</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/key_concepts/architecture.html">
+ <span class="dropdown-text">Architecture</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/setup.html">
+ <span class="dropdown-text">SETUP</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/data_discovery.html">
+ <span class="dropdown-text">DATA DISCOVERY</span></a>
+  </li>  
+        <li><hr class="dropdown-divider"></li>
+        <li class="dropdown-header">CUBE OPERATIONS</li>
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/cube_operations/general_operations.html">
+ <span class="dropdown-text">General Operations</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/cube_operations/preprocessing.html">
+ <span class="dropdown-text">Preprocessing</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/cube_operations/spatial_operations.html">
+ <span class="dropdown-text">Spatial Operations</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/cube_operations/temporal_operations.html">
+ <span class="dropdown-text">Temporal Operations</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/cube_operations/spectral_operations.html">
+ <span class="dropdown-text">Spectral Operations</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/cube_operations/cube_manipulations.html">
+ <span class="dropdown-text">Cube Manipulations</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/cube_operations/udf.html">
+ <span class="dropdown-text">User Defined Functions</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/cube_operations/machine_learning.html">
+ <span class="dropdown-text">Machine Learning</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/cube_operations/udp.html">
+ <span class="dropdown-text">User Defined Processes</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/cube_operations/execute_jobs.html">
+ <span class="dropdown-text">Execute openEO Jobs</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/export_formats.html">
+ <span class="dropdown-text">EXPORT FORMATS</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-developers" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Developers</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-developers">    
+        <li>
+    <a class="dropdown-item" href="https://api.openeo.org/">
+ <span class="dropdown-text">REST API Reference</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../404-not-found.html">
+ <span class="dropdown-text">Xarray/Dask Guide</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../404-not-found.html">
+ <span class="dropdown-text">Backend Development</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-support" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Support</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-support">    
+        <li>
+    <a class="dropdown-item" href="../../../../contact.html">
+ <span class="dropdown-text">Contact</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://forum.dataspace.copernicus.eu/c/openeo/28">
+ <span class="dropdown-text">CDSE Forum</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../examples.html">
+ <span class="dropdown-text">Notebook examples</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools tools-wide">
+    <a href="mailto:openeo.psc@uni-muenster.de" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-envelope"></i></a>
+    <a href="https://www.linkedin.com/company/openeospec/" title="" class="quarto-navigation-tool px-1" aria-label="" target="_blank"><i class="bi bi-linkedin"></i></a>
+    <a href="https://bsky.app/profile/openeo.org" title="" class="quarto-navigation-tool px-1" aria-label="" target="_blank"><i class="bi bi-bluesky"></i></a>
+    <a href="https://github.com/Open-EO" title="" class="quarto-navigation-tool px-1" aria-label="" target="_blank"><i class="bi bi-github"></i></a>
+    <a href="https://www.youtube.com/channel/UCMJQil8j9sHBQkcSlSaEsvQ" title="" class="quarto-navigation-tool px-1" aria-label="" target="_blank"><i class="bi bi-youtube"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
+<!-- main -->
+<main class="content column-page" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Exploring Copernicus Land Monitoring Service (CLMS) Datasets with openEO in CDSE</h1>
+</div>
+
+
+
+<div class="quarto-title-meta column-page">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>This notebook demonstrates how to access and process Copernicus Land Monitoring Service (CLMS) datasets using the openEO API in the Copernicus Data Space Ecosystem (CDSE). Here, we walk you through the main steps of connecting to the ecosystem, discovering available collections, selecting suitable products for a specific region and temporal extent, and creating cloud-based processing workflows for further analysis and visualisation.</p>
+<p>The examples cover land-cover mapping for Belgium and a wildfire-focused case study in Gironde, France, where burnt-area and soil-moisture products are compared before and after a fire event.</p>
+<p><em>Please note that this notebook is designed as a beginner-friendly introduction to working with CLMS products using openEO and not a comprehensive scientific analysis.</em></p>
+<div id="935276fd" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># import the necessary packages</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> openeo</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> openeo <span class="im">import</span> MultiResult</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rasterio</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="6cb83dae" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># connect to the openEO backend and authenticate using OIDC</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>connection <span class="op">=</span> openeo.<span class="ex">connect</span>(<span class="st">"openeo.dataspace.copernicus.eu"</span>).authenticate_oidc()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Authenticated using refresh token.</code></pre>
+</div>
+</div>
+<p>Let us have a quick overview of the CLMS datasets that are available in CDSE that we can access using openEO. The CLMS datasets are organized into different collections, each containing specific products related to land monitoring. For more information on the CLMS datasets, please refer to the <a href="https://land.copernicus.eu/">Copernicus Land Monitoring Service website</a>.</p>
+<div id="0e6bd6af" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># use `list_collections()` to get an overview of the available collections in the backend</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>collections <span class="op">=</span> connection.list_collections()</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>collection_overview <span class="op">=</span> []</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter collections with "CLMS" in their title</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> collection <span class="kw">in</span> collections:</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="st">"title"</span> <span class="kw">in</span> collection <span class="kw">and</span> <span class="st">"CLMS"</span> <span class="kw">in</span> collection[<span class="st">"title"</span>]:</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>        gsd <span class="op">=</span> collection.get(<span class="st">'summaries'</span>, {}).get(<span class="st">'gsd'</span>, [<span class="va">None</span>])[<span class="dv">0</span>]</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>        collection_overview.append(</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>            {</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>                <span class="st">"Collection ID"</span>: collection.get(<span class="st">'id'</span>),</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>                <span class="st">"Title"</span>: collection.get(<span class="st">'title'</span>),</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>                <span class="st">"Description"</span>: collection.get(<span class="st">'description'</span>)</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>            }</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>collection_overview_df <span class="op">=</span> pd.DataFrame(collection_overview)</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Found </span><span class="sc">{</span><span class="bu">len</span>(collection_overview_df)<span class="sc">}</span><span class="ss"> collections with 'CLMS' in the title."</span>)</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Let us have a clean view of the collection</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> pd.option_context(<span class="st">'display.max_colwidth'</span>, <span class="va">None</span>):</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    display(collection_overview_df[:<span class="dv">5</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Found 109 collections with 'CLMS' in the title.</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Collection ID</th>
+<th data-quarto-table-cell-role="th">Title</th>
+<th data-quarto-table-cell-role="th">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>CLMS_LCM_GLOBAL_10M_YEARLY_V1</td>
+<td>CLMS Land Cover Map (LCM) Global 10m yearly V1 (COG)</td>
+<td>Provides at global level information on different types (classes) of physical coverage of the Earth's surface, e.g. tree cover, grasslands, croplands, permanent water bodies, wetlands at 10 m spatial resolution for the 2020 base year. The data are updated annually and will be available for the 2020-2026 years. This dataset builds upon initiatives like the 100 m Copernicus Global Land Cover layers (2015-2019) and offers enhanced spatial detail that facilitates more effective monitoring of global land cover changes, including deforestation, urbanization, and other environmental transformations.</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>CLMS_TCD_PANTROPICAL_10M_YEARLY_V1</td>
+<td>CLMS Tree Cover Density (TCD) Pantropical 10m yearly V1 (COG)</td>
+<td>Provides pantropical tree cover density as projective tree cover in percent per pixel at 10 m resolution for the 2020 base year. The product belongs to the Copernicus Global Land Cover and Tropical Forest Mapping and Monitoring Service (LCFM) and builds upon initiatives like the REDDCopernicus, EO4SD Forest Monitoring and pan-European Vegetated Land Cover Characteristics. It advances tropical forest monitoring capabilities, ensuring alignment with international sustainability initiatives and providing critical information for analysis and monitoring of deforestation and forest degradation.</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>CLMS_BA_GLOBAL_300M_DAILY_V4</td>
+<td>CLMS Burnt Area (BA) Global 300m daily V4 (COG)</td>
+<td>Maps burn scars, surfaces which have been sufficiently affected by fire to display significant changes in the vegetation cover (destruction of dry material, reduction or loss of green material) and in the ground surface (temporarily darker because of ash). Daily datasets are available at global scale, in the spatial resolution of 300 m, and within 24 hours after the satellite acquisition. They cover the period from January 2025 to present.</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>CLMS_NDVI_GLOBAL_300M_10DAILY_V3</td>
+<td>CLMS Normalized Difference Vegetation Index (NDVI) Global 300m 10-daily v3 (COG)</td>
+<td>NDVI is an indicator of the greenness of the biomes. Every 10-days estimates are available in near real time at global scale in the spatial resolution of about 300 m from January 2014 to the present.</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>CLMS_ETA_GLOBAL_300M_10DAILY_V1</td>
+<td>CLMS Evapotranspiration (ETA) Global 300m 10-daily V1 (COG)</td>
+<td>Provides actual evapotranspiration, soil evaporation and canopy transpiration with some quality indicators. Estimates are provided for two evapotranspiration schemes and an Ensemble of models. The 10-daily estimates are available at global scale in the spatial resolution of 300 m from November 2025 to present, derived from Sentinel-3 OLCI and SLSTR data.</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div id="521b5fdb" class="cell" data-execution_count="25">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>connection.describe_collection(<span class="st">"CLMS_LCM_GLOBAL_10M_YEARLY_V1"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="25">
+
+    <script>
+    if (!window.customElements || !window.customElements.get('openeo-collection')) {
+        var el = document.createElement('script');
+        el.src = "https://cdn.jsdelivr.net/npm/@openeo/vue-components@2/assets/openeo.min.js";
+        document.head.appendChild(el);
+
+        var font = document.createElement('font');
+        font.as = "font";
+        font.type = "font/woff2";
+        font.crossOrigin = true;
+        font.href = "https://use.fontawesome.com/releases/v5.13.0/webfonts/fa-solid-900.woff2";
+        document.head.appendChild(font);
+    }
+    </script>
+    <openeo-collection>
+        <script type="application/json">{"federation": null, "mapOptions": {}, "data": {"bands": [{"description": "MAP", "name": "map"}], "contacts": [{"emails": [{"roles": ["contact point"], "value": "copernicus@eea.europa.eu"}], "links": [{"href": "https://land.copernicus.eu/", "rel": "about", "title": "Homepage of the Copernicus Land Monitoring Service", "type": "text/html"}], "name": "Copernicus Land Monitoring Service", "organization": "European Environment Agency", "phones": [{"roles": ["contact point"], "value": "+4533367100"}], "roles": ["producer"]}], "cube:dimensions": {"bands": {"type": "bands", "values": ["map"]}, "t": {"extent": ["2020-01-01T00:00:00Z", null], "type": "temporal"}, "x": {"axis": "x", "extent": [-179.9999999, 179.9999999], "reference_system": 4326, "type": "spatial"}, "y": {"axis": "y", "extent": [-60.0, 84.0], "reference_system": 4326, "type": "spatial"}}, "description": "Provides at global level information on different types (classes) of physical coverage of the Earth's surface, e.g. tree cover, grasslands, croplands, permanent water bodies, wetlands at 10 m spatial resolution for the 2020 base year. The data are updated annually and will be available for the 2020-2026 years. This dataset builds upon initiatives like the 100 m Copernicus Global Land Cover layers (2015-2019) and offers enhanced spatial detail that facilitates more effective monitoring of global land cover changes, including deforestation, urbanization, and other environmental transformations.", "experimental": true, "extent": {"spatial": {"bbox": [[-179.9999999, -60.0, 179.9999999, 84.0]]}, "temporal": {"interval": [["2020-01-01T00:00:00Z", null]]}}, "id": "CLMS_LCM_GLOBAL_10M_YEARLY_V1", "keywords": ["Copernicus", "CLMS", "LCM", "Land Cover", "land use land cover", "global", "yearly", "10m", "Sentinel-2", "MSI"], "license": "other", "links": [{"href": "https://land.copernicus.eu/en/data-policy", "rel": "license", "title": "Data policy for Copernicus Land Monitoring Service products and services", "type": "text/html"}, {"href": "https://land.copernicus.eu/en/products/global-dynamic-land-cover/land-cover-2020-raster-10-m-global-annual", "rel": "about", "title": "Product page", "type": "text/html"}, {"href": "https://stac.dataspace.copernicus.eu/v1/collections/clms_lcm_global_10m_yearly_v1_cog", "rel": "derived_from", "type": "application/json"}, {"href": "https://openeo.dataspace.copernicus.eu/openeo/1.2/collections", "rel": "root"}, {"href": "https://openeo.dataspace.copernicus.eu/openeo/1.2/collections", "rel": "parent"}, {"href": "https://openeo.dataspace.copernicus.eu/openeo/1.2/collections/CLMS_LCM_GLOBAL_10M_YEARLY_V1", "rel": "self"}, {"href": "https://openeo.dataspace.copernicus.eu/openeo/1.2/collections/CLMS_LCM_GLOBAL_10M_YEARLY_V1/queryables", "rel": "http://www.opengis.net/def/rel/ogc/1.0/queryables", "type": "application/schema+json"}], "providers": [{"name": "CloudFerro", "roles": ["host"], "url": "https://cloudferro.com/"}, {"name": "European Environment Agency", "roles": ["producer"], "url": "https://land.copernicus.eu/"}, {"name": "European Commission", "roles": ["licensor"], "url": "https://commission.europa.eu/"}, {"name": "VITO", "roles": ["processor"], "url": "https://vito.be/"}], "sci:doi": "10.2909/602507b2-96c7-47bb-b79d-7ba25e97d0a9", "stac_extensions": ["https://stac-extensions.github.io/alternate-assets/v1.2.0/schema.json", "https://stac-extensions.github.io/authentication/v1.1.0/schema.json", "https://stac-extensions.github.io/processing/v1.2.0/schema.json", "https://stac-extensions.github.io/product/v1.0.0/schema.json", "https://stac-extensions.github.io/projection/v2.0.0/schema.json", "https://stac-extensions.github.io/scientific/v1.0.0/schema.json", "https://stac-extensions.github.io/storage/v2.0.0/schema.json", "https://stac-extensions.github.io/contacts/v1.0.0/schema.json", "https://stac-extensions.github.io/classification/v2.0.0/schema.json"], "stac_version": "1.1.0", "summaries": {"bands": [{"data_type": "uint8", "description": "MAP", "gsd": 10.0, "name": "map", "nodata": 255.0}], "eo:bands": [{"data_type": "uint8", "description": "MAP", "gsd": 10.0, "name": "map", "nodata": 255.0}], "gsd": [10.0], "instruments": ["msi", "sar"], "processing:level": ["L3"], "processing:version": ["v100"], "product:type": ["dynamic_land_cover"], "proj:code": ["EPSG:4326"], "proj:shape": [36000, 36000], "raster:bands": [{"classification:classes": [{"color_hint": "006400", "description": "Tree cover", "name": "tree_cover", "value": 10}, {"color_hint": "FFBB22", "description": "Shrubland", "name": "shrubland", "value": 20}, {"color_hint": "FFFF4C", "description": "Grassland", "name": "grassland", "value": 30}, {"color_hint": "F096FF", "description": "Cropland", "name": "cropland", "value": 40}, {"color_hint": "009696", "description": "Herbaceous wetland", "name": "herbaceous_wetland", "value": 50}, {"color_hint": "00CF75", "description": "Mangroves", "name": "mangroves", "value": 60}, {"color_hint": "FAE6A0", "description": "Moss and lichen", "name": "moss_lichen", "value": 70}, {"color_hint": "B4B4B4", "description": "Bare / sparse vegetation", "name": "bare_sparse_vegetation", "value": 80}, {"color_hint": "FA0000", "description": "Built-up", "name": "built_up", "value": 90}, {"color_hint": "0064C8", "description": "Permanent water bodies", "name": "permanent_water_bodies", "value": 100}, {"color_hint": "F0F0F0", "description": "Snow and ice", "name": "snow_ice", "value": 110}, {"color_hint": "0A0A0A", "description": "Unclassifiable due to data gaps (e.g. persistent cloud cover)", "name": "unclassifiable", "value": 254}, {"color_hint": "000000", "description": "No Data \u2013 outside area of interest", "name": "no_data", "nodata": true, "value": 255}], "data_type": "uint8", "name": "map", "nodata": 255.0}]}, "title": "CLMS Land Cover Map (LCM) Global 10m yearly V1 (COG)", "type": "Collection"}}</script>
+    </openeo-collection>
+    
+</div>
+</div>
+<p>The collection listing above indicates the CLMS catalogue available in CDSE through the openEO API. This step is helpful when you are not yet sure which product best fits your use case. You can browse the available collections, inspect metadata, and then select the most relevant dataset for your region and analysis period.</p>
+<section id="access-land-cover-over-belgium" class="level4">
+<h4 class="anchored" data-anchor-id="access-land-cover-over-belgium">Access Land cover over Belgium</h4>
+<p>As a simple example, let us explore the land-cover dataset for Belgium. With the <code>load_collection</code> process, we can select a collection, define the spatial extent, set a time range, and choose the relevant band. In this example, the <code>map</code> band contains the land-cover class information used to classify each pixel.</p>
+<div id="cf6c1aba" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># around Antwerp</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>landcover_cube <span class="op">=</span> connection.load_collection(</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"CLMS_LCM_GLOBAL_10M_YEARLY_V1"</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    spatial_extent<span class="op">=</span>{<span class="st">"west"</span>: <span class="fl">4.35</span>, <span class="st">"south"</span>: <span class="fl">51.15</span>, <span class="st">"east"</span>: <span class="fl">4.55</span>, <span class="st">"north"</span>: <span class="fl">51.30</span>},</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    temporal_extent<span class="op">=</span>[<span class="st">"2020-01-01"</span>, <span class="st">"2021-01-01"</span>],</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    bands<span class="op">=</span>[<span class="st">"map"</span>],</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Next, to download the data, we create a batch job in openEO that will fetch the data and perform clipping and filtering operations in the cloud. The resulting data will be downloaded to your local environment for further analysis and visualisation. For more information on openEO batch jobs, please refer to the <a href="https://open-eo.github.io/openeo-python-client/batch_jobs.html">openEO documentation</a></p>
+<div id="d9edee56" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>landcover_job <span class="op">=</span> landcover_cube.create_job(title<span class="op">=</span> <span class="st">"Landcover Antwerp 2024"</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>landcover_job.start_and_wait()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>0:00:00 Job 'j-2609081240114b5d82a43570b2a5d436': send 'start'
+0:00:06 Job 'j-2609081240114b5d82a43570b2a5d436': queued (progress 0%)
+0:00:11 Job 'j-2609081240114b5d82a43570b2a5d436': queued (progress 0%)
+0:00:18 Job 'j-2609081240114b5d82a43570b2a5d436': queued (progress 0%)
+0:00:26 Job 'j-2609081240114b5d82a43570b2a5d436': queued (progress 0%)
+0:00:36 Job 'j-2609081240114b5d82a43570b2a5d436': running (progress N/A)
+0:00:48 Job 'j-2609081240114b5d82a43570b2a5d436': running (progress N/A)
+0:01:04 Job 'j-2609081240114b5d82a43570b2a5d436': running (progress N/A)
+0:01:23 Job 'j-2609081240114b5d82a43570b2a5d436': running (progress N/A)
+0:01:47 Job 'j-2609081240114b5d82a43570b2a5d436': running (progress N/A)
+0:02:17 Job 'j-2609081240114b5d82a43570b2a5d436': finished (progress 100%)</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="5">
+
+    <script>
+    if (!window.customElements || !window.customElements.get('openeo-job')) {
+        var el = document.createElement('script');
+        el.src = "https://cdn.jsdelivr.net/npm/@openeo/vue-components@2/assets/openeo.min.js";
+        document.head.appendChild(el);
+
+        var font = document.createElement('font');
+        font.as = "font";
+        font.type = "font/woff2";
+        font.crossOrigin = true;
+        font.href = "https://use.fontawesome.com/releases/v5.13.0/webfonts/fa-solid-900.woff2";
+        document.head.appendChild(font);
+    }
+    </script>
+    <openeo-job>
+        <script type="application/json">{"currency": "credits", "federation": null, "job": {"costs": 9, "created": "2026-09-08T12:40:11Z", "id": "j-2609081240114b5d82a43570b2a5d436", "log_level": "info", "process": {"process_graph": {"loadcollection1": {"arguments": {"bands": ["map"], "id": "CLMS_LCM_GLOBAL_10M_YEARLY_V1", "spatial_extent": {"east": 4.55, "north": 51.3, "south": 51.15, "west": 4.35}, "temporal_extent": ["2020-01-01", "2021-01-01"]}, "process_id": "load_collection"}, "saveresult1": {"arguments": {"data": {"from_node": "loadcollection1"}, "format": "GTiff", "options": {}}, "process_id": "save_result", "result": true}}}, "progress": 100, "status": "finished", "title": "Landcover Antwerp 2024", "updated": "2026-09-08T12:42:11Z", "usage": {"cpu": {"unit": "cpu-seconds", "value": 5400}, "duration": {"unit": "seconds", "value": 61}, "input_pixel": {"unit": "mega-pixel", "value": 4.123879432678223}, "max_executor_memory": {"unit": "gb", "value": 0.3317604064941406}, "memory": {"unit": "mb-seconds", "value": 11059200}, "memory_requested": {"unit": "mb-seconds", "value": 11059200}, "network_received": {"unit": "b", "value": 93497}}}}</script>
+    </openeo-job>
+    
+</div>
+</div>
+<div id="e5c497fb" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> landcover_job.get_results()</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>result_2024 <span class="op">=</span> landcover_job.get_results()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="dfdb1850" class="cell" data-execution_count="34">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># classes from https://stac.dataspace.copernicus.eu/v1/collections/clms_lcm_global_10m_yearly_v1_cog</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>LCM_LEGEND <span class="op">=</span> {</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="dv">10</span>: (<span class="st">"Tree cover"</span>, <span class="st">"#006400"</span>),</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="dv">20</span>: (<span class="st">"Shrubland"</span>, <span class="st">"#FFBB22"</span>),</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="dv">30</span>: (<span class="st">"Grassland"</span>, <span class="st">"#FFFF4C"</span>),</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="dv">40</span>: (<span class="st">"Cropland"</span>, <span class="st">"#F096FF"</span>),</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="dv">50</span>: (<span class="st">"Herbaceous wetland"</span>, <span class="st">"#009696"</span>),</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    <span class="dv">60</span>: (<span class="st">"Mangroves"</span>, <span class="st">"#00CF75"</span>),</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    <span class="dv">70</span>: (<span class="st">"Moss and lichen"</span>, <span class="st">"#FAE6A0"</span>),</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    <span class="dv">80</span>: (<span class="st">"Bare / sparse vegetation"</span>, <span class="st">"#B4B4B4"</span>),</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    <span class="dv">90</span>: (<span class="st">"Built-up"</span>, <span class="st">"#FA0000"</span>),</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>    <span class="dv">100</span>: (<span class="st">"Permanent water bodies"</span>, <span class="st">"#0064C8"</span>),</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>    <span class="dv">110</span>: (<span class="st">"Snow and ice"</span>, <span class="st">"#F0F0F0"</span>),</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> rasterio.<span class="bu">open</span>(<span class="st">"landcover_2020/openEO_2020-01-01Z.tif"</span>).read(<span class="dv">1</span>, masked<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> np.ma.masked_invalid(img)</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>cmap <span class="op">=</span> matplotlib.colors.ListedColormap([color <span class="cf">for</span> _, color <span class="kw">in</span> LCM_LEGEND.values()])</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>bounds <span class="op">=</span> <span class="bu">list</span>(LCM_LEGEND.keys()) <span class="op">+</span> [<span class="dv">255</span>]</span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>norm <span class="op">=</span> matplotlib.colors.BoundaryNorm(bounds, cmap.N)</span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">10</span>))</span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>im <span class="op">=</span> ax.imshow(</span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>    img,</span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>    cmap<span class="op">=</span>cmap,</span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>    norm<span class="op">=</span>norm,</span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a>    interpolation<span class="op">=</span><span class="st">"nearest"</span>,</span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a>    aspect<span class="op">=</span><span class="st">"equal"</span>,</span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Land cover near Antwerp, Belgium (2020)"</span>)</span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a>ax.set_axis_off()</span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a>legend_patches <span class="op">=</span> [</span>
+<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a>    plt.Rectangle((<span class="dv">0</span>, <span class="dv">0</span>), <span class="dv">1</span>, <span class="dv">1</span>, color<span class="op">=</span>color) <span class="cf">for</span> _, color <span class="kw">in</span> LCM_LEGEND.values()</span>
+<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a>ax.legend(</span>
+<span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a>    legend_patches,</span>
+<span id="cb11-39"><a href="#cb11-39" aria-hidden="true" tabindex="-1"></a>    [name <span class="cf">for</span> name, _ <span class="kw">in</span> LCM_LEGEND.values()],</span>
+<span id="cb11-40"><a href="#cb11-40" aria-hidden="true" tabindex="-1"></a>    loc<span class="op">=</span><span class="st">"center left"</span>,</span>
+<span id="cb11-41"><a href="#cb11-41" aria-hidden="true" tabindex="-1"></a>    bbox_to_anchor<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">0.5</span>),</span>
+<span id="cb11-42"><a href="#cb11-42" aria-hidden="true" tabindex="-1"></a>    fontsize<span class="op">=</span><span class="dv">9</span>,</span>
+<span id="cb11-43"><a href="#cb11-43" aria-hidden="true" tabindex="-1"></a>    frameon<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb11-44"><a href="#cb11-44" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-45"><a href="#cb11-45" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb11-46"><a href="#cb11-46" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="CLMS_layers_using_openEO_files/figure-html/cell-9-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="explore-burnt-area-and-soil-moisture-product-in-france" class="level4">
+<h4 class="anchored" data-anchor-id="explore-burnt-area-and-soil-moisture-product-in-france">Explore Burnt area and soil moisture product in France</h4>
+<p>The first example shows how to access a single CLMS product for a small area. In the next section we want to use additional processes of openEO to further analyse the data.</p>
+<p>This section uses the CLMS burnt-area product together with the surface-soil-moisture product for the Gironde/Landes region in France. The area was affected by severe wildfires in July 2022, which makes it a useful case study for comparing conditions before and after the event.</p>
+<p><strong>Datasets used</strong></p>
+<ul>
+<li><code>CLMS_BA_GLOBAL_300M_MONTHLY_V4</code> – monthly burnt-area product at 300 m resolution</li>
+<li><code>CLMS_SSM_EUROPE_1KM_DAILY_V1</code> – daily surface soil-moisture product at 1 km resolution</li>
+</ul>
+<div id="d8c7771d" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># quick inspection of the burnt area product</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>connection.describe_collection(<span class="st">"CLMS_BA_GLOBAL_300M_MONTHLY_V4"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="27">
+
+    <script>
+    if (!window.customElements || !window.customElements.get('openeo-collection')) {
+        var el = document.createElement('script');
+        el.src = "https://cdn.jsdelivr.net/npm/@openeo/vue-components@2/assets/openeo.min.js";
+        document.head.appendChild(el);
+
+        var font = document.createElement('font');
+        font.as = "font";
+        font.type = "font/woff2";
+        font.crossOrigin = true;
+        font.href = "https://use.fontawesome.com/releases/v5.13.0/webfonts/fa-solid-900.woff2";
+        document.head.appendChild(font);
+    }
+    </script>
+    <openeo-collection>
+        <script type="application/json">{"federation": null, "mapOptions": {}, "data": {"bands": [{"description": "Day of burn in year (1-366), no burn (0) or flag (<0)", "name": "dob_ntc"}, {"description": "Probability that the fractional burned area is above 0.1", "name": "lfp_ntc"}, {"description": "Fraction of pixel surface affected by fire at the day of the burn detection", "name": "bf_ntc"}, {"description": "Probability that the burn detection corresponds to an actual burn", "name": "cp_ntc"}], "contacts": [{"emails": [{"roles": ["contact point"], "value": "copernicus@eea.europa.eu"}], "links": [{"href": "https://land.copernicus.eu/", "rel": "about", "title": "Homepage of the Copernicus Land Monitoring Service", "type": "text/html"}], "name": "Copernicus Land Monitoring Service", "organization": "European Environment Agency", "phones": [{"roles": ["contact point"], "value": "+4533367100"}], "roles": ["producer"]}], "cube:dimensions": {"bands": {"type": "bands", "values": ["dob_ntc", "lfp_ntc", "bf_ntc", "cp_ntc"]}, "t": {"extent": ["2018-07-01T00:00:00Z", null], "type": "temporal"}, "x": {"axis": "x", "extent": [-179.9999999, 179.9985119], "reference_system": 4326, "type": "spatial"}, "y": {"axis": "y", "extent": [-59.9985119, 80.0014881], "reference_system": 4326, "type": "spatial"}}, "description": "Maps burn scars, surfaces which have been sufficiently affected by fire to display significant changes in the vegetation cover (destruction of dry material, reduction or loss of green material) and in the ground surface (temporarily darker because of ash). In addition to the date of burn, the Burnt Areas version 4.0 provides the burnt fraction of the pixel. Monthly datasets are available at global scale, in the spatial resolution of 300 m, and with a time lag of few months. They cover the period from July 2018 to present.", "experimental": true, "extent": {"spatial": {"bbox": [[-179.9999999, -59.9985119, 179.9985119, 80.0014881]]}, "temporal": {"interval": [["2018-07-01T00:00:00Z", null]]}}, "id": "CLMS_BA_GLOBAL_300M_MONTHLY_V4", "keywords": ["Copernicus", "CLMS", "BA", "Burnt Area", "fire disturbance", "global", "monthly", "300m", "Sentinel-3", "OLCI", "SLSTR"], "license": "other", "links": [{"href": "https://land.copernicus.eu/en/data-policy", "rel": "license", "title": "Data policy for Copernicus Land Monitoring Service products and services", "type": "text/html"}, {"href": "https://land.copernicus.eu/en/products/vegetation/burnt-area-v4-monthly-300m", "rel": "about", "title": "Product page", "type": "text/html"}, {"href": "https://stac.dataspace.copernicus.eu/v1/collections/clms_ba_global_300m_monthly_v4_cog", "rel": "derived_from", "type": "application/json"}, {"href": "https://openeo.dataspace.copernicus.eu/openeo/1.2/collections", "rel": "root"}, {"href": "https://openeo.dataspace.copernicus.eu/openeo/1.2/collections", "rel": "parent"}, {"href": "https://openeo.dataspace.copernicus.eu/openeo/1.2/collections/CLMS_BA_GLOBAL_300M_MONTHLY_V4", "rel": "self"}, {"href": "https://openeo.dataspace.copernicus.eu/openeo/1.2/collections/CLMS_BA_GLOBAL_300M_MONTHLY_V4/queryables", "rel": "http://www.opengis.net/def/rel/ogc/1.0/queryables", "type": "application/schema+json"}], "providers": [{"name": "CloudFerro", "roles": ["host"], "url": "https://cloudferro.com/"}, {"name": "European Environment Agency", "roles": ["producer"], "url": "https://land.copernicus.eu/"}, {"name": "European Commission", "roles": ["licensor"], "url": "https://commission.europa.eu/"}, {"name": "VITO", "roles": ["processor"], "url": "https://vito.be/"}], "sci:doi": "10.2909/8fa58061-28ab-49bb-9b77-c26b50733e34", "stac_extensions": ["https://stac-extensions.github.io/alternate-assets/v1.2.0/schema.json", "https://stac-extensions.github.io/authentication/v1.1.0/schema.json", "https://stac-extensions.github.io/processing/v1.2.0/schema.json", "https://stac-extensions.github.io/product/v1.0.0/schema.json", "https://stac-extensions.github.io/projection/v2.0.0/schema.json", "https://stac-extensions.github.io/raster/v2.0.0/schema.json", "https://stac-extensions.github.io/scientific/v1.0.0/schema.json", "https://stac-extensions.github.io/storage/v2.0.0/schema.json", "https://stac-extensions.github.io/contacts/v1.0.0/schema.json"], "stac_version": "1.1.0", "summaries": {"bands": [{"data_type": "float32", "description": "Day of burn in year (1-366), no burn (0) or flag (<0)", "gsd": 300.0, "name": "dob_ntc"}, {"data_type": "float32", "description": "Probability that the fractional burned area is above 0.1", "gsd": 300.0, "name": "lfp_ntc"}, {"data_type": "float32", "description": "Fraction of pixel surface affected by fire at the day of the burn detection", "gsd": 300.0, "name": "bf_ntc"}, {"data_type": "float32", "description": "Probability that the burn detection corresponds to an actual burn", "gsd": 300.0, "name": "cp_ntc"}], "constellation": ["sentinel-3"], "eo:bands": [{"data_type": "float32", "description": "Day of burn in year (1-366), no burn (0) or flag (<0)", "gsd": 300.0, "name": "dob_ntc"}, {"data_type": "float32", "description": "Probability that the fractional burned area is above 0.1", "gsd": 300.0, "name": "lfp_ntc"}, {"data_type": "float32", "description": "Fraction of pixel surface affected by fire at the day of the burn detection", "gsd": 300.0, "name": "bf_ntc"}, {"data_type": "float32", "description": "Probability that the burn detection corresponds to an actual burn", "gsd": 300.0, "name": "cp_ntc"}], "gsd": [300.0], "instruments": ["olci", "slstr"], "processing:level": ["L3"], "processing:version": ["V4.0.1"], "product:timeliness": ["P2M"], "product:timeliness_category": ["OFFL"], "product:type": ["burnt_area"], "proj:code": ["EPSG:4326"], "proj:shape": [47040, 120960], "raster:bands": [{"data_type": "float32", "name": "dob_ntc"}, {"data_type": "float32", "name": "lfp_ntc"}, {"data_type": "float32", "name": "bf_ntc"}, {"data_type": "float32", "name": "cp_ntc"}]}, "title": "CLMS Burnt Area (BA) Global 300m monthly V4 (COG)", "type": "Collection"}}</script>
+    </openeo-collection>
+    
+</div>
+</div>
+<div id="5c1c4bf2" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Landes/Gironde forest fires, France (fire occurred July 2022)</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co"># bf_ntc: fraction of the pixel actually burned: it directly gives the fraction of each pixel actually burned, which is the most intuitive band for mapping burn extent/severity.</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>fire_extent <span class="op">=</span> {<span class="st">"west"</span>: <span class="op">-</span><span class="fl">1.35</span>, <span class="st">"south"</span>: <span class="fl">44.35</span>, <span class="st">"east"</span>: <span class="op">-</span><span class="fl">0.05</span>, <span class="st">"north"</span>: <span class="fl">44.75</span>}</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>burnt_area_cube <span class="op">=</span> connection.load_collection(</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"CLMS_BA_GLOBAL_300M_MONTHLY_V4"</span>,</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    spatial_extent<span class="op">=</span>fire_extent,</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    temporal_extent<span class="op">=</span>[<span class="st">"2022-07-01"</span>, <span class="st">"2022-07-31"</span>],</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    bands<span class="op">=</span>[<span class="st">"bf_ntc"</span>],</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>).reduce_dimension(dimension<span class="op">=</span><span class="st">"t"</span>, reducer<span class="op">=</span><span class="st">"first"</span>)</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>burnt_area_cube.download(<span class="st">"burnt_area_gironde_2022_07.tiff"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>In the cell above, we used two new openEO processes: <code>reduce_dimension</code> and <code>download</code>. The <code>reduce_dimension</code> process allows us to aggregate the data’s time dimension. For a detailed description of the process, you can execute the code <code>connection.describe_process("reduce_dimension")</code> to get more information about the process and its parameters.</p>
+<p>Additionally, the <a href="https://open-eo.github.io/openeo-python-client/api.html#openeo.rest.connection.Connection.download"><code>download</code></a> process executes the workflow as a <code>batch job</code>, but it is recommended when you are interested in a smaller subset of the data. However, please note that the <code>download</code> process is not suitable for large datasets or long time series and does not provide the same level of logging and monitoring as a batch job.</p>
+<p>Let us visualise the burnt area product for the Gironde/Landes region in France. The following code snippet demonstrates how to load the CLMS burnt-area product:</p>
+<div id="5941ac78" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Interactive burnt-area map using the existing fire_extent bbox.</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> folium</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> plot_burnt_area_interactive(raster_path, extent):</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> rasterio.<span class="bu">open</span>(raster_path) <span class="im">as</span> src:</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>        arr <span class="op">=</span> src.read(<span class="dv">1</span>, masked<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>        arr <span class="op">=</span> np.ma.masked_invalid(arr)</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    burn_mask <span class="op">=</span> np.ma.where(arr <span class="op">&gt;</span> <span class="fl">0.1</span>, arr, <span class="fl">0.0</span>)</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>    burn_mask <span class="op">=</span> np.ma.filled(burn_mask, <span class="fl">0.0</span>)</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>    minx, miny, maxx, maxy <span class="op">=</span> extent[<span class="st">"west"</span>], extent[<span class="st">"south"</span>], extent[<span class="st">"east"</span>], extent[<span class="st">"north"</span>]</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>    center <span class="op">=</span> [(miny <span class="op">+</span> maxy) <span class="op">/</span> <span class="dv">2</span>, (minx <span class="op">+</span> maxx) <span class="op">/</span> <span class="dv">2</span>]</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>    m <span class="op">=</span> folium.Map(location<span class="op">=</span>center, zoom_start<span class="op">=</span><span class="dv">9</span>, tiles<span class="op">=</span><span class="st">"OpenStreetMap"</span>)</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>    folium.TileLayer(</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>        tiles<span class="op">=</span><span class="st">"https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/</span><span class="sc">{z}</span><span class="st">/</span><span class="sc">{y}</span><span class="st">/</span><span class="sc">{x}</span><span class="st">"</span>,</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>        attr<span class="op">=</span><span class="st">"Esri"</span>,</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>        name<span class="op">=</span><span class="st">"Esri Satellite"</span>,</span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>        overlay<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>    ).add_to(m)</span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>    folium.raster_layers.ImageOverlay(</span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>        image<span class="op">=</span>burn_mask,</span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>        bounds<span class="op">=</span>[[miny, minx], [maxy, maxx]],</span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>        colormap<span class="op">=</span><span class="kw">lambda</span> x: (<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="bu">min</span>(<span class="bu">max</span>(x, <span class="dv">0</span>), <span class="dv">1</span>)),</span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>        opacity<span class="op">=</span><span class="fl">0.8</span>,</span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a>    ).add_to(m)</span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a>    folium.LayerControl().add_to(m)</span>
+<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> m</span>
+<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a>plot_burnt_area_interactive(<span class="st">"burnt_area_gironde_2022_07.tiff"</span>, fire_extent)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="42">
+<div style="width:100%;"><div style="position:relative;width:100%;height:0;padding-bottom:60%;"><span style="color:#565656">Make this Notebook Trusted to load map: File -&gt; Trust Notebook</span><iframe srcdoc="<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv=&quot;content-type&quot; content=&quot;text/html; charset=UTF-8&quot; />
+    <script src=&quot;https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js&quot;></script>
+    <script src=&quot;https://code.jquery.com/jquery-3.7.1.min.js&quot;></script>
+    <script src=&quot;https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js&quot;></script>
+    <script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js&quot;></script>
+    <link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css&quot;/>
+    <link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css&quot;/>
+    <link rel=&quot;stylesheet&quot; href=&quot;https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css&quot;/>
+    <link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css&quot;/>
+    <link rel=&quot;stylesheet&quot; href=&quot;https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css&quot;/>
+    <link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css&quot;/>
+    
+            <meta name=&quot;viewport&quot; content=&quot;width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no&quot; />
+            <style>
+                #map_e392848327f49cbe9d385167242737b4 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+    
+            
+                <style>
+                    .leaflet-image-layer {
+                        /* old android/safari*/
+                        image-rendering: -webkit-optimize-contrast;
+                        image-rendering: crisp-edges; /* safari */
+                        image-rendering: pixelated; /* chrome */
+                        image-rendering: -moz-crisp-edges; /* firefox */
+                        image-rendering: -o-crisp-edges; /* opera */
+                        -ms-interpolation-mode: nearest-neighbor; /* ie */
+                    }
+                </style>
+            
+        
+</head>
+<body>
+    
+    
+            <div class=&quot;folium-map&quot; id=&quot;map_e392848327f49cbe9d385167242737b4&quot; ></div>
+        
+</body>
+<script>
+    
+    
+            var map_e392848327f49cbe9d385167242737b4 = L.map(
+                &quot;map_e392848327f49cbe9d385167242737b4&quot;,
+                {
+                    center: [44.55, -0.7000000000000001],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  &quot;zoom&quot;: 9,
+  &quot;zoomControl&quot;: true,
+  &quot;preferCanvas&quot;: false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_36e1b9be6e44459b810adb9661a344f6 = L.tileLayer(
+                &quot;https://tile.openstreetmap.org/{z}/{x}/{y}.png&quot;,
+                {
+  &quot;minZoom&quot;: 0,
+  &quot;maxZoom&quot;: 19,
+  &quot;maxNativeZoom&quot;: 19,
+  &quot;noWrap&quot;: false,
+  &quot;attribution&quot;: &quot;\u0026copy; \u003ca href=\&quot;https://www.openstreetmap.org/copyright\&quot;\u003eOpenStreetMap\u003c/a\u003e contributors&quot;,
+  &quot;subdomains&quot;: &quot;abc&quot;,
+  &quot;detectRetina&quot;: false,
+  &quot;tms&quot;: false,
+  &quot;opacity&quot;: 1,
+}
+
+            );
+        
+    
+            tile_layer_36e1b9be6e44459b810adb9661a344f6.addTo(map_e392848327f49cbe9d385167242737b4);
+        
+    
+            var tile_layer_e06a4fc38945b76ff3d6dc65addec3b1 = L.tileLayer(
+                &quot;https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}&quot;,
+                {
+  &quot;minZoom&quot;: 0,
+  &quot;maxZoom&quot;: 18,
+  &quot;maxNativeZoom&quot;: 18,
+  &quot;noWrap&quot;: false,
+  &quot;attribution&quot;: &quot;Esri&quot;,
+  &quot;subdomains&quot;: &quot;abc&quot;,
+  &quot;detectRetina&quot;: false,
+  &quot;tms&quot;: false,
+  &quot;opacity&quot;: 1,
+}
+
+            );
+        
+    
+            tile_layer_e06a4fc38945b76ff3d6dc65addec3b1.addTo(map_e392848327f49cbe9d385167242737b4);
+        
+    
+            var image_overlay_6fe92d1542f3e500c9e08acc906ee584 = L.imageOverlay(
+                &quot;data:image/png;base64,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&quot;,
+                [[44.35, -1.35], [44.75, -0.05]],
+                {
+  &quot;opacity&quot;: 0.8,
+}
+            );
+        
+    
+            image_overlay_6fe92d1542f3e500c9e08acc906ee584.addTo(map_e392848327f49cbe9d385167242737b4);
+        
+    
+            var layer_control_409b960b47a17be7eaa20dd3aa7d8b30_layers = {
+                base_layers : {
+                    &quot;openstreetmap&quot; : tile_layer_36e1b9be6e44459b810adb9661a344f6,
+                    &quot;Esri Satellite&quot; : tile_layer_e06a4fc38945b76ff3d6dc65addec3b1,
+                },
+                overlays :  {
+                    &quot;macro_element_6fe92d1542f3e500c9e08acc906ee584&quot; : image_overlay_6fe92d1542f3e500c9e08acc906ee584,
+                },
+            };
+            let layer_control_409b960b47a17be7eaa20dd3aa7d8b30 = L.control.layers(
+                layer_control_409b960b47a17be7eaa20dd3aa7d8b30_layers.base_layers,
+                layer_control_409b960b47a17be7eaa20dd3aa7d8b30_layers.overlays,
+                {
+  &quot;position&quot;: &quot;topright&quot;,
+  &quot;collapsed&quot;: true,
+  &quot;autoZIndex&quot;: true,
+}
+            ).addTo(map_e392848327f49cbe9d385167242737b4);
+
+        
+</script>
+</html>" style="position:absolute;width:100%;height:100%;left:0;top:0;border:none !important;" allowfullscreen="" webkitallowfullscreen="" mozallowfullscreen=""></iframe></div></div>
+</div>
+</div>
+<div id="44b2b8d6" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># sanity check: the "hot" colormap renders NaN/nodata pixels as white, which can look like burnt patches</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>ba_img <span class="op">=</span> rasterio.<span class="bu">open</span>(<span class="st">"burnt_area_gironde_2022_07.tiff"</span>).read(<span class="dv">1</span>, masked<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>ba_img <span class="op">=</span> np.ma.masked_invalid(ba_img)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 300m resultion to heactares </span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>pixel_area_ha <span class="op">=</span> <span class="dv">300</span> <span class="op">*</span> <span class="dv">300</span> <span class="op">/</span> <span class="dv">10_000</span>  </span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>burnt_pixels <span class="op">=</span> (ba_img <span class="op">&gt;</span> <span class="fl">0.1</span>).<span class="bu">sum</span>()</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>estimated_burnt_area_ha <span class="op">=</span> ba_img[ba_img <span class="op">&gt;</span> <span class="fl">0.1</span>].<span class="bu">sum</span>() <span class="op">*</span> pixel_area_ha</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"AOI size: </span><span class="sc">{</span>ba_img<span class="sc">.</span>shape[<span class="dv">0</span>]<span class="sc">}</span><span class="ss"> x </span><span class="sc">{</span>ba_img<span class="sc">.</span>shape[<span class="dv">1</span>]<span class="sc">}</span><span class="ss"> pixels (</span><span class="sc">{</span>ba_img<span class="sc">.</span>size <span class="op">*</span> pixel_area_ha<span class="sc">:.0f}</span><span class="ss"> ha)"</span>)</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Pixels with burned fraction &gt; 0.1: </span><span class="sc">{</span>burnt_pixels<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Estimated burnt area: </span><span class="sc">{</span>estimated_burnt_area_ha<span class="sc">:.1f}</span><span class="ss"> ha"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>AOI size: 135 x 438 pixels (532170 ha)
+Pixels with burned fraction &gt; 0.1: 2511
+Estimated burnt area: 11813.5 ha</code></pre>
+</div>
+</div>
+<p>Next, making use of the several interesting products offered in CLMS, let us explore the soil-moisture product for the same region. The soil-moisture product is available at a daily temporal resolution, which allows us to compare the mean soil moisture before and after the fire event.</p>
+<div id="6f18d110" class="cell" data-execution_count="28">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>connection.describe_collection(<span class="st">"CLMS_SSM_EUROPE_1KM_DAILY_V1"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="28">
+
+    <script>
+    if (!window.customElements || !window.customElements.get('openeo-collection')) {
+        var el = document.createElement('script');
+        el.src = "https://cdn.jsdelivr.net/npm/@openeo/vue-components@2/assets/openeo.min.js";
+        document.head.appendChild(el);
+
+        var font = document.createElement('font');
+        font.as = "font";
+        font.type = "font/woff2";
+        font.crossOrigin = true;
+        font.href = "https://use.fontawesome.com/releases/v5.13.0/webfonts/fa-solid-900.woff2";
+        document.head.appendChild(font);
+    }
+    </script>
+    <openeo-collection>
+        <script type="application/json">{"federation": null, "mapOptions": {}, "data": {"bands": [{"description": "Noise on Surface Soil Moisture", "name": "noise"}, {"description": "Surface Soil Moisture", "name": "ssm"}], "contacts": [{"emails": [{"roles": ["contact point"], "value": "copernicus@eea.europa.eu"}], "links": [{"href": "https://land.copernicus.eu/", "rel": "about", "title": "Homepage of the Copernicus Land Monitoring Service", "type": "text/html"}], "name": "Copernicus Land Monitoring Service", "organization": "European Environment Agency", "phones": [{"roles": ["contact point"], "value": "+4533367100"}], "roles": ["producer"]}], "cube:dimensions": {"bands": {"type": "bands", "values": ["noise", "ssm"]}, "t": {"extent": ["2014-10-04T00:00:00Z", null], "type": "temporal"}, "x": {"axis": "x", "extent": [-11.0, 50.0], "reference_system": 4326, "type": "spatial"}, "y": {"axis": "y", "extent": [35.0, 72.0], "reference_system": 4326, "type": "spatial"}}, "description": "Provides information on the relative water content of the top few centimeters soil, describing how wet or dry the soil is in its topmost layer, expressed in percent saturation. Daily observations are available for the continental Europe in the spatial resolution of 1 km and with the temporal extent from October 2014 to present.", "experimental": true, "extent": {"spatial": {"bbox": [[-11.0, 35.0, 50.0, 72.0]]}, "temporal": {"interval": [["2014-10-04T00:00:00Z", null]]}}, "id": "CLMS_SSM_EUROPE_1KM_DAILY_V1", "keywords": ["Copernicus", "CLMS", "SSM", "Surface Soil Moisture", "soil moisture", "Europe", "daily", "1km", "Sentinel-1", "C-SAR"], "license": "other", "links": [{"href": "https://land.copernicus.eu/en/data-policy", "rel": "license", "title": "Data policy for Copernicus Land Monitoring Service products and services", "type": "text/html"}, {"href": "https://land.copernicus.eu/en/products/soil-moisture/daily-surface-soil-moisture-v1.0", "rel": "about", "title": "Product page", "type": "text/html"}, {"href": "https://stac.dataspace.copernicus.eu/v1/collections/clms_ssm_europe_1km_daily_v1_cog", "rel": "derived_from", "type": "application/json"}, {"href": "https://openeo.dataspace.copernicus.eu/openeo/1.2/collections", "rel": "root"}, {"href": "https://openeo.dataspace.copernicus.eu/openeo/1.2/collections", "rel": "parent"}, {"href": "https://openeo.dataspace.copernicus.eu/openeo/1.2/collections/CLMS_SSM_EUROPE_1KM_DAILY_V1", "rel": "self"}, {"href": "https://openeo.dataspace.copernicus.eu/openeo/1.2/collections/CLMS_SSM_EUROPE_1KM_DAILY_V1/queryables", "rel": "http://www.opengis.net/def/rel/ogc/1.0/queryables", "type": "application/schema+json"}], "providers": [{"name": "European Environment Agency", "roles": ["producer"], "url": "https://land.copernicus.eu/"}, {"name": "European Commission", "roles": ["licensor"], "url": "https://commission.europa.eu/"}, {"name": "VITO", "roles": ["processor"], "url": "https://vito.be/"}, {"name": "CloudFerro", "roles": ["host"], "url": "https://cloudferro.com/"}], "sci:doi": "10.2909/e934b15f-7d48-4c6d-a9c6-6484488aa58f", "stac_extensions": ["https://stac-extensions.github.io/alternate-assets/v1.2.0/schema.json", "https://stac-extensions.github.io/authentication/v1.1.0/schema.json", "https://stac-extensions.github.io/processing/v1.2.0/schema.json", "https://stac-extensions.github.io/product/v1.0.0/schema.json", "https://stac-extensions.github.io/projection/v2.0.0/schema.json", "https://stac-extensions.github.io/raster/v2.0.0/schema.json", "https://stac-extensions.github.io/storage/v2.0.0/schema.json", "https://stac-extensions.github.io/classification/v2.0.0/schema.json", "https://stac-extensions.github.io/scientific/v1.0.0/schema.json", "https://stac-extensions.github.io/contacts/v1.0.0/schema.json"], "stac_version": "1.1.0", "summaries": {"bands": [{"data_type": "float32", "description": "Noise on Surface Soil Moisture", "gsd": 1000.0, "name": "noise"}, {"data_type": "float32", "description": "Surface Soil Moisture", "gsd": 1000.0, "name": "ssm"}], "constellation": ["sentinel-1"], "eo:bands": [{"data_type": "float32", "description": "Noise on Surface Soil Moisture", "gsd": 1000.0, "name": "noise"}, {"data_type": "float32", "description": "Surface Soil Moisture", "gsd": 1000.0, "name": "ssm"}], "gsd": [1000.0], "instruments": ["csar"], "processing:level": ["L2"], "processing:version": ["V1.1.1", "V1.2.1", "V1.1.2", "V1.2.2"], "product:timeliness": ["P1D"], "product:timeliness_category": ["OFFL"], "product:type": ["surface_soil_moisture"], "proj:code": ["EPSG:4326"], "proj:shape": [4144, 6832], "raster:bands": [{"data_type": "float32", "name": "noise"}, {"data_type": "float32", "name": "ssm"}]}, "title": "CLMS Surface Soil Moisture (SSM) Europe 1km daily v1 (COG)", "type": "Collection"}}</script>
+    </openeo-collection>
+    
+</div>
+</div>
+<p>In the cell below, we are calculating the difference between the mean soil moisture for a pre-fire period and a post-fire period. This will generate a simple spatial summary of how the soil-moisture signal changed after the fire event.</p>
+<div id="c4084c09" class="cell" data-execution_count="20">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>ssm_before <span class="op">=</span> connection.load_collection(</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"CLMS_SSM_EUROPE_1KM_DAILY_V1"</span>,</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    spatial_extent<span class="op">=</span>fire_extent,</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    temporal_extent<span class="op">=</span>[<span class="st">"2022-06-01"</span>, <span class="st">"2022-06-30"</span>],</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    bands<span class="op">=</span>[<span class="st">"ssm"</span>],</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>).reduce_dimension(dimension<span class="op">=</span><span class="st">"t"</span>, reducer<span class="op">=</span><span class="st">"mean"</span>)</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="co"># fire was still actively burning in August (see year-scan above) -&gt; use September for "after" instead</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>ssm_after <span class="op">=</span> connection.load_collection(</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"CLMS_SSM_EUROPE_1KM_DAILY_V1"</span>,</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>    spatial_extent<span class="op">=</span>fire_extent,</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>    temporal_extent<span class="op">=</span>[<span class="st">"2022-09-01"</span>, <span class="st">"2022-09-30"</span>],</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>    bands<span class="op">=</span>[<span class="st">"ssm"</span>],</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>).reduce_dimension(dimension<span class="op">=</span><span class="st">"t"</span>, reducer<span class="op">=</span><span class="st">"mean"</span>)</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>ssm_diff <span class="op">=</span> ssm_after <span class="op">-</span> ssm_before</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>ssm_diff</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="20">
+
+    <script>
+    if (!window.customElements || !window.customElements.get('openeo-model-builder')) {
+        var el = document.createElement('script');
+        el.src = "https://cdn.jsdelivr.net/npm/@openeo/vue-components@2/assets/openeo.min.js";
+        document.head.appendChild(el);
+
+        var font = document.createElement('font');
+        font.as = "font";
+        font.type = "font/woff2";
+        font.crossOrigin = true;
+        font.href = "https://use.fontawesome.com/releases/v5.13.0/webfonts/fa-solid-900.woff2";
+        document.head.appendChild(font);
+    }
+    </script>
+    <openeo-model-builder>
+        <script type="application/json">{"id": "cdf48d3ef8ab45068e46edd3747311f9", "explicit-zoom": true, "height": "400px", "value": {"process_graph": {"loadcollection1": {"process_id": "load_collection", "arguments": {"bands": ["ssm"], "id": "CLMS_SSM_EUROPE_1KM_DAILY_V1", "spatial_extent": {"west": -1.35, "south": 44.35, "east": -0.05, "north": 44.75}, "temporal_extent": ["2022-09-01", "2022-09-30"]}}, "reducedimension1": {"process_id": "reduce_dimension", "arguments": {"data": {"from_node": "loadcollection1"}, "dimension": "t", "reducer": {"process_graph": {"mean1": {"process_id": "mean", "arguments": {"data": {"from_parameter": "data"}}, "result": true}}}}}, "loadcollection2": {"process_id": "load_collection", "arguments": {"bands": ["ssm"], "id": "CLMS_SSM_EUROPE_1KM_DAILY_V1", "spatial_extent": {"west": -1.35, "south": 44.35, "east": -0.05, "north": 44.75}, "temporal_extent": ["2022-06-01", "2022-06-30"]}}, "reducedimension2": {"process_id": "reduce_dimension", "arguments": {"data": {"from_node": "loadcollection2"}, "dimension": "t", "reducer": {"process_graph": {"mean2": {"process_id": "mean", "arguments": {"data": {"from_parameter": "data"}}, "result": true}}}}}, "mergecubes1": {"process_id": "merge_cubes", "arguments": {"cube1": {"from_node": "reducedimension1"}, "cube2": {"from_node": "reducedimension2"}, "overlap_resolver": {"process_graph": {"subtract1": {"process_id": "subtract", "arguments": {"x": {"from_parameter": "x"}, "y": {"from_parameter": "y"}}, "result": true}}}}, "result": true}}}}</script>
+    </openeo-model-builder>
+    
+</div>
+</div>
+<div id="a15a3afc" class="cell" data-execution_count="21">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># first result</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>ssm_before_result <span class="op">=</span> ssm_before.save_result(<span class="bu">format</span><span class="op">=</span><span class="st">"GTiff"</span>, options<span class="op">=</span>{<span class="st">"filename_prefix"</span>: <span class="st">"SSM_Before"</span>})</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="co"># second result</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>ssm_after_result <span class="op">=</span> ssm_after.save_result(<span class="bu">format</span><span class="op">=</span><span class="st">"GTiff"</span>, options<span class="op">=</span>{<span class="st">"filename_prefix"</span>: <span class="st">"SSM_After"</span>})</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="co"># save SSM difference for comparison as third result</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>ssm_diff_result <span class="op">=</span> ssm_diff.save_result(<span class="bu">format</span><span class="op">=</span><span class="st">"GTiff"</span>, options<span class="op">=</span>{<span class="st">"filename_prefix"</span>: <span class="st">"SSM_Difference"</span>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="e5181dbe" class="cell" data-execution_count="22">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>multi_result_nbr <span class="op">=</span> MultiResult([ssm_before_result, ssm_after_result, ssm_diff_result])</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>ssm_job <span class="op">=</span> multi_result_nbr.create_job(title<span class="op">=</span><span class="st">"Multiple save result SSM"</span>)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>ssm_job.start_and_wait()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>0:00:00 Job 'j-260908125354494faf613f0327f81cce': send 'start'
+0:00:05 Job 'j-260908125354494faf613f0327f81cce': created (progress 0%)
+0:00:11 Job 'j-260908125354494faf613f0327f81cce': queued (progress 0%)
+0:00:17 Job 'j-260908125354494faf613f0327f81cce': queued (progress 0%)
+0:00:25 Job 'j-260908125354494faf613f0327f81cce': queued (progress 0%)
+0:00:35 Job 'j-260908125354494faf613f0327f81cce': queued (progress 0%)
+0:00:47 Job 'j-260908125354494faf613f0327f81cce': running (progress N/A)
+0:01:03 Job 'j-260908125354494faf613f0327f81cce': running (progress N/A)
+0:01:22 Job 'j-260908125354494faf613f0327f81cce': running (progress N/A)
+0:01:46 Job 'j-260908125354494faf613f0327f81cce': running (progress N/A)
+0:02:17 Job 'j-260908125354494faf613f0327f81cce': finished (progress 100%)</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="22">
+
+    <script>
+    if (!window.customElements || !window.customElements.get('openeo-job')) {
+        var el = document.createElement('script');
+        el.src = "https://cdn.jsdelivr.net/npm/@openeo/vue-components@2/assets/openeo.min.js";
+        document.head.appendChild(el);
+
+        var font = document.createElement('font');
+        font.as = "font";
+        font.type = "font/woff2";
+        font.crossOrigin = true;
+        font.href = "https://use.fontawesome.com/releases/v5.13.0/webfonts/fa-solid-900.woff2";
+        document.head.appendChild(font);
+    }
+    </script>
+    <openeo-job>
+        <script type="application/json">{"currency": "credits", "federation": null, "job": {"costs": 9, "created": "2026-09-08T12:53:54Z", "id": "j-260908125354494faf613f0327f81cce", "log_level": "info", "process": {"process_graph": {"loadcollection1": {"arguments": {"bands": ["ssm"], "id": "CLMS_SSM_EUROPE_1KM_DAILY_V1", "spatial_extent": {"east": -0.05, "north": 44.75, "south": 44.35, "west": -1.35}, "temporal_extent": ["2022-06-01", "2022-06-30"]}, "process_id": "load_collection"}, "loadcollection2": {"arguments": {"bands": ["ssm"], "id": "CLMS_SSM_EUROPE_1KM_DAILY_V1", "spatial_extent": {"east": -0.05, "north": 44.75, "south": 44.35, "west": -1.35}, "temporal_extent": ["2022-09-01", "2022-09-30"]}, "process_id": "load_collection"}, "mergecubes1": {"arguments": {"cube1": {"from_node": "reducedimension2"}, "cube2": {"from_node": "reducedimension1"}, "overlap_resolver": {"process_graph": {"subtract1": {"arguments": {"x": {"from_parameter": "x"}, "y": {"from_parameter": "y"}}, "process_id": "subtract", "result": true}}}}, "process_id": "merge_cubes"}, "reducedimension1": {"arguments": {"data": {"from_node": "loadcollection1"}, "dimension": "t", "reducer": {"process_graph": {"mean1": {"arguments": {"data": {"from_parameter": "data"}}, "process_id": "mean", "result": true}}}}, "process_id": "reduce_dimension"}, "reducedimension2": {"arguments": {"data": {"from_node": "loadcollection2"}, "dimension": "t", "reducer": {"process_graph": {"mean2": {"arguments": {"data": {"from_parameter": "data"}}, "process_id": "mean", "result": true}}}}, "process_id": "reduce_dimension"}, "saveresult1": {"arguments": {"data": {"from_node": "reducedimension1"}, "format": "GTiff", "options": {"filename_prefix": "SSM_Before"}}, "process_id": "save_result"}, "saveresult2": {"arguments": {"data": {"from_node": "reducedimension2"}, "format": "GTiff", "options": {"filename_prefix": "SSM_After"}}, "process_id": "save_result"}, "saveresult3": {"arguments": {"data": {"from_node": "mergecubes1"}, "format": "GTiff", "options": {"filename_prefix": "SSM_Difference"}}, "process_id": "save_result", "result": true}}}, "progress": 100, "status": "finished", "title": "Multiple save result SSM", "updated": "2026-09-08T12:56:02Z", "usage": {"cpu": {"unit": "cpu-seconds", "value": 5400}, "duration": {"unit": "seconds", "value": 87}, "input_pixel": {"unit": "mega-pixel", "value": 0.3740272521972656}, "max_executor_memory": {"unit": "gb", "value": 1.1674919128417969}, "memory": {"unit": "mb-seconds", "value": 11059200}, "memory_requested": {"unit": "mb-seconds", "value": 11059200}, "network_received": {"unit": "b", "value": 28581046}}}}</script>
+    </openeo-job>
+    
+</div>
+</div>
+<div id="938a95b8" class="cell" data-execution_count="23">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> ssm_job.get_results()</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>results.download_files(<span class="st">"ssm"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="23">
+<pre><code>[WindowsPath('ssm/SSM_After.tif'),
+ WindowsPath('ssm/SSM_Before.tif'),
+ WindowsPath('ssm/SSM_Difference.tif'),
+ WindowsPath('ssm/job-results.json')]</code></pre>
+</div>
+</div>
+<div id="7cacf7bc" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>ssm_before_img <span class="op">=</span> rasterio.<span class="bu">open</span>(<span class="st">"ssm/SSM_Before.tif"</span>).read(<span class="dv">1</span>, masked<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>ssm_after_img <span class="op">=</span> rasterio.<span class="bu">open</span>(<span class="st">"ssm/SSM_After.tif"</span>).read(<span class="dv">1</span>, masked<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>ssm_diff_img <span class="op">=</span> rasterio.<span class="bu">open</span>(<span class="st">"ssm/SSM_Difference.tif"</span>).read(<span class="dv">1</span>, masked<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="co"># let us mask the invalid values (NaN/nodata) to avoid plotting them</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>ssm_before_img <span class="op">=</span> np.ma.masked_invalid(ssm_before_img)</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>ssm_after_img <span class="op">=</span> np.ma.masked_invalid(ssm_after_img)</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>ssm_diff_img <span class="op">=</span> np.ma.masked_invalid(ssm_diff_img)</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="co"># using a scale to keep nodata transparent</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>vmin, vmax <span class="op">=</span> <span class="dv">0</span>, <span class="dv">100</span></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>diff_vmin, diff_vmax <span class="op">=</span> <span class="op">-</span><span class="dv">30</span>, <span class="dv">30</span></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>fig, axarr <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">18</span>, <span class="dv">6</span>), gridspec_kw<span class="op">=</span>{<span class="st">"wspace"</span>: <span class="fl">0.25</span>})</span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>im0 <span class="op">=</span> axarr[<span class="dv">0</span>].imshow(ssm_before_img, cmap<span class="op">=</span><span class="st">"Blues"</span>, vmin<span class="op">=</span>vmin, vmax<span class="op">=</span>vmax, interpolation<span class="op">=</span><span class="st">"nearest"</span>)</span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>axarr[<span class="dv">0</span>].set_title(<span class="st">"Before: June 2022"</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>axarr[<span class="dv">0</span>].set_axis_off()</span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a>cbar0 <span class="op">=</span> fig.colorbar(im0, ax<span class="op">=</span>axarr[<span class="dv">0</span>], fraction<span class="op">=</span><span class="fl">0.04</span>, pad<span class="op">=</span><span class="fl">0.02</span>, shrink<span class="op">=</span><span class="fl">0.9</span>)</span>
+<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a>cbar0.set_label(<span class="st">"Soil moisture (%)"</span>, fontsize<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a>cbar0.ax.tick_params(labelsize<span class="op">=</span><span class="dv">9</span>)</span>
+<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a>im1 <span class="op">=</span> axarr[<span class="dv">1</span>].imshow(ssm_after_img, cmap<span class="op">=</span><span class="st">"Blues"</span>, vmin<span class="op">=</span>vmin, vmax<span class="op">=</span>vmax, interpolation<span class="op">=</span><span class="st">"nearest"</span>)</span>
+<span id="cb24-24"><a href="#cb24-24" aria-hidden="true" tabindex="-1"></a>axarr[<span class="dv">1</span>].set_title(<span class="st">"After: September 2022"</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb24-25"><a href="#cb24-25" aria-hidden="true" tabindex="-1"></a>axarr[<span class="dv">1</span>].set_axis_off()</span>
+<span id="cb24-26"><a href="#cb24-26" aria-hidden="true" tabindex="-1"></a>cbar1 <span class="op">=</span> fig.colorbar(im1, ax<span class="op">=</span>axarr[<span class="dv">1</span>], fraction<span class="op">=</span><span class="fl">0.04</span>, pad<span class="op">=</span><span class="fl">0.02</span>, shrink<span class="op">=</span><span class="fl">0.9</span>)</span>
+<span id="cb24-27"><a href="#cb24-27" aria-hidden="true" tabindex="-1"></a>cbar1.set_label(<span class="st">"Soil moisture (%)"</span>, fontsize<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb24-28"><a href="#cb24-28" aria-hidden="true" tabindex="-1"></a>cbar1.ax.tick_params(labelsize<span class="op">=</span><span class="dv">9</span>)</span>
+<span id="cb24-29"><a href="#cb24-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-30"><a href="#cb24-30" aria-hidden="true" tabindex="-1"></a>im2 <span class="op">=</span> axarr[<span class="dv">2</span>].imshow(ssm_diff_img, cmap<span class="op">=</span><span class="st">"RdBu_r"</span>, vmin<span class="op">=</span>diff_vmin, vmax<span class="op">=</span>diff_vmax, interpolation<span class="op">=</span><span class="st">"nearest"</span>)</span>
+<span id="cb24-31"><a href="#cb24-31" aria-hidden="true" tabindex="-1"></a>axarr[<span class="dv">2</span>].set_title(<span class="st">"Difference: after - before"</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb24-32"><a href="#cb24-32" aria-hidden="true" tabindex="-1"></a>axarr[<span class="dv">2</span>].set_axis_off()</span>
+<span id="cb24-33"><a href="#cb24-33" aria-hidden="true" tabindex="-1"></a>cbar2 <span class="op">=</span> fig.colorbar(im2, ax<span class="op">=</span>axarr[<span class="dv">2</span>], fraction<span class="op">=</span><span class="fl">0.04</span>, pad<span class="op">=</span><span class="fl">0.02</span>, shrink<span class="op">=</span><span class="fl">0.9</span>)</span>
+<span id="cb24-34"><a href="#cb24-34" aria-hidden="true" tabindex="-1"></a>cbar2.set_label(<span class="st">"Δ soil moisture (%)"</span>, fontsize<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb24-35"><a href="#cb24-35" aria-hidden="true" tabindex="-1"></a>cbar2.ax.tick_params(labelsize<span class="op">=</span><span class="dv">9</span>)</span>
+<span id="cb24-36"><a href="#cb24-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-37"><a href="#cb24-37" aria-hidden="true" tabindex="-1"></a>fig.suptitle(<span class="st">"Surface soil moisture before and after the Gironde fire"</span>, fontsize<span class="op">=</span><span class="dv">14</span>, y<span class="op">=</span><span class="fl">1.02</span>)</span>
+<span id="cb24-38"><a href="#cb24-38" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb24-39"><a href="#cb24-39" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>C:\Users\SHARMAP\AppData\Local\Temp\ipykernel_29524\235117952.py:37: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  plt.tight_layout()</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="CLMS_layers_using_openEO_files/figure-html/cell-19-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Hence, in this notebook we illustrated a simple workflow for using the openEO API to access CLMS datasets, combine them with built-in processes and save the results for further visualisation. The examples highlight two key strengths of the openEO framework: its ability to work with standardized geospatial collections and its built-in processes.</p>
+
+
+</section>
+
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/open-eo\.github\.io\/openeo-docs\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

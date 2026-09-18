@@ -1,0 +1,29 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2026-09-18T14:42:42.573838Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:42:40.880807Z",
+      "mimetype": null,
+      "name": "CORSA processes.ipynb",
+      "path": "notebooks/Corsa/CORSA processes.ipynb",
+      "size": 5422414,
+      "type": "notebook",
+      "writable": true
+    }
+  ],
+  "created": "2026-09-18T14:42:42.573554Z",
+  "format": "json",
+  "hash": null,
+  "hash_algorithm": null,
+  "last_modified": "2026-09-18T14:42:42.573554Z",
+  "mimetype": null,
+  "name": "Corsa",
+  "path": "notebooks/Corsa",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}

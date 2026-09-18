@@ -1,0 +1,361 @@
+# Data Discovery and Loading
+
+> **NOTE:**
+>
+> The buttons above let you filter processes supported by different backends. Selecting or deselecting a backend will show or hide the relevant sections in the documentation. However, please note that it is based on the latest documentation rendering. Thus, please refer to the [openEO Hub](https://hub.openeo.org/) for the most up-to-date information.
+
+## Datacube discovery
+
+openEO handles EO data as a [**datacube**](../documentation/key_concepts/datacube.llms.md). A datacube is a multidimensional representation of data that serves as input to which we apply sets of processes, as covered in the [Cube Operations](../documentation/cube_operations.llms.md) section, for several types of EO workflows.
+
+These processes, when applied to a datacube, form a process chain called a process graph; the backend executes this graph only when an execution is explicitly triggered.
+
+Before loading data as a datacube, it is recommended to inspect the collection’s metadata. Users can check whether the intended data is offered by the backend for loading as a datacube, available collection IDs, spatial and temporal coverage, band names, and other properties that can be used for filtering.
+
+## Python
+
+``` r
+library(openeo)
+
+connection <- connect("openeofed.dataspace.copernicus.eu")
+collections <- list_collections(connection)
+metadata <- describe_collection(connection, "SENTINEL2_L2A")
+```
+
+## R
+
+``` javascript
+import OpenEO from "openeo-js-client";
+
+const connection = await OpenEO.connect("openeofed.dataspace.copernicus.eu");
+const collections = await connection.listCollections();
+const metadata = await connection.describeCollection("SENTINEL2_L2A");
+```
+
+## JavaScript
+
+## Load data
+
+A `DataCube` is a virtual representation of the data that allows you to define and manipulate the data without immediately downloading it or performing computations. The backend reads the requested collection only when an execute request is made. It is recommended to start with a small area and a short time period, then increase the scope once the result looks correct.
+
+Use `load_collection` when the connected backend lists the dataset. Use `load_stac` when you have a publicly accessible STAC URL for data that is not registered as a backend collection, or when you want to use the result of an earlier job.
+
+### Load collection from the backend
+
+When inspecting the available collections, you can determine whether the backend lists the desired dataset. If the dataset is listed, you can proceed to load it using the `load_collection` process. Specify the spatial extent, temporal extent, and bands in this call when constructing the datacube. Loading only the data needed for the analysis avoids unnecessary processing.
+
+Alternatively, the user can choose to filter the data for a spatial and temporal extent later in the workflow using standard spatial and temporal operations. However, it is recommended to specify these extents when loading the collection to minimise unnecessary data processing.
+
+## Python
+
+``` python
+bbox = {"west": 4.30, "south": 51.20, "east": 4.60, "north": 51.40}
+temporal_extent = ["2024-06-01", "2024-06-30"]
+
+cube = connection.load_collection(
+        "SENTINEL2_L2A",
+        spatial_extent=bbox,
+        temporal_extent=temporal_extent,
+        bands=["B04", "B08"],
+)
+```
+
+## R
+
+``` r
+bbox <- list(west = 4.30, south = 51.20, east = 4.60, north = 51.40)
+temporal_extent <- c("2024-06-01", "2024-06-30")
+
+cube <- load_collection(
+        connection,
+        "SENTINEL2_L2A",
+        spatial_extent = bbox,
+        temporal_extent = temporal_extent,
+        bands = c("B04", "B08")
+)
+```
+
+## JavaScript
+
+``` javascript
+const bbox = {west: 4.30, south: 51.20, east: 4.60, north: 51.40};
+const temporal_extent = ["2024-06-01", "2024-06-30"];
+
+const cube = await connection.loadCollection(
+    "SENTINEL2_L2A",
+    {
+        spatial_extent: bbox,
+        temporal_extent: temporal_extent,
+        bands: ["B04", "B08"]
+    }
+);
+```
+
+The collection ID and band names in this example are valid for the Copernicus Data Space Ecosystem federation backend, but may differ in other backends.
+
+`cube` is now a reusable data-cube object: subsequent calls such as `cube.ndvi()` extend the planned workflow and return a new cube.
+
+#### Choose the data to load
+
+The most important `load_collection` arguments are:
+
+- `collection_id`: The identifier of the dataset offered by the backend, for example `"SENTINEL2_L2A"`.
+- `spatial_extent`: The area of interest. It can be a bounding box or a feature collection
+- `temporal_extent`: A start and end date or date-time. The start is included and the end is excluded, so `['2024-06-01', '2024-07-01']` covers all of June.
+- `bands`: The band names needed by the analysis. Their names, and their order in the cube can be determined from the collection metadata. If not specified, all available bands are loaded.
+
+## Python
+
+``` python
+# Keep only Sentinel-2 scenes reported with 20% cloud cover or less.
+cube = connection.load_collection(
+    "SENTINEL2_L2A",
+    spatial_extent=bbox,
+    temporal_extent="2024-06",
+    bands=["B04", "B08"],
+    max_cloud_cover=20,
+)
+```
+
+## R
+
+``` r
+# Keep only Sentinel-2 scenes reported with 20% cloud cover or less.
+cube <- load_collection(
+        connection,
+        "SENTINEL2_L2A",
+        spatial_extent = bbox,
+        temporal_extent = "2024-06",
+        bands = c("B04", "B08"),
+        max_cloud_cover = 20
+)
+```
+
+## JavaScript
+
+``` javascript
+// Keep only Sentinel-2 scenes reported with 20% cloud cover or less.
+const cube = await connection.loadCollection(
+    "SENTINEL2_L2A",
+    {
+        spatial_extent: bbox,
+        temporal_extent: "2024-06",
+        bands: ["B04", "B08"],
+        max_cloud_cover: 20
+    }
+);
+```
+
+Next, a wider range of operations can be applied to this datacube. Some common usecases include calculating NDVI as shown in [spectral operations](../documentation/cube_operations/spectral_operations.llms.md), or using [spatial operations](../documentation/cube_operations/spatial_operations.llms.md) to filter the area of interest or similar tasks using several operations offered by the backend.
+
+For complete parameters, see the official [`load_collection` process reference](https://processes.openeo.org/#load_collection).
+
+> **TIP:**
+>
+> - [Access PROBA-V Collection](../client_examples/openeo-community-examples/python/AccessPROBA-V/PROBA_V.llms.md)
+> - [Accessing and Analysing Sentinel-5P Products](../client_examples/openeo-community-examples/python/AccessSentinel5P/Access_&_Analyse_Sentinel5P_Products.llms.md)
+> - [Exploring CLMS Datasets with openEO](../client_examples/openeo-community-examples/python/Access_CLMS/CLMS_layers_using_openEO.llms.md)
+> - [Explore Sentinel-5P Products with openEO (Air Quality)](../client_examples/openeo-community-examples/python/AirQuality/AirQuality.llms.md)
+> - [Access MODIS Data using openEO](../client_examples/openeo-community-examples/python/MODIS/MODIS_data_using_openEO.llms.md)
+> - [Advanced Use of Federated Processing](../client_examples/openeo-community-examples/python/Federation/FederatedProcessing.llms.md)
+>
+> More notebooks are listed on the [sample notebooks page](../examples.llms.md).
+
+### Load data from STAC
+
+Alternatively, users can also load data from a STAC source rather than from a backend collection. This approach is useful when the desired data is available as STAC metadata but not registered in the connected backend.
+
+STAC (SpatioTemporal Asset Catalog) is a standard for describing geospatial data and its files. Use `load_stac` with the URL of a static STAC Item, Collection, or Catalog, or with a specific collection of a STAC API. The backend must be able to access the URL and the data assets it references. Support can differ between backends, so check the backend’s process support before relying on a STAC source in a production workflow.
+
+Similar to `load_collection`, specify the spatial extent, temporal extent, and bands while constructing the cube. This gives the backend the opportunity to read less data. A STAC API can additionally support `properties` filters; static STAC files do not support these server-side property filters.
+
+## Python
+
+``` python
+stac_url = "https://example.org/stac/collections/my-collection"
+
+cube = connection.load_stac(
+        url=stac_url,
+        spatial_extent={"west": 4.30, "south": 51.20, "east": 4.60, "north": 51.40},
+        temporal_extent=["2024-06-01", "2024-06-30"],
+        bands=["B04", "B08"],
+)
+```
+
+## R
+
+``` r
+stac_url <- "https://example.org/stac/collections/my-collection"
+
+cube <- load_stac(
+        connection,
+        url = stac_url,
+        spatial_extent = list(west = 4.30, south = 51.20, east = 4.60, north = 51.40),
+        temporal_extent = c("2024-06-01", "2024-06-30"),
+        bands = c("B04", "B08")
+)
+```
+
+## JavaScript
+
+``` javascript
+const stacUrl = "https://example.org/stac/collections/my-collection";
+
+const cube = await connection.loadStac({
+    url: stacUrl,
+    spatial_extent: { west: 4.30, south: 51.20, east: 4.60, north: 51.40 },
+    temporal_extent: ["2024-06-01", "2024-06-30"],
+    bands: ["B04", "B08"]
+});
+```
+
+A common use case is to load the STAC metadata of a completed job result back into a new process graph. When the finished job is available on the same backend, `load_stac_from_job` is the clearest option:
+
+``` python
+previous_job = connection.job("<finished-job-id>")
+result_cube = connection.load_stac_from_job(previous_job)
+```
+
+The equivalent lower-level approach is `connection.load_stac()` with the completed job’s results URL, which normally ends in `/jobs/<job-id>/results`. For a result on another backend, use its signed canonical STAC URL when the backend supports it. Do not include access tokens or other secrets in notebooks or documentation.
+
+For more details about the process itself, see the [`load_stac` process reference](https://processes.openeo.org/#load_stac) page.
+
+> **TIP:**
+>
+> - [Loading a Single STAC Item](../client_examples/openeo-community-examples/python/LoadStac/load-stac-item-example.llms.md)
+> - [Using load_stac for External Datasets (Landsat 8)](../client_examples/openeo-community-examples/python/LoadStac/LoadLandsatSTAC.llms.md)
+> - [Using load_stac for External Datasets (Biomass)](../client_examples/openeo-community-examples/python/LoadStac/LoadBiomassSTAC.llms.md)
+>
+> More notebooks are listed on the [sample notebooks page](../examples.llms.md).
+
+### Load GeoJSON as a vector data cube
+
+`load_geojson` converts inline GeoJSON data into a vector data cube, preserving feature properties. It is the recommended way to bring point, line, or polygon geometries (e.g. field boundaries or sampling locations) into a process graph so they can be used with processes such as `aggregate_spatial`, `filter_spatial`, or `mask_polygon`.
+
+## Python
+
+``` python
+geometries = {
+    "type": "FeatureCollection",
+    "features": [{
+        "type": "Feature",
+        "properties": {"parcel_id": "A01"},
+        "geometry": {
+            "type": "Polygon",
+            "coordinates": [[[4.35, 50.85], [4.38, 50.85], [4.38, 50.87],
+                             [4.35, 50.87], [4.35, 50.85]]],
+        },
+    }],
+}
+
+vector_cube = connection.load_geojson(geometries, properties=["parcel_id"])
+```
+
+## R
+
+``` r
+geometries <- list(
+    type = "FeatureCollection",
+    features = list(list(
+        type = "Feature",
+        properties = list(parcel_id = "A01"),
+        geometry = list(
+            type = "Polygon",
+            coordinates = list(list(c(4.35, 50.85), c(4.38, 50.85), c(4.38, 50.87),
+                                    c(4.35, 50.87), c(4.35, 50.85)))
+        )
+    ))
+)
+
+vector_cube <- load_geojson(connection, data = geometries, properties = c("parcel_id"))
+```
+
+## JavaScript
+
+``` javascript
+const geometries = {
+    type: "FeatureCollection",
+    features: [{
+        type: "Feature",
+        properties: { parcel_id: "A01" },
+        geometry: {
+            type: "Polygon",
+            coordinates: [[[4.35, 50.85], [4.38, 50.85], [4.38, 50.87],
+                           [4.35, 50.87], [4.35, 50.85]]],
+        },
+    }],
+};
+
+const vectorCube = await connection.loadGeoJson(geometries, { properties: ["parcel_id"] });
+```
+
+### Load files from the user workspace
+
+`load_uploaded_files` reads one or more files that were previously uploaded to the authenticated user’s server-side workspace and returns them as a single data cube. Use it to reuse auxiliary data (e.g. a custom raster mask or a CSV of sample points) that you uploaded to the backend rather than hosting it externally.
+
+## Python
+
+``` python
+cube = connection.load_uploaded_files(
+    paths=["my_folder/aoi_mask.tif"],
+    format="GTiff",
+)
+```
+
+## R
+
+``` r
+cube <- load_uploaded_files(
+    connection,
+    paths = c("my_folder/aoi_mask.tif"),
+    format = "GTiff"
+)
+```
+
+## JavaScript
+
+``` javascript
+const cube = await connection.loadUploadedFiles({
+    paths: ["my_folder/aoi_mask.tif"],
+    format: "GTiff",
+});
+```
+
+Support for uploading and loading user workspace files is backend-specific and marked experimental in the openEO process specification, so check the connected backend’s process support before relying on it.
+
+### Load a file from a URL
+
+`load_url` reads a file directly from an HTTP or HTTPS URL, without needing to register it as a collection first. It is commonly used to fetch an externally hosted GeoJSON geometry (e.g. for `filter_spatial`) or another remotely hosted input file.
+
+## Python
+
+``` python
+geometry = connection.load_url(
+    "https://example.com/geometry.geojson", format="GeoJSON"
+)
+```
+
+## R
+
+``` r
+geometry <- load_url(
+    connection,
+    url = "https://example.com/geometry.geojson",
+    format = "GeoJSON"
+)
+```
+
+## JavaScript
+
+``` javascript
+const geometry = await connection.loadUrl(
+    "https://example.com/geometry.geojson",
+    { format: "GeoJSON" }
+);
+```
+
+## Next steps
+
+Once a datacube is loaded, explore the [Cube Operations](../documentation/cube_operations.llms.md) pages to build an analysis, then [execute an openEO job](../documentation/cube_operations/execute_jobs.llms.md) to execute the workflow and download the result.
+
+Back to top

@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Comparing the Summer Drought in Serbia using openEO – openEO</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="../../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../../">
+<script src="../../../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../../site_libs/bootstrap/bootstrap-f7b31f555e83651d4eb6f45835aa384a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css?family=Roboto+Mono|Source+Sans+Pro:300,400,600" rel="stylesheet">
+<meta name="zd-site-verification" content="xj9koofr1crilmoclgxsjd">
+
+<script type="text/javascript">
+
+
+    function setActiveClassForCurrentUrl() {
+        // Find all links in the navbarCollapse div where the href attribute is set to the current URL
+        let anchorTag = document.querySelector('#navbarCollapse a[href="' + window.location.href + '"]');
+
+        if (anchorTag) {
+
+            // Find the closest parent of the navigation
+            let parentUl = anchorTag.closest('li.nav-item')?.querySelector('a.nav-link');
+
+            if (parentUl) {
+                // Add active class to both the anchor tag and the parent ul
+                anchorTag.classList.add('active');
+                parentUl.classList.add('active');
+            }
+        }
+    }
+
+    window.addEventListener('popstate', setActiveClassForCurrentUrl);
+    window.addEventListener('hashchange', setActiveClassForCurrentUrl);
+
+    document.addEventListener("DOMContentLoaded", async function () {
+        const items = Array.from(document.querySelectorAll(".tag-filter-item"));
+        const filterUi = document.querySelector(".tag-filter-ui");
+        if (items.length === 0 || !filterUi) return;
+        const staticBadges = Array.from(document.querySelectorAll(".tag-filter-badge"));
+        const hasLiveProcesses = items.some((item) => item.hasAttribute("data-process"));
+        let support = null;
+        if (hasLiveProcesses) {
+            try {
+                const url = new URL("../../_data/backend_process_support.json", window.location.href);
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                support = await response.json();
+            } catch (error) { console.warn("Could not load backend process support data.", error); }
+        }
+        const getExplicitTags = (item) => new Set((item.getAttribute("data-tags") || "").toLowerCase().split(/\s+/).filter(Boolean));
+        const getDefaultTags = () => new Set(staticBadges.map((badge) => badge.dataset.tag).filter(Boolean));
+        const getTags = (item) => {
+            const explicitTags = getExplicitTags(item);
+            if (support && item.hasAttribute("data-process")) {
+                const liveTags = new Set(item.getAttribute("data-process").split(/[\s,]+/).flatMap((id) => support.processes[id] || []));
+                return liveTags.size > 0 ? liveTags : explicitTags.size > 0 ? explicitTags : getDefaultTags();
+            }
+            return explicitTags.size > 0 ? explicitTags : getDefaultTags();
+        };
+        let badges = staticBadges;
+        if (support) {
+            const availableTags = [...new Set(items.flatMap((item) => [...getTags(item)]))].sort();
+            filterUi.replaceChildren();
+            badges = availableTags.map((tag) => {
+                const button = document.createElement("button");
+                button.className = "tag-filter-badge active";
+                button.dataset.tag = tag;
+                button.textContent = support.backends[tag]?.label || tag;
+                filterUi.appendChild(button);
+                return button;
+            });
+        }
+        if (badges.length === 0) return;
+        const tocLinks = Array.from(document.querySelectorAll("#TOC a[data-scroll-target]"));
+        const applyFilter = () => {
+            const selectedTags = new Set(badges.filter((badge) => badge.classList.contains("active")).map((badge) => badge.dataset.tag));
+            items.forEach((item) => {
+                const tags = getTags(item);
+                const visible = [...selectedTags].some((tag) => tags.has(tag));
+                item.hidden = !visible;
+                const tocLink = tocLinks.find((link) => link.dataset.scrollTarget === `#${item.id}`);
+                tocLink?.closest("li")?.toggleAttribute("hidden", !visible);
+            });
+        };
+        badges.forEach((badge) => badge.addEventListener("click", function (event) {
+            event.preventDefault(); this.classList.toggle("active"); this.classList.toggle("inactive"); applyFilter();
+        }));
+        applyFilter();
+    });
+    window.onload = () => {
+        const brand = document.querySelector('.navbar-brand');
+        if (brand) {
+            // Keep local/preview behavior, but use the GitHub Pages project root in production.
+            const brandHref = window.location.hostname === 'open-eo.github.io'
+                ? '/openeo-docs/'
+                : '/index.html';
+            brand.setAttribute('href', brandHref);
+        }
+        setActiveClassForCurrentUrl();
+    }
+
+ 
+</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../../../custom.css">
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../../../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../../../news/images/openeo_logo.png" alt="openEO logo" class="navbar-logo light-content">
+    <img src="../../../../news/images/openeo_logo.png" alt="openEO logo" class="navbar-logo dark-content">
+    </a>
+    <a class="navbar-brand" href="../../../../index.html">
+    <span class="navbar-title">openEO</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-about" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">About</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-about">    
+        <li>
+    <a class="dropdown-item" href="../../../../about.html">
+ <span class="dropdown-text">About openEO</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../psc.html">
+ <span class="dropdown-text">Project Steering Committee (PSC)</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="https://hub.openeo.org/" target="_blank"> 
+<span class="menu-text">Services</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-community" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Community</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-community">    
+        <li>
+    <a class="dropdown-item" href="../../../../news/news.html">
+ <span class="dropdown-text">News</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../meetings.html">
+ <span class="dropdown-text">Meetings</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../events/events.html">
+ <span class="dropdown-text">Events</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-user-documentation" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">User Documentation</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-user-documentation">    
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/cookbook.html">
+ <span class="dropdown-text">COOKBOOK</span></a>
+  </li>  
+        <li><hr class="dropdown-divider"></li>
+        <li class="dropdown-header">KEY CONCEPTS</li>
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/key_concepts/glossary.html">
+ <span class="dropdown-text">Glossary</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/key_concepts/backend.html">
+ <span class="dropdown-text">Backends</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/key_concepts/datacube.html">
+ <span class="dropdown-text">Datacube</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/key_concepts/processes.html">
+ <span class="dropdown-text">Processes</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/key_concepts/architecture.html">
+ <span class="dropdown-text">Architecture</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/setup.html">
+ <span class="dropdown-text">SETUP</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/data_discovery.html">
+ <span class="dropdown-text">DATA DISCOVERY</span></a>
+  </li>  
+        <li><hr class="dropdown-divider"></li>
+        <li class="dropdown-header">CUBE OPERATIONS</li>
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/cube_operations/general_operations.html">
+ <span class="dropdown-text">General Operations</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/cube_operations/preprocessing.html">
+ <span class="dropdown-text">Preprocessing</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/cube_operations/spatial_operations.html">
+ <span class="dropdown-text">Spatial Operations</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/cube_operations/temporal_operations.html">
+ <span class="dropdown-text">Temporal Operations</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/cube_operations/spectral_operations.html">
+ <span class="dropdown-text">Spectral Operations</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/cube_operations/cube_manipulations.html">
+ <span class="dropdown-text">Cube Manipulations</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/cube_operations/udf.html">
+ <span class="dropdown-text">User Defined Functions</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/cube_operations/machine_learning.html">
+ <span class="dropdown-text">Machine Learning</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/cube_operations/udp.html">
+ <span class="dropdown-text">User Defined Processes</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/cube_operations/execute_jobs.html">
+ <span class="dropdown-text">Execute openEO Jobs</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../documentation/export_formats.html">
+ <span class="dropdown-text">EXPORT FORMATS</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-developers" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Developers</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-developers">    
+        <li>
+    <a class="dropdown-item" href="https://api.openeo.org/">
+ <span class="dropdown-text">REST API Reference</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../404-not-found.html">
+ <span class="dropdown-text">Xarray/Dask Guide</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../404-not-found.html">
+ <span class="dropdown-text">Backend Development</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-support" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Support</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-support">    
+        <li>
+    <a class="dropdown-item" href="../../../../contact.html">
+ <span class="dropdown-text">Contact</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://forum.dataspace.copernicus.eu/c/openeo/28">
+ <span class="dropdown-text">CDSE Forum</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../examples.html">
+ <span class="dropdown-text">Notebook examples</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools tools-wide">
+    <a href="mailto:openeo.psc@uni-muenster.de" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-envelope"></i></a>
+    <a href="https://www.linkedin.com/company/openeospec/" title="" class="quarto-navigation-tool px-1" aria-label="" target="_blank"><i class="bi bi-linkedin"></i></a>
+    <a href="https://bsky.app/profile/openeo.org" title="" class="quarto-navigation-tool px-1" aria-label="" target="_blank"><i class="bi bi-bluesky"></i></a>
+    <a href="https://github.com/Open-EO" title="" class="quarto-navigation-tool px-1" aria-label="" target="_blank"><i class="bi bi-github"></i></a>
+    <a href="https://www.youtube.com/channel/UCMJQil8j9sHBQkcSlSaEsvQ" title="" class="quarto-navigation-tool px-1" aria-label="" target="_blank"><i class="bi bi-youtube"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
+<!-- main -->
+<main class="content column-page" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Comparing the Summer Drought in Serbia using openEO</h1>
+</div>
+
+
+
+<div class="quarto-title-meta column-page">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>During the summer of 2026, a large area of Central and Eastern Europe experienced prolonged heat and reduced precipitation. A severe summer drought and prolonged heatwaves pushed the Danube River to a historic low in Serbia, dropping past minus 120 centimeters (<a href="https://www.vreme.com/en/drustvo/dunav-istorijski-minimum-vodostaj-susa-klimatske-promene/">source</a>). Vegetation under drought stress typically exhibits:</p>
+<ul>
+<li>lower moisture content</li>
+<li>reduced greenness</li>
+<li>reduced crop vigor</li>
+</ul>
+<p>This notebook demonstrates how drought conditions can be quickly assessed using openEO, without downloading raw Sentinel-2 scenes locally. It covers:</p>
+<ul>
+<li>accessing Sentinel-2 imagery from CDSE for 2016 and 2026</li>
+<li>cloud masking using openEO’s built-in process</li>
+<li>calculating NDDI (Normalized Difference Drought Index) directly with the Awesome Spectral Indices package</li>
+</ul>
+<p>NDDI combines: * NDVI (vegetation greenness/vigor) * NDWI (vegetation water content)</p>
+<p>Import the <code>compute_indices</code> helper from <code>openeo.extra.spectral_indices</code>, which we’ll use to compute NDDI later in the workflow.</p>
+<div id="761072a3" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> openeo</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> openeo <span class="im">import</span> MultiResult</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> openeo.extra.spectral_indices <span class="im">import</span> compute_indices</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Authenticate with the openEO Federation endpoint (<code>openeofed.dataspace.copernicus.eu</code>).</p>
+<div id="51ca031b" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>connection <span class="op">=</span> openeo.<span class="ex">connect</span>(<span class="st">"openeofed.dataspace.copernicus.eu"</span>).authenticate_oidc()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Authenticated using refresh token.</code></pre>
+</div>
+</div>
+<p>Define the study area (a bounding box around the Danube in Serbia) and the Sentinel-2 bands needed for NDDI: <code>B03</code> (green), <code>B04</code> (red), <code>B08</code> (NIR), and <code>B11</code> (SWIR) — used internally by the Awesome Spectral Indices package to derive NDVI and NDWI.</p>
+<div id="5af97a6d" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>bbox <span class="op">=</span> {</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"west"</span>: <span class="fl">22.45</span>,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"south"</span>: <span class="fl">44.15</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"east"</span>: <span class="fl">22.85</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"north"</span>: <span class="fl">44.45</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"crs"</span>: <span class="st">"EPSG:4326"</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>bands <span class="op">=</span> [<span class="st">"B03"</span>,<span class="st">"B04"</span>,<span class="st">"B08"</span>,<span class="st">"B11"</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Use Awesome Spectral Indices directly inside an openEO workflow.</p>
+<p>NDDI is defined as:</p>
+<p><span class="math display">\[NDDI = \frac{NDVI - NDWI}{NDVI + NDWI}\]</span></p>
+<p>Since we will be computing the NDDI cube for two different temporal extents, let’s create a reusable function that loads Sentinel-2 data, applies SCL cloud masking, computes NDDI, and aggregates over time.</p>
+<div id="e0837b60" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> build_nddi_cube(start_date, end_date):</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    datacube <span class="op">=</span> connection.load_collection(</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">"SENTINEL2_L2A"</span>, </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>        spatial_extent<span class="op">=</span>bbox, </span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        temporal_extent<span class="op">=</span>[start_date,end_date], </span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        bands<span class="op">=</span>bands</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    scl <span class="op">=</span> connection.load_collection(</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">"SENTINEL2_L2A"</span>, </span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        spatial_extent<span class="op">=</span>bbox, </span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>        temporal_extent<span class="op">=</span>[start_date,end_date], </span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>        bands<span class="op">=</span>[<span class="st">"SCL"</span>]</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    mask <span class="op">=</span> scl.process(<span class="st">"to_scl_dilation_mask"</span>, data<span class="op">=</span>scl)</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    masked_cube <span class="op">=</span> datacube.mask(mask)</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    nddi <span class="op">=</span> compute_indices(datacube<span class="op">=</span>masked_cube, indices<span class="op">=</span>[<span class="st">"NDDI"</span>])</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> nddi.reduce_dimension(dimension<span class="op">=</span><span class="st">"t"</span>, reducer<span class="op">=</span><span class="st">"mean"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Run the same NDDI pipeline over two time windows to highlight drought-affected areas: <strong>May-July 2016</strong> as the baseline year, and <strong>May-July 2026</strong> as the drought year.</p>
+<div id="380fdc11" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>nddi_2016 <span class="op">=</span> build_nddi_cube(<span class="st">"2016-05-01"</span>,<span class="st">"2016-07-31"</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>nddi_2026 <span class="op">=</span> build_nddi_cube(<span class="st">"2026-05-01"</span>,<span class="st">"2026-07-31"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Use openEO’s <code>MultiResult</code> process, which allows saving outputs from two different cubes in a single batch job.</p>
+<div id="638d45b5" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># first result</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>nddi_2025_result <span class="op">=</span> nddi_2016.save_result(<span class="bu">format</span><span class="op">=</span><span class="st">"GTiff"</span>, options<span class="op">=</span>{<span class="st">"filename_prefix"</span>: <span class="st">"NDDI_2016"</span>})</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># comparison as second result</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>nddi_2026_result <span class="op">=</span> nddi_2026.save_result(<span class="bu">format</span><span class="op">=</span><span class="st">"GTiff"</span>, options<span class="op">=</span>{<span class="st">"filename_prefix"</span>: <span class="st">"NDDI_2026"</span>})</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>multi_result_nddi <span class="op">=</span> MultiResult([nddi_2025_result,nddi_2026_result])</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>nddi_job <span class="op">=</span> multi_result_nddi.create_job(title<span class="op">=</span><span class="st">"NDDI 2016 vs 2026"</span>)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>nddi_job.start_and_wait()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>0:00:00 Job 'cdse-j-2608060803094f12ae7623f57e33d883': send 'start'
+0:00:04 Job 'cdse-j-2608060803094f12ae7623f57e33d883': created (progress 0%)
+0:00:09 Job 'cdse-j-2608060803094f12ae7623f57e33d883': queued (progress 0%)
+0:00:16 Job 'cdse-j-2608060803094f12ae7623f57e33d883': queued (progress 0%)
+0:00:24 Job 'cdse-j-2608060803094f12ae7623f57e33d883': queued (progress 0%)
+0:00:34 Job 'cdse-j-2608060803094f12ae7623f57e33d883': queued (progress 0%)
+0:00:46 Job 'cdse-j-2608060803094f12ae7623f57e33d883': queued (progress 0%)
+0:01:03 Job 'cdse-j-2608060803094f12ae7623f57e33d883': running (progress N/A)
+0:01:22 Job 'cdse-j-2608060803094f12ae7623f57e33d883': running (progress N/A)
+0:01:47 Job 'cdse-j-2608060803094f12ae7623f57e33d883': running (progress N/A)
+0:02:17 Job 'cdse-j-2608060803094f12ae7623f57e33d883': running (progress N/A)
+0:02:54 Job 'cdse-j-2608060803094f12ae7623f57e33d883': running (progress N/A)
+0:03:41 Job 'cdse-j-2608060803094f12ae7623f57e33d883': running (progress N/A)
+0:04:39 Job 'cdse-j-2608060803094f12ae7623f57e33d883': running (progress N/A)
+0:05:40 Job 'cdse-j-2608060803094f12ae7623f57e33d883': running (progress N/A)
+0:06:40 Job 'cdse-j-2608060803094f12ae7623f57e33d883': running (progress N/A)
+0:07:40 Job 'cdse-j-2608060803094f12ae7623f57e33d883': running (progress N/A)
+0:08:41 Job 'cdse-j-2608060803094f12ae7623f57e33d883': running (progress N/A)
+0:09:41 Job 'cdse-j-2608060803094f12ae7623f57e33d883': running (progress N/A)
+0:10:41 Job 'cdse-j-2608060803094f12ae7623f57e33d883': running (progress N/A)
+0:11:41 Job 'cdse-j-2608060803094f12ae7623f57e33d883': running (progress N/A)
+0:12:42 Job 'cdse-j-2608060803094f12ae7623f57e33d883': running (progress N/A)
+0:13:43 Job 'cdse-j-2608060803094f12ae7623f57e33d883': finished (progress 100%)</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="6">
+
+    <script>
+    if (!window.customElements || !window.customElements.get('openeo-job')) {
+        var el = document.createElement('script');
+        el.src = "https://cdn.jsdelivr.net/npm/@openeo/vue-components@2/assets/openeo.min.js";
+        document.head.appendChild(el);
+
+        var font = document.createElement('font');
+        font.as = "font";
+        font.type = "font/woff2";
+        font.crossOrigin = true;
+        font.href = "https://use.fontawesome.com/releases/v5.13.0/webfonts/fa-solid-900.woff2";
+        document.head.appendChild(font);
+    }
+    </script>
+    <openeo-job>
+        <script type="application/json">{"currency": "credits", "federation": {"cdse": {"description": "This openEO service runs on the [Copernicus Data Space Ecosystem](https://dataspace.copernicus.eu/)\nand offers data access and processing on full archives of Copernicus data, such as the Sentinels.", "last_status_check": "2026-08-06T07:59:28Z", "status": "online", "title": "Copernicus Data Space Ecosystem openEO API", "url": "https://openeo.dataspace.copernicus.eu/openeo/1.1/"}, "terrascope": {"description": "OpenEO API to the Terrascope/VITO Remote Sensing product catalog and processing services (using GeoPySpark driver).", "last_status_check": "2026-08-06T07:59:28Z", "status": "online", "title": "Terrascope openEO API", "url": "https://openeo.terrascope.be/openeo/1.1/"}}, "job": {"costs": 23, "created": "2026-08-06T08:03:09Z", "id": "cdse-j-2608060803094f12ae7623f57e33d883", "process": {"process_graph": {"applydimension1": {"arguments": {"data": {"from_node": "mask1"}, "dimension": "bands", "process": {"process_graph": {"add1": {"arguments": {"x": {"from_node": "arrayelement1"}, "y": {"from_node": "arrayelement2"}}, "process_id": "add"}, "add2": {"arguments": {"x": {"from_node": "arrayelement3"}, "y": {"from_node": "arrayelement1"}}, "process_id": "add"}, "add3": {"arguments": {"x": {"from_node": "arrayelement1"}, "y": {"from_node": "arrayelement2"}}, "process_id": "add"}, "add4": {"arguments": {"x": {"from_node": "arrayelement3"}, "y": {"from_node": "arrayelement1"}}, "process_id": "add"}, "add5": {"arguments": {"x": {"from_node": "divide3"}, "y": {"from_node": "divide4"}}, "process_id": "add"}, "arraycreate1": {"arguments": {"data": [{"from_node": "divide5"}]}, "process_id": "array_create", "result": true}, "arrayelement1": {"arguments": {"data": {"from_parameter": "data"}, "index": 2}, "process_id": "array_element"}, "arrayelement2": {"arguments": {"data": {"from_parameter": "data"}, "index": 1}, "process_id": "array_element"}, "arrayelement3": {"arguments": {"data": {"from_parameter": "data"}, "index": 0}, "process_id": "array_element"}, "divide1": {"arguments": {"x": {"from_node": "subtract1"}, "y": {"from_node": "add1"}}, "process_id": "divide"}, "divide2": {"arguments": {"x": {"from_node": "subtract2"}, "y": {"from_node": "add2"}}, "process_id": "divide"}, "divide3": {"arguments": {"x": {"from_node": "subtract4"}, "y": {"from_node": "add3"}}, "process_id": "divide"}, "divide4": {"arguments": {"x": {"from_node": "subtract5"}, "y": {"from_node": "add4"}}, "process_id": "divide"}, "divide5": {"arguments": {"x": {"from_node": "subtract3"}, "y": {"from_node": "add5"}}, "process_id": "divide"}, "subtract1": {"arguments": {"x": {"from_node": "arrayelement1"}, "y": {"from_node": "arrayelement2"}}, "process_id": "subtract"}, "subtract2": {"arguments": {"x": {"from_node": "arrayelement3"}, "y": {"from_node": "arrayelement1"}}, "process_id": "subtract"}, "subtract3": {"arguments": {"x": {"from_node": "divide1"}, "y": {"from_node": "divide2"}}, "process_id": "subtract"}, "subtract4": {"arguments": {"x": {"from_node": "arrayelement1"}, "y": {"from_node": "arrayelement2"}}, "process_id": "subtract"}, "subtract5": {"arguments": {"x": {"from_node": "arrayelement3"}, "y": {"from_node": "arrayelement1"}}, "process_id": "subtract"}}}}, "process_id": "apply_dimension"}, "applydimension2": {"arguments": {"data": {"from_node": "mask2"}, "dimension": "bands", "process": {"process_graph": {"add10": {"arguments": {"x": {"from_node": "divide8"}, "y": {"from_node": "divide9"}}, "process_id": "add"}, "add6": {"arguments": {"x": {"from_node": "arrayelement4"}, "y": {"from_node": "arrayelement5"}}, "process_id": "add"}, "add7": {"arguments": {"x": {"from_node": "arrayelement6"}, "y": {"from_node": "arrayelement4"}}, "process_id": "add"}, "add8": {"arguments": {"x": {"from_node": "arrayelement4"}, "y": {"from_node": "arrayelement5"}}, "process_id": "add"}, "add9": {"arguments": {"x": {"from_node": "arrayelement6"}, "y": {"from_node": "arrayelement4"}}, "process_id": "add"}, "arraycreate2": {"arguments": {"data": [{"from_node": "divide10"}]}, "process_id": "array_create", "result": true}, "arrayelement4": {"arguments": {"data": {"from_parameter": "data"}, "index": 2}, "process_id": "array_element"}, "arrayelement5": {"arguments": {"data": {"from_parameter": "data"}, "index": 1}, "process_id": "array_element"}, "arrayelement6": {"arguments": {"data": {"from_parameter": "data"}, "index": 0}, "process_id": "array_element"}, "divide10": {"arguments": {"x": {"from_node": "subtract8"}, "y": {"from_node": "add10"}}, "process_id": "divide"}, "divide6": {"arguments": {"x": {"from_node": "subtract6"}, "y": {"from_node": "add6"}}, "process_id": "divide"}, "divide7": {"arguments": {"x": {"from_node": "subtract7"}, "y": {"from_node": "add7"}}, "process_id": "divide"}, "divide8": {"arguments": {"x": {"from_node": "subtract9"}, "y": {"from_node": "add8"}}, "process_id": "divide"}, "divide9": {"arguments": {"x": {"from_node": "subtract10"}, "y": {"from_node": "add9"}}, "process_id": "divide"}, "subtract10": {"arguments": {"x": {"from_node": "arrayelement6"}, "y": {"from_node": "arrayelement4"}}, "process_id": "subtract"}, "subtract6": {"arguments": {"x": {"from_node": "arrayelement4"}, "y": {"from_node": "arrayelement5"}}, "process_id": "subtract"}, "subtract7": {"arguments": {"x": {"from_node": "arrayelement6"}, "y": {"from_node": "arrayelement4"}}, "process_id": "subtract"}, "subtract8": {"arguments": {"x": {"from_node": "divide6"}, "y": {"from_node": "divide7"}}, "process_id": "subtract"}, "subtract9": {"arguments": {"x": {"from_node": "arrayelement4"}, "y": {"from_node": "arrayelement5"}}, "process_id": "subtract"}}}}, "process_id": "apply_dimension"}, "loadcollection1": {"arguments": {"bands": ["B03", "B04", "B08", "B11"], "id": "SENTINEL2_L2A", "spatial_extent": {"crs": "EPSG:4326", "east": 22.85, "north": 44.45, "south": 44.15, "west": 22.45}, "temporal_extent": ["2016-05-01", "2016-07-31"]}, "process_id": "load_collection"}, "loadcollection2": {"arguments": {"bands": ["SCL"], "id": "SENTINEL2_L2A", "spatial_extent": {"crs": "EPSG:4326", "east": 22.85, "north": 44.45, "south": 44.15, "west": 22.45}, "temporal_extent": ["2016-05-01", "2016-07-31"]}, "process_id": "load_collection"}, "loadcollection3": {"arguments": {"bands": ["B03", "B04", "B08", "B11"], "id": "SENTINEL2_L2A", "spatial_extent": {"crs": "EPSG:4326", "east": 22.85, "north": 44.45, "south": 44.15, "west": 22.45}, "temporal_extent": ["2026-05-01", "2026-07-31"]}, "process_id": "load_collection"}, "loadcollection4": {"arguments": {"bands": ["SCL"], "id": "SENTINEL2_L2A", "spatial_extent": {"crs": "EPSG:4326", "east": 22.85, "north": 44.45, "south": 44.15, "west": 22.45}, "temporal_extent": ["2026-05-01", "2026-07-31"]}, "process_id": "load_collection"}, "mask1": {"arguments": {"data": {"from_node": "loadcollection1"}, "mask": {"from_node": "toscldilationmask1"}}, "process_id": "mask"}, "mask2": {"arguments": {"data": {"from_node": "loadcollection3"}, "mask": {"from_node": "toscldilationmask2"}}, "process_id": "mask"}, "reducedimension1": {"arguments": {"data": {"from_node": "renamelabels1"}, "dimension": "t", "reducer": {"process_graph": {"mean1": {"arguments": {"data": {"from_parameter": "data"}}, "process_id": "mean", "result": true}}}}, "process_id": "reduce_dimension"}, "reducedimension2": {"arguments": {"data": {"from_node": "renamelabels2"}, "dimension": "t", "reducer": {"process_graph": {"mean2": {"arguments": {"data": {"from_parameter": "data"}}, "process_id": "mean", "result": true}}}}, "process_id": "reduce_dimension"}, "renamelabels1": {"arguments": {"data": {"from_node": "applydimension1"}, "dimension": "bands", "target": ["NDDI"]}, "process_id": "rename_labels"}, "renamelabels2": {"arguments": {"data": {"from_node": "applydimension2"}, "dimension": "bands", "target": ["NDDI"]}, "process_id": "rename_labels"}, "saveresult1": {"arguments": {"data": {"from_node": "reducedimension1"}, "format": "GTiff", "options": {"filename_prefix": "NDDI_2016"}}, "process_id": "save_result"}, "saveresult2": {"arguments": {"data": {"from_node": "reducedimension2"}, "format": "GTiff", "options": {"filename_prefix": "NDDI_2026"}}, "process_id": "save_result", "result": true}, "toscldilationmask1": {"arguments": {"data": {"from_node": "loadcollection2"}}, "process_id": "to_scl_dilation_mask"}, "toscldilationmask2": {"arguments": {"data": {"from_node": "loadcollection4"}}, "process_id": "to_scl_dilation_mask"}}}, "progress": 100, "status": "finished", "title": "NDDI 2016 vs 2026", "updated": "2026-08-06T08:16:31Z", "usage": {"cpu": {"unit": "cpu-seconds", "value": 6651}, "duration": {"unit": "seconds", "value": 755}, "input_pixel": {"unit": "mega-pixel", "value": 3073.96875}, "max_executor_memory": {"unit": "gb", "value": 3.392169952392578}, "memory": {"unit": "mb-seconds", "value": 59673600}, "memory_requested": {"unit": "mb-seconds", "value": 59673600}, "network_received": {"unit": "b", "value": 28931304388}}}}</script>
+    </openeo-job>
+    
+</div>
+</div>
+<p>After completion, fetch the result assets and download them locally into the <code>nddi_2016_vs_2026/</code> folder. These files are used for the static map comparison and zoom analysis below.</p>
+<div id="8273839c" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> nddi_job.get_results()</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>results.download_files(<span class="st">"nddi_2016_vs_2026/"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<pre><code>[WindowsPath('nddi_2016_vs_2026/NDDI_2016.tif'),
+ WindowsPath('nddi_2016_vs_2026/NDDI_2026.tif'),
+ WindowsPath('nddi_2016_vs_2026/job-results.json')]</code></pre>
+</div>
+</div>
+<p>Import raster and plotting libraries for the side-by-side map visualization. <code>rasterio</code> reads the GeoTIFFs and <code>matplotlib</code> renders the fixed-scale drought maps.</p>
+<div id="964e0a8d" class="cell" data-execution_count="27">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib.colors <span class="im">import</span> TwoSlopeNorm, LinearSegmentedColormap</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rasterio</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> rasterio.plot <span class="im">import</span> show</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Read directly from result GeoTIFF files</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(<span class="st">"nddi_2016_vs_2026/NDDI_2016.tif"</span>) <span class="im">as</span> src16:</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    arr16 <span class="op">=</span> src16.read(<span class="dv">1</span>, masked<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(<span class="st">"nddi_2016_vs_2026/NDDI_2026.tif"</span>) <span class="im">as</span> src26:</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    arr26 <span class="op">=</span> src26.read(<span class="dv">1</span>, masked<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Clip to valid NDDI range</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>arr16 <span class="op">=</span> np.ma.clip(arr16, <span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>arr26 <span class="op">=</span> np.ma.clip(arr26, <span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Drought color palette: wet -&gt; neutral -&gt; dry</span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>drought_cmap <span class="op">=</span> LinearSegmentedColormap.from_list(</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">"drought"</span>,</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"#f2f5ef"</span>, <span class="st">"#63a3e7"</span>, <span class="st">"#b2182b"</span>],</span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>    N<span class="op">=</span><span class="dv">256</span></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Fixed visual range for direct comparison</span></span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>norm <span class="op">=</span> TwoSlopeNorm(vmin<span class="op">=-</span><span class="dv">1</span>, vcenter<span class="op">=</span><span class="dv">0</span>, vmax<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">14</span>, <span class="dv">6</span>), constrained_layout<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a>show(arr16, ax<span class="op">=</span>axes[<span class="dv">0</span>], cmap<span class="op">=</span>drought_cmap, norm<span class="op">=</span>norm)</span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_title(<span class="st">"NDDI (mean of May-July) 2016"</span>)</span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_axis_off()</span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a>show(arr26, ax<span class="op">=</span>axes[<span class="dv">1</span>], cmap<span class="op">=</span>drought_cmap, norm<span class="op">=</span>norm)</span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_title(<span class="st">"NDDI 2026 (mean of May-July)"</span>)</span>
+<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_axis_off()</span>
+<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a>sm <span class="op">=</span> plt.cm.ScalarMappable(norm<span class="op">=</span>norm, cmap<span class="op">=</span>drought_cmap)</span>
+<span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a>sm.set_array([])</span>
+<span id="cb11-39"><a href="#cb11-39" aria-hidden="true" tabindex="-1"></a>cbar <span class="op">=</span> fig.colorbar(sm, ax<span class="op">=</span>axes, shrink<span class="op">=</span><span class="fl">0.85</span>)</span>
+<span id="cb11-40"><a href="#cb11-40" aria-hidden="true" tabindex="-1"></a>cbar.set_label(<span class="st">"NDDI"</span>)</span>
+<span id="cb11-41"><a href="#cb11-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-42"><a href="#cb11-42" aria-hidden="true" tabindex="-1"></a>fig.savefig(<span class="st">"nddi_2016_vs_2026_alt_plot.png"</span>, dpi<span class="op">=</span><span class="dv">300</span>, bbox_inches<span class="op">=</span><span class="st">"tight"</span>)</span>
+<span id="cb11-43"><a href="#cb11-43" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="NDDI_Drought_files/figure-html/cell-9-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="cfb58d3b" class="cell" data-execution_count="31">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># check the mean values of the NDDI arrays</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"2016 mean:"</span>, <span class="bu">float</span>(np.ma.mean(arr16)))</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"2026 mean:"</span>, <span class="bu">float</span>(np.ma.mean(arr26)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>2016 mean: 0.30558041893428045
+2026 mean: 0.39886424208691146</code></pre>
+</div>
+</div>
+<p>Visually, the 2026 map shows a larger, more contiguous extent of deep-red pixels than 2016, particularly in the upper-right and lower-right agricultural blocks, suggesting more widespread vegetation/moisture stress in the 2026 growing season.</p>
+<div id="cbe33f0f" class="cell" data-execution_count="30">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot the difference between 2026 and 2016</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>diff <span class="op">=</span> arr26 <span class="op">-</span> arr16</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">6</span>))</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Difference color palette: negative -&gt; neutral -&gt; positive</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>diff_cmap <span class="op">=</span> LinearSegmentedColormap.from_list(</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"diff"</span>,</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"#2166ac"</span>, <span class="st">"#f7f7f7"</span>, <span class="st">"#b2182b"</span>],</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    N<span class="op">=</span><span class="dv">256</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>plt.imshow(diff, cmap<span class="op">=</span>diff_cmap, vmin<span class="op">=-</span><span class="dv">1</span>, vmax<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>plt.colorbar(label<span class="op">=</span><span class="st">"NDDI"</span>)</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"NDDI Mean Difference (2026 - 2016)"</span>)</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">'off'</span>)</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a><span class="co">#save the difference plot</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>plt.savefig(<span class="st">"nddi_difference_2026_2016.png"</span>, dpi<span class="op">=</span><span class="dv">300</span>, bbox_inches<span class="op">=</span><span class="st">"tight"</span>)</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="NDDI_Drought_files/figure-html/cell-11-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Furthermore, the difference map (2026 − 2016) makes this more concrete: red pixels (positive difference) mark areas where NDDI rose over the decade, i.e., got drier/more stressed, While blue marks areas that got relatively wetter. Red clearly dominates over blue across most of the cropland, especially in the large agricultural parcel in the bottom-right of the scene, indicating a broad drying signal consistent with the 2026 drought.</p>
+
+
+
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/open-eo\.github\.io\/openeo-docs\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

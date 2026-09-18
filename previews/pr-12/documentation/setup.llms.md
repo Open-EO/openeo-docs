@@ -1,0 +1,111 @@
+# openEO Setup
+
+## Installation
+
+This page highlights the first steps to get started with openEO: choose the client that suits your preferred working environment and install it. Whether you work in Python, JavaScript, or R, the sections below provide a starting point for installing the client and connecting to an openEO backend. Additionally, on this page, we cover a brief introduction to using the openEO plugin in the QGIS environment.
+
+openEO processing runs on a backend. Users must first install a client that fits their working environment to start implementing an EO workflow in the backend. For more information on available backends and their capabilities, refer to the [Backend page](../documentation/key_concepts/backend.llms.md).
+
+## Python
+
+The openEO Python client is a good choice for scripts and Jupyter notebooks. Although it is not strictly necessary, using a virtual environment is recommended to help avoid conflicts with other Python packages installed on your system.
+
+``` bash
+python -m venv .venv
+# Windows PowerShell: .venv\Scripts\Activate.ps1
+# macOS/Linux: source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install openeo
+```
+
+Alternatively, install the client from conda-forge:
+
+``` bash
+conda install -c conda-forge openeo
+```
+
+Once installed confirm that the package is available and connect to a backend using the following code which prints the client version, backend API version, and supported output formats.
+
+Please note that `micropip` used here is only relevant for running the example in a Pyodide environment, such as a browser-based Jupyter notebook.
+
+``` python
+import openeo
+
+print(openeo.client_version())
+connection = openeo.connect("<backend-url>") # such as "openeo.dataspace.copernicus.eu"
+print(connection.list_collections())
+```
+
+For notebook preview and other Jupyter-enabled features, install the optional dependencies with `python -m pip install "openeo[jupyter]"`.
+
+## JavaScript
+
+For Node.js applications and projects using bundlers, install the JavaScript client with npm:
+
+``` bash
+npm install @openeo/js-client
+```
+
+Then create an asynchronous connection:
+
+``` javascript
+import { OpenEO } from "@openeo/js-client";
+
+const connection = await OpenEO.connect("<backend-url>");
+console.log(await connection.listCollections());
+```
+
+Browser applications can instead load the client and its Axios dependency from a CDN:
+
+``` html
+<script src="https://cdn.jsdelivr.net/npm/axios@0.21/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@openeo/js-client@2/openeo.min.js"></script>
+```
+
+See the [JavaScript client installation documentation](https://openeo.org/documentation/1.0/javascript/#installation) for CommonJS imports and authentication guidance.
+
+## R
+
+The R client is available from CRAN. It requires R 3.6 or later.
+
+``` r
+install.packages("openeo")
+
+library(openeo)
+connection <- connect(host = "https://<backend-url>")
+print(list_collections(con = connection))
+```
+
+The [R client documentation](https://openeo.org/documentation/1.0/r/#installation) also describes installing the development version from GitHub.
+
+## QGIS
+
+openEO provides a QGIS plugin that allows users to connect to openEO backends and interact with them directly within QGIS. Users can explore available collections, processes, and other backend capabilities through the plugin interface. Moreover, users can directly load their openEO workflow results into QGIS for further analysis and visualisation.
+
+To use openEO from a graphical GIS environment, install the QGIS plugin:
+
+1.  In QGIS, open **Plugins** \> **Manage and Install Plugins**.
+2.  Search for `OpenEO`, then install and enable the plugin.
+3.  In the QGIS Browser panel, right-click **openEO** and choose **New openEO Connection**.
+4.  Select a backend from the openEO Hub or enter its URL, then authenticate when prompted.
+
+For more details on the plugin, refer to the [QGIS Plugin installation documentation](https://openeo.org/documentation/1.0/qgis).
+
+## Authentication and Backend Discovery
+
+Reading public backend metadata usually does not require logging in. However, if you want to create jobs, access protected collections, or download results, you need authentication.
+
+Authentication is backend-specific; use the method supported by the backend, commonly OpenID Connect or basic authentication.
+
+After connecting, inspect the actual backend before building a workflow. The available collections, processes, output formats, and authentication options can vary between backends. For example, in Python:
+
+``` python
+print(connection.capabilities().api_version())
+print(connection.list_collections())
+print(connection.list_processes())
+print(connection.list_file_formats())
+```
+
+Explore the [backend page](../documentation/key_concepts/backend.llms.md) or the openEO Hub to identify collection IDs, supported processes, account registration, and the appropriate login method.
+
+Back to top
