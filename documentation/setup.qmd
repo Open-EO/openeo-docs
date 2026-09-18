@@ -1,5 +1,7 @@
 ---
 title: "openEO Setup"
+filters:
+  - pyodide
 ---
 
 ## Installation
@@ -30,7 +32,31 @@ Alternatively, install the client from conda-forge:
 conda install -c conda-forge openeo
 ```
 
-Confirm that the package is available and connect to a backend:
+Once installed confirm that the package is available and connect to a backend using the following code which prints the client version, backend API version, and supported output formats.
+
+Please note that `micropip` used here is only relevant for running the example in a Pyodide environment, such as a browser-based Jupyter notebook.
+
+
+
+```{pyodide-python}
+#| autorun: false
+
+import micropip
+
+await micropip.install("openeo")
+
+import openeo
+
+endpoint = "openeofed.dataspace.copernicus.eu"
+connection = openeo.connect(endpoint)
+
+print(f"openEO client version: {openeo.client_version()}")
+print(f"Backend API version: {connection.capabilities().api_version()}")
+print("Supported output formats:")
+for format_name in sorted(connection.list_file_formats()["output"]):
+    print(f"- {format_name}")
+```
+
 
 ```python
 import openeo
@@ -39,6 +65,7 @@ print(openeo.client_version())
 connection = openeo.connect("<backend-url>") # such as "openeo.dataspace.copernicus.eu"
 print(connection.list_collections())
 ```
+
 
 For notebook preview and other Jupyter-enabled features, install the optional
 dependencies with `python -m pip install "openeo[jupyter]"`. 

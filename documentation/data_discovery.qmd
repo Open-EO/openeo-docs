@@ -1,5 +1,7 @@
 ---
 title: "Data Discovery and Loading"
+filters:
+  - pyodide
 format:
   html:
     toc: true
@@ -16,13 +18,6 @@ page-layout: article
 ```{=html}
 
 <div class="tag-filter-ui" id="tag-filter-ui">
-  <button class="tag-filter-badge active" data-tag="vito">Terrascope</button>
-  <button class="tag-filter-badge inactive" data-tag="sentinelhub">Sentinel Hub</button>
-  <button class="tag-filter-badge inactive" data-tag="eodc">EODC</button>
-  <button class="tag-filter-badge inactive" data-tag="cdse">CDSE</button>
-  <button class="tag-filter-badge inactive" data-tag="federation">Federation</button>
-  <button class="tag-filter-badge inactive" data-tag="eurac">EURAC</button>
-  <button class="tag-filter-badge inactive" data-tag="gee">Google Earth Engine</button>
 </div>
 ```
 
@@ -44,13 +39,36 @@ Before loading data as a datacube, it is recommended to inspect the collection's
 
 #### Python
 
-```python
+```{pyodide-python}
+#| autorun: false
+
+import micropip
+
+await micropip.install("openeo")
+
+await micropip.install("pyodide-http")
+
+import pyodide_http
+pyodide_http.patch_all()  # Make requests work in Pyodide.
 import openeo
 
-connection = openeo.connect("openeofed.dataspace.copernicus.eu")
-collections = connection.list_collections()
-metadata = connection.describe_collection("SENTINEL2_L2A")
+endpoint = "openeofed.dataspace.copernicus.eu"
+connection = openeo.connect(endpoint)
+collection_id = "SENTINEL2_L2A"
+metadata = connection.describe_collection(collection_id)
 
+print(f"Collection: {metadata['id']}")
+print(f"Title: {metadata.get('title', 'Not provided')}")
+
+# Build an openEO process graph without executing it on the backend.
+cube = connection.load_collection(
+    collection_id,
+    spatial_extent={"west": 4.30, "south": 51.20, "east": 4.60, "north": 51.40},
+    temporal_extent=["2024-06-01", "2024-06-30"],
+    bands=["B04", "B08"],
+)
+
+cube.print_json()
 ```
 
 

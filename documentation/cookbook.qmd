@@ -2,6 +2,8 @@
 title: "openEO Cookbook"
 toc: true
 jupyter: python3
+filters:
+  - pyodide
 ---
 
 ::: {.content-visible when-format="llms-txt"}
@@ -19,9 +21,8 @@ Main topics:
 - Result download
 
 
-## Page Purpose
 
-The Cookbook contains task-oriented examples.
+This Cookbook contains simple, task-oriented examples for common openEO workflows. It summarizes a couple of key concepts and widely used openEO processes. Each recipe is designed to be self-contained, allowing users to quickly understand and apply the concepts to their own projects.
 
 Common user intents mapped to recipes:
 
@@ -181,6 +182,26 @@ var connection = await OpenEO.connect("openeofed.dataspace.copernicus.eu");
 
 :::
 
+### Inspect a public backend
+
+Before you start building workflows, it is useful to inspect the backend to understand its capabilities. This read-only example summarizes a backend before you build a workflow. It does not require authentication.
+
+```{pyodide-python}
+#| autorun: false
+
+import micropip
+
+await micropip.install("openeo")
+
+import openeo
+
+endpoint = "openeofed.dataspace.copernicus.eu"
+connection = openeo.connect(endpoint)
+
+print(f"Backend: {endpoint}")
+print(f"API version: {connection.capabilities().api_version()}")
+```
+
 The `Connection` object is the central gateway to interact with the back-end: listing collections and processes, building algorithms, and executing and monitoring batch jobs.
 
 
@@ -324,8 +345,17 @@ var builder = await con.buildProcess();
 
 #### Python
 
-```{python}
-# List all available processes with metadata
+```{pyodide-python}
+#| autorun: false
+
+import micropip
+
+await micropip.install("openeo")
+
+import openeo
+
+endpoint = "openeofed.dataspace.copernicus.eu"
+connection = openeo.connect(endpoint)
 connection.list_processes()
 ```
 

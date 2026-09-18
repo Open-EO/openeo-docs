@@ -1,5 +1,7 @@
 ---
 title: "Export Formats"
+filters:
+  - pyodide
 ---
 
 The openEO API offers various options for exporting results in different formats. It could differ depending on the backend capabilities and the type of data being exported.
@@ -17,11 +19,22 @@ To explore the available export formats, you can use the `list_file_formats()` m
 
 ### Python
 
-```python
+```{pyodide-python}
+#| autorun: false
+
+import micropip
+
+await micropip.install("openeo")
+
 import openeo
-connection = openeo.connect("your_backend_url")
-formats = connection.list_file_formats()
-print(formats["output"].keys())
+
+endpoint = "openeofed.dataspace.copernicus.eu"
+connection = openeo.connect(endpoint)
+output_formats = connection.list_file_formats()["output"]
+
+print(f"Output formats supported by {endpoint}:")
+for format_name in sorted(output_formats):
+    print(f"- {format_name}")
 ```
 
 ### R
