@@ -14,9 +14,9 @@ venv
 **/*.quarto_ipynb
 
 *.html
+!_extensions/**/*.html
 
 jupyterlite/files/
 .jupyterlite.doit.db
 _validation-general-operations/
 .quarto-validation-general/
-_extensions/
