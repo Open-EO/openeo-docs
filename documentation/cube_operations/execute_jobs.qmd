@@ -15,8 +15,8 @@ In openEO, when processes are applied to a datacube, a process graph is created 
 
 On this page, we will demonstrate how to execute openEO process graphs using both synchronous requests and batch jobs, and highlight key processes used within openEO.  
 
-```{=html}
 
+```{=html}
 <div class="tag-filter-ui" id="tag-filter-ui">
 </div>
 ```
@@ -25,7 +25,9 @@ On this page, we will demonstrate how to execute openEO process graphs using bot
 ## Backend support overview
 
 The buttons above let you filter processes supported by different backends. Selecting or deselecting a backend will show or hide the relevant sections in the documentation. However, please note that it is based on the latest documentation rendering. Thus, please refer to the [openEO Hub](https://hub.openeo.org/) for the most up-to-date information.
+
 :::
+
 
 Once the process graph is ready, you need to decide how to execute it based on your requirements. It is important to understand the differences between synchronous requests and batch jobs.
 
@@ -35,7 +37,8 @@ Once the process graph is ready, you need to decide how to execute it based on y
 Irrelevant of the method of execution you choose, you can save the result in any supported output format. See [Export Formats](../export_formats.qmd) to choose a format supported by the connected backend.
 
 
-::: {.tag-filter-item data-tags="vito eodc cdse federation"}
+
+::: {.tag-filter-item data-process="save_result"}
 
 ## Execute synchronous requests
 
@@ -82,7 +85,7 @@ The `download` operation sends the complete process graph to the backend. It doe
 
 :::
 
-::: {.tag-filter-item data-tags="vito eodc cdse federation"}
+
 
 ## Execute a batch job
 
@@ -167,7 +170,7 @@ await job.startJob();
 :::
 
 
-::: {.tag-filter-item data-tags="vito eodc cdse federation"}
+::: {.tag-filter-item data-process="list_jobs"}
 
 ### List existing batch jobs
 
@@ -203,7 +206,7 @@ view logs.
 
 :::
 
-::: {.tag-filter-item data-tags="vito eodc cdse federation"}
+
 
 ### Monitor a batch job
 
@@ -277,9 +280,8 @@ const stopMonitoring = job.monitorJob(async (job, logs) => {
 ```
 
 :::
-:::
 
-::: {.tag-filter-item data-tags="vito eodc cdse sentinelhub federation"}
+
 
 ### Retrieve job results
 
@@ -321,7 +323,7 @@ results.forEach(asset => {
 ```
 
 :::
-:::
+
 
 If you know that there is just a single result file, you can also download it directly with `download_file()` (singular) with the desired file name:
 
@@ -394,7 +396,6 @@ The `key` of an asset is not guaranteed to be directly usable as a filename safe
 :::
 
 
-::: {.tag-filter-item data-tags="vito eodc cdse federation"}
 
 ### Directly load batch job results
   
@@ -428,9 +429,6 @@ const data = await connection.loadJson(asset.href);
 data
 {"2021-02-24T10:59:23Z": [[3, 2, 5], [3, 4, 5]], ....}
 ```
-
-:::
-
 
 :::
 
@@ -482,5 +480,4 @@ Filter space, time, and bands before computationally intensive processes. Test
 a small area first, then submit the final workflow as a batch job. Inspect job
 logs when a backend reports an error.
 
-:::
 :::
