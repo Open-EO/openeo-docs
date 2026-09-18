@@ -71,6 +71,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
+<link href="../../documentation/cube_operations/udp.html" rel="next">
+<link href="../../documentation/cube_operations/udf.html" rel="prev">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
@@ -152,11 +154,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
                 support = await response.json();
             } catch (error) { console.warn("Could not load backend process support data.", error); }
         }
+        const getExplicitTags = (item) => new Set((item.getAttribute("data-tags") || "").toLowerCase().split(/\s+/).filter(Boolean));
+        const getDefaultTags = () => new Set(staticBadges.map((badge) => badge.dataset.tag).filter(Boolean));
         const getTags = (item) => {
+            const explicitTags = getExplicitTags(item);
             if (support && item.hasAttribute("data-process")) {
-                return new Set(item.getAttribute("data-process").split(/[\s,]+/).flatMap((id) => support.processes[id] || []));
+                const liveTags = new Set(item.getAttribute("data-process").split(/[\s,]+/).flatMap((id) => support.processes[id] || []));
+                return liveTags.size > 0 ? liveTags : explicitTags.size > 0 ? explicitTags : getDefaultTags();
             }
-            return new Set((item.getAttribute("data-tags") || "").toLowerCase().split(/\s+/).filter(Boolean));
+            return explicitTags.size > 0 ? explicitTags : getDefaultTags();
         };
         let badges = staticBadges;
         if (support) {
@@ -172,11 +178,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             });
         }
         if (badges.length === 0) return;
+        const tocLinks = Array.from(document.querySelectorAll("#TOC a[data-scroll-target]"));
         const applyFilter = () => {
             const selectedTags = new Set(badges.filter((badge) => badge.classList.contains("active")).map((badge) => badge.dataset.tag));
             items.forEach((item) => {
                 const tags = getTags(item);
-                item.hidden = ![...selectedTags].some((tag) => tags.has(tag));
+                const visible = [...selectedTags].some((tag) => tags.has(tag));
+                item.hidden = !visible;
+                const tocLink = tocLinks.find((link) => link.dataset.scrollTarget === `#${item.id}`);
+                tocLink?.closest("li")?.toggleAttribute("hidden", !visible);
             });
         };
         badges.forEach((badge) => badge.addEventListener("click", function (event) {
@@ -305,6 +315,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
         <li><hr class="dropdown-divider"></li>
         <li class="dropdown-header">CUBE OPERATIONS</li>
+        <li>
+    <a class="dropdown-item" href="../../documentation/cube_operations/general_operations.html">
+ <span class="dropdown-text">General Operations</span></a>
+  </li>  
         <li>
     <a class="dropdown-item" href="../../documentation/cube_operations/preprocessing.html">
  <span class="dropdown-text">Preprocessing</span></a>
@@ -483,6 +497,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../../documentation/cube_operations/general_operations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">General Operations</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../../documentation/cube_operations/preprocessing.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Preprocessing</span></a>
   </div>
@@ -553,18 +573,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#a-typical-ml-workflow" id="toc-a-typical-ml-workflow" class="nav-link active" data-scroll-target="#a-typical-ml-workflow">A typical ML workflow</a>
+  <li><a href="#a-typical-ml-workflow" id="toc-a-typical-ml-workflow" class="nav-link active" data-scroll-target="#a-typical-ml-workflow">A typical ML workflow</a></li>
+  <li><a href="#feature-preparation" id="toc-feature-preparation" class="nav-link" data-scroll-target="#feature-preparation">Feature preparation</a></li>
+  <li><a href="#random-forest-classifier-in-openeo" id="toc-random-forest-classifier-in-openeo" class="nav-link" data-scroll-target="#random-forest-classifier-in-openeo">Random Forest Classifier in openEO</a>
   <ul class="collapse">
-  <li><a href="#python" id="toc-python" class="nav-link" data-scroll-target="#python">Python</a></li>
-  </ul></li>
-  <li><a href="#machine-learning-process-details" id="toc-machine-learning-process-details" class="nav-link" data-scroll-target="#machine-learning-process-details">Machine-learning process details</a></li>
-  <li><a href="#train-a-random-forest-classifier" id="toc-train-a-random-forest-classifier" class="nav-link" data-scroll-target="#train-a-random-forest-classifier">Train a random-forest classifier</a></li>
+  <li><a href="#train-a-random-forest-classifier" id="toc-train-a-random-forest-classifier" class="nav-link" data-scroll-target="#train-a-random-forest-classifier">Train a random forest classifier</a></li>
   <li><a href="#train-a-random-forest-regressor" id="toc-train-a-random-forest-regressor" class="nav-link" data-scroll-target="#train-a-random-forest-regressor">Train a random-forest regressor</a></li>
   <li><a href="#predict-with-a-random-forest" id="toc-predict-with-a-random-forest" class="nav-link" data-scroll-target="#predict-with-a-random-forest">Predict with a random forest</a></li>
   <li><a href="#load-a-machine-learning-model" id="toc-load-a-machine-learning-model" class="nav-link" data-scroll-target="#load-a-machine-learning-model">Load a machine-learning model</a></li>
   <li><a href="#save-a-machine-learning-model" id="toc-save-a-machine-learning-model" class="nav-link" data-scroll-target="#save-a-machine-learning-model">Save a machine-learning model</a></li>
-  <li><a href="#predict-with-a-generic-model" id="toc-predict-with-a-generic-model" class="nav-link" data-scroll-target="#predict-with-a-generic-model">Predict with a generic model</a></li>
+  <li><a href="#predict-with-a-random-forest-model" id="toc-predict-with-a-random-forest-model" class="nav-link" data-scroll-target="#predict-with-a-random-forest-model">Predict with a random forest model</a></li>
   <li><a href="#predict-with-an-onnx-model" id="toc-predict-with-an-onnx-model" class="nav-link" data-scroll-target="#predict-with-an-onnx-model">Predict with an ONNX model</a></li>
+  </ul></li>
+  <li><a href="#reuse-a-machine-learning-model" id="toc-reuse-a-machine-learning-model" class="nav-link" data-scroll-target="#reuse-a-machine-learning-model">Reuse a machine-learning model</a>
+  <ul class="collapse">
+  <li><a href="#load-as-a-package" id="toc-load-as-a-package" class="nav-link" data-scroll-target="#load-as-a-package">Load as a package</a></li>
+  <li><a href="#save-as-a-udp" id="toc-save-as-a-udp" class="nav-link" data-scroll-target="#save-as-a-udp">Save as a UDP</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -590,102 +615,252 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<div class="lead">
-<p>openEO machine-learning processes keep feature preparation and inference close to the data. Their availability is more backend-specific than core cube processes.</p>
-</div>
+<p>The openEO API provides certain machine-learning capabilities that allow users to extract features from data cubes and perform model training and prediction. While there is limited support for training a model directly within the API, it facilitates easier data extraction and preparation for machine-learning workflows. Additionally, for the inference workflow, openEO provides methods to use the trained or loaded models for prediction.</p>
+<p>Please note that this support can be backend-specific and may vary depending on the openEO backend you are connected to.</p>
 <div class="tag-filter-ui" id="tag-filter-ui">
-  <button class="tag-filter-badge active" data-tag="vito">VITO</button>
-  <button class="tag-filter-badge inactive" data-tag="eodc">EODC</button>
-  <button class="tag-filter-badge inactive" data-tag="cdse">CDSE</button>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
 <span class="screen-reader-only">Note</span>Backend support overview
 </div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>The buttons on this page are a documentation aid, not a live capability registry. Use the <a href="https://hub.openeo.org/">openEO Hub</a> for a cross-backend overview: open <strong>Filters</strong>, select a process under <strong>Processes</strong>, and the Hub shows only matching services. The Hub data is crawled and cached.</p>
+<p>The buttons above let you filter processes supported by different backends. Selecting or deselecting a backend will show or hide the relevant sections in the documentation. However, please note that it is based on the latest documentation rendering. Thus, please refer to the <a href="https://hub.openeo.org/">openEO Hub</a> for the most up-to-date information.</p>
 </div>
 </div>
-<section id="a-typical-ml-workflow" class="level2 tag-filter-item" data-tags="vito">
+</div>
+<section id="a-typical-ml-workflow" class="level2">
 <h2 class="anchored" data-anchor-id="a-typical-ml-workflow">A typical ML workflow</h2>
+<p>&nbsp; Generally, a machine-learning workflow can be broken down into the following steps:</p>
 <ol type="1">
-<li>Create a feature cube with processes such as <code>ndvi</code>, <code>aggregate_temporal_period</code>, and <code>filter_bands</code>.</li>
-<li>Train a supported model or load an exported model, depending on the backend.</li>
-<li>Apply it with a model-prediction process and export the resulting cube.</li>
+<li>Extract and prepare relevant features from the model training.</li>
+<li>Train and validate a machine-learning model using the prepared features.</li>
+<li>Apply the trained model to make predictions on new data.</li>
 </ol>
-<section id="python" class="level3">
-<h3 class="anchored" data-anchor-id="python">Python</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Feature preparation stays portable across backends.</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>features <span class="op">=</span> (</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    cube.filter_bands([<span class="st">"B02"</span>, <span class="st">"B03"</span>, <span class="st">"B04"</span>, <span class="st">"B08"</span>])</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    .aggregate_temporal_period(period<span class="op">=</span><span class="st">"month"</span>, reducer<span class="op">=</span><span class="st">"median"</span>)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># The available training and prediction methods must be checked per backend.</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>processes <span class="op">=</span> connection.list_processes()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
+<p>In the above workflow, openEO support can be found primarily in:</p>
+<ol type="1">
+<li>Feature preparation and extraction: Supports preparing and extracting relevant features from data cubes, such as selecting bands, computing indices, and aggregating temporally. These features can also be downloaded to feed into the training of machine-learning models.</li>
+<li>Model Training: Limited support for training machine-learning models directly within the backend. Users may need to download prepared features and train models externally before using them for prediction within openEO. Nevertheless, widely used models such as random forests are defined in openEO as standard processes, allowing for consistent usage across different backends.</li>
+<li>Model Prediction: Once a model is trained, openEO provides processes to apply the model to new data cubes for prediction. The exact process and required input format may vary depending on the backend.</li>
+</ol>
+<p>On this page, we provide an overview of the machine-learning support in openEO, including feature preparation, model training, and prediction.</p>
+</section>
+<section id="feature-preparation" class="level2">
+<h2 class="anchored" data-anchor-id="feature-preparation">Feature preparation</h2>
+<p>Features can be anything derived from the original data cubes that are relevant for the machine-learning task at hand. This includes selecting specific bands, computing indices, aggregating over time, or any other transformation that helps prepare the data for model training and prediction. Moreover, the selection and preparation of features widely depend on the specific machine-learning task.</p>
+<p>For example, if the task is to classify Land Cover types, relevant features might include spectral bands, vegetation indices, and temporal aggregates that capture seasonal variations. These features can then be used to train a classifier to distinguish between different land cover classes.</p>
+<p>The prepared features can be saved as a single raster of a specified size or as a tabular dataset suitable for machine-learning model training.</p>
+</section>
+<section id="random-forest-classifier-in-openeo" class="level2">
+<h2 class="anchored" data-anchor-id="random-forest-classifier-in-openeo">Random Forest Classifier in openEO</h2>
+<section id="train-a-random-forest-classifier" class="level3 tag-filter-item" data-process="fit_class_random_forest">
+<h3 class="anchored" data-anchor-id="train-a-random-forest-classifier">Train a random forest classifier</h3>
+<p>The <code>fit_class_random_forest</code> process trains a random forest classifier on labelled training features. It requires specifying the target column containing the class labels, as well as optionally other model parameters. The backend determines the supported feature layout, label column, and model parameters.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>feature_collection <span class="op">=</span> {<span class="st">"type"</span>: <span class="st">"FeatureCollection"</span>, <span class="st">"features"</span>: [</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; {</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; <span class="st">"type"</span>: <span class="st">"Feature"</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; <span class="st">"properties"</span>: {<span class="st">"id"</span>: <span class="st">"b3dw-wd23"</span>, <span class="st">"target"</span>: <span class="dv">3</span>},</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; <span class="st">"geometry"</span>: {<span class="st">"type"</span>: <span class="st">"Point"</span>, <span class="st">"coordinates"</span>: [<span class="fl">3.4</span>, <span class="fl">51.1</span>]}</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; },</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; {</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; <span class="st">"type"</span>: <span class="st">"Feature"</span>,</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; <span class="st">"properties"</span>: {<span class="st">"id"</span>: <span class="st">"r8dh-3jkd"</span>, <span class="st">"target"</span>: <span class="dv">5</span>},</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; <span class="st">"geometry"</span>: {<span class="st">"type"</span>: <span class="st">"Point"</span>, <span class="st">"coordinates"</span>: [<span class="fl">3.6</span>, <span class="fl">51.2</span>]}</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; }</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>]}</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> aggregated_vectorcube.fit_class_random_forest(target<span class="op">=</span>feature_collection)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> aggregated_vectorcube<span class="sc">$</span><span class="fu">fit_class_random_forest</span>(<span class="at">target=</span>feature_collection)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> model <span class="op">=</span> aggregated_vectorcube<span class="op">.</span><span class="fu">fit_class_random_forest</span>({<span class="dt">target</span><span class="op">:</span> feature_collection})<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+</section>
+<section id="train-a-random-forest-regressor" class="level3 tag-filter-item" data-process="fit_regr_random_forest">
+<h3 class="anchored" data-anchor-id="train-a-random-forest-regressor">Train a random-forest regressor</h3>
+<p>The <code>fit_regr_random_forest</code> process trains a random-forest regressor on labelled training data with a continuous target. The difference between the classification and regression processes lies in the type of target variable: classification uses discrete class labels, while regression uses continuous values.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>feature_collection <span class="op">=</span> {<span class="st">"type"</span>: <span class="st">"FeatureCollection"</span>, <span class="st">"features"</span>: [</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; {</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; <span class="st">"type"</span>: <span class="st">"Feature"</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; <span class="st">"properties"</span>: {<span class="st">"id"</span>: <span class="st">"b3dw-wd23"</span>, <span class="st">"value"</span>: <span class="fl">3.5</span>},</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; <span class="st">"geometry"</span>: {<span class="st">"type"</span>: <span class="st">"Point"</span>, <span class="st">"coordinates"</span>: [<span class="fl">3.4</span>, <span class="fl">51.1</span>]}</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; },</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; {</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; <span class="st">"type"</span>: <span class="st">"Feature"</span>,</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; <span class="st">"properties"</span>: {<span class="st">"id"</span>: <span class="st">"r8dh-3jkd"</span>, <span class="st">"value"</span>: <span class="fl">5.2</span>},</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; <span class="st">"geometry"</span>: {<span class="st">"type"</span>: <span class="st">"Point"</span>, <span class="st">"coordinates"</span>: [<span class="fl">3.6</span>, <span class="fl">51.2</span>]}</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; }</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>]}</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>cube <span class="op">=</span> connection.load_collection(</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"SENTINEL2"</span>,</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    temporal_extent<span class="op">=</span>[start, end],</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    spatial_extent<span class="op">=</span>bbox,</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    bands<span class="op">=</span>[<span class="st">"B02"</span>, <span class="st">"B03"</span>, <span class="st">"B04"</span>]</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>aggregated_vectorcube <span class="op">=</span> cube.reduce_dimension(dimension<span class="op">=</span><span class="st">"t"</span>, reducer<span class="op">=</span><span class="st">"mean"</span>)</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> aggregated_vectorcube.fit_regr_random_forest(target<span class="op">=</span>feature_collection)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> aggregated_vectorcube<span class="sc">$</span><span class="fu">fit_regr_random_forest</span>(<span class="at">target=</span>feature_collection)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> model <span class="op">=</span> aggregated_vectorcube<span class="op">.</span><span class="fu">fit_regr_random_forest</span>({<span class="dt">target</span><span class="op">:</span> feature_collection})<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+</section>
+<section id="predict-with-a-random-forest" class="level3 tag-filter-item" data-process="predict_random_forest">
+<h3 class="anchored" data-anchor-id="predict-with-a-random-forest">Predict with a random forest</h3>
+<p>Once a random-forest model has been trained using <code>fit_class_random_forest</code> or <code>fit_regr_random_forest</code>, it can be used to make predictions on new feature cubes. Use <code>predict_random_forest</code> for this purpose. It returns predictions based on the trained model.</p>
+<p>Once a random-forest model has been trained using <code>fit_class_random_forest</code> or <code>fit_regr_random_forest</code>, it can be used to make predictions on new feature cubes. Use <code>predict_random_forest</code> for this purpose. It returns predictions based on the trained model.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-3" role="tab" aria-controls="tabset-3-3" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>prediction <span class="op">=</span> features.predict_random_forest(model<span class="op">=</span>model, dimension<span class="op">=</span><span class="st">"bands"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>prediction <span class="ot">&lt;-</span> features<span class="sc">$</span><span class="fu">predict_random_forest</span>(<span class="at">model=</span>model, <span class="at">dimension=</span><span class="st">"bands"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-3-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> prediction <span class="op">=</span> features<span class="op">.</span><span class="fu">predict_random_forest</span>({<span class="dt">model</span><span class="op">:</span> model<span class="op">,</span> <span class="dt">dimension</span><span class="op">:</span> <span class="st">"bands"</span>})<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+</section>
+<section id="load-a-machine-learning-model" class="level3 tag-filter-item" data-process="load_ml_model">
+<h3 class="anchored" data-anchor-id="load-a-machine-learning-model">Load a machine-learning model</h3>
+<p>During the prediction phase, if a machine-learning model has been previously trained and saved, it can be loaded using <code>load_ml_model</code> to avoid retraining and ensure consistent predictions. Users can use the <code>load_ml_model</code> function to retrieve the model before making predictions. Alternatively, this model can be saved to external storage for later reuse or sharing across different workflows.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-3" role="tab" aria-controls="tabset-4-3" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> connection.load_ml_model(model_id<span class="op">=</span><span class="st">"my-model"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> connection<span class="sc">$</span><span class="fu">load_ml_model</span>(<span class="at">model_id=</span><span class="st">"my-model"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-4-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> model <span class="op">=</span> connection<span class="op">.</span><span class="fu">load_ml_model</span>({<span class="dt">model_id</span><span class="op">:</span> <span class="st">"my-model"</span>})<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+</section>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Check before building the workflow
+<span class="screen-reader-only">Tip</span>Example notebooks
 </div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>Look for processes such as <code>fit_class_random_forest</code>, <code>fit_regr_random_forest</code>, <code>predict_random_forest</code>, <code>load_ml_model</code>, or <code>predict_ml_model</code> in the connected backend’s process listing. Exact names and supported model formats may differ by process specification version.</p>
+<ul>
+<li><a href="../../client_examples/openeo-community-examples/python/RandomForest-ForestFire/RandomForestModelTraining.ipynb">Forest Fire Mapping using Random Forest</a></li>
+<li><a href="../../client_examples/openeo-community-examples/python/RandomForest-ForestFire/RandomForestModelInference_AsUDP.ipynb">Reusing openEO Workflows Saved as UDPs</a></li>
+<li><a href="../../client_examples/openeo-community-examples/python/OnnxMLInference/Onnx_ML_Inference.ipynb">Running ML Inference with an ONNX Model</a></li>
+<li><a href="../../client_examples/openeo-community-examples/python/DimensionalityReduction/Dimensionality Reduction.ipynb">Dimensionality Reduction using Sentinel-2 (PCA)</a></li>
+<li><a href="../../client_examples/openeo-community-examples/python/ExtractingTrainingData/ML_ready_data_extraction.ipynb">ML-Ready Data Preparation using openEO</a></li>
+<li><a href="../../client_examples/openeo-community-examples/python/TesseraEmbedding/TesseraEmbedding.ipynb">TESSERA Pixel Embeddings from Sentinel-1/2</a></li>
+</ul>
+<p>More notebooks are listed on the <a href="../../examples.html">sample notebooks page</a>.</p>
 </div>
 </div>
+</div>
+<section id="save-a-machine-learning-model" class="level3 tag-filter-item" data-process="save_ml_model">
+<h3 class="anchored" data-anchor-id="save-a-machine-learning-model">Save a machine-learning model</h3>
+<p>Using the <code>save_ml_model</code> function, users can save a machine-learning model as part of a batch job to persist a trained model for later prediction or sharing.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-5-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-1" role="tab" aria-controls="tabset-5-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-2" role="tab" aria-controls="tabset-5-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-3" role="tab" aria-controls="tabset-5-3" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-5-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-5-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>saved <span class="op">=</span> model.save_ml_model(model_id<span class="op">=</span><span class="st">"my-model"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-5-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>saved <span class="ot">&lt;-</span> model<span class="sc">$</span><span class="fu">save_ml_model</span>(<span class="at">model_id=</span><span class="st">"my-model"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-5-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> saved <span class="op">=</span> model<span class="op">.</span><span class="fu">save_ml_model</span>({<span class="dt">model_id</span><span class="op">:</span> <span class="st">"my-model"</span>})<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
 </section>
+<section id="predict-with-a-random-forest-model" class="level3 tag-filter-item" data-process="predict_random_forest">
+<h3 class="anchored" data-anchor-id="predict-with-a-random-forest-model">Predict with a random forest model</h3>
+<p>Use <code>predict_random_forest</code> when the backend supports random forest models. Exact model formats, input schema, and output labels must be checked in backend metadata.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-6-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-1" role="tab" aria-controls="tabset-6-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-2" role="tab" aria-controls="tabset-6-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-3" role="tab" aria-controls="tabset-6-3" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-6-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-6-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>prediction <span class="op">=</span> features.predict_random_forest(model<span class="op">=</span>model)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-6-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>prediction <span class="ot">&lt;-</span> features<span class="sc">$</span><span class="fu">predict_random_forest</span>(<span class="at">model=</span>model)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-6-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> prediction <span class="op">=</span> features<span class="op">.</span><span class="fu">predict_random_forest</span>({<span class="dt">model</span><span class="op">:</span> model})<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
 </section>
-<section id="machine-learning-process-details" class="level2">
-<h2 class="anchored" data-anchor-id="machine-learning-process-details">Machine-learning process details</h2>
-<p>Each model process is documented separately because training, loading, and prediction support can differ between backends.</p>
-</section>
-<section id="train-a-random-forest-classifier" class="level2 tag-filter-item" data-process="fit_class_random_forest">
-<h2 class="anchored" data-anchor-id="train-a-random-forest-classifier">Train a random-forest classifier</h2>
-<p>Use <code>fit_class_random_forest</code> when labelled training features should be used to classify a feature cube. The backend determines the supported feature layout, label column, and model parameters.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> training_data.fit_class_random_forest(target_column<span class="op">=</span><span class="st">"class"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="train-a-random-forest-regressor" class="level2 tag-filter-item" data-process="fit_regr_random_forest">
-<h2 class="anchored" data-anchor-id="train-a-random-forest-regressor">Train a random-forest regressor</h2>
-<p>Use <code>fit_regr_random_forest</code> when labelled training features contain a continuous target such as biomass or temperature. Check the backend metadata for required training dimensions and parameter names.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> training_data.fit_regr_random_forest(target_column<span class="op">=</span><span class="st">"value"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="predict-with-a-random-forest" class="level2 tag-filter-item" data-process="predict_random_forest">
-<h2 class="anchored" data-anchor-id="predict-with-a-random-forest">Predict with a random forest</h2>
-<p>Use <code>predict_random_forest</code> after preparing a feature cube with the same bands and ordering used for training. It returns model predictions aligned with the input features.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>prediction <span class="op">=</span> features.predict_random_forest(model<span class="op">=</span>model)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="load-a-machine-learning-model" class="level2 tag-filter-item" data-process="load_ml_model">
-<h2 class="anchored" data-anchor-id="load-a-machine-learning-model">Load a machine-learning model</h2>
-<p>Use <code>load_ml_model</code> when a model has already been stored in the backend and should be reused by a new workflow. Model identifiers, permissions, and formats are backend-specific.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> connection.load_ml_model(model_id<span class="op">=</span><span class="st">"my-model"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="save-a-machine-learning-model" class="level2 tag-filter-item" data-process="save_ml_model">
-<h2 class="anchored" data-anchor-id="save-a-machine-learning-model">Save a machine-learning model</h2>
-<p>Use <code>save_ml_model</code> to persist a trained model for later prediction or sharing within the backend workspace. Confirm retention and access rules before using it in production.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>saved <span class="op">=</span> model.save_ml_model(model_id<span class="op">=</span><span class="st">"my-model"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="predict-with-a-generic-model" class="level2 tag-filter-item" data-process="predict_ml_model">
-<h2 class="anchored" data-anchor-id="predict-with-a-generic-model">Predict with a generic model</h2>
-<p>Use <code>predict_ml_model</code> when the backend supports a generic model format that is not covered by a specialized process. Exact model formats, input schema, and output labels must be checked in backend metadata.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>prediction <span class="op">=</span> features.predict_ml_model(model<span class="op">=</span>model)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="predict-with-an-onnx-model" class="level2 tag-filter-item" data-process="predict_onnx">
-<h2 class="anchored" data-anchor-id="predict-with-an-onnx-model">Predict with an ONNX model</h2>
+<section id="predict-with-an-onnx-model" class="level3 tag-filter-item" data-process="predict_onnx">
+<h3 class="anchored" data-anchor-id="predict-with-an-onnx-model">Predict with an ONNX model</h3>
 <p>Use <code>predict_onnx</code> to apply a portable ONNX model when the backend advertises ONNX inference. The model input order and tensor shape must match the feature cube.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>prediction <span class="op">=</span> features.predict_onnx(model<span class="op">=</span>model)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-7-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-1" role="tab" aria-controls="tabset-7-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-7-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-2" role="tab" aria-controls="tabset-7-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-7-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-3" role="tab" aria-controls="tabset-7-3" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-7-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-7-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>prediction <span class="op">=</span> features.predict_onnx(model<span class="op">=</span>model)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-7-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-7-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>prediction <span class="ot">&lt;-</span> features<span class="sc">$</span><span class="fu">predict_onnx</span>(<span class="at">model=</span>model)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-7-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-7-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> prediction <span class="op">=</span> features<span class="op">.</span><span class="fu">predict_onnx</span>({<span class="dt">model</span><span class="op">:</span> model})<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="reuse-a-machine-learning-model" class="level2">
+<h2 class="anchored" data-anchor-id="reuse-a-machine-learning-model">Reuse a machine-learning model</h2>
+<p>While openEO supports training a Random Forest model, users often prefer to use a deep learning model trained externally, which can then be reused for predictions within the openEO framework.</p>
+<section id="load-as-a-package" class="level3">
+<h3 class="anchored" data-anchor-id="load-as-a-package">Load as a package</h3>
+<p>These models can be saved as ONNX files and passed in as dependency packages within a UDF.</p>
+<p>A similar example is: <a href="https://github.com/Open-EO/openeo-community-examples/tree/main/python/OnnxMLInference">ONNX ML Inference</a></p>
+</section>
+<section id="save-as-a-udp" class="level3">
+<h3 class="anchored" data-anchor-id="save-as-a-udp">Save as a UDP</h3>
+<p>Users can save the externally trained model within a User-Defined Process (UDP) to make it reusable within the openEO workflow. This allows the model to be easily shared and applied to different datasets without retraining. For more information on creating and using UDPs, visit the <a href="../../documentation/cube_operations/udp.html">User-Defined Processes</a> page.</p>
+
+
+</section>
 </section>
 
-
-
-</main> <!-- /main -->
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
@@ -1086,6 +1261,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
   });
   </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../documentation/cube_operations/udf.html" class="pagination-link" aria-label="User Defined Functions">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">User Defined Functions</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../documentation/cube_operations/udp.html" class="pagination-link" aria-label="User Defined Processes">
+        <span class="nav-page-text">User Defined Processes</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
 </div> <!-- /content -->
 
 

@@ -74,3 +74,5 @@ It has been a great year for openEO. CDSE is making openEO available to a large 
 We are looking forward to next year, expecting new releases of the openEO API and openEO processes, and hopefully an adoption as OGC community standard.
 
 🎄 **Merry Christmas and a Happy New Year to the openEO community!**
+
+Back to top

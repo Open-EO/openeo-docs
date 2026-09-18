@@ -1,0 +1,29 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2026-09-18T14:12:11.279841Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:12:08.266271Z",
+      "mimetype": null,
+      "name": "land_cover_country_lcfm.ipynb",
+      "path": "notebooks/LandCoverStatistics/land_cover_country_lcfm.ipynb",
+      "size": 228199,
+      "type": "notebook",
+      "writable": true
+    }
+  ],
+  "created": "2026-09-18T14:12:11.279841Z",
+  "format": "json",
+  "hash": null,
+  "hash_algorithm": null,
+  "last_modified": "2026-09-18T14:12:11.279841Z",
+  "mimetype": null,
+  "name": "LandCoverStatistics",
+  "path": "notebooks/LandCoverStatistics",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}

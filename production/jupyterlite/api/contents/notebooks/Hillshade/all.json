@@ -1,0 +1,29 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2026-09-18T14:12:11.279457Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:12:08.266197Z",
+      "mimetype": null,
+      "name": "Hillshade.ipynb",
+      "path": "notebooks/Hillshade/Hillshade.ipynb",
+      "size": 10033,
+      "type": "notebook",
+      "writable": true
+    }
+  ],
+  "created": "2026-09-18T14:12:11.279457Z",
+  "format": "json",
+  "hash": null,
+  "hash_algorithm": null,
+  "last_modified": "2026-09-18T14:12:11.279457Z",
+  "mimetype": null,
+  "name": "Hillshade",
+  "path": "notebooks/Hillshade",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}

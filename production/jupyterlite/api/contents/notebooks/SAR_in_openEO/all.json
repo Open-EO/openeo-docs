@@ -1,0 +1,57 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2026-09-18T14:12:11.355395Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:12:08.279380Z",
+      "mimetype": null,
+      "name": "Coherence_for_harvestdays.ipynb",
+      "path": "notebooks/SAR_in_openEO/Coherence_for_harvestdays.ipynb",
+      "size": 11151960,
+      "type": "notebook",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2026-09-18T14:12:11.378273Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:12:08.281024Z",
+      "mimetype": "text/x-python",
+      "name": "utils.py",
+      "path": "notebooks/SAR_in_openEO/utils.py",
+      "size": 10989,
+      "type": "file",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2026-09-18T14:12:11.375478Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:12:08.280621Z",
+      "mimetype": null,
+      "name": "Interferogram_deformation_map.ipynb",
+      "path": "notebooks/SAR_in_openEO/Interferogram_deformation_map.ipynb",
+      "size": 1250008,
+      "type": "notebook",
+      "writable": true
+    }
+  ],
+  "created": "2026-09-18T14:12:11.377395Z",
+  "format": "json",
+  "hash": null,
+  "hash_algorithm": null,
+  "last_modified": "2026-09-18T14:12:11.377395Z",
+  "mimetype": null,
+  "name": "SAR_in_openEO",
+  "path": "notebooks/SAR_in_openEO",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}

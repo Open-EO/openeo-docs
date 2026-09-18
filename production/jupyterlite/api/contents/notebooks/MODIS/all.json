@@ -1,0 +1,57 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2026-09-18T14:12:11.291214Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:12:08.268047Z",
+      "mimetype": null,
+      "name": "MODIS_data_using_openEO.ipynb",
+      "path": "notebooks/MODIS/MODIS_data_using_openEO.ipynb",
+      "size": 23772,
+      "type": "notebook",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2026-09-18T14:12:11.286530Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:12:08.267380Z",
+      "mimetype": null,
+      "name": "Environmental_productivity.ipynb",
+      "path": "notebooks/MODIS/Environmental_productivity.ipynb",
+      "size": 2204222,
+      "type": "notebook",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2026-09-18T14:12:11.285984Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:12:08.267271Z",
+      "mimetype": null,
+      "name": "CarbonProduces.ipynb",
+      "path": "notebooks/MODIS/CarbonProduces.ipynb",
+      "size": 134734,
+      "type": "notebook",
+      "writable": true
+    }
+  ],
+  "created": "2026-09-18T14:12:11.290395Z",
+  "format": "json",
+  "hash": null,
+  "hash_algorithm": null,
+  "last_modified": "2026-09-18T14:12:11.290395Z",
+  "mimetype": null,
+  "name": "MODIS",
+  "path": "notebooks/MODIS",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}

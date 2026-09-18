@@ -10,6 +10,10 @@ You can find more information on loading the datacube in the [Loading Data](cube
 
 Once your data is loaded, the operations described below are the tools users can use to shape, refine, and interrogate that cube.
 
+> **NOTE:**
+>
+> The tag filter used within this section allows you to filter the documentation for cube-operations releated processes supported by different backends.
+
 ------------------------------------------------------------------------
 
 ## Preprocessing: Preparing the Cube
@@ -163,3 +167,5 @@ Execution options include:
 ------------------------------------------------------------------------
 
 Explore each operation category in the sidebar to dive deeper.
+
+Back to top

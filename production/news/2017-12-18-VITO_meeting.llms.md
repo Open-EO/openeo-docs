@@ -32,3 +32,5 @@ Among the many insights we gathered by sitting together and talk, we found that
 - use case 1 can be described as a sequence of filter operations (on image collection, bounding box, date range, and bands) followed by two aggregate operations (compute division over bands, compute mininum over time)
 
 Intermediate results can be found in a bunch of repositories, mostly proof-of-concept, on the openEO [Github organisation](https://github.com/Open-EO/).
+
+Back to top

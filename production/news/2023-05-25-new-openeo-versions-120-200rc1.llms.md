@@ -56,3 +56,5 @@ This release includes (for the first time) a couple of breaking changes. Therefo
   - Removed support for temporal comparison. Instead explicitly use `date_difference`.
   - Removed support for the input data types array and object. [\#208](https://github.com/Open-EO/openeo-processes/issues/208)
 - `sort` and `order`: Removed support for time-only values. [\#331](https://github.com/Open-EO/openeo-processes/issues/331)
+
+Back to top

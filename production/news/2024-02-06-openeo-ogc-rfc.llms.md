@@ -15,3 +15,5 @@ For more details, please read the press release that was published today by OGC:
 openEO will also be presented at the next OGC member meeting in Delft on Thu, 28 Mar 2024 during the closing planery.
 
 We’ll keep you updated about the progress.
+
+Back to top

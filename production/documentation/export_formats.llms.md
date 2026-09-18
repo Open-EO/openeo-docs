@@ -10,15 +10,6 @@ To explore the available export formats, you can use the `list_file_formats()` m
 
 ## Python
 
-``` python
-import openeo
-connection = openeo.connect("your_backend_url")
-formats = connection.list_file_formats()
-print(formats["output"].keys())
-```
-
-## R
-
 ``` r
 library(openeo)
 con <- connect("your_backend_url")
@@ -26,13 +17,15 @@ formats <- con$list_file_formats()
 print(names(formats$output))
 ```
 
-## JavaScript
+## R
 
 ``` js
 const con = await openeo.connect("your_backend_url");
 const formats = await con.listFileFormats();
 console.log(Object.keys(formats.output));
 ```
+
+## JavaScript
 
 The result identifies the format names accepted by `save_result` and may list format-specific options. A workflow can fail if the selected format cannot represent the result, for example when exporting a multidimensional raster to an image format.
 
@@ -175,3 +168,5 @@ writeLines(process_json, "process-graph.json")
 const processJson = JSON.stringify(result.toJSON(), null, 2);
 console.log(processJson);
 ```
+
+Back to top

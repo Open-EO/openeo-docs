@@ -170,3 +170,5 @@ Depending on what you want to learn next, a useful follow-up is:
 - go to [openEO Cube Operations](../../documentation/cube_operations.llms.md) for workflow-oriented examples,
 - read [Backends](../../documentation/key_concepts/backend.llms.md) to understand where data and capability differences come from, or
 - return to the [Glossary](../../documentation/key_concepts/glossary.llms.md) for key terminology.
+
+Back to top

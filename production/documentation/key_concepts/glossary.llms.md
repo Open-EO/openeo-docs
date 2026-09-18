@@ -66,3 +66,5 @@ Processes can run in three different ways:
 2.  Processes can also be executed **on-demand** (i.e. synchronously). Results are delivered with the request itself, and no job is created. Only lightweight computations, such as previews, should be executed using this approach, as timeouts are to be expected for [long-polling HTTP requests](https://www.pubnub.com/blog/http-long-polling/).
 
 3.  The third way of data processing in openEO is **client-side processing**. The client-side processing functionality allows testing and use openEO with its processes locally, i.e. without any connection to an openEO backend. It relies on the projects [openeo-pg-parser-networkx](https://github.com/Open-EO/openeo-pg-parser-networkx), which provides an openEO process graph parsing tool, and [openeo-processes-dask](https://github.com/Open-EO/openeo-processes-dask), which provides an Xarray and Dask implementation of most openEO processes.
+
+Back to top

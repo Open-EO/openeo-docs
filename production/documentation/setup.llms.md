@@ -24,7 +24,9 @@ Alternatively, install the client from conda-forge:
 conda install -c conda-forge openeo
 ```
 
-Confirm that the package is available and connect to a backend:
+Once installed confirm that the package is available and connect to a backend using the following code which prints the client version, backend API version, and supported output formats.
+
+Please note that `micropip` used here is only relevant for running the example in a Pyodide environment, such as a browser-based Jupyter notebook.
 
 ``` python
 import openeo
@@ -105,3 +107,5 @@ print(connection.list_file_formats())
 ```
 
 Explore the [backend page](../documentation/key_concepts/backend.llms.md) or the openEO Hub to identify collection IDs, supported processes, account registration, and the appropriate login method.
+
+Back to top

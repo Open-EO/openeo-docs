@@ -22,3 +22,5 @@ Besides many improvements in the proof of concept implementations, this week res
 During the three days, we also discussed important ideas of the core API specification and how it can be improved by supporting synchronous processing and representing descriptions of process chains as resources. [EODC](https://www.eodc.eu/) presented its new [OpenShift](https://www.openshift.com/)-based architecture to run OpenEO queries in containers. Further important discussions made clear how our proof of concept in month 6 will look like.
 
 More details of the week’s results can be found in our [GitHub](https://github.com/Open-EO) repositories.
+
+Back to top

@@ -71,6 +71,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
+<link href="../../documentation/cube_operations/spectral_operations.html" rel="next">
+<link href="../../documentation/cube_operations/spatial_operations.html" rel="prev">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
@@ -152,11 +154,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
                 support = await response.json();
             } catch (error) { console.warn("Could not load backend process support data.", error); }
         }
+        const getExplicitTags = (item) => new Set((item.getAttribute("data-tags") || "").toLowerCase().split(/\s+/).filter(Boolean));
+        const getDefaultTags = () => new Set(staticBadges.map((badge) => badge.dataset.tag).filter(Boolean));
         const getTags = (item) => {
+            const explicitTags = getExplicitTags(item);
             if (support && item.hasAttribute("data-process")) {
-                return new Set(item.getAttribute("data-process").split(/[\s,]+/).flatMap((id) => support.processes[id] || []));
+                const liveTags = new Set(item.getAttribute("data-process").split(/[\s,]+/).flatMap((id) => support.processes[id] || []));
+                return liveTags.size > 0 ? liveTags : explicitTags.size > 0 ? explicitTags : getDefaultTags();
             }
-            return new Set((item.getAttribute("data-tags") || "").toLowerCase().split(/\s+/).filter(Boolean));
+            return explicitTags.size > 0 ? explicitTags : getDefaultTags();
         };
         let badges = staticBadges;
         if (support) {
@@ -172,11 +178,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             });
         }
         if (badges.length === 0) return;
+        const tocLinks = Array.from(document.querySelectorAll("#TOC a[data-scroll-target]"));
         const applyFilter = () => {
             const selectedTags = new Set(badges.filter((badge) => badge.classList.contains("active")).map((badge) => badge.dataset.tag));
             items.forEach((item) => {
                 const tags = getTags(item);
-                item.hidden = ![...selectedTags].some((tag) => tags.has(tag));
+                const visible = [...selectedTags].some((tag) => tags.has(tag));
+                item.hidden = !visible;
+                const tocLink = tocLinks.find((link) => link.dataset.scrollTarget === `#${item.id}`);
+                tocLink?.closest("li")?.toggleAttribute("hidden", !visible);
             });
         };
         badges.forEach((badge) => badge.addEventListener("click", function (event) {
@@ -305,6 +315,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
         <li><hr class="dropdown-divider"></li>
         <li class="dropdown-header">CUBE OPERATIONS</li>
+        <li>
+    <a class="dropdown-item" href="../../documentation/cube_operations/general_operations.html">
+ <span class="dropdown-text">General Operations</span></a>
+  </li>  
         <li>
     <a class="dropdown-item" href="../../documentation/cube_operations/preprocessing.html">
  <span class="dropdown-text">Preprocessing</span></a>
@@ -483,6 +497,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../../documentation/cube_operations/general_operations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">General Operations</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../../documentation/cube_operations/preprocessing.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Preprocessing</span></a>
   </div>
@@ -553,20 +573,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#select-a-time-range" id="toc-select-a-time-range" class="nav-link active" data-scroll-target="#select-a-time-range">Select a time range</a>
-  <ul class="collapse">
-  <li><a href="#python" id="toc-python" class="nav-link" data-scroll-target="#python">Python</a></li>
-  </ul></li>
-  <li><a href="#build-monthly-composites" id="toc-build-monthly-composites" class="nav-link" data-scroll-target="#build-monthly-composites">Build monthly composites</a>
-  <ul class="collapse">
-  <li><a href="#python-1" id="toc-python-1" class="nav-link" data-scroll-target="#python-1">Python</a></li>
-  </ul></li>
-  <li><a href="#aggregate-explicit-time-intervals" id="toc-aggregate-explicit-time-intervals" class="nav-link" data-scroll-target="#aggregate-explicit-time-intervals">Aggregate explicit time intervals</a></li>
-  <li><a href="#apply-a-reducer-along-time" id="toc-apply-a-reducer-along-time" class="nav-link" data-scroll-target="#apply-a-reducer-along-time">Apply a reducer along time</a>
-  <ul class="collapse">
-  <li><a href="#python-2" id="toc-python-2" class="nav-link" data-scroll-target="#python-2">Python</a></li>
-  </ul></li>
-  <li><a href="#temporal-process-details" id="toc-temporal-process-details" class="nav-link" data-scroll-target="#temporal-process-details">Temporal process details</a></li>
+  <li><a href="#select-a-time-range" id="toc-select-a-time-range" class="nav-link active" data-scroll-target="#select-a-time-range">Select a time range</a></li>
+  <li><a href="#aggregate-data-based-on-temporal-periods" id="toc-aggregate-data-based-on-temporal-periods" class="nav-link" data-scroll-target="#aggregate-data-based-on-temporal-periods">Aggregate data based on temporal periods</a></li>
+  <li><a href="#aggregate-data-over-explicit-time-intervals" id="toc-aggregate-data-over-explicit-time-intervals" class="nav-link" data-scroll-target="#aggregate-data-over-explicit-time-intervals">Aggregate data over explicit time intervals</a></li>
+  <li><a href="#reduce-time-dimension" id="toc-reduce-time-dimension" class="nav-link" data-scroll-target="#reduce-time-dimension">Reduce time dimension</a></li>
   <li><a href="#align-temporal-labels" id="toc-align-temporal-labels" class="nav-link" data-scroll-target="#align-temporal-labels">Align temporal labels</a></li>
   <li><a href="#apply-a-process-along-time" id="toc-apply-a-process-along-time" class="nav-link" data-scroll-target="#apply-a-process-along-time">Apply a process along time</a></li>
   <li><a href="#count-observations-over-time" id="toc-count-observations-over-time" class="nav-link" data-scroll-target="#count-observations-over-time">Count observations over time</a></li>
@@ -599,27 +609,135 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<div class="lead">
-<p>Temporal processes select observations, build regular composites, and apply calculations along a cube’s time dimension.</p>
-</div>
+<p>This page provides an overview of several temporal processes offered by openEO for analyzing and manipulating time dimension in an EO application. These processes can be handy for tasks such as filtering observations by date, building temporal composites, and applying calculations along the time dimension.</p>
+<p><em>Note: Not all temporal processes might be covered in this page. For a complete list, refer to the <a href="https://processes.openeo.org/">openEO processes documentation</a>.</em></p>
 <div class="tag-filter-ui" id="tag-filter-ui">
-  <button class="tag-filter-badge active" data-tag="vito">VITO</button>
-  <button class="tag-filter-badge active" data-tag="eodc">EODC</button>
-  <button class="tag-filter-badge active" data-tag="cdse">CDSE</button>
-  <button class="tag-filter-badge active" data-tag="sentinelhub">Sentinel Hub</button>
-  <button class="tag-filter-badge inactive" data-tag="gee">Google Earth Engine</button>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
 <span class="screen-reader-only">Note</span>Backend support overview
 </div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>The buttons on this page are a documentation aid, not a live capability registry. Use the <a href="https://hub.openeo.org/">openEO Hub</a> for a cross-backend overview: open <strong>Filters</strong>, select a process under <strong>Processes</strong>, and the Hub shows only matching services. The Hub data is crawled and cached.</p>
+<p>The buttons above let you filter processes supported by different backends. Selecting or deselecting a backend will show or hide the relevant sections in the documentation. However, please note that it is based on the latest documentation rendering. Thus, please refer to the <a href="https://hub.openeo.org/">openEO Hub</a> for the most up-to-date information.</p>
+</div>
+</div>
+</div>
+<section id="select-a-time-range" class="level2 tag-filter-item" data-process="filter_temporal">
+<h2 class="anchored" data-anchor-id="select-a-time-range">Select a time range</h2>
+<p>When working with the satellite data, the temporal frequency of observation can vary for different sensors and acquisition strategies. While some sensors may provide daily observations, others might only capture data every few weeks. To make it easier for analysis, openEO provides temporal filtering capabilities through the <code>filter_temporal</code> process. While user can define temporal extent when loading the collection using <code>load_collection</code>, <code>filter_temporal</code> allows further refinement of the time range.</p>
+<p>It limits the data cube to the specified interval of dates and/or times. More precisely, the filter checks whether each of the temporal dimension labels is greater than or equal to the lower boundary (start date/time) and less than the value of the upper boundary (end date/time). This corresponds to a left-closed interval, which contains the lower boundary but not the upper boundary.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> openeo</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>connection <span class="op">=</span> openeo.<span class="ex">connect</span>(<span class="st">"openeofed.dataspace.copernicus.eu"</span>).authenticate_oidc()</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>cube <span class="op">=</span> connection.load_collection(<span class="st">"SENTINEL2_L2A"</span>, bands<span class="op">=</span>[<span class="st">"B04"</span>, <span class="st">"B08"</span>])</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>growing_season <span class="op">=</span> cube.filter_temporal([<span class="st">"2024-04-01"</span>, <span class="st">"2024-10-01"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(openeo)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>connection <span class="ot">&lt;-</span> <span class="fu">connect</span>(<span class="st">"openeofed.dataspace.copernicus.eu"</span>) <span class="sc">%&gt;%</span> <span class="fu">authenticate_oidc</span>()</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>cube <span class="ot">&lt;-</span> connection <span class="sc">%&gt;%</span> <span class="fu">load_collection</span>(<span class="st">"SENTINEL2_L2A"</span>, <span class="at">bands=</span><span class="fu">c</span>(<span class="st">"B04"</span>, <span class="st">"B08"</span>))</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>growing_season <span class="ot">&lt;-</span> cube <span class="sc">%&gt;%</span> <span class="fu">filter_temporal</span>(<span class="fu">c</span>(<span class="st">"2024-04-01"</span>, <span class="st">"2024-10-01"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> OpenEO <span class="im">from</span> <span class="st">"openeo-js-client"</span><span class="op">;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> connection <span class="op">=</span> <span class="cf">await</span> OpenEO<span class="op">.</span><span class="fu">connect</span>(<span class="st">"openeofed.dataspace.copernicus.eu"</span>)<span class="op">.</span><span class="fu">authenticate_oidc</span>()<span class="op">;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> cube <span class="op">=</span> connection<span class="op">.</span><span class="fu">load_collection</span>(<span class="st">"SENTINEL2_L2A"</span><span class="op">,</span> { <span class="dt">bands</span><span class="op">:</span> [<span class="st">"B04"</span><span class="op">,</span> <span class="st">"B08"</span>] })<span class="op">;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> growing_season <span class="op">=</span> cube<span class="op">.</span><span class="fu">filter_temporal</span>([<span class="st">"2024-04-01"</span><span class="op">,</span> <span class="st">"2024-10-01"</span>])<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<p>This results in a datacube restricted to the specified temporal extent. The dimensions and dimension properties (name, type, labels, reference system and resolution) remain unchanged, except that the temporal dimensions (determined by dimensions parameter) may have less dimension labels.</p>
+</section>
+<section id="aggregate-data-based-on-temporal-periods" class="level2 tag-filter-item" data-process="aggregate_temporal_period">
+<h2 class="anchored" data-anchor-id="aggregate-data-based-on-temporal-periods">Aggregate data based on temporal periods</h2>
+<p>It is often noticed that clouds and irregular acquisition dates makes satellite data difficult to compare or there are usecases where one is interested in aggregating data over specific temporal periods. For such scenarios, <code>aggregate_temporal_period</code> is particularly useful. The <code>aggregate_temporal_period</code> process computes a temporal aggregation based on calendar hierarchies such as years, months or seasons.</p>
+<p>For each interval, all data along the dimension will be passed through the reducer. If the dimension is not set or is set to null, the data cube is expected to only have one temporal dimension.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>monthly_median <span class="op">=</span> growing_season.aggregate_temporal_period(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    period<span class="op">=</span><span class="st">"month"</span>,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    reducer<span class="op">=</span><span class="st">"median"</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>monthly_median.download(<span class="st">"monthly_median.tif"</span>, <span class="bu">format</span><span class="op">=</span><span class="st">"GTiff"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>monthly_median <span class="ot">&lt;-</span> growing_season <span class="sc">%&gt;%</span> <span class="fu">aggregate_temporal_period</span>(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">period=</span><span class="st">"month"</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">reducer=</span><span class="st">"median"</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">download_result</span>(monthly_median, <span class="st">"monthly_median.tif"</span>, <span class="at">format=</span><span class="st">"GTiff"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> monthly_median <span class="op">=</span> growing_season<span class="op">.</span><span class="fu">aggregate_temporal_period</span>({</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">period</span><span class="op">:</span> <span class="st">"month"</span><span class="op">,</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">reducer</span><span class="op">:</span> <span class="st">"median"</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> monthly_median<span class="op">.</span><span class="fu">download</span>(<span class="st">"monthly_median.tif"</span><span class="op">,</span> { <span class="dt">format</span><span class="op">:</span> <span class="st">"GTiff"</span> })<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+</section>
+<section id="aggregate-data-over-explicit-time-intervals" class="level2 tag-filter-item" data-process="aggregate_temporal">
+<h2 class="anchored" data-anchor-id="aggregate-data-over-explicit-time-intervals">Aggregate data over explicit time intervals</h2>
+<p>In contrast to <code>aggregate_temporal_period</code>, which aggregates over regular calendar periods, <code>aggregate_temporal</code> allows you to define custom intervals for aggregation. It computes a temporal aggregation based on an array of date and/or time intervals.</p>
+<p>Calendar hierarchies such as year, month, week etc. must be transformed into specific intervals by the clients. For each interval, all data along the dimension will be passed through the reducer. The computed values will be projected to the labels, so the number of labels and the number of intervals need to be equal.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>seasonal <span class="ot">&lt;-</span> growing_season <span class="sc">%&gt;%</span> <span class="fu">aggregate_temporal</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">intervals=</span><span class="fu">list</span>(<span class="fu">c</span>(<span class="st">"2024-04-01"</span>, <span class="st">"2024-06-01"</span>)),</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">reducer=</span><span class="st">"mean"</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> seasonal <span class="op">=</span> growing_season<span class="op">.</span><span class="fu">aggregate_temporal</span>({</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">intervals</span><span class="op">:</span> [[<span class="st">"2024-04-01"</span><span class="op">,</span> <span class="st">"2024-06-01"</span>]]<span class="op">,</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">reducer</span><span class="op">:</span> <span class="st">"mean"</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+</section>
+<section id="reduce-time-dimension" class="level2 tag-filter-item" data-process="reduce_dimension">
+<h2 class="anchored" data-anchor-id="reduce-time-dimension">Reduce time dimension</h2>
+<p>The <code>reduce_dimension</code> process with dimension=“t” collapses the time dimension by applying a specified reducer, such as “max” or “mean”. In other words when using <code>reduce_dimension</code> with <code>dimension="t"</code>, you end up with a single raster for each band, representing the aggregated result over the entire time series. This process is useful for generating summary statistics or single-value representations of temporal data.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-3" role="tab" aria-controls="tabset-4-3" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>seasonal_maximum <span class="op">=</span> growing_season.reduce_dimension(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    dimension<span class="op">=</span><span class="st">"t"</span>,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    reducer<span class="op">=</span><span class="st">"max"</span>,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>seasonal_maximum <span class="ot">&lt;-</span> growing_season <span class="sc">%&gt;%</span> <span class="fu">reduce_dimension</span>(</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">dimension=</span><span class="st">"t"</span>,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">reducer=</span><span class="st">"max"</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-4-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> seasonal_maximum <span class="op">=</span> growing_season<span class="op">.</span><span class="fu">reduce_dimension</span>({</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">dimension</span><span class="op">:</span> <span class="st">"t"</span><span class="op">,</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">reducer</span><span class="op">:</span> <span class="st">"max"</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 </div>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -628,119 +746,156 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>About backend labels
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>The labels identify backends associated with these examples, not a permanent guarantee of capability. Check the backend process listing for its current support.</p>
-</div>
-</div>
-<section id="select-a-time-range" class="level2 tag-filter-item" data-process="filter_temporal">
-<h2 class="anchored" data-anchor-id="select-a-time-range">Select a time range</h2>
-<p>Use <code>filter_temporal</code> immediately after loading a collection when the temporal extent is not already supplied to <code>load_collection</code>. It accepts an inclusive start and exclusive end timestamp, so consecutive intervals can be joined without duplicated observations.</p>
-<section id="python" class="level3">
-<h3 class="anchored" data-anchor-id="python">Python</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> openeo</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>connection <span class="op">=</span> openeo.<span class="ex">connect</span>(<span class="st">"openeofed.dataspace.copernicus.eu"</span>).authenticate_oidc()</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>cube <span class="op">=</span> connection.load_collection(<span class="st">"SENTINEL2_L2A"</span>, bands<span class="op">=</span>[<span class="st">"B04"</span>, <span class="st">"B08"</span>])</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>growing_season <span class="op">=</span> cube.filter_temporal([<span class="st">"2024-04-01"</span>, <span class="st">"2024-10-01"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-</section>
-<hr>
-<section id="build-monthly-composites" class="level2 tag-filter-item" data-process="aggregate_temporal_period">
-<h2 class="anchored" data-anchor-id="build-monthly-composites">Build monthly composites</h2>
-<p>Clouds and irregular acquisition dates make raw satellite time series difficult to compare. <code>aggregate_temporal_period</code> groups observations into calendar periods and reduces each group. A monthly median is a robust first composite for optical data after cloud masking.</p>
-<section id="python-1" class="level3">
-<h3 class="anchored" data-anchor-id="python-1">Python</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>monthly_median <span class="op">=</span> growing_season.aggregate_temporal_period(</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    period<span class="op">=</span><span class="st">"month"</span>,</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    reducer<span class="op">=</span><span class="st">"median"</span>,</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>monthly_median.download(<span class="st">"monthly_median.tif"</span>, <span class="bu">format</span><span class="op">=</span><span class="st">"GTiff"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Use <code>aggregate_temporal</code> instead when you already have explicit date intervals, for example a crop calendar or event-based periods.</p>
-</section>
-</section>
-<section id="aggregate-explicit-time-intervals" class="level2 tag-filter-item" data-process="aggregate_temporal">
-<h2 class="anchored" data-anchor-id="aggregate-explicit-time-intervals">Aggregate explicit time intervals</h2>
-<p><code>aggregate_temporal</code> reduces user-defined intervals, such as phenological phases or event windows.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>seasonal <span class="op">=</span> growing_season.aggregate_temporal(</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  intervals<span class="op">=</span>[<span class="st">"2024-04-01"</span>, <span class="st">"2024-06-01"</span>],</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  reducer<span class="op">=</span><span class="st">"mean"</span>,</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<hr>
-<section id="apply-a-reducer-along-time" class="level2 tag-filter-item" data-process="reduce_dimension">
-<h2 class="anchored" data-anchor-id="apply-a-reducer-along-time">Apply a reducer along time</h2>
-<p><code>reduce_dimension</code> is the flexible option for collapsing a dimension. Set <code>dimension="t"</code> to derive one raster from the whole time series, such as the maximum NDVI or the number of valid observations.</p>
-<section id="python-2" class="level3">
-<h3 class="anchored" data-anchor-id="python-2">Python</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>seasonal_maximum <span class="op">=</span> growing_season.reduce_dimension(</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    dimension<span class="op">=</span><span class="st">"t"</span>,</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    reducer<span class="op">=</span><span class="st">"max"</span>,</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Keep time when you need a time series
+<span class="screen-reader-only">Note</span>Keep time when you need a time series
 </div>
 </div>
 <div class="callout-body-container callout-body">
 <p><code>aggregate_temporal_period</code> retains a time dimension with one label per period. <code>reduce_dimension</code> removes the reduced dimension entirely. Choose the former for a monthly series and the latter for a single seasonal product.</p>
 </div>
 </div>
-<p>For the definitive schema, consult <a href="https://processes.openeo.org/"><code>filter_temporal</code></a>, <a href="https://processes.openeo.org/"><code>aggregate_temporal</code></a>, <a href="https://processes.openeo.org/"><code>aggregate_temporal_period</code></a>, and <a href="https://processes.openeo.org/"><code>reduce_dimension</code></a>.</p>
-</section>
-</section>
-<section id="temporal-process-details" class="level2">
-<h2 class="anchored" data-anchor-id="temporal-process-details">Temporal process details</h2>
-<p>Each process below has its own backend filter. Generic dimension processes are shown here with <code>dimension="t"</code>.</p>
 </section>
 <section id="align-temporal-labels" class="level2 tag-filter-item" data-process="resample_cube_temporal">
 <h2 class="anchored" data-anchor-id="align-temporal-labels">Align temporal labels</h2>
-<p>Use <code>resample_cube_temporal</code> before merging or comparing cubes whose timestamps do not line up. The target cube supplies the temporal labels and avoids accidentally comparing observations from different dates.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>aligned <span class="op">=</span> source.resample_cube_temporal(target)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The process <code>resample_cube_temporal</code> can be used to align the temporal labels of one cube with another, ensuring that observations from different cubes correspond to the same points in time. Resamples one or more given temporal dimensions from a source data cube to align with the corresponding dimensions of the given target data cube using the nearest neighbor method. Returns a new data cube with the resampled dimensions.</p>
+<p>By default, this process simply takes the nearest neighbor independent of the value (including no-data values). Depending on the data cubes this may lead to values being assigned to two target timestamps. To only consider valid values in a specific range around the target timestamps, use the parameter valid_within.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-5-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-1" role="tab" aria-controls="tabset-5-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-2" role="tab" aria-controls="tabset-5-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-3" role="tab" aria-controls="tabset-5-3" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-5-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-5-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>aligned <span class="op">=</span> source.resample_cube_temporal(target)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-5-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>aligned <span class="ot">&lt;-</span> source <span class="sc">%&gt;%</span> <span class="fu">resample_cube_temporal</span>(target)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-5-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> aligned <span class="op">=</span> source<span class="op">.</span><span class="fu">resample_cube_temporal</span>(target)<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
 </section>
 <section id="apply-a-process-along-time" class="level2 tag-filter-item" data-process="apply_dimension">
 <h2 class="anchored" data-anchor-id="apply-a-process-along-time">Apply a process along time</h2>
 <p>Use <code>apply_dimension</code> with <code>dimension="t"</code> when every pixel needs the same custom time-series calculation, such as smoothing or a threshold-based event detector. The callback describes an openEO graph; it is not arbitrary local Python execution.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>smoothed <span class="op">=</span> cube.apply_dimension(</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  dimension<span class="op">=</span><span class="st">"t"</span>,</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  process<span class="op">=</span><span class="kw">lambda</span> series: series.median(),</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>smoothed <span class="op">=</span> cube.apply_dimension(</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  dimension<span class="op">=</span><span class="st">"t"</span>,</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  process<span class="op">=</span><span class="kw">lambda</span> series: series.median(),</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="count-observations-over-time" class="level2 tag-filter-item" data-process="count">
+<section id="count-observations-over-time" class="level2 tag-filter-item" data-process="count_time">
 <h2 class="anchored" data-anchor-id="count-observations-over-time">Count observations over time</h2>
-<p>Use <code>count</code> to measure how many valid or matching observations contribute to each pixel. This is useful as a quality layer alongside a temporal mean or median.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>observation_count <span class="op">=</span> cube.count(dimension<span class="op">=</span><span class="st">"t"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The <code>count_time</code> process counts the number of images with a valid mask in a time series for all bands of the input dataset. This is useful for understanding the data coverage and quality over time.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-6-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-1" role="tab" aria-controls="tabset-6-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-2" role="tab" aria-controls="tabset-6-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-3" role="tab" aria-controls="tabset-6-3" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-6-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-6-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>observation_count <span class="op">=</span> cube.count_time()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-6-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>observation_count <span class="ot">&lt;-</span> cube <span class="sc">%&gt;%</span> <span class="fu">count_time</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-6-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> observation_count <span class="op">=</span> cube<span class="op">.</span><span class="fu">count_time</span>()<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
 </section>
 <section id="fit-a-temporal-curve" class="level2 tag-filter-item" data-process="fit_curve">
 <h2 class="anchored" data-anchor-id="fit-a-temporal-curve">Fit a temporal curve</h2>
-<p>Use <code>fit_curve</code> when a time series should be represented by a model, such as a linear trend or seasonal curve. The fitted parameters can then be passed to <code>predict_curve</code>.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> cube.fit_curve(reducer<span class="op">=</span><span class="st">"linear"</span>, parameters<span class="op">=</span>{<span class="st">"order"</span>: <span class="dv">1</span>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The <code>fit_curve</code> process uses non-linear least squares to fit a model function y = f(x, parameters) to data. It throws an InvalidValues exception if invalid values are encountered. It is recommended to use <code>fit_curve</code> when a time series should be represented by a model, such as a linear trend or seasonal curve. The fitted parameters can then be passed to <code>predict_curve</code>.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-7-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-1" role="tab" aria-controls="tabset-7-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-7-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-2" role="tab" aria-controls="tabset-7-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-7-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-3" role="tab" aria-controls="tabset-7-3" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-7-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-7-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> cube.fit_curve(reducer<span class="op">=</span><span class="st">"linear"</span>, parameters<span class="op">=</span>{<span class="st">"order"</span>: <span class="dv">1</span>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-7-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-7-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> cube <span class="sc">%&gt;%</span> <span class="fu">fit_curve</span>(<span class="at">reducer=</span><span class="st">"linear"</span>, <span class="at">parameters=</span><span class="fu">list</span>(<span class="at">order=</span><span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-7-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-7-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> model <span class="op">=</span> cube<span class="op">.</span><span class="fu">fit_curve</span>({<span class="dt">reducer</span><span class="op">:</span><span class="st">"linear"</span><span class="op">,</span> <span class="dt">parameters</span><span class="op">:</span>{<span class="dt">order</span><span class="op">:</span><span class="dv">1</span>}})<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
 </section>
 <section id="predict-from-a-temporal-curve" class="level2 tag-filter-item" data-process="predict_curve">
 <h2 class="anchored" data-anchor-id="predict-from-a-temporal-curve">Predict from a temporal curve</h2>
-<p>Use <code>predict_curve</code> to evaluate a model created by <code>fit_curve</code> at new timestamps or labels. This can fill a regular time axis or estimate values at dates not directly observed.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>prediction <span class="op">=</span> model.predict_curve(labels<span class="op">=</span>[<span class="st">"2025-01-01"</span>, <span class="st">"2025-07-01"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The process <code>predict_curve</code> predicts values using a model function and pre-computed parameters. The process is intended to compute values for new labels. It can be used to evaluate a model created by <code>fit_curve</code> at new timestamps or labels. This can fill a regular time axis or estimate values at dates not directly observed.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-8-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-1" role="tab" aria-controls="tabset-8-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-8-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-2" role="tab" aria-controls="tabset-8-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-8-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-3" role="tab" aria-controls="tabset-8-3" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-8-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-8-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>prediction <span class="op">=</span> model.predict_curve(labels<span class="op">=</span>[<span class="st">"2025-01-01"</span>, <span class="st">"2025-07-01"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-8-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-8-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>prediction <span class="ot">&lt;-</span> model <span class="sc">%&gt;%</span> <span class="fu">predict_curve</span>(<span class="at">labels=</span><span class="fu">c</span>(<span class="st">"2025-01-01"</span>, <span class="st">"2025-07-01"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-8-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-8-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> prediction <span class="op">=</span> model<span class="op">.</span><span class="fu">predict_curve</span>({<span class="dt">labels</span><span class="op">:</span>[<span class="st">"2025-01-01"</span><span class="op">,</span> <span class="st">"2025-07-01"</span>]})<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
 </section>
 <section id="calculate-a-climatological-normal" class="level2 tag-filter-item" data-process="climatological_normal">
 <h2 class="anchored" data-anchor-id="calculate-a-climatological-normal">Calculate a climatological normal</h2>
-<p>Use <code>climatological_normal</code> to calculate a typical value for recurring periods, such as the mean NDVI for each month across several years. It provides the baseline needed for anomaly analysis.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>normal <span class="op">=</span> cube.climatological_normal(period<span class="op">=</span><span class="st">"month"</span>, reducer<span class="op">=</span><span class="st">"mean"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Use <code>climatological_normal</code> to calculate a typical value for recurring periods, such as the mean NDVI for each month across several years. It provides the baseline needed for anomaly analysis. In climatology, the climatological normal period is usually a 30 year average of a weather variable. Climatological normals are used as an average or baseline to evaluate climate events and provide context for yearly, monthly, daily or seasonal variability.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-9-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-9-1" role="tab" aria-controls="tabset-9-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-9-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-9-2" role="tab" aria-controls="tabset-9-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-9-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-9-3" role="tab" aria-controls="tabset-9-3" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-9-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-9-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>normal <span class="op">=</span> cube.climatological_normal(period<span class="op">=</span><span class="st">"month"</span>, reducer<span class="op">=</span><span class="st">"mean"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-9-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-9-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>normal <span class="ot">&lt;-</span> cube <span class="sc">%&gt;%</span> <span class="fu">climatological_normal</span>(<span class="at">period=</span><span class="st">"month"</span>, <span class="at">reducer=</span><span class="st">"mean"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-9-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-9-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> normal <span class="op">=</span> cube<span class="op">.</span><span class="fu">climatological_normal</span>({<span class="dt">period</span><span class="op">:</span><span class="st">"month"</span><span class="op">,</span> <span class="dt">reducer</span><span class="op">:</span><span class="st">"mean"</span>})<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
 </section>
 <section id="calculate-temporal-anomalies" class="level2 tag-filter-item" data-process="anomaly">
 <h2 class="anchored" data-anchor-id="calculate-temporal-anomalies">Calculate temporal anomalies</h2>
-<p>Use <code>anomaly</code> to express observations as departures from a climatological normal. Positive and negative values then indicate conditions above or below the expected baseline.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>anomalies <span class="op">=</span> cube.anomaly(normal<span class="op">=</span>normal)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The <code>anomaly</code> process computes anomalies based on normals for temporal periods. It compares the data for each label in the temporal dimension with the corresponding data in the normals data cube by subtracting the normal from the data. Therefore, it is recommended to first calculate a climatological normal using <code>climatological_normal</code> before computing anomalies. Positive and negative values then indicate conditions above or below the expected baseline.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-10-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-10-1" role="tab" aria-controls="tabset-10-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-10-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-10-2" role="tab" aria-controls="tabset-10-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-10-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-10-3" role="tab" aria-controls="tabset-10-3" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-10-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-10-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>anomalies <span class="op">=</span> cube.anomaly(normal<span class="op">=</span>normal)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-10-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-10-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>anomalies <span class="ot">&lt;-</span> cube <span class="sc">%&gt;%</span> <span class="fu">anomaly</span>(<span class="at">normal=</span>normal)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-10-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-10-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> anomalies <span class="op">=</span> cube<span class="op">.</span><span class="fu">anomaly</span>({<span class="dt">normal</span><span class="op">:</span>normal})<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Example notebooks
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ul>
+<li><a href="../../client_examples/openeo-community-examples/python/Anomaly_Detection/Anomaly_Detection.ipynb">Regional Benchmarking Service for Anomaly Identification</a></li>
+<li><a href="../../client_examples/openeo-community-examples/python/Heatwave/HeatwaveNL.ipynb">Heatwave in the Netherlands</a></li>
+<li><a href="../../client_examples/openeo-community-examples/python/NDDI/NDDI_Drought.ipynb">Comparing the Summer Drought in Serbia (NDDI)</a></li>
+</ul>
+<p>More notebooks are listed on the <a href="../../examples.html">sample notebooks page</a>.</p>
+</div>
+</div>
+</div>
 </section>
 
 
 
-</main> <!-- /main -->
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
@@ -1141,6 +1296,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
   });
   </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../documentation/cube_operations/spatial_operations.html" class="pagination-link" aria-label="Spatial Operations">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Spatial Operations</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../documentation/cube_operations/spectral_operations.html" class="pagination-link" aria-label="Spectral Operations">
+        <span class="nav-page-text">Spectral Operations</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
 </div> <!-- /content -->
 
 

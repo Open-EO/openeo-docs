@@ -1,0 +1,43 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2026-09-18T14:12:11.350897Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:12:08.277077Z",
+      "mimetype": "application/x-netcdf",
+      "name": "openEO.nc",
+      "path": "notebooks/RankComposites/results/openEO.nc",
+      "size": 475625,
+      "type": "file",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2026-09-18T14:12:11.349450Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:12:08.276863Z",
+      "mimetype": "application/json",
+      "name": "job-results.json",
+      "path": "notebooks/RankComposites/results/job-results.json",
+      "size": 554776,
+      "type": "file",
+      "writable": true
+    }
+  ],
+  "created": "2026-09-18T14:12:11.350395Z",
+  "format": "json",
+  "hash": null,
+  "hash_algorithm": null,
+  "last_modified": "2026-09-18T14:12:11.350395Z",
+  "mimetype": null,
+  "name": "results",
+  "path": "notebooks/RankComposites/results",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}

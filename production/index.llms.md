@@ -78,7 +78,9 @@ True-color Sentinel-2 composite output.
 **Data used:** Sentinel-2 L2A\
 **Outcome:** RGB composite image
 
-[Explore recipe →](documentation/cookbook.llms.md#load-sentinel2-rgb-composite)
+[Explore load collection →](documentation/cookbook.llms.md#load-sentinel2-rgb-composite)
+
+[Run in JupyterLite →](jupyterlite/lab/index.html?path=notebooks/Access_CLMS/CLMS_layers_using_openEO.ipynb)
 
 ## Performing Band Math
 
@@ -96,6 +98,8 @@ Spectral index style output from band combinations.
 
 [Run band math →](documentation/cookbook.llms.md#evi-calculation)
 
+[Run in JupyterLite →](jupyterlite/lab/index.html?path=notebooks/FloodNDWI/flood_ndwi.ipynb)
+
 ## Bringing your own functions
 
 Inject your domain logic with UDFs to extend standard processes while keeping your workflow portable across back-ends.
@@ -112,6 +116,8 @@ Workflow extension pattern for custom UDF logic.
 
 [Build your UDF →](documentation/cookbook.llms.md#cookbook-udfs)
 
+[Run in JupyterLite →](jupyterlite/lab/index.html?path=notebooks/Heatwave/HeatwaveNL.ipynb)
+
 ## Share EO workflow as a service
 
 Package your workflow as a user-defined process so teams can execute the same analysis at scale with one endpoint.
@@ -125,7 +131,8 @@ API-oriented publishing view for reusable services.
 **Best for:** operational teams and repeatable workflows\
 **Data used:** Sentinel-2 L2A **Outcome:** reusable UDP service
 
-[Publish workflow →](client_examples/openeo-community-examples/python/RandomForest-ForestFire/RandomForestModelInference_AsUDP.ipynb)
+[Publish workflow →](client_examples/openeo-community-examples/python/RandomForest-ForestFire/RandomForestModelInference_AsUDP.ipynb)\
+[Run notebook (experimental) →](jupyterlite/lab/index.html?path=notebooks/RandomForest-ForestFire/RandomForestModelInference_AsUDP.ipynb)
 
 ## Large-scale Processing
 

@@ -17,3 +17,5 @@ install.packages("openeo")
 ```
 
 If you have trouble installing or working with the package, feel free to leave an issue in the [GitHub issue tracker](https://github.com/Open-EO/openeo-r-client/issues).
+
+Back to top

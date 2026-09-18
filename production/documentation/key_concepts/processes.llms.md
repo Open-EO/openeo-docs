@@ -192,3 +192,5 @@ Depending on what you want to achieve, a sensible next step is one of the follow
 - Read the [Backends](../../documentation/key_concepts/backend.llms.md) page to understand where process support can differ.
 - Go to [openEO Cube Operations](../../documentation/cube_operations.llms.md) to learn how processes are applied in actual EO workflows.
 - Open the [openEO Processes Reference](https://processes.openeo.org/) when you need exact process definitions and examples.
+
+Back to top

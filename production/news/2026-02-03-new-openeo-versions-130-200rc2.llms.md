@@ -67,3 +67,5 @@ Please consult the **[changelog](https://github.com/Open-EO/openeo-processes/tre
 - **Clarifications and fixes across the board:** Improved handling of `NaN`, `null` and no-data values, added uniqueness constraints for various array-typed parameters, and numerous targeted fixes (e.g. geometry dimension type clarifications).
 
 As this is a release candidate, feedback is more than welcome. Please report issues and questions through the [GitHub issue tracker](https://github.com/Open-EO/openeo-processes/issues). The next version is likely v2.0.0 (stable).
+
+Back to top

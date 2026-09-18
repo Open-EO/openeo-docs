@@ -71,6 +71,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
+<link href="../../documentation/cube_operations/udf.html" rel="next">
+<link href="../../documentation/cube_operations/spectral_operations.html" rel="prev">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
@@ -152,11 +154,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
                 support = await response.json();
             } catch (error) { console.warn("Could not load backend process support data.", error); }
         }
+        const getExplicitTags = (item) => new Set((item.getAttribute("data-tags") || "").toLowerCase().split(/\s+/).filter(Boolean));
+        const getDefaultTags = () => new Set(staticBadges.map((badge) => badge.dataset.tag).filter(Boolean));
         const getTags = (item) => {
+            const explicitTags = getExplicitTags(item);
             if (support && item.hasAttribute("data-process")) {
-                return new Set(item.getAttribute("data-process").split(/[\s,]+/).flatMap((id) => support.processes[id] || []));
+                const liveTags = new Set(item.getAttribute("data-process").split(/[\s,]+/).flatMap((id) => support.processes[id] || []));
+                return liveTags.size > 0 ? liveTags : explicitTags.size > 0 ? explicitTags : getDefaultTags();
             }
-            return new Set((item.getAttribute("data-tags") || "").toLowerCase().split(/\s+/).filter(Boolean));
+            return explicitTags.size > 0 ? explicitTags : getDefaultTags();
         };
         let badges = staticBadges;
         if (support) {
@@ -172,11 +178,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             });
         }
         if (badges.length === 0) return;
+        const tocLinks = Array.from(document.querySelectorAll("#TOC a[data-scroll-target]"));
         const applyFilter = () => {
             const selectedTags = new Set(badges.filter((badge) => badge.classList.contains("active")).map((badge) => badge.dataset.tag));
             items.forEach((item) => {
                 const tags = getTags(item);
-                item.hidden = ![...selectedTags].some((tag) => tags.has(tag));
+                const visible = [...selectedTags].some((tag) => tags.has(tag));
+                item.hidden = !visible;
+                const tocLink = tocLinks.find((link) => link.dataset.scrollTarget === `#${item.id}`);
+                tocLink?.closest("li")?.toggleAttribute("hidden", !visible);
             });
         };
         badges.forEach((badge) => badge.addEventListener("click", function (event) {
@@ -305,6 +315,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
         <li><hr class="dropdown-divider"></li>
         <li class="dropdown-header">CUBE OPERATIONS</li>
+        <li>
+    <a class="dropdown-item" href="../../documentation/cube_operations/general_operations.html">
+ <span class="dropdown-text">General Operations</span></a>
+  </li>  
         <li>
     <a class="dropdown-item" href="../../documentation/cube_operations/preprocessing.html">
  <span class="dropdown-text">Preprocessing</span></a>
@@ -483,6 +497,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../../documentation/cube_operations/general_operations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">General Operations</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../../documentation/cube_operations/preprocessing.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Preprocessing</span></a>
   </div>
@@ -553,22 +573,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#merge-cubes" id="toc-merge-cubes" class="nav-link active" data-scroll-target="#merge-cubes">Merge cubes</a>
-  <ul class="collapse">
-  <li><a href="#python" id="toc-python" class="nav-link" data-scroll-target="#python">Python</a></li>
-  </ul></li>
-  <li><a href="#add-a-dimension" id="toc-add-a-dimension" class="nav-link" data-scroll-target="#add-a-dimension">Add a dimension</a>
-  <ul class="collapse">
-  <li><a href="#python-1" id="toc-python-1" class="nav-link" data-scroll-target="#python-1">Python</a></li>
-  </ul></li>
-  <li><a href="#rename-dimension-labels" id="toc-rename-dimension-labels" class="nav-link" data-scroll-target="#rename-dimension-labels">Rename dimension labels</a></li>
-  <li><a href="#cube-structure-process-details" id="toc-cube-structure-process-details" class="nav-link" data-scroll-target="#cube-structure-process-details">Cube-structure process details</a></li>
+  <li><a href="#create-an-empty-data-cube" id="toc-create-an-empty-data-cube" class="nav-link active" data-scroll-target="#create-an-empty-data-cube">Create an empty data cube</a></li>
+  <li><a href="#merge-cubes" id="toc-merge-cubes" class="nav-link" data-scroll-target="#merge-cubes">Merge cubes</a></li>
+  <li><a href="#add-a-dimension" id="toc-add-a-dimension" class="nav-link" data-scroll-target="#add-a-dimension">Add a dimension</a></li>
   <li><a href="#drop-a-singleton-dimension" id="toc-drop-a-singleton-dimension" class="nav-link" data-scroll-target="#drop-a-singleton-dimension">Drop a singleton dimension</a></li>
+  <li><a href="#rename-dimension-labels" id="toc-rename-dimension-labels" class="nav-link" data-scroll-target="#rename-dimension-labels">Rename dimension labels</a></li>
   <li><a href="#rename-a-dimension" id="toc-rename-a-dimension" class="nav-link" data-scroll-target="#rename-a-dimension">Rename a dimension</a></li>
   <li><a href="#read-dimension-labels" id="toc-read-dimension-labels" class="nav-link" data-scroll-target="#read-dimension-labels">Read dimension labels</a></li>
   <li><a href="#filter-dimension-labels" id="toc-filter-dimension-labels" class="nav-link" data-scroll-target="#filter-dimension-labels">Filter dimension labels</a></li>
   <li><a href="#flatten-dimensions" id="toc-flatten-dimensions" class="nav-link" data-scroll-target="#flatten-dimensions">Flatten dimensions</a></li>
   <li><a href="#unflatten-a-dimension" id="toc-unflatten-a-dimension" class="nav-link" data-scroll-target="#unflatten-a-dimension">Unflatten a dimension</a></li>
+  <li><a href="#remove-empty-dimension-labels" id="toc-remove-empty-dimension-labels" class="nav-link" data-scroll-target="#remove-empty-dimension-labels">Remove empty dimension labels</a></li>
   </ul>
 </nav>
     </div>
@@ -594,105 +609,223 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<div class="lead">
-<p>Cube-manipulation processes change a cube’s structure without changing the scientific question: combine compatible cubes, add derived bands, and make dimensions easier to work with.</p>
-</div>
+<p>The cube-manipulation processes defined in this section allow you to modify the structure of data cubes without altering the underlying scientific content. It includes processes for merging cubes, adding or dropping dimensions, renaming labels, and flattening or unflattening dimensions. Please note that several operations described in the <a href="../../documentation/cube_operations/spatial_operations.html">spatial</a>, <a href="../../documentation/cube_operations/temporal_operations.html">temporal</a>, and <a href="../../documentation/cube_operations/spectral_operations.html">spectral</a> can also be considered as cube-manipulation processes. However, their primary purpose is often analysis along that dimension rather than structural modification.</p>
 <div class="tag-filter-ui" id="tag-filter-ui">
-  <button class="tag-filter-badge active" data-tag="vito">VITO</button>
-  <button class="tag-filter-badge active" data-tag="eodc">EODC</button>
-  <button class="tag-filter-badge active" data-tag="cdse">CDSE</button>
-  <button class="tag-filter-badge active" data-tag="sentinelhub">Sentinel Hub</button>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
 <span class="screen-reader-only">Note</span>Backend support overview
 </div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>The buttons on this page are a documentation aid, not a live capability registry. Use the <a href="https://hub.openeo.org/">openEO Hub</a> for a cross-backend overview: open <strong>Filters</strong>, select a process under <strong>Processes</strong>, and the Hub shows only matching services. The Hub data is crawled and cached.</p>
+<p>The buttons above let you filter processes supported by different backends. Selecting or deselecting a backend will show or hide the relevant sections in the documentation. However, please note that it is based on the latest documentation rendering. Thus, please refer to the <a href="https://hub.openeo.org/">openEO Hub</a> for the most up-to-date information.</p>
 </div>
 </div>
-<div class="callout callout-style-default callout-note callout-titled">
+</div>
+<section id="create-an-empty-data-cube" class="level2 tag-filter-item" data-process="create_data_cube">
+<h2 class="anchored" data-anchor-id="create-an-empty-data-cube">Create an empty data cube</h2>
+<p><code>create_data_cube</code> creates a data cube without dimensions. Add dimensions with <code>add_dimension</code> before using it in a workflow.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>empty_cube <span class="op">=</span> openeo.processes.create_data_cube()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="merge-cubes" class="level2 tag-filter-item" data-process="merge_cubes">
+<h2 class="anchored" data-anchor-id="merge-cubes">Merge cubes</h2>
+<p>The <code>merge_cubes</code> process combines two compatible cubes. The data cubes must be compatible, meaning they share a common subset of equal dimensions. To conveniently obtain such a subset of equal dimensions, the process implicitly aligns the horizontal spatial dimensions (axes x and y) with resample_cube_spatial if required. cube1 is the target data cube for resampling, and the default parameters of resample_cube_spatial apply. The equality for geometries follows the definition in the OGC Simple Features standard.</p>
+<p>All dimensions share the same properties, such as name, type, reference system, and resolution. Dimensions can have disjoint or overlapping labels. If there is any overlap between the dimension labels, the parameter overlap_resolver must be specified to combine the two values for these overlapping labels. A merge operation without overlap should be reversible with (a set of) filter operations for each of the two cubes, if no implicit resampling were applied.</p>
+<p>It is not possible to merge a vector and a raster data cube. Merging vector data cubes with different base geometry types (points, lines/line strings, polygons) is not possible and throws the IncompatibleGeometryTypes exception. The base geometry types can be merged with their corresponding multi-geometry types.</p>
+<p>After the merge, the dimensions with a natural/inherent label order (in this reference system, each spatial and temporal dimension) still have all dimension labels sorted. For other dimensions without inherent order, including bands, the dimension labels retain the order they appear in the original data cubes, and the dimension labels of cube2 are appended to those of cube1.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># For example: stack two non-overlapping seasonal cubes.</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>full_year <span class="op">=</span> spring_cube.merge_cubes(summer_cube)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># For example: stack two non-overlapping seasonal cubes.</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>full_year <span class="ot">&lt;-</span> <span class="fu">merge_cubes</span>(spring_cube, summer_cube)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">// For example: stack two non-overlapping seasonal cubes.</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> full_year <span class="op">=</span> <span class="fu">mergeCubes</span>(spring_cube<span class="op">,</span> summer_cube)<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Backend support
+Tip
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>These are standardized processes, but a backend can implement a subset or impose compatibility rules. Check its process metadata before relying on a workflow.</p>
+<p>Use <code>merge_cubes</code> to union compatible data. Use <code>resample_cube_spatial</code> or <code>resample_cube_temporal</code> first when grids or time labels must be aligned.</p>
 </div>
 </div>
-<section id="merge-cubes" class="level2 tag-filter-item" data-process="merge_cubes">
-<h2 class="anchored" data-anchor-id="merge-cubes">Merge cubes</h2>
-<p><code>merge_cubes</code> combines two compatible cubes. Without an overlap resolver, the cubes must not contain overlapping labels. When they do overlap, provide a callback that defines how values are combined.</p>
-<section id="python" class="level3">
-<h3 class="anchored" data-anchor-id="python">Python</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># For example: stack two non-overlapping seasonal cubes.</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>full_year <span class="op">=</span> spring.merge_cubes(summer)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Use <code>merge_cubes</code> for a union of compatible data. Use <code>resample_cube_spatial</code> or <code>resample_cube_temporal</code> first when grids or time labels must be aligned.</p>
 </section>
-</section>
-<hr>
 <section id="add-a-dimension" class="level2 tag-filter-item" data-process="add_dimension">
 <h2 class="anchored" data-anchor-id="add-a-dimension">Add a dimension</h2>
-<p><code>add_dimension</code> can turn a single-band result into a labelled band in a larger workflow.</p>
-<section id="python-1" class="level3">
-<h3 class="anchored" data-anchor-id="python-1">Python</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add a named band dimension to a single-band derived raster.</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>with_band <span class="op">=</span> derived.add_dimension(name<span class="op">=</span><span class="st">"NDVI"</span>, label<span class="op">=</span><span class="st">"bands"</span>, <span class="bu">type</span><span class="op">=</span><span class="st">"bands"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><code>drop_dimension</code> removes a dimension only when it has one label. For other structural changes, see <code>flatten_dimensions</code> and <code>unflatten_dimension</code> in the <a href="https://processes.openeo.org/">process reference</a>.</p>
-</section>
-</section>
-<section id="rename-dimension-labels" class="level2 tag-filter-item" data-process="rename_labels">
-<h2 class="anchored" data-anchor-id="rename-dimension-labels">Rename dimension labels</h2>
-<p><code>rename_labels</code> replaces labels while keeping the dimension structure unchanged.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>renamed <span class="op">=</span> with_band.rename_labels(dimension<span class="op">=</span><span class="st">"bands"</span>, target<span class="op">=</span>[<span class="st">"vegetation_index"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="cube-structure-process-details" class="level2">
-<h2 class="anchored" data-anchor-id="cube-structure-process-details">Cube-structure process details</h2>
-<p>Each structural process is documented in its own section below. A process is documented on another operations page when its primary purpose is analysis along that dimension.</p>
+<p>The <code>add_dimension</code> process adds a new dimension to a data cube, which can be useful for organising data into bands, categories, or other structural elements.</p>
+<p>Afterwards, the dimension can be referenced with the specified name. If a dimension with the specified name exists, the process fails with a DimensionExists error. The dimension label is set to the specified label.</p>
+<p>This call does not modify the datacube in place, but returns a new datacube with the additional dimension.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add a named band dimension to a single-band derived raster.</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>with_band <span class="op">=</span> derived.add_dimension(name<span class="op">=</span><span class="st">"NDVI"</span>, label<span class="op">=</span><span class="st">"bands"</span>, <span class="bu">type</span><span class="op">=</span><span class="st">"bands"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add a named band dimension to a single-band derived raster.</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>with_band <span class="ot">&lt;-</span> <span class="fu">add_dimension</span>(derived, <span class="at">name=</span><span class="st">"NDVI"</span>, <span class="at">label=</span><span class="st">"bands"</span>, <span class="at">type=</span><span class="st">"bands"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Add a named band dimension to a single-band derived raster.</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> with_band <span class="op">=</span> <span class="fu">addDimension</span>(derived<span class="op">,</span> {<span class="dt">name</span><span class="op">:</span> <span class="st">"NDVI"</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"bands"</span><span class="op">,</span> <span class="dt">type</span><span class="op">:</span> <span class="st">"bands"</span>})<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
 </section>
 <section id="drop-a-singleton-dimension" class="level2 tag-filter-item" data-process="drop_dimension">
 <h2 class="anchored" data-anchor-id="drop-a-singleton-dimension">Drop a singleton dimension</h2>
-<p>Use <code>drop_dimension</code> after a workflow produces a dimension with one label and that dimension is no longer useful in the output. It does not remove a dimension containing multiple labels.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>without_singleton <span class="op">=</span> cube.drop_dimension(dimension<span class="op">=</span><span class="st">"bands"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The <code>drop_dimension</code> process removes a dimension from a data cube only if it contains a single label. Dropping a dimension only works on dimensions with a single remaining dimension label; otherwise, the process fails with a DimensionLabelCountMismatch exception. Dimension values can be reduced to a single value with a filter such as filter_bands or the reduce_dimension process. If a dimension with the specified name does not exist, the process fails with a DimensionNotAvailable exception.</p>
+<p>Please note that it is different from <code>reduce_dimension</code>, which can reduce a dimension to a single value but does not remove the dimension itself.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>without_singleton <span class="ot">&lt;-</span> <span class="fu">drop_dimension</span>(cube, <span class="at">dimension=</span><span class="st">"bands"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Drop a singleton dimension from a data cube.</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> without_singleton <span class="op">=</span> <span class="fu">dropDimension</span>(cube<span class="op">,</span> {<span class="dt">dimension</span><span class="op">:</span> <span class="st">"bands"</span>})<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+</section>
+<section id="rename-dimension-labels" class="level2 tag-filter-item" data-process="rename_labels">
+<h2 class="anchored" data-anchor-id="rename-dimension-labels">Rename dimension labels</h2>
+<p>The <code>rename_labels</code> process renames the labels of the specified dimension in the data cube from source to target.</p>
+<p>If the array for the source labels is empty (the default), the dimension labels are enumerated with zero-based numbering (0,1,2,3,…) so that the dimension labels directly map to the indices of the array specified for the parameter target. Otherwise, the number of the source and target labels must be equal. If none of these requirements is fulfilled, the LabelMismatch exception is thrown.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>renamed <span class="ot">&lt;-</span> <span class="fu">rename_labels</span>(with_band, <span class="at">dimension=</span><span class="st">"bands"</span>, <span class="at">target=</span><span class="fu">c</span>(<span class="st">"vegetation_index"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Rename dimension labels of a data cube.</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> renamed <span class="op">=</span> <span class="fu">renameLabels</span>(with_band<span class="op">,</span> {<span class="dt">dimension</span><span class="op">:</span> <span class="st">"bands"</span><span class="op">,</span> <span class="dt">target</span><span class="op">:</span> [<span class="st">"vegetation_index"</span>]})<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
 </section>
 <section id="rename-a-dimension" class="level2 tag-filter-item" data-process="rename_dimension">
 <h2 class="anchored" data-anchor-id="rename-a-dimension">Rename a dimension</h2>
-<p>Use <code>rename_dimension</code> to make a dimension name match the vocabulary expected by a later process or output consumer. The labels and values remain unchanged.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>renamed <span class="op">=</span> cube.rename_dimension(dimension<span class="op">=</span><span class="st">"bands"</span>, target<span class="op">=</span><span class="st">"spectral"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Use <code>rename_dimension</code> to make a dimension name match the vocabulary expected by a later process or output consumer. The labels and values remain unchanged. It is different from <code>rename_labels</code>, which changes the labels of a dimension but keeps the dimension name the same. For example, if a cube has a dimension named “bands” and you want to rename it to “spectral”, you would use <code>rename_dimension</code>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>renamed <span class="op">=</span> cube.rename_dimension(dimension<span class="op">=</span><span class="st">"bands"</span>, target<span class="op">=</span><span class="st">"spectral"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="read-dimension-labels" class="level2 tag-filter-item" data-process="dimension_labels">
 <h2 class="anchored" data-anchor-id="read-dimension-labels">Read dimension labels</h2>
-<p>Use <code>dimension_labels</code> when a workflow needs to inspect or pass on the labels of a dimension, for example band names or temporal labels.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>labels <span class="op">=</span> cube.dimension_labels(dimension<span class="op">=</span><span class="st">"bands"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>For usecase scenarios where you need to examine or manipulate the labels of a specific dimension, such as selecting particular bands or time steps, <code>dimension_labels</code> provides a convenient way to access these labels.</p>
+<p>The user can call <code>dimension_labels</code> with the desired dimension name to retrieve its labels. For example, to get the labels of the “bands” dimension:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-5-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-1" role="tab" aria-controls="tabset-5-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-2" role="tab" aria-controls="tabset-5-2" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-5-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-5-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>labels <span class="ot">&lt;-</span> <span class="fu">dimension_labels</span>(cube, <span class="at">dimension=</span><span class="st">"bands"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-5-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Get dimension labels of a data cube.</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> labels <span class="op">=</span> <span class="fu">dimensionLabels</span>(cube<span class="op">,</span> {<span class="dt">dimension</span><span class="op">:</span> <span class="st">"bands"</span>})<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
 </section>
 <section id="filter-dimension-labels" class="level2 tag-filter-item" data-process="filter_labels">
 <h2 class="anchored" data-anchor-id="filter-dimension-labels">Filter dimension labels</h2>
-<p>Use <code>filter_labels</code> to select a subset of labels such as specific bands, dates, or categories while keeping the other cube dimensions intact.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>selected <span class="op">=</span> cube.filter_labels(dimension<span class="op">=</span><span class="st">"bands"</span>, condition<span class="op">=</span><span class="kw">lambda</span> label: label <span class="op">!=</span> <span class="st">"QA"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Similar to <code>dimension_labels</code>, <code>filter_labels</code> operates on the labels of a specific dimension, but instead of just retrieving them, it allows you to select a subset based on a condition. Therefore, it is recommended to use this process when you need to work with only a specific subset of dimension labels, such as excluding certain bands or selecting particular time steps.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-6-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-1" role="tab" aria-controls="tabset-6-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-2" role="tab" aria-controls="tabset-6-2" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-6-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-6-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>selected <span class="ot">&lt;-</span> <span class="fu">filter_labels</span>(cube, <span class="at">dimension=</span><span class="st">"bands"</span>, <span class="at">condition=</span><span class="cf">function</span>(label) label <span class="sc">!=</span> <span class="st">"QA"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-6-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Filter dimension labels of a data cube.</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> selected <span class="op">=</span> <span class="fu">filterLabels</span>(cube<span class="op">,</span> {<span class="dt">dimension</span><span class="op">:</span> <span class="st">"bands"</span><span class="op">,</span> <span class="dt">condition</span><span class="op">:</span> label <span class="kw">=&gt;</span> label <span class="op">!==</span> <span class="st">"QA"</span>})<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
 </section>
 <section id="flatten-dimensions" class="level2 tag-filter-item" data-process="flatten_dimensions">
 <h2 class="anchored" data-anchor-id="flatten-dimensions">Flatten dimensions</h2>
-<p>Use <code>flatten_dimensions</code> when a downstream model expects a single feature axis instead of separate spatial or categorical dimensions. Keep the original labels if you may need to reverse the operation.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>flattened <span class="op">=</span> cube.flatten_dimensions(dimension_names<span class="op">=</span>[<span class="st">"x"</span>, <span class="st">"y"</span>], target_dimension<span class="op">=</span><span class="st">"pixels"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The <code>flatten_dimensions</code> process combines multiple given dimensions into a single dimension by flattening the values and merging the dimension labels with the given label_separator. Non-string dimension labels will be converted to strings. This process is the opposite of the unflatten_dimension process, but executing both processes sequentially doesn’t necessarily produce a data cube equal to the original data cube.</p>
+<p>Example: Executing the process with a data cube with two dimensions A (labels: 2020 and 2021) and B (labels: B1 and B2) and the data [[1,2],[3,4]] and the parameters dimensions = [A, B] and target_dimension = X will result in a data cube with one dimension X (labels: 2020~B1, 2020~B2, 2021~B1 and 2021~B2) and the data [1,2,3,4].</p>
+<p>Use <code>flatten_dimensions</code> when a downstream model expects a single feature axis instead of separate spatial or categorical dimensions. Keep the original labels in case you need to reverse the operation.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-7-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-1" role="tab" aria-controls="tabset-7-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-7-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-2" role="tab" aria-controls="tabset-7-2" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-7-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-7-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>flattened <span class="ot">&lt;-</span> <span class="fu">flatten_dimensions</span>(cube, <span class="at">dimension_names=</span><span class="fu">c</span>(<span class="st">"x"</span>, <span class="st">"y"</span>), <span class="at">target_dimension=</span><span class="st">"pixels"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-7-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-7-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Flatten dimensions of a data cube.</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> flattened <span class="op">=</span> <span class="fu">flattenDimensions</span>(cube<span class="op">,</span> {<span class="dt">dimensionNames</span><span class="op">:</span> [<span class="st">"x"</span><span class="op">,</span> <span class="st">"y"</span>]<span class="op">,</span> <span class="dt">targetDimension</span><span class="op">:</span> <span class="st">"pixels"</span>})<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
 </section>
 <section id="unflatten-a-dimension" class="level2 tag-filter-item" data-process="unflatten_dimension">
 <h2 class="anchored" data-anchor-id="unflatten-a-dimension">Unflatten a dimension</h2>
-<p>Use <code>unflatten_dimension</code> to restore the dimensions represented by a flattened axis, for example after a model or export step that required one feature dimension.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>unflattened <span class="op">=</span> flattened.unflatten_dimension(dimension<span class="op">=</span><span class="st">"pixels"</span>, target_dimensions<span class="op">=</span>[<span class="st">"x"</span>, <span class="st">"y"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The <code>unflatten_dimension</code> process splits a single dimension into multiple dimensions by systematically extracting values and splitting the dimension labels by the given label_separator. This process is the opposite of the flatten_dimensions process, but executing both processes sequentially doesn’t necessarily produce a data cube equal to the original data cube.</p>
+<p>Example: Executing the process with a data cube with one dimension X (labels: 2020~B1, 2020~B2, 2021~B1 and 2021~B2) and the data [1,2,3,4] and the parameters dimension = X and target_dimensions = [A, B] will result in a data cube with two dimensions A (labels: 2020 and 2021) and B (labels: B1 and B2) and the data [[1,2],[3,4]].</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-8-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-1" role="tab" aria-controls="tabset-8-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-8-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-2" role="tab" aria-controls="tabset-8-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-8-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-3" role="tab" aria-controls="tabset-8-3" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-8-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-8-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>unflattened <span class="op">=</span> flattened.unflatten_dimension(dimension<span class="op">=</span><span class="st">"pixels"</span>, target_dimensions<span class="op">=</span>[<span class="st">"x"</span>, <span class="st">"y"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-8-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-8-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>unflattened <span class="ot">&lt;-</span> <span class="fu">unflatten_dimension</span>(flattened, <span class="at">dimension=</span><span class="st">"pixels"</span>, <span class="at">target_dimensions=</span><span class="fu">c</span>(<span class="st">"x"</span>, <span class="st">"y"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-8-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-8-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Unflatten a dimension of a data cube.</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> unflattened <span class="op">=</span> <span class="fu">unflattenDimension</span>(flattened<span class="op">,</span> {<span class="dt">dimension</span><span class="op">:</span> <span class="st">"pixels"</span><span class="op">,</span> <span class="dt">targetDimensions</span><span class="op">:</span> [<span class="st">"x"</span><span class="op">,</span> <span class="st">"y"</span>]})<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+</section>
+<section id="remove-empty-dimension-labels" class="level2 tag-filter-item" data-process="trim_cube">
+<h2 class="anchored" data-anchor-id="remove-empty-dimension-labels">Remove empty dimension labels</h2>
+<p><code>trim_cube</code> removes dimension labels that solely contain no-data values. It is useful for cleaning up a cube after filtering or masking operations that leave behind labels (e.g.&nbsp;time steps or bands) with no valid data, so that subsequent processing only iterates over labels that actually contain data.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-9-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-9-1" role="tab" aria-controls="tabset-9-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-9-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-9-2" role="tab" aria-controls="tabset-9-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-9-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-9-3" role="tab" aria-controls="tabset-9-3" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-9-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-9-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>trimmed <span class="op">=</span> cube.trim_cube()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-9-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-9-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>trimmed <span class="ot">&lt;-</span> <span class="fu">trim_cube</span>(cube)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-9-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-9-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Remove dimension labels that only contain no-data values.</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> trimmed <span class="op">=</span> <span class="fu">trimCube</span>(cube)<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
 </section>
 
 
 
-</main> <!-- /main -->
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
@@ -1093,6 +1226,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
   });
   </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../documentation/cube_operations/spectral_operations.html" class="pagination-link" aria-label="Spectral Operations">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Spectral Operations</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../documentation/cube_operations/udf.html" class="pagination-link" aria-label="User Defined Functions">
+        <span class="nav-page-text">User Defined Functions</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
 </div> <!-- /content -->
 
 

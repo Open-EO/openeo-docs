@@ -26,6 +26,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -36,6 +71,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
+<link href="../../documentation/cube_operations/execute_jobs.html" rel="next">
+<link href="../../documentation/cube_operations/machine_learning.html" rel="prev">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
@@ -117,11 +154,15 @@ ul.task-list li input[type="checkbox"] {
                 support = await response.json();
             } catch (error) { console.warn("Could not load backend process support data.", error); }
         }
+        const getExplicitTags = (item) => new Set((item.getAttribute("data-tags") || "").toLowerCase().split(/\s+/).filter(Boolean));
+        const getDefaultTags = () => new Set(staticBadges.map((badge) => badge.dataset.tag).filter(Boolean));
         const getTags = (item) => {
+            const explicitTags = getExplicitTags(item);
             if (support && item.hasAttribute("data-process")) {
-                return new Set(item.getAttribute("data-process").split(/[\s,]+/).flatMap((id) => support.processes[id] || []));
+                const liveTags = new Set(item.getAttribute("data-process").split(/[\s,]+/).flatMap((id) => support.processes[id] || []));
+                return liveTags.size > 0 ? liveTags : explicitTags.size > 0 ? explicitTags : getDefaultTags();
             }
-            return new Set((item.getAttribute("data-tags") || "").toLowerCase().split(/\s+/).filter(Boolean));
+            return explicitTags.size > 0 ? explicitTags : getDefaultTags();
         };
         let badges = staticBadges;
         if (support) {
@@ -137,11 +178,15 @@ ul.task-list li input[type="checkbox"] {
             });
         }
         if (badges.length === 0) return;
+        const tocLinks = Array.from(document.querySelectorAll("#TOC a[data-scroll-target]"));
         const applyFilter = () => {
             const selectedTags = new Set(badges.filter((badge) => badge.classList.contains("active")).map((badge) => badge.dataset.tag));
             items.forEach((item) => {
                 const tags = getTags(item);
-                item.hidden = ![...selectedTags].some((tag) => tags.has(tag));
+                const visible = [...selectedTags].some((tag) => tags.has(tag));
+                item.hidden = !visible;
+                const tocLink = tocLinks.find((link) => link.dataset.scrollTarget === `#${item.id}`);
+                tocLink?.closest("li")?.toggleAttribute("hidden", !visible);
             });
         };
         badges.forEach((badge) => badge.addEventListener("click", function (event) {
@@ -270,6 +315,10 @@ ul.task-list li input[type="checkbox"] {
   </li>  
         <li><hr class="dropdown-divider"></li>
         <li class="dropdown-header">CUBE OPERATIONS</li>
+        <li>
+    <a class="dropdown-item" href="../../documentation/cube_operations/general_operations.html">
+ <span class="dropdown-text">General Operations</span></a>
+  </li>  
         <li>
     <a class="dropdown-item" href="../../documentation/cube_operations/preprocessing.html">
  <span class="dropdown-text">Preprocessing</span></a>
@@ -448,6 +497,12 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../../documentation/cube_operations/general_operations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">General Operations</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../../documentation/cube_operations/preprocessing.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Preprocessing</span></a>
   </div>
@@ -518,10 +573,18 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#create-a-reusable-workflow" id="toc-create-a-reusable-workflow" class="nav-link active" data-scroll-target="#create-a-reusable-workflow">Create a reusable workflow</a>
+  <li><a href="#create-a-reusable-workflow" id="toc-create-a-reusable-workflow" class="nav-link active" data-scroll-target="#create-a-reusable-workflow">Create a reusable workflow</a></li>
+  <li><a href="#define-clear-parameters" id="toc-define-clear-parameters" class="nav-link" data-scroll-target="#define-clear-parameters">Define clear parameters</a></li>
+  <li><a href="#build-and-store-a-udp" id="toc-build-and-store-a-udp" class="nav-link" data-scroll-target="#build-and-store-a-udp">Build and store a UDP</a>
   <ul class="collapse">
-  <li><a href="#good-candidates-for-a-udp" id="toc-good-candidates-for-a-udp" class="nav-link" data-scroll-target="#good-candidates-for-a-udp">Good candidates for a UDP</a></li>
+  <li><a href="#export-a-portable-definition" id="toc-export-a-portable-definition" class="nav-link" data-scroll-target="#export-a-portable-definition">Export a portable definition</a></li>
   </ul></li>
+  <li><a href="#invoke-a-udp" id="toc-invoke-a-udp" class="nav-link" data-scroll-target="#invoke-a-udp">Invoke a UDP</a></li>
+  <li><a href="#applicability-and-constraints" id="toc-applicability-and-constraints" class="nav-link" data-scroll-target="#applicability-and-constraints">Applicability and constraints</a>
+  <ul class="collapse">
+  <li><a href="#authoring-guidelines" id="toc-authoring-guidelines" class="nav-link" data-scroll-target="#authoring-guidelines">Authoring guidelines</a></li>
+  </ul></li>
+  <li><a href="#manage-and-share-udps" id="toc-manage-and-share-udps" class="nav-link" data-scroll-target="#manage-and-share-udps">Manage and share UDPs</a></li>
   </ul>
 </nav>
     </div>
@@ -531,7 +594,6 @@ ul.task-list li input[type="checkbox"] {
 <header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../documentation/cube_operations.html">CUBE OPERATIONS</a></li><li class="breadcrumb-item"><a href="../../documentation/cube_operations/udp.html">User Defined Processes</a></li></ol></nav>
 <div class="quarto-title">
 <h1 class="title">User Defined Processes</h1>
-<p class="subtitle lead">Package a reusable process graph as a named process</p>
 </div>
 
 
@@ -548,36 +610,16 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<div class="lead">
-<p>A User Defined Process (UDP) packages a process graph behind a reusable name and a documented set of parameters. It is useful for sharing a cloud-mask routine, an index calculation, or a project-specific workflow.</p>
-</div>
-<div class="tag-filter-ui" id="tag-filter-ui">
-  <button class="tag-filter-badge active" data-tag="vito">VITO</button>
-  <button class="tag-filter-badge active" data-tag="eodc">EODC</button>
-  <button class="tag-filter-badge active" data-tag="cdse">CDSE</button>
-</div>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Backend support overview
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>The buttons on this page are a documentation aid, not a live capability registry. Use the <a href="https://hub.openeo.org/">openEO Hub</a> for a cross-backend overview: open <strong>Filters</strong>, select a process under <strong>Processes</strong>, and the Hub shows only matching services. The Hub data is crawled and cached.</p>
-</div>
-</div>
-<section id="create-a-reusable-workflow" class="level2 tag-filter-item" data-tags="vito eodc cdse">
+<p>In openEO, a User Defined Process (UDP) allows users to define a custom process graph that can be reused across different workflows. We have often noticed that many users repeatedly perform the same processing steps, which takes up valuable time and effort. A UDP helps to encapsulate these steps into a single, reusable process. It is useful for sharing a cloud-mask routine, an index calculation, or a project-specific workflow.</p>
+<section id="create-a-reusable-workflow" class="level2">
 <h2 class="anchored" data-anchor-id="create-a-reusable-workflow">Create a reusable workflow</h2>
-<p>A UDP is not one raster operation: it packages a process graph behind a reusable identifier. Use it when the same cloud mask, index, or compositing workflow should be called by multiple users or applications. A UDP has an identifier, summary, parameter definitions, and a process graph; once saved to a backend, it can be called like another process in a new graph.</p>
-<section id="good-candidates-for-a-udp" class="level3">
-<h3 class="anchored" data-anchor-id="good-candidates-for-a-udp">Good candidates for a UDP</h3>
+<p>A UDP is not a single raster operation; it packages a process graph behind a reusable identifier. Use it when multiple users or applications should call the same cloud mask, index, or compositing workflow. A UDP has an identifier, summary, parameter definitions, and a process graph; once saved to a backend, it can be called like another process in a new graph.</p>
+<p><strong>Some good candidate examples for a UDP could be:</strong></p>
 <ul>
 <li>A cloud or quality-mask routine used by several projects.</li>
 <li>A named index or feature-engineering recipe with configurable bands.</li>
 <li>A standard compositing workflow for one data product.</li>
+<li>An inference or prediction workflow that is repeatedly used across projects.</li>
 </ul>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -589,16 +631,155 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>A UDP is stored by a backend or workspace. The graph itself can use standardized processes, but the UDP identifier, permissions, and any backend-specific process used inside it are not automatically portable.</p>
+<p>A backend or workspace stores a UDP. The graph itself can use standardised processes, but the UDP identifier, permissions, and any backend-specific process used inside it are not automatically portable.</p>
 </div>
 </div>
 <p>See the <a href="https://api.openeo.org/">openEO API documentation</a> for the current UDP endpoints and the <a href="https://processes.openeo.org/">process reference</a> for graph building blocks.</p>
 </section>
+<section id="define-clear-parameters" class="level2">
+<h2 class="anchored" data-anchor-id="define-clear-parameters">Define clear parameters</h2>
+<p>Declare every value that callers must supply. Parameter definitions document the interface, validate inputs, and allow a graph to refer to caller-provided values instead of fixed literals. The Python client provides helpers for common types, including <code>Parameter.datacube</code>, <code>Parameter.number</code>, <code>Parameter.string</code>, <code>Parameter.spatial_extent</code>, <code>Parameter.temporal_interval</code>, and <code>Parameter.geojson</code>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> openeo.api.process <span class="im">import</span> Parameter</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>spatial_extent <span class="op">=</span> Parameter.spatial_extent(</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>&nbsp; name<span class="op">=</span><span class="st">"spatial_extent"</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>&nbsp; description<span class="op">=</span><span class="st">"Area to process."</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>temporal_extent <span class="op">=</span> Parameter.temporal_interval(</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>&nbsp; name<span class="op">=</span><span class="st">"temporal_extent"</span>,</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>&nbsp; description<span class="op">=</span><span class="st">"Date range to process."</span>,</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Use a default only when a value is genuinely optional. For more specialised inputs, create a <code>Parameter</code> with a JSON Schema <code>schema</code> argument. Ensure every <code>Parameter</code> used in the graph is also included when the UDP is saved.</p>
+<p>For example, define an array of band names with a JSON Schema:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>bands <span class="op">=</span> Parameter(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>&nbsp; name<span class="op">=</span><span class="st">"bands"</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>&nbsp; description<span class="op">=</span><span class="st">"Bands to process."</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>&nbsp; schema<span class="op">=</span>{<span class="st">"type"</span>: <span class="st">"array"</span>, <span class="st">"items"</span>: {<span class="st">"type"</span>: <span class="st">"string"</span>}},</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>&nbsp; default<span class="op">=</span>[<span class="st">"B04"</span>, <span class="st">"B08"</span>],</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="build-and-store-a-udp" class="level2">
+<h2 class="anchored" data-anchor-id="build-and-store-a-udp">Build and store a UDP</h2>
+<p>Build the process graph with the same Python-client methods used for an ordinary workflow, passing <code>Parameter</code> objects where the future caller should provide values. This example creates a reusable, parameterised Sentinel-2 loading and NDVI workflow:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> openeo</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> openeo.api.process <span class="im">import</span> Parameter</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>connection <span class="op">=</span> openeo.<span class="ex">connect</span>(<span class="st">"https://openeo.example.org"</span>).authenticate_oidc()</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>spatial_extent <span class="op">=</span> Parameter.spatial_extent(<span class="st">"spatial_extent"</span>, <span class="st">"Area to process."</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>temporal_extent <span class="op">=</span> Parameter.temporal_interval(<span class="st">"temporal_extent"</span>, <span class="st">"Date range to process."</span>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>cube <span class="op">=</span> connection.load_collection(</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>&nbsp; <span class="st">"SENTINEL2_L2A"</span>,</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>&nbsp; spatial_extent<span class="op">=</span>spatial_extent,</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>&nbsp; temporal_extent<span class="op">=</span>temporal_extent,</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>&nbsp; bands<span class="op">=</span>[<span class="st">"B04"</span>, <span class="st">"B08"</span>],</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>ndvi <span class="op">=</span> (cube.band(<span class="st">"B08"</span>) <span class="op">-</span> cube.band(<span class="st">"B04"</span>)) <span class="op">/</span> (cube.band(<span class="st">"B08"</span>) <span class="op">+</span> cube.band(<span class="st">"B04"</span>))</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>connection.save_user_defined_process(</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>&nbsp; user_defined_process_id<span class="op">=</span><span class="st">"ndvi_for_extent"</span>,</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>&nbsp; process_graph<span class="op">=</span>ndvi,</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>&nbsp; parameters<span class="op">=</span>[spatial_extent, temporal_extent],</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>&nbsp; summary<span class="op">=</span><span class="st">"Calculate NDVI for an area and time range."</span>,</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The process identifier is the stable public interface for users and applications. Treat parameter names, defaults, and output semantics as a versioned contract. Inspect the generated graph using <code>print_json()</code> before saving when troubleshooting.</p>
+<p>When a graph already exists as JSON or a Python dictionary, pass it directly as <code>process_graph</code> to <code>save_user_defined_process</code>. The dictionary must include a <code>result: true</code> node and must declare every value referenced through <code>from_parameter</code>.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Store source with the project
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Keep the code or JSON specification used to create a UDP in version control. Saving a UDP registers it on a backend, but does not replace a reviewable source definition or release history.</p>
+</div>
+</div>
+<section id="export-a-portable-definition" class="level3">
+<h3 class="anchored" data-anchor-id="export-a-portable-definition">Export a portable definition</h3>
+<p>Use <code>build_process_dict</code> to create the complete metadata and process-graph specification for review, version control, or deployment to another service:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> openeo.rest.udp <span class="im">import</span> build_process_dict</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>definition <span class="op">=</span> build_process_dict(</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>&nbsp; process_id<span class="op">=</span><span class="st">"ndvi_for_extent"</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>&nbsp; process_graph<span class="op">=</span>ndvi,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>&nbsp; parameters<span class="op">=</span>[spatial_extent, temporal_extent],</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>&nbsp; summary<span class="op">=</span><span class="st">"Calculate NDVI for an area and time range."</span>,</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">"ndvi_for_extent.json"</span>, <span class="st">"w"</span>) <span class="im">as</span> <span class="bu">file</span>:</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a> json.dump(definition, <span class="bu">file</span>, indent<span class="op">=</span><span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The exported definition is portable source, not a guarantee of cross-backend execution. Validate it on every target backend.</p>
+</section>
+</section>
+<section id="invoke-a-udp" class="level2">
+<h2 class="anchored" data-anchor-id="invoke-a-udp">Invoke a UDP</h2>
+<p>After saving, a UDP is available to subsequent process graphs on the same backend. Use <code>datacube_from_process</code> for a UDP that returns a data cube, then continue composing processes or download/submit it as a job.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>ndvi <span class="op">=</span> connection.datacube_from_process(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>&nbsp; <span class="st">"ndvi_for_extent"</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>&nbsp; spatial_extent<span class="op">=</span>{<span class="st">"west"</span>: <span class="fl">4.0</span>, <span class="st">"south"</span>: <span class="fl">51.0</span>, <span class="st">"east"</span>: <span class="fl">4.1</span>, <span class="st">"north"</span>: <span class="fl">51.1</span>},</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>&nbsp; temporal_extent<span class="op">=</span>[<span class="st">"2024-06-01"</span>, <span class="st">"2024-06-30"</span>],</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>ndvi.download(<span class="st">"ndvi.tiff"</span>, <span class="bu">format</span><span class="op">=</span><span class="st">"GTiff"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>For a UDP returning a scalar, array, or other non-cube value, build its call with <code>openeo.processes.process("udp_id", ...)</code> and execute that process graph. A UDP can also call another UDP, allowing teams to assemble a small library of tested building blocks.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> openeo.processes <span class="im">import</span> divide, process, subtract</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> openeo.api.process <span class="im">import</span> Parameter</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>fahrenheit <span class="op">=</span> Parameter.number(<span class="st">"fahrenheit"</span>, <span class="st">"Temperature in degrees Fahrenheit."</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>celsius <span class="op">=</span> divide(subtract(fahrenheit, <span class="dv">32</span>), <span class="fl">1.8</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>connection.save_user_defined_process(<span class="st">"fahrenheit_to_celsius"</span>, celsius, parameters<span class="op">=</span>[fahrenheit])</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> connection.execute(process(<span class="st">"fahrenheit_to_celsius"</span>, fahrenheit<span class="op">=</span><span class="dv">70</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="applicability-and-constraints" class="level2">
+<h2 class="anchored" data-anchor-id="applicability-and-constraints">Applicability and constraints</h2>
+<p>UDPs are an openEO API feature, not a Python-client-only feature. The Python client provides the examples on this page as convenience methods; other openEO clients and direct API requests can also create and invoke UDPs.</p>
+<p>A UDP is not automatically available across all backends. It is saved to a single backend or workspace, and it can only be called from that same service unless it is exported and deployed elsewhere. A UDP built entirely from standardised processes can often be recreated on another backend, but success still depends on that backend supporting all processes, parameter schemas, result types, and required collections. Backend-specific processes and custom runtime assumptions reduce portability.</p>
+<p>Before publishing a UDP for a team, check the target backend’s process support and test the saved definition with representative inputs. Use the <a href="https://hub.openeo.org/">openEO Hub</a> to compare advertised process support, while treating its results as an overview rather than a guarantee of identical behaviour or resource limits.</p>
+<section id="authoring-guidelines" class="level3">
+<h3 class="anchored" data-anchor-id="authoring-guidelines">Authoring guidelines</h3>
+<p>Keep each UDP focused on a single useful capability, and compose UDPs when workflows require multiple capabilities. Use the established <code>spatial_extent</code> and <code>temporal_extent</code> parameter names where applicable, and pass them directly to <code>load_collection</code> or <code>load_stac</code> so callers can use the standard spatial and temporal input forms.</p>
+<p>Prefer returning a raster or vector cube instead of ending the UDP with <code>save_result</code>. This lets callers apply further processing and choose their own output format. Only include <code>save_result</code> when a fixed output format is an intentional part of the UDP contract.</p>
+<p>Version definitions and retain a changelog. A change to a parameter or output that breaks existing callers merits a new version or identifier while users migrate. Document the algorithm, required inputs, outputs, expected performance or cost, limitations, and known artefacts; publish a representative result where practical.</p>
+</section>
+</section>
+<section id="manage-and-share-udps" class="level2">
+<h2 class="anchored" data-anchor-id="manage-and-share-udps">Manage and share UDPs</h2>
+<p>Use the connection’s UDP methods to list available definitions, retrieve a definition before changing it, update it by saving the same identifier again, and delete retired definitions:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>available <span class="op">=</span> connection.list_user_defined_processes()</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>definition <span class="op">=</span> connection.describe_user_defined_process(<span class="st">"ndvi_for_extent"</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>connection.delete_user_defined_process(<span class="st">"retired_process"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Exact sharing and permission options are backend-specific; verify them in the documentation for the selected backend before relying on a UDP as a shared service.</p>
+<p>Do not confuse a UDP with a <a href="../../documentation/cube_operations/udf.html">User Defined Function</a>. A UDP is a reusable openEO process graph composed of processes; a UDF sends custom Python or R code to the backend through <code>run_udf</code>. Prefer standardised processes within a UDP where possible, as they are generally easier to validate, optimise, and reuse across backends.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Example notebooks
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ul>
+<li><a href="../../client_examples/openeo-community-examples/python/Sentinel1_Stats/Sentinel1_Stats.ipynb">Publishing an openEO Workflow as a User-Defined Process</a></li>
+<li><a href="../../client_examples/openeo-community-examples/python/RandomForest-ForestFire/RandomForestModelInference_AsUDP.ipynb">Reusing openEO Workflows Saved as UDPs</a></li>
+</ul>
+<p>More notebooks are listed on the <a href="../../examples.html">sample notebooks page</a>.</p>
+</div>
+</div>
+</div>
+
+
 </section>
 
-
-
-</main> <!-- /main -->
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
@@ -999,6 +1180,18 @@ ul.task-list li input[type="checkbox"] {
     }
   });
   </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../documentation/cube_operations/machine_learning.html" class="pagination-link" aria-label="Machine Learning">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Machine Learning</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../documentation/cube_operations/execute_jobs.html" class="pagination-link" aria-label="Execute openEO Jobs">
+        <span class="nav-page-text">Execute openEO Jobs</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
 </div> <!-- /content -->
 
 

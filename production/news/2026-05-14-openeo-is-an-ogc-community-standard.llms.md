@@ -18,3 +18,5 @@ The standard consists of two complementary parts:
 The published standard is available on the [OGC website](https://www.ogc.org/standards/openeo/).
 
 ***Note:** At the time the specification was submitted to OGC, both the openEO API and openEO Processes were at version 1.2.0. Due to the length of the standardization process, the published documents could not be updated to newer versions in time. The latest releases are currently [openEO API v1.3.0 and openEO Processes v2.0.0-rc.2](https://openeo.org/news/2026-02-03-new-openeo-versions-130-200rc2.html). We plan to update the OGC Community Standard once a stable release of openEO Processes 2.0 becomes available.*
+
+Back to top

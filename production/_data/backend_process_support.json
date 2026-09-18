@@ -55,7 +55,7 @@
       "source": "hub-cache"
     }
   },
-  "generated_at": "2026-09-15T06:39:50.025540+00:00",
+  "generated_at": "2026-09-18T14:10:56.332812+00:00",
   "processes": {
     "_cwl_demo_hello": [
       "cdse"
@@ -206,13 +206,11 @@
       "vito"
     ],
     "apply_neighborhood_intertwin": [
-      "eodc",
-      "eurac"
+      "eodc"
     ],
     "apply_polygon": [
       "cdse",
       "eodc",
-      "eurac",
       "federation",
       "vito"
     ],
@@ -330,7 +328,6 @@
     "array_create_labeled": [
       "eo4eu",
       "eodc",
-      "eurac",
       "gee",
       "openeo-platform"
     ],
@@ -362,7 +359,6 @@
     ],
     "array_find_label": [
       "eodc",
-      "eurac",
       "openeo-platform"
     ],
     "array_interpolate_linear": [
@@ -547,20 +543,16 @@
       "openeo-platform"
     ],
     "cummax": [
-      "eodc",
-      "eurac"
+      "eodc"
     ],
     "cummin": [
-      "eodc",
-      "eurac"
+      "eodc"
     ],
     "cumproduct": [
-      "eodc",
-      "eurac"
+      "eodc"
     ],
     "cumsum": [
-      "eodc",
-      "eurac"
+      "eodc"
     ],
     "date_between": [
       "cdse",
@@ -928,7 +920,6 @@
     "load_geojson": [
       "cdse",
       "eodc",
-      "eurac",
       "federation",
       "vito"
     ],
@@ -963,6 +954,7 @@
     ],
     "load_vector_cube": [
       "eodc",
+      "eurac",
       "openeo-platform"
     ],
     "log": [
@@ -1309,7 +1301,6 @@
     ],
     "resample_cube_temporal": [
       "eodc",
-      "eurac",
       "openeo-platform"
     ],
     "resample_spatial": [
@@ -1381,6 +1372,7 @@
     ],
     "save_vector_cube": [
       "eodc",
+      "eurac",
       "openeo-platform"
     ],
     "scale": [
@@ -1603,13 +1595,11 @@
     "vector_buffer": [
       "cdse",
       "eodc",
-      "eurac",
       "federation",
       "vito"
     ],
     "vector_reproject": [
-      "eodc",
-      "eurac"
+      "eodc"
     ],
     "vector_to_raster": [
       "cdse",

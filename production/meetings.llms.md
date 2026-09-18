@@ -41,3 +41,5 @@ If you are interested to give a talk or lead a discussion, please send an e-mail
 | 1\. October 2025 | ML in openEO - Status quo | Brian Pondi, WWU | AJ |
 | 5\. November 2025 | OGC APIs, CWL and openEO - Status quo | Juraj Zvolenský, EURAC | JZ |
 | 3\. December 2025 | Open discussions | n/a | ?? |
+
+Back to top

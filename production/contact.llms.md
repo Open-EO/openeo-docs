@@ -15,3 +15,5 @@
 >   - [Javascript Client](https://github.com/Open-EO/openeo-js-client/issues)
 >   - [Web Editor](https://github.com/Open-EO/openeo-web-editor/issues)
 > - If you have general questions or want to get in touch with the community, we recommend to join the chat (see below) and/or [join the monthly community calls](news/2022-07-07-monthly-dev-calls.md).
+
+Back to top

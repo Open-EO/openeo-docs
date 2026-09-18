@@ -71,6 +71,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
+<link href="../../documentation/export_formats.html" rel="next">
+<link href="../../documentation/cube_operations/udp.html" rel="prev">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
@@ -152,11 +154,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
                 support = await response.json();
             } catch (error) { console.warn("Could not load backend process support data.", error); }
         }
+        const getExplicitTags = (item) => new Set((item.getAttribute("data-tags") || "").toLowerCase().split(/\s+/).filter(Boolean));
+        const getDefaultTags = () => new Set(staticBadges.map((badge) => badge.dataset.tag).filter(Boolean));
         const getTags = (item) => {
+            const explicitTags = getExplicitTags(item);
             if (support && item.hasAttribute("data-process")) {
-                return new Set(item.getAttribute("data-process").split(/[\s,]+/).flatMap((id) => support.processes[id] || []));
+                const liveTags = new Set(item.getAttribute("data-process").split(/[\s,]+/).flatMap((id) => support.processes[id] || []));
+                return liveTags.size > 0 ? liveTags : explicitTags.size > 0 ? explicitTags : getDefaultTags();
             }
-            return new Set((item.getAttribute("data-tags") || "").toLowerCase().split(/\s+/).filter(Boolean));
+            return explicitTags.size > 0 ? explicitTags : getDefaultTags();
         };
         let badges = staticBadges;
         if (support) {
@@ -172,11 +178,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             });
         }
         if (badges.length === 0) return;
+        const tocLinks = Array.from(document.querySelectorAll("#TOC a[data-scroll-target]"));
         const applyFilter = () => {
             const selectedTags = new Set(badges.filter((badge) => badge.classList.contains("active")).map((badge) => badge.dataset.tag));
             items.forEach((item) => {
                 const tags = getTags(item);
-                item.hidden = ![...selectedTags].some((tag) => tags.has(tag));
+                const visible = [...selectedTags].some((tag) => tags.has(tag));
+                item.hidden = !visible;
+                const tocLink = tocLinks.find((link) => link.dataset.scrollTarget === `#${item.id}`);
+                tocLink?.closest("li")?.toggleAttribute("hidden", !visible);
             });
         };
         badges.forEach((badge) => badge.addEventListener("click", function (event) {
@@ -305,6 +315,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
         <li><hr class="dropdown-divider"></li>
         <li class="dropdown-header">CUBE OPERATIONS</li>
+        <li>
+    <a class="dropdown-item" href="../../documentation/cube_operations/general_operations.html">
+ <span class="dropdown-text">General Operations</span></a>
+  </li>  
         <li>
     <a class="dropdown-item" href="../../documentation/cube_operations/preprocessing.html">
  <span class="dropdown-text">Preprocessing</span></a>
@@ -483,6 +497,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../../documentation/cube_operations/general_operations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">General Operations</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../../documentation/cube_operations/preprocessing.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Preprocessing</span></a>
   </div>
@@ -553,9 +573,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#run-a-batch-job" id="toc-run-a-batch-job" class="nav-link active" data-scroll-target="#run-a-batch-job">Run a batch job</a>
+  <li><a href="#execute-synchronous-requests" id="toc-execute-synchronous-requests" class="nav-link active" data-scroll-target="#execute-synchronous-requests">Execute synchronous requests</a></li>
+  <li><a href="#execute-a-batch-job" id="toc-execute-a-batch-job" class="nav-link" data-scroll-target="#execute-a-batch-job">Execute a batch job</a>
   <ul class="collapse">
-  <li><a href="#python" id="toc-python" class="nav-link" data-scroll-target="#python">Python</a></li>
+  <li><a href="#list-existing-batch-jobs" id="toc-list-existing-batch-jobs" class="nav-link" data-scroll-target="#list-existing-batch-jobs">List existing batch jobs</a></li>
+  <li><a href="#monitor-a-batch-job" id="toc-monitor-a-batch-job" class="nav-link" data-scroll-target="#monitor-a-batch-job">Monitor a batch job</a></li>
+  <li><a href="#retrieve-job-results" id="toc-retrieve-job-results" class="nav-link" data-scroll-target="#retrieve-job-results">Retrieve job results</a></li>
+  <li><a href="#directly-load-batch-job-results" id="toc-directly-load-batch-job-results" class="nav-link" data-scroll-target="#directly-load-batch-job-results">Directly load batch job results</a></li>
+  <li><a href="#stop-or-delete-a-job" id="toc-stop-or-delete-a-job" class="nav-link" data-scroll-target="#stop-or-delete-a-job">Stop or delete a job</a></li>
+  </ul></li>
+  <li><a href="#export-results-to-stac-and-cloud-workspaces" id="toc-export-results-to-stac-and-cloud-workspaces" class="nav-link" data-scroll-target="#export-results-to-stac-and-cloud-workspaces">Export results to STAC and cloud workspaces</a>
+  <ul class="collapse">
+  <li><a href="#export-results-to-a-cloud-workspace" id="toc-export-results-to-a-cloud-workspace" class="nav-link" data-scroll-target="#export-results-to-a-cloud-workspace">Export results to a cloud workspace</a></li>
+  <li><a href="#export-results-to-an-openeo-collection" id="toc-export-results-to-an-openeo-collection" class="nav-link" data-scroll-target="#export-results-to-an-openeo-collection">Export results to an openEO collection</a></li>
+  <li><a href="#patch-an-existing-stac-resource" id="toc-patch-an-existing-stac-resource" class="nav-link" data-scroll-target="#patch-an-existing-stac-resource">Patch an existing STAC resource</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -566,7 +597,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../documentation/cube_operations.html">CUBE OPERATIONS</a></li><li class="breadcrumb-item"><a href="../../documentation/cube_operations/execute_jobs.html">Execute openEO Jobs</a></li></ol></nav>
 <div class="quarto-title">
 <h1 class="title">Execute openEO Jobs</h1>
-<p class="subtitle lead">Submit, monitor, and retrieve a process graph</p>
 </div>
 
 
@@ -583,40 +613,387 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<div class="lead">
-<p>A process graph becomes useful when it is executed. Use synchronous requests for very small explorations and batch jobs for real analyses.</p>
-</div>
+<p>In openEO, when processes are applied to a datacube, a process graph is created to represent the sequence of operations. However, no actual computation occurs until the process graph is explicitly executed. There are two main ways to execute a process graph: synchronous requests for quick results and batch jobs for longer-running and advanced workflows with descriptive logging.</p>
+<p>On this page, we will demonstrate how to execute openEO process graphs using both synchronous requests and batch jobs, and highlight key processes used within openEO. &nbsp;</p>
 <div class="tag-filter-ui" id="tag-filter-ui">
-  <button class="tag-filter-badge active" data-tag="vito">VITO</button>
-  <button class="tag-filter-badge active" data-tag="eodc">EODC</button>
-  <button class="tag-filter-badge active" data-tag="cdse">CDSE</button>
-  <button class="tag-filter-badge active" data-tag="sentinelhub">Sentinel Hub</button>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
 <span class="screen-reader-only">Note</span>Backend support overview
 </div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>The buttons on this page are a documentation aid, not a live capability registry. Use the <a href="https://hub.openeo.org/">openEO Hub</a> for a cross-backend overview: open <strong>Filters</strong>, select a process under <strong>Processes</strong>, and the Hub shows only matching services. The Hub data is crawled and cached.</p>
+<p>The buttons above let you filter processes supported by different backends. Selecting or deselecting a backend will show or hide the relevant sections in the documentation. However, please note that it is based on the latest documentation rendering. Thus, please refer to the <a href="https://hub.openeo.org/">openEO Hub</a> for the most up-to-date information.</p>
 </div>
 </div>
-<section id="run-a-batch-job" class="level2 tag-filter-item" data-tags="vito eodc cdse sentinelhub">
-<h2 class="anchored" data-anchor-id="run-a-batch-job">Run a batch job</h2>
-<p>Use a batch job for large spatial extents, long time series, UDFs, and preprocessing that may exceed synchronous request limits. The backend records logs and result assets while the job runs, so the workflow can be monitored and retried independently of the client connection.</p>
-<section id="python" class="level3">
-<h3 class="anchored" data-anchor-id="python">Python</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>job <span class="op">=</span> result.create_job(</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    out_format<span class="op">=</span><span class="st">"GTiff"</span>,</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">"Monthly NDVI composite"</span>,</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    description<span class="op">=</span><span class="st">"A monthly median NDVI workflow"</span>,</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>job.start_and_wait()</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>job.get_results().download_files(<span class="st">"./output"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Once the process graph is ready, you need to decide how to execute it based on your requirements. It is important to understand the differences between synchronous requests and batch jobs.</p>
+<ul>
+<li>Use a synchronous request only for small, quick experiments that complete in a couple of minutes.</li>
+<li>Use a batch job for larger areas, longer time ranges, UDFs, or advanced processing. A batch job runs on the backend after your script disconnects, and its result files and logs remain available afterwards.</li>
+</ul>
+<p>Irrelevant of the method of execution you choose, you can save the result in any supported output format. See <a href="../../documentation/export_formats.html">Export Formats</a> to choose a format supported by the connected backend.</p>
+<section id="execute-synchronous-requests" class="level2 tag-filter-item" data-process="save_result">
+<h2 class="anchored" data-anchor-id="execute-synchronous-requests">Execute synchronous requests</h2>
+<p>Most of the simple, basic openEO usage examples show synchronous downloading of results: you submit a process graph with an (HTTP POST) request and receive the result as a direct response to that same request. This only works properly if the processing doesn’t take too long (on the order of seconds or a couple of minutes at most).</p>
+<p>A synchronous request executes the process graph and returns the result in the same request, useful for small areas, short time ranges, and quick checks. The request remains open until the backend finishes, so there is no job ID, status monitoring, or later result retrieval. If the request takes too long, it may result in timeouts or errors. In such cases, consider using a batch job instead.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># DataCube.download() uses the connection's synchronous</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>cube.download(outputfile<span class="op">=</span><span class="st">"./output/preview.tif"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># The connection method accepts a DataCube or another process graph directly.</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>connection.download(cube, <span class="st">"./output/preview.tif"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>If outputfile is provided, the result is downloaded to that path. Otherwise, a bytes object containing the raw data is returned.</p>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Execute the graph synchronously and write the response to a local file.</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">compute_result</span>(</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>&nbsp; <span class="at">graph =</span> p<span class="sc">$</span><span class="fu">save_result</span>(<span class="at">data =</span> cube, <span class="at">format =</span> <span class="st">"GTiff"</span>),</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>&nbsp; <span class="at">output_file =</span> <span class="st">"./output/preview.tif"</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> result <span class="op">=</span> builder<span class="op">.</span><span class="fu">save_result</span>(cube<span class="op">,</span> <span class="st">"GTiff"</span>)<span class="op">;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">// Execute the graph synchronously and download the response.</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> con<span class="op">.</span><span class="fu">downloadResult</span>(result<span class="op">,</span> <span class="st">"./output/preview.tif"</span>)<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<p>The <code>download</code> operation sends the complete process graph to the backend. It does not create a reusable batch job. Ensure the graph ends in an output that the requested format can store, and use only formats advertised by the backend.</p>
+</section>
+<section id="execute-a-batch-job" class="level2">
+<h2 class="anchored" data-anchor-id="execute-a-batch-job">Execute a batch job</h2>
+<p>For the heavier work (larger regions of interest, larger time series, more intensive processing, …), you have to use <strong>batch jobs</strong>, which are supported in the openEO API through separate HTTP requests, corresponding to these steps:</p>
+<ul>
+<li>you create a job (providing a process graph and some other metadata like title, description, …)</li>
+<li>You start the job</li>
+<li>you wait for the job to finish, periodically polling its status</li>
+<li>When the job finishes successfully, get the listing of result assets</li>
+<li>you download the result assets (or use them in another way)</li>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>GUI for Batch Jobs
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>This documentation mainly discusses how to <strong>programmatically</strong> create and interact with batch jobs using the openEO client library. The openEO API, however, does not enforce the use of the same tool for each step in the batch job life cycle. For example: if you prefer a graphical, web-based <strong>interactive environment</strong> to manage and monitor your batch jobs, feel free to <em>switch to an openEO web editor</em> like <code>[openeo.dataspace.copernicus.eu](https://openeo.dataspace.copernicus.eu/)</code> at any time. After logging in, you will see your batch jobs listed under the “Data Processing” tab in this specific backend.</p>
+<p><img src="images/batchjobs-webeditor-listing.png" class="img-fluid"></p>
+<p>With the “action” buttons on the right, you can inspect batch job details, start/stop/delete jobs, download their results, get batch job logs, etc.</p>
+</div>
+</div>
+</div>
+<p>When using the openEO client library, if you have a (raster) datacube, you can easily create a batch job with the <code>DataCube.create_job()</code> method. It is important to specify the format in which the result should be stored, which can be done with an explicit <code>DataCube.save_result()</code> call before creating the job. Alternatively, you can specify the output format directly when creating the job using the <code>out_format</code> parameter.</p>
+<p>Additionally, while not necessary, it is also recommended to give your batch job a descriptive title so it’s easier to identify in your job listing, especially when you have multiple jobs running concurrently.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> cube.save_result(<span class="bu">format</span><span class="op">=</span><span class="st">"GTiff"</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>job <span class="op">=</span> result.create_job(</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; title<span class="op">=</span><span class="st">"Monthly NDVI composite"</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; description<span class="op">=</span><span class="st">"A monthly median NDVI workflow"</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(job.job_id)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>job.start_and_wait()</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>job.get_results().download_files(<span class="st">"./output"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> p<span class="sc">$</span><span class="fu">save_result</span>(<span class="at">data =</span> cube, <span class="at">format =</span> <span class="st">"GTiff"</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>job <span class="ot">&lt;-</span> <span class="fu">create_job</span>(</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>&nbsp; <span class="at">graph =</span> result,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>&nbsp; <span class="at">title =</span> <span class="st">"Monthly NDVI composite"</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>&nbsp; <span class="at">description =</span> <span class="st">"A monthly median NDVI workflow"</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(job<span class="sc">$</span>id)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="fu">start_job</span>(<span class="at">job =</span> job)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="fu">download_results</span>(<span class="at">job =</span> job, <span class="at">folder =</span> <span class="st">"./output"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> result <span class="op">=</span> builder<span class="op">.</span><span class="fu">save_result</span>(cube<span class="op">,</span> <span class="st">"GTiff"</span>)<span class="op">;</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> job <span class="op">=</span> <span class="cf">await</span> con<span class="op">.</span><span class="fu">createJob</span>(</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>&nbsp; result<span class="op">,</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>&nbsp; <span class="st">"Monthly NDVI composite"</span><span class="op">,</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>&nbsp; <span class="st">"A monthly median NDVI workflow"</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>)<span class="op">;</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(job<span class="op">.</span><span class="at">id</span>)<span class="op">;</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> job<span class="op">.</span><span class="fu">startJob</span>()<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<p>`cube.execute_batch(out_format=“GTiff”, title=“Monthly NDVI composite”) is a shortcut that creates, starts, and waits for a job in one call.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Example notebooks
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ul>
+<li><a href="../../client_examples/openeo-community-examples/python/ForestFire/ForestFire.ipynb">Forest Fire Analysis: Saving Multiple Results in One Job</a></li>
+<li><a href="../../client_examples/openeo-community-examples/python/ManagingMultipleLargeScaleJobs/ManagingMultipleLargeScaleJobs.ipynb">EO Data Processing with the openEO MultiBackendJobManager</a></li>
+<li><a href="../../client_examples/openeo-community-examples/python/ManagingMultipleLargeScaleJobs/VisualisingMultipleOpeneoJobs.ipynb">Geospatial Job Management and Visualisation</a></li>
+</ul>
+<p>More notebooks are listed on the <a href="../../examples.html">sample notebooks page</a>.</p>
+</div>
+</div>
+</div>
+<section id="list-existing-batch-jobs" class="level3 tag-filter-item" data-process="list_jobs">
+<h3 class="anchored" data-anchor-id="list-existing-batch-jobs">List existing batch jobs</h3>
+<p>There is a <code>list_jobs()</code> method to find earlier work, along with its status and job ID. You can use <code>Connection.list_jobs()</code>, which returns a list of job metadata.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-3" role="tab" aria-controls="tabset-3-3" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> job_info <span class="kw">in</span> connection.list_jobs():</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>&nbsp; <span class="bu">print</span>(job_info[<span class="st">"id"</span>], job_info[<span class="st">"status"</span>], job_info.get(<span class="st">"title"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>jobs <span class="ot">&lt;-</span> <span class="fu">list_jobs</span>()</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(jobs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-3-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> jobs <span class="op">=</span> <span class="cf">await</span> con<span class="op">.</span><span class="fu">listJobs</span>()<span class="op">;</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>jobs<span class="op">.</span><span class="fu">forEach</span>(job <span class="kw">=&gt;</span> <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(job<span class="op">.</span><span class="at">id</span><span class="op">,</span> job<span class="op">.</span><span class="at">status</span><span class="op">,</span> job<span class="op">.</span><span class="at">title</span>))<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<p>You can also open the same backend and account in an <a href="https://openeo.dataspace.copernicus.eu">openEO Web Editor</a> to inspect process graphs, start, stop, or delete jobs, download results, and view logs.</p>
+</section>
+<section id="monitor-a-batch-job" class="level3">
+<h3 class="anchored" data-anchor-id="monitor-a-batch-job">Monitor a batch job</h3>
+<p>The job ID is the stable reference for reconnecting to the job later to check its status, retrieve results, or manage it from a different script or client.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-3" role="tab" aria-controls="tabset-4-3" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>job <span class="op">=</span> connection.job(<span class="st">"job_id"</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>job.status()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>job_status <span class="ot">&lt;-</span> <span class="fu">describe_job</span>(<span class="at">job =</span> job)<span class="sc">$</span>status</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(job_status)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-4-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(job<span class="op">.</span><span class="at">status</span>)<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<p>Batch jobs progress through <code>created</code>, <code>queued</code>, <code>running</code>, and finally <code>finished</code>, <code>error</code>, or <code>cancelled</code>. Retrieve final result assets only after the job has finished.</p>
+<p>When using ’“job.start_and_wait()”or cube.execute_batch() to run a batch job and it fails, the openEO Python client library will print (by default) the batch job’s error logs and instructions to help with further investigation.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-5-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-1" role="tab" aria-controls="tabset-5-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-2" role="tab" aria-controls="tabset-5-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-3" role="tab" aria-controls="tabset-5-3" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-5-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-5-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># start_and_wait() starts the job and polls until it finishes or fails.</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>job.start_and_wait()</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(job.status())</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Logs are particularly useful when the status is "error".</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> a log<span class="op">-</span><span class="kw">in</span> job.logs():</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; <span class="bu">print</span>(log[<span class="st">"level"</span>], log[<span class="st">"message"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-5-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">start_job</span>(<span class="at">job =</span> job)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Check the job details and status while it is running.</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">describe_job</span>(<span class="at">job =</span> job))</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Retrieve backend messages when troubleshooting a failed job.</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">list_job_logs</span>(<span class="at">job =</span> job))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-5-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> stopMonitoring <span class="op">=</span> job<span class="op">.</span><span class="fu">monitorJob</span>(<span class="kw">async</span> (job<span class="op">,</span> logs) <span class="kw">=&gt;</span> {</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>&nbsp; <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="vs">`Status: </span><span class="sc">${</span>job<span class="op">.</span><span class="at">status</span><span class="sc">}</span><span class="vs">`</span>)<span class="op">;</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>&nbsp; logs<span class="op">.</span><span class="fu">forEach</span>(log <span class="kw">=&gt;</span> <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="vs">`</span><span class="sc">${</span>log<span class="op">.</span><span class="at">level</span><span class="sc">}</span><span class="vs">: </span><span class="sc">${</span>log<span class="op">.</span><span class="at">message</span><span class="sc">}</span><span class="vs">`</span>))<span class="op">;</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>&nbsp; <span class="cf">if</span> ([<span class="st">"finished"</span><span class="op">,</span> <span class="st">"error"</span><span class="op">,</span> <span class="st">"canceled"</span>]<span class="op">.</span><span class="fu">includes</span>(job<span class="op">.</span><span class="at">status</span>)) {</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; <span class="fu">stopMonitoring</span>()<span class="op">;</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>&nbsp; }</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+</section>
+<section id="retrieve-job-results" class="level3">
+<h3 class="anchored" data-anchor-id="retrieve-job-results">Retrieve job results</h3>
+<p>Once a batch job is finished, you can get a handle to the results (which can be a single file or multiple files) and metadata with <code>get_results()</code>.</p>
+<p>A successful job can produce one or more result assets. The backend provides their metadata as-is, in fact, a valid STAC item, and download links as STAC metadata.</p>
+<p>In the general case, when you have one or more result files (also called “assets”), the easiest way to download them is to use download_files() (plural), where you specify a download folder (otherwise the current working directory will be used by default). Download all assets when you do not know how many files the result contains; select an individual asset only when the expected output is known.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-6-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-1" role="tab" aria-controls="tabset-6-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-2" role="tab" aria-controls="tabset-6-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-3" role="tab" aria-controls="tabset-6-3" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-6-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-6-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> job.get_results()</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(results.get_metadata())</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Download every result asset into a local folder.</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>results.download_files(<span class="st">"./output"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-6-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># List result metadata and download all result files.</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">list_results</span>(<span class="at">job =</span> job))</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">download_results</span>(<span class="at">job =</span> job, <span class="at">folder =</span> <span class="st">"./output"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-6-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> results <span class="op">=</span> <span class="cf">await</span> job<span class="op">.</span><span class="fu">listResults</span>()<span class="op">;</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>results<span class="op">.</span><span class="fu">forEach</span>(asset <span class="kw">=&gt;</span> {</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>&nbsp; <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="vs">`</span><span class="sc">${</span>asset<span class="op">.</span><span class="at">title</span> <span class="op">||</span> asset<span class="op">.</span><span class="at">href</span><span class="sc">}</span><span class="vs">: </span><span class="sc">${</span>asset<span class="op">.</span><span class="at">href</span><span class="sc">}</span><span class="vs">`</span>)<span class="op">;</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<p>If you know that there is just a single result file, you can also download it directly with <code>download_file()</code> (singular) with the desired file name:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-7-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-1" role="tab" aria-controls="tabset-7-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-7-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-2" role="tab" aria-controls="tabset-7-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-7-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-3" role="tab" aria-controls="tabset-7-3" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-7-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-7-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> job.get_results()</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>results.download_file(<span class="st">"./output/single_result_file.tif"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-7-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-7-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">download_results</span>(<span class="at">job =</span> job, <span class="at">folder =</span> <span class="st">"./output"</span>, <span class="at">file =</span> <span class="st">"single_result_file.tif"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-7-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-7-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> results <span class="op">=</span> <span class="cf">await</span> job<span class="op">.</span><span class="fu">listResults</span>()<span class="op">;</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> singleAsset <span class="op">=</span> results[<span class="dv">0</span>]<span class="op">;</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> connection<span class="op">.</span><span class="fu">downloadFile</span>(singleAsset<span class="op">.</span><span class="at">href</span><span class="op">,</span> <span class="st">"./output/single_result_file.tif"</span>)<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<p>This will fail, however, if there are multiple assets in the job result (like in the metadata example above). In that case, you can still download a single asset by specifying which one you want to download with the <code>key</code> argument.</p>
+<p>If you need a bit more control over which asset to download and how, you can iterate over the result assets explicitly and download these <code>ResultAsset</code> instances with <code>download()</code>, like this:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-8-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-1" role="tab" aria-controls="tabset-8-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-8-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-2" role="tab" aria-controls="tabset-8-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-8-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-3" role="tab" aria-controls="tabset-8-3" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-8-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-8-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> asset <span class="kw">in</span> results.get_assets():</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; <span class="cf">if</span> asset.media_type.startswith(<span class="st">"image/tiff"</span>):</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a> asset.download(<span class="st">"data/out/result-v2-"</span> <span class="op">+</span> asset.key)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-8-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-8-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>assets <span class="ot">&lt;-</span> <span class="fu">list_results</span>(<span class="at">job =</span> job)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (asset <span class="cf">in</span> assets) {</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>&nbsp; <span class="fu">print</span>(asset)</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a> <span class="fu">download_results</span>(<span class="at">job =</span> job, <span class="at">folder =</span> <span class="st">"./output"</span>, <span class="at">file =</span> asset<span class="sc">$</span>key)</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-8-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-8-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> results <span class="op">=</span> <span class="cf">await</span> job<span class="op">.</span><span class="fu">listResults</span>()<span class="op">;</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (<span class="kw">const</span> asset <span class="kw">of</span> results) {</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>&nbsp; <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="vs">`</span><span class="sc">${</span>asset<span class="op">.</span><span class="at">title</span> <span class="op">||</span> asset<span class="op">.</span><span class="at">href</span><span class="sc">}</span><span class="vs">: </span><span class="sc">${</span>asset<span class="op">.</span><span class="at">href</span><span class="sc">}</span><span class="vs">`</span>)<span class="op">;</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>&nbsp; <span class="cf">await</span> connection<span class="op">.</span><span class="fu">downloadFile</span>(asset<span class="op">.</span><span class="at">href</span><span class="op">,</span> <span class="vs">`./output/</span><span class="sc">${</span>asset<span class="op">.</span><span class="at">key</span><span class="sc">}</span><span class="vs">`</span>)<span class="op">;</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Asset Key as Filename
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>The <code>key</code> of an asset is not guaranteed to be directly usable as a filename safe, so while the snippet above glosses over that aspect, make sure to properly sanitise the filename or at least check the behaviour of the backend you are working with.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="directly-load-batch-job-results" class="level3">
+<h3 class="anchored" data-anchor-id="directly-load-batch-job-results">Directly load batch job results</h3>
+<p>&nbsp; If you want to skip downloading an asset to disk, you can also load it directly. For example, load a JSON asset with load_json():</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-9-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-9-1" role="tab" aria-controls="tabset-9-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-9-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-9-2" role="tab" aria-controls="tabset-9-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-9-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-9-3" role="tab" aria-controls="tabset-9-3" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-9-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-9-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>asset.metadata</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>{<span class="st">"type"</span>: <span class="st">"application/json"</span>, <span class="st">"href"</span>: <span class="st">"https://openeo.example/download/432f3b3ef3a.json"</span>}</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> asset.load_json()</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>data</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>{<span class="st">"2021-02-24T10:59:23Z"</span>: [[<span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">5</span>], [<span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>]], ....}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-9-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-9-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>asset<span class="sc">$</span>metadata</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>{<span class="st">"type"</span><span class="sc">:</span> <span class="st">"application/json"</span>, <span class="st">"href"</span><span class="sc">:</span> <span class="st">"https://openeo.example/download/432f3b3ef3a.json"</span>}</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">load_json</span>(<span class="at">job =</span> job, <span class="at">asset =</span> asset<span class="sc">$</span>key)</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>data</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>{<span class="st">"2021-02-24T10:59:23Z"</span><span class="sc">:</span> [[<span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">5</span>], [<span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>]], ....}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-9-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-9-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>asset<span class="op">.</span><span class="at">metadata</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>{<span class="st">"type"</span><span class="op">:</span> <span class="st">"application/json"</span><span class="op">,</span> <span class="st">"href"</span><span class="op">:</span> <span class="st">"https://openeo.example/download/432f3b3ef3a.json"</span>}</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> data <span class="op">=</span> <span class="cf">await</span> connection<span class="op">.</span><span class="fu">loadJson</span>(asset<span class="op">.</span><span class="at">href</span>)<span class="op">;</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>data</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>{<span class="st">"2021-02-24T10:59:23Z"</span><span class="op">:</span> [[<span class="dv">3</span><span class="op">,</span> <span class="dv">2</span><span class="op">,</span> <span class="dv">5</span>]<span class="op">,</span> [<span class="dv">3</span><span class="op">,</span> <span class="dv">4</span><span class="op">,</span> <span class="dv">5</span>]]<span class="op">,</span> <span class="op">....</span>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+</section>
+<section id="stop-or-delete-a-job" class="level3">
+<h3 class="anchored" data-anchor-id="stop-or-delete-a-job">Stop or delete a job</h3>
+<p>Save the job ID printed when the job is created. It lets you reconnect from a later session or another client, inspect the job, and manage it without having to recreate the process graph. Stop a job that is no longer needed; delete it only when you no longer need its metadata or results.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-10-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-10-1" role="tab" aria-controls="tabset-10-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-10-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-10-2" role="tab" aria-controls="tabset-10-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-10-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-10-3" role="tab" aria-controls="tabset-10-3" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-10-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-10-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>job <span class="op">=</span> connection.job(<span class="st">"&lt;job-id&gt;"</span>)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(job.status())</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Use only when required:</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>job.stop()</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>job.delete()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-10-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-10-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>job <span class="ot">&lt;-</span> <span class="fu">get_job</span>(<span class="at">job_id =</span> <span class="st">"&lt;job-id&gt;"</span>)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">describe_job</span>(<span class="at">job =</span> job))</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Use only when required:</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cancel_job</span>(<span class="at">job =</span> job)</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="fu">delete_job</span>(<span class="at">job =</span> job)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-10-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-10-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> job <span class="op">=</span> <span class="cf">await</span> con<span class="op">.</span><span class="fu">getJob</span>(<span class="st">"&lt;job-id&gt;"</span>)<span class="op">;</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(job<span class="op">.</span><span class="at">status</span>)<span class="op">;</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="co">// Use only when required:</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> job<span class="op">.</span><span class="fu">cancelJob</span>()<span class="op">;</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> job<span class="op">.</span><span class="fu">deleteJob</span>()<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -630,13 +1007,72 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Filter space, time, and bands before computationally intensive processes. Test a small area first, then submit the final workflow as a batch job. Inspect job logs when a backend reports an error.</p>
 </div>
 </div>
-<p><code>save_result</code> defines the output format inside a process graph; job creation controls when and how the backend executes it. Review the backend’s supported output formats and job limits before a large run.</p>
 </section>
 </section>
+<section id="export-results-to-stac-and-cloud-workspaces" class="level2">
+<h2 class="anchored" data-anchor-id="export-results-to-stac-and-cloud-workspaces">Export results to STAC and cloud workspaces</h2>
+<p>Besides downloading result files directly, a batch job’s STAC result metadata can be exported to a collection or a cloud workspace, or be patched in place. These processes are applied to the STAC resource produced by <code>save_result</code>, typically as the last step of a process graph.</p>
+<section id="export-results-to-a-cloud-workspace" class="level3 tag-filter-item" data-process="export_workspace">
+<h3 class="anchored" data-anchor-id="export-results-to-a-cloud-workspace">Export results to a cloud workspace</h3>
+<p><code>export_workspace</code> copies the STAC resource (and the assets it references) produced by a job to a cloud workspace registered with the backend. Use it to make results directly available in object storage that other applications or users can access, without a separate download step.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-11-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-11-1" role="tab" aria-controls="tabset-11-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-11-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-11-2" role="tab" aria-controls="tabset-11-2" aria-selected="false" href="">R</a></li></ul>
+<div class="tab-content">
+<div id="tabset-11-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-11-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> cube.save_result(<span class="bu">format</span><span class="op">=</span><span class="st">"GTiff"</span>)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>exported <span class="op">=</span> openeo.processes.export_workspace(data<span class="op">=</span>result, workspace<span class="op">=</span><span class="st">"my-workspace"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-11-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-11-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> p<span class="sc">$</span><span class="fu">save_result</span>(<span class="at">data =</span> cube, <span class="at">format =</span> <span class="st">"GTiff"</span>)</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>exported <span class="ot">&lt;-</span> openeo<span class="sc">::</span><span class="fu">export_workspace</span>(<span class="at">data =</span> result, <span class="at">workspace =</span> <span class="st">"my-workspace"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+</section>
+<section id="export-results-to-an-openeo-collection" class="level3 tag-filter-item" data-process="export_collection">
+<h3 class="anchored" data-anchor-id="export-results-to-an-openeo-collection">Export results to an openEO collection</h3>
+<p><code>export_collection</code> publishes a STAC resource to a named openEO collection on the backend, creating the collection from the STAC metadata if it does not exist yet, or adding to it otherwise. Use it to accumulate job outputs (e.g.&nbsp;repeated monthly composites) into a single, growing collection that can later be loaded with <code>load_collection</code> or <code>load_stac</code>.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-12-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-12-1" role="tab" aria-controls="tabset-12-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-12-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-12-2" role="tab" aria-controls="tabset-12-2" aria-selected="false" href="">R</a></li></ul>
+<div class="tab-content">
+<div id="tabset-12-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-12-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> cube.save_result(<span class="bu">format</span><span class="op">=</span><span class="st">"GTiff"</span>)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>collection_id <span class="op">=</span> openeo.processes.export_collection(data<span class="op">=</span>result, collection<span class="op">=</span><span class="st">"monthly-ndvi"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-12-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-12-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> p<span class="sc">$</span><span class="fu">save_result</span>(<span class="at">data =</span> cube, <span class="at">format =</span> <span class="st">"GTiff"</span>)</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>collection_id <span class="ot">&lt;-</span> openeo<span class="sc">::</span><span class="fu">export_collection</span>(<span class="at">data =</span> result, <span class="at">collection =</span> <span class="st">"monthly-ndvi"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+</section>
+<section id="patch-an-existing-stac-resource" class="level3 tag-filter-item" data-process="stac_modify">
+<h3 class="anchored" data-anchor-id="patch-an-existing-stac-resource">Patch an existing STAC resource</h3>
+<p><code>stac_modify</code> updates an existing STAC resource (e.g.&nbsp;a Collection or Item) by merging in a partial changeset, following the <a href="https://www.rfc-editor.org/rfc/rfc7386.html">JSON Merge Patch</a> specification. Use it to correct or extend metadata (e.g.&nbsp;add a description or a new property) on a previously exported STAC resource without recreating it from scratch.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-13-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-13-1" role="tab" aria-controls="tabset-13-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-13-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-13-2" role="tab" aria-controls="tabset-13-2" aria-selected="false" href="">R</a></li></ul>
+<div class="tab-content">
+<div id="tabset-13-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-13-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>updated <span class="op">=</span> openeo.processes.stac_modify(</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>    data<span class="op">=</span>existing_stac_item,</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>    changes<span class="op">=</span>{<span class="st">"description"</span>: <span class="st">"Monthly median NDVI composite for 2024"</span>},</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-13-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-13-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>updated <span class="ot">&lt;-</span> openeo<span class="sc">::</span><span class="fu">stac_modify</span>(</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> existing_stac_item,</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">changes =</span> <span class="fu">list</span>(<span class="at">description =</span> <span class="st">"Monthly median NDVI composite for 2024"</span>)</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<p>These three processes are experimental and their availability depends on the backend; check process support before relying on them in a production workflow.</p>
+</section>
 
 
+</section>
 
-</main> <!-- /main -->
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
@@ -1037,6 +1473,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
   });
   </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../documentation/cube_operations/udp.html" class="pagination-link" aria-label="User Defined Processes">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">User Defined Processes</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../documentation/export_formats.html" class="pagination-link" aria-label="EXPORT FORMATS">
+        <span class="nav-page-text">EXPORT FORMATS</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
 </div> <!-- /content -->
 
 

@@ -1,0 +1,57 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2026-09-18T14:12:11.337059Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:12:08.275085Z",
+      "mimetype": "application/geo+json",
+      "name": "inference_aoi.geojson",
+      "path": "notebooks/RandomForest-ForestFire/Dataset/inference_aoi.geojson",
+      "size": 978,
+      "type": "file",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2026-09-18T14:12:11.337617Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:12:08.275156Z",
+      "mimetype": "application/geo+json",
+      "name": "training_dataset.geojson",
+      "path": "notebooks/RandomForest-ForestFire/Dataset/training_dataset.geojson",
+      "size": 655830,
+      "type": "file",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2026-09-18T14:12:11.337341Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:12:08.275124Z",
+      "mimetype": "application/geo+json",
+      "name": "training_aoi.geojson",
+      "path": "notebooks/RandomForest-ForestFire/Dataset/training_aoi.geojson",
+      "size": 796,
+      "type": "file",
+      "writable": true
+    }
+  ],
+  "created": "2026-09-18T14:12:11.337617Z",
+  "format": "json",
+  "hash": null,
+  "hash_algorithm": null,
+  "last_modified": "2026-09-18T14:12:11.337617Z",
+  "mimetype": null,
+  "name": "Dataset",
+  "path": "notebooks/RandomForest-ForestFire/Dataset",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}

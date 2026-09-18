@@ -15,3 +15,5 @@ It features a number of relatively minor, but interesting new features. The Open
 Back-ends and clients are advised to check their implementations against the new specification and update accordingly.
 
 More details about the release: \* [Changelog](https://github.com/Open-EO/openeo-api/tree/1.1.0/CHANGELOG.md) \* [API documentation](https://api.openeo.org/)
+
+Back to top

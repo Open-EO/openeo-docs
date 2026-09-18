@@ -28,3 +28,5 @@ openEO is published in its version [0.3.0](https://api.openeo.org/v/0.3.0/), pro
 The next steps for the consortium will entail the realisation of the newest openEO version at all back-ends and a definition of the targeted level of UDFs (e.g. simple NDVI calculation vs. machine learning algorithms). The process catalogues will be widened up, entailing at least all needed processes to implement the project’s use cases via openEO. As an interested user please contact us, if you have any suggestions.
 
 Finally, we plan to submit our first preliminary stable openEO version in May 2019.
+
+Back to top

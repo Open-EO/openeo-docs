@@ -12,9 +12,7 @@ Main topics:
 - Batch job execution
 - Result download
 
-## Page Purpose
-
-The Cookbook contains task-oriented examples.
+This Cookbook contains simple, task-oriented examples for common openEO workflows. It summarizes a couple of key concepts and widely used openEO processes. Each recipe is designed to be self-contained, allowing users to quickly understand and apply the concepts to their own projects.
 
 Common user intents mapped to recipes:
 
@@ -148,6 +146,10 @@ connection <- connect(host = "openeofed.dataspace.copernicus.eu")
 var connection = await OpenEO.connect("openeofed.dataspace.copernicus.eu");
 ```
 
+### Inspect a public backend
+
+Before you start building workflows, it is useful to inspect the backend to understand its capabilities. This read-only example summarizes a backend before you build a workflow. It does not require authentication.
+
 The `Connection` object is the central gateway to interact with the back-end: listing collections and processes, building algorithms, and executing and monitoring batch jobs.
 
 > **NOTE:**
@@ -268,11 +270,6 @@ Processes in openEO are operations applied to EO data — for example, calculati
 > **Note:** In all JavaScript code in this cookbook, `builder` is used to select openEO processes.
 
 ## Python
-
-``` python
-# List all available processes with metadata
-connection.list_processes()
-```
 
 It is often easier to consult the [process listing page](../documentation/key_concepts/processes.llms.md) or the [openEO Web Editor](https://openeofed.dataspace.copernicus.eu) sidebar.
 
@@ -580,7 +577,7 @@ let stopFn = job.monitorJob(async (job, logs) => {
 
 > **TIP:**
 >
-> ![](cookbook_files/figure-html/cell-6-output-1.png)
+> ![](cookbook_files/figure-html/cell-5-output-1.png)
 
 ------------------------------------------------------------------------
 
@@ -1177,3 +1174,5 @@ You have feedback or noticed an error? Feel free to open an issue in the [GitHub
 > - [About openEO](#openeo-cookbook) to learn more about the openEO initiative
 > - [openEO processes documentation](#openeo-cookbook) for a complete reference of all available processes
 > - [openEO Web Editor](https://editor.openeo.org) to visually build and execute processing workflows
+
+Back to top

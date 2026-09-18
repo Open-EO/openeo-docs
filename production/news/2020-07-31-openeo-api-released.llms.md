@@ -51,3 +51,5 @@ With openEO, we are digging into new grounds regarding the interoperability of b
 ## Next steps
 
 The API’s development went through several iterations and is working well for our broad range of use cases, which we’ll report soon. [Implementations](../software.md) by several organizations for several API versions provide evidence that the API and the processes are useful for a wide range of use cases. Client and back-end developers will now finish their implementations and we hope to have the first operational services this year. We will follow up with new blog posts once other releases are available. If you are interested in trying out openEO, please [contact us](../contact.md) to get more information.
+
+Back to top

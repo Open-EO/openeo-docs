@@ -38,3 +38,5 @@ The openEO community is active and there are always new developments, events and
 | Jan 31, 2018 | Marius Appel | [Second week of intensive collaboration: Jan 22-24, 2018](../news/2018-01-31-WWU_meeting.llms.md) |  |
 | Dec 18, 2017 | Edzer Pebesma | [First week of intensive collaboration: Dec 4-6, 2017](../news/2017-12-18-VITO_meeting.llms.md) |  |
 | Dec 5, 2017 | Edzer Pebesma | [Welcome to openEO!](../news/2017-12-05-welcome.llms.md) |  |
+
+Back to top

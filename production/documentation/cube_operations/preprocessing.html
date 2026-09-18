@@ -71,6 +71,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
+<link href="../../documentation/cube_operations/spatial_operations.html" rel="next">
+<link href="../../documentation/cube_operations/general_operations.html" rel="prev">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
@@ -152,11 +154,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
                 support = await response.json();
             } catch (error) { console.warn("Could not load backend process support data.", error); }
         }
+        const getExplicitTags = (item) => new Set((item.getAttribute("data-tags") || "").toLowerCase().split(/\s+/).filter(Boolean));
+        const getDefaultTags = () => new Set(staticBadges.map((badge) => badge.dataset.tag).filter(Boolean));
         const getTags = (item) => {
+            const explicitTags = getExplicitTags(item);
             if (support && item.hasAttribute("data-process")) {
-                return new Set(item.getAttribute("data-process").split(/[\s,]+/).flatMap((id) => support.processes[id] || []));
+                const liveTags = new Set(item.getAttribute("data-process").split(/[\s,]+/).flatMap((id) => support.processes[id] || []));
+                return liveTags.size > 0 ? liveTags : explicitTags.size > 0 ? explicitTags : getDefaultTags();
             }
-            return new Set((item.getAttribute("data-tags") || "").toLowerCase().split(/\s+/).filter(Boolean));
+            return explicitTags.size > 0 ? explicitTags : getDefaultTags();
         };
         let badges = staticBadges;
         if (support) {
@@ -172,11 +178,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             });
         }
         if (badges.length === 0) return;
+        const tocLinks = Array.from(document.querySelectorAll("#TOC a[data-scroll-target]"));
         const applyFilter = () => {
             const selectedTags = new Set(badges.filter((badge) => badge.classList.contains("active")).map((badge) => badge.dataset.tag));
             items.forEach((item) => {
                 const tags = getTags(item);
-                item.hidden = ![...selectedTags].some((tag) => tags.has(tag));
+                const visible = [...selectedTags].some((tag) => tags.has(tag));
+                item.hidden = !visible;
+                const tocLink = tocLinks.find((link) => link.dataset.scrollTarget === `#${item.id}`);
+                tocLink?.closest("li")?.toggleAttribute("hidden", !visible);
             });
         };
         badges.forEach((badge) => badge.addEventListener("click", function (event) {
@@ -305,6 +315,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
         <li><hr class="dropdown-divider"></li>
         <li class="dropdown-header">CUBE OPERATIONS</li>
+        <li>
+    <a class="dropdown-item" href="../../documentation/cube_operations/general_operations.html">
+ <span class="dropdown-text">General Operations</span></a>
+  </li>  
         <li>
     <a class="dropdown-item" href="../../documentation/cube_operations/preprocessing.html">
  <span class="dropdown-text">Preprocessing</span></a>
@@ -483,6 +497,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../../documentation/cube_operations/general_operations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">General Operations</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../../documentation/cube_operations/preprocessing.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Preprocessing</span></a>
   </div>
@@ -553,29 +573,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#mask-a-cube" id="toc-mask-a-cube" class="nav-link active" data-scroll-target="#mask-a-cube">Mask a cube</a>
-  <ul class="collapse">
-  <li><a href="#python" id="toc-python" class="nav-link" data-scroll-target="#python">Python</a></li>
-  </ul></li>
-  <li><a href="#sentinel-2-scl-dilation-mask" id="toc-sentinel-2-scl-dilation-mask" class="nav-link" data-scroll-target="#sentinel-2-scl-dilation-mask">Sentinel-2 SCL Dilation Mask</a>
-  <ul class="collapse">
-  <li><a href="#python-1" id="toc-python-1" class="nav-link" data-scroll-target="#python-1">Python</a></li>
-  </ul></li>
+  <li><a href="#mask-a-cube" id="toc-mask-a-cube" class="nav-link active" data-scroll-target="#mask-a-cube">Mask a cube</a></li>
+  <li><a href="#sentinel-2-scl-dilation-mask" id="toc-sentinel-2-scl-dilation-mask" class="nav-link" data-scroll-target="#sentinel-2-scl-dilation-mask">Sentinel-2 SCL Dilation Mask</a></li>
   <li><a href="#atmospheric-correction" id="toc-atmospheric-correction" class="nav-link" data-scroll-target="#atmospheric-correction">Atmospheric Correction</a>
   <ul class="collapse">
   <li><a href="#code-examples" id="toc-code-examples" class="nav-link" data-scroll-target="#code-examples">Code examples</a></li>
   </ul></li>
-  <li><a href="#create-card4l-normalised-radar-backscatter" id="toc-create-card4l-normalised-radar-backscatter" class="nav-link" data-scroll-target="#create-card4l-normalised-radar-backscatter">Create CARD4L normalised radar backscatter</a>
-  <ul class="collapse">
-  <li><a href="#code-examples-1" id="toc-code-examples-1" class="nav-link" data-scroll-target="#code-examples-1">Code examples</a></li>
-  </ul></li>
-  <li><a href="#compute-sar-backscatter" id="toc-compute-sar-backscatter" class="nav-link" data-scroll-target="#compute-sar-backscatter">Compute SAR backscatter</a>
-  <ul class="collapse">
-  <li><a href="#python-4" id="toc-python-4" class="nav-link" data-scroll-target="#python-4">Python</a></li>
-  </ul></li>
-  <li><a href="#performance-considerations" id="toc-performance-considerations" class="nav-link" data-scroll-target="#performance-considerations">Performance considerations</a></li>
-  <li><a href="#related-standard-processes" id="toc-related-standard-processes" class="nav-link" data-scroll-target="#related-standard-processes">Related standard processes</a></li>
-  <li><a href="#produce-card4l-surface-reflectance" id="toc-produce-card4l-surface-reflectance" class="nav-link" data-scroll-target="#produce-card4l-surface-reflectance">Produce CARD4L surface reflectance</a></li>
+  <li><a href="#card4l-surface-reflectance" id="toc-card4l-surface-reflectance" class="nav-link" data-scroll-target="#card4l-surface-reflectance">CARD4L surface reflectance</a></li>
+  <li><a href="#card4l-normalised-radar-backscatter" id="toc-card4l-normalised-radar-backscatter" class="nav-link" data-scroll-target="#card4l-normalised-radar-backscatter">CARD4L normalised radar backscatter</a></li>
+  <li><a href="#sar-backscatter" id="toc-sar-backscatter" class="nav-link" data-scroll-target="#sar-backscatter">SAR backscatter</a></li>
+  <li><a href="#cloud-detection" id="toc-cloud-detection" class="nav-link" data-scroll-target="#cloud-detection">Cloud detection</a></li>
   </ul>
 </nav>
     </div>
@@ -601,21 +608,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<div class="lead">
-<p>This page highlights key openEO processes for preprocessing satellite imagery into Analysis Ready Data.</p>
-</div>
+<p>This page provides an overview of preprocessing operations available in openEO for pre-processing EO datacubes for further analysis. Please note that the availability of specific processes may vary depending on the backend you are using. In addition to being backend-dependent, some processes might be experimental, or support may be available only for a specific client library.</p>
 
 <div class="tag-filter-ui" id="tag-filter-ui">
-&nbsp; <button class="tag-filter-badge active" data-tag="vito">VITO</button>
-&nbsp; <button class="tag-filter-badge inactive" data-tag="sentinelhub">Sentinel Hub</button>
-&nbsp; <button class="tag-filter-badge inactive" data-tag="eodc">EODC</button>
-&nbsp; <button class="tag-filter-badge inactive" data-tag="cdse">CDSE</button>
-&nbsp; <button class="tag-filter-badge inactive" data-tag="federation">Federation</button>
-&nbsp; <button class="tag-filter-badge inactive" data-tag="eurac">EURAC</button>
-&nbsp; <button class="tag-filter-badge inactive" data-tag="gee">Google Earth Engine</button>
-
-
-
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
@@ -633,12 +628,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<hr>
 <section id="mask-a-cube" class="level2 tag-filter-item" data-process="mask">
 <h2 class="anchored" data-anchor-id="mask-a-cube">Mask a cube</h2>
 <p>openEO provides the <code>mask</code> process to mask out unwanted or invalid observations. The standard <a href="https://open-eo.github.io/openeo-python-client/api-processes.html#openeo.processes.mask"><code>mask</code></a> process replaces values where a Boolean mask is true. It is the portable choice when the collection exposes its own quality band or when you build a mask from another data cube.</p>
-<section id="python" class="level3">
-<h3 class="anchored" data-anchor-id="python">Python</h3>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">Python</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> openeo</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>connection <span class="op">=</span> openeo.<span class="ex">connect</span>(<span class="st">"openeofed.dataspace.copernicus.eu"</span>).authenticate_oidc()</span>
@@ -654,6 +650,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>&nbsp; <span class="kw">lambda</span> value: (value <span class="op">==</span> <span class="dv">3</span>) <span class="op">|</span> (value <span class="op">==</span> <span class="dv">8</span>) <span class="op">|</span> (value <span class="op">==</span> <span class="dv">9</span>) <span class="op">|</span> (value <span class="op">==</span> <span class="dv">10</span>)</span>
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>cloud_free <span class="op">=</span> sentinel2.mask(mask<span class="op">=</span>quality_mask)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -668,13 +667,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-</section>
-<hr>
 <section id="sentinel-2-scl-dilation-mask" class="level2 tag-filter-item" data-process="mask_scl_dilation">
 <h2 class="anchored" data-anchor-id="sentinel-2-scl-dilation-mask">Sentinel-2 SCL Dilation Mask</h2>
 <p><a href="https://open-eo.github.io/openeo-python-client/api-processes.html#openeo.processes.to_scl_dilation_mask"><code>to_scl_dilation_mask</code></a> is a backend-specific convenience process that derives and creates a cloud and cloud-shadow mask from the Sentinel-2 Scene Classification (SCL) band. The cloud mask generated can be used directly with the standard <code>mask</code> process to filter out cloudy pixels.</p>
-<section id="python-1" class="level3">
-<h3 class="anchored" data-anchor-id="python-1">Python</h3>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">Python</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>scl <span class="op">=</span> c.load_collection(</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; <span class="st">"SENTINEL2_L2A"</span>,</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; spatial_extent<span class="op">=</span>{<span class="st">"west"</span>: <span class="fl">4.279</span>, <span class="st">"south"</span>: <span class="fl">50.218</span>, <span class="st">"east"</span>: <span class="fl">4.626</span>, <span class="st">"north"</span>: <span class="fl">50.423</span>},</span>
@@ -682,20 +681,38 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; bands<span class="op">=</span>[<span class="st">"SCL"</span>]</span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>cloud_mask <span class="op">=</span> scl.process( data<span class="op">=</span>scl,process_id<span class="op">=</span><span class="st">"to_scl_dilation_mask"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The process is backend-specific and is not available on every backend. An openEO notebook demonstrating how it works and how to replicate the standard openEO process across different backends can be found <a href="https://github.com/Open-EO/openeo-community-examples/blob/main/python/SCLDilationMask/to_scl_dilation_mask.ipynb">here</a>.</p>
+</div>
+</div>
+</div>
+<p>The process is backend-specific and is not available on every backend. An openEO notebook demonstrating how it works and how to replicate the standard openEO process across different backends is available <a href="https://github.com/Open-EO/openeo-community-examples/blob/main/python/SCLDilationMask/to_scl_dilation_mask.ipynb">here</a>.</p>
 </section>
-</section>
-<hr>
 <section id="atmospheric-correction" class="level2 tag-filter-item" data-process="atmospheric_correction">
 <h2 class="anchored" data-anchor-id="atmospheric-correction">Atmospheric Correction</h2>
-<p>Atmospheric correction accounts for atmospheric scattering, absorption, and haze in optical observations. It converts top-of-atmosphere measurements into surface reflectance, which is more suitable for comparing observations across dates and locations.</p>
-<p>The required input bands and correction methods depend on the collection and backend. Check the collection metadata and process description before use.</p>
+<p><a href="https://processes.openeo.org/2.0.0-rc.2/#atmospheric_correction">Atmospheric correction</a> accounts for atmospheric scattering, absorption, and haze in optical observations. It converts top-of-atmosphere measurements into surface reflectance, which is more suitable for comparing observations across dates and locations.</p>
+<p>The atmospheric correction process can apply a chosen method to raw ‘L1C’ data. The supported methods and input datasets depend on the backend, because not every method is validated or works with every dataset, and different backends offer a variety of options. This gives you, as a user, more options to run and compare different methods, and select the most suitable one for your case.</p>
+<p>To perform an atmospheric correction, the user has to load an uncorrected L1C optical dataset. On the resulting datacube, the atmospheric_correction() method can be invoked. Note that it may not be possible to apply certain processes to the raw input data: preprocessing algorithms can be tightly coupled with the raw data, making it hard or impossible for the backend to perform operations in between loading and correcting the data.</p>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Caution</span>Experimental
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Please note that this process is experimental and may change significantly. Feel encouraged to try it out and give feedback, but refrain from using it in production.</p>
+</div>
+</div>
+</div>
 <section id="code-examples" class="level3">
 <h3 class="anchored" data-anchor-id="code-examples">Code examples</h3>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">JavaScript</a></li></ul>
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-3" role="tab" aria-controls="tabset-3-3" aria-selected="false" href="">JavaScript</a></li></ul>
 <div class="tab-content">
-<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> openeo</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>connection <span class="op">=</span> openeo.<span class="ex">connect</span>(<span class="st">"openeo.eodc.eu"</span>).authenticate_oidc()</span>
@@ -721,7 +738,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>l2a.download(<span class="st">"sentinel2_icor.tif"</span>, <span class="bu">format</span><span class="op">=</span><span class="st">"GTiff"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(openeo)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>con <span class="ot">&lt;-</span> <span class="fu">connect</span>(<span class="st">"openeo.eodc.eu"</span>)</span>
@@ -747,7 +764,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a><span class="fu">compute_result</span>(<span class="at">graph =</span> l2a, <span class="at">format =</span> <span class="st">"GTiff"</span>, <span class="at">output_file =</span> <span class="st">"sentinel2_icor.tif"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<div id="tabset-3-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-3-tab">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { Connection<span class="op">,</span> authenticate } <span class="im">from</span> <span class="st">"@openeo/js-client"</span><span class="op">;</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> con <span class="op">=</span> <span class="cf">await</span> Connection<span class="op">.</span><span class="fu">connect</span>(<span class="st">"openeo.eodc.eu"</span>)<span class="op">;</span></span>
@@ -774,150 +791,170 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </section>
 </section>
-<hr>
-<section id="create-card4l-normalised-radar-backscatter" class="level2 tag-filter-item" data-process="ard_normalized_radar_backscatter">
-<h2 class="anchored" data-anchor-id="create-card4l-normalised-radar-backscatter">Create CARD4L normalised radar backscatter</h2>
+<section id="card4l-surface-reflectance" class="level2 tag-filter-item" data-process="ard_surface_reflectance">
+<h2 class="anchored" data-anchor-id="card4l-surface-reflectance">CARD4L surface reflectance</h2>
+<p>The CARD4L variant of the atmospheric correction process is: ard_surface_reflectance(). This process follows CEOS specifications and thus can include additional processing steps, such as a BRDF correction, that are not yet available as separate processes.</p>
+<p><code>ard_surface_reflectance</code> creates an analysis-ready optical product from suitable input data. It can include atmospheric, geometric, and quality corrections, depending on the backend implementation.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>surface_reflectance <span class="op">=</span> l1c.ard_surface_reflectance()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="card4l-normalised-radar-backscatter" class="level2 tag-filter-item" data-process="ard_normalized_radar_backscatter">
+<h2 class="anchored" data-anchor-id="card4l-normalised-radar-backscatter">CARD4L normalised radar backscatter</h2>
+<p>Data from synthetic aperture radar sensors requires significant preprocessing to be calibrated and normalised for terrain. This is referred to as backscatter computation, and supported by <a href="#compute-sar-backscatter"><code>sar_backscatter</code></a> and the CARD4L compliant variant <a href="https://processes.openeo.org/2.0.0-rc.2/#ard_normalized_radar_backscatter"><code>ard_normalized_radar_backscatter</code></a>.</p>
 <p>SAR backscatter processing calibrates raw radar observations and can apply terrain correction and normalisation. The resulting measurements are commonly expressed as sigma0 or gamma0 in linear or decibel scale. Terrain correction is especially important in areas with varied topography.</p>
-<section id="code-examples-1" class="level3">
-<h3 class="anchored" data-anchor-id="code-examples-1">Code examples</h3>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false" href="">JavaScript</a></li></ul>
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-3" role="tab" aria-controls="tabset-4-3" aria-selected="false" href="">JavaScript</a></li></ul>
 <div class="tab-content">
-<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> openeo</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>connection <span class="op">=</span> openeo.<span class="ex">connect</span>(<span class="st">"openeo.vito.be"</span>).authenticate_oidc()</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Load Sentinel-1 GRD — spatial/temporal filters are fine before backscatter</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>s1grd <span class="op">=</span> (</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a> connection.load_collection(</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; <span class="st">"SENTINEL1_GRD"</span>,</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; bands<span class="op">=</span>[<span class="st">"VH"</span>, <span class="st">"VV"</span>]</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; )</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; .filter_bbox(west<span class="op">=</span><span class="fl">2.590</span>, east<span class="op">=</span><span class="fl">2.895</span>, north<span class="op">=</span><span class="fl">51.221</span>, south<span class="op">=</span><span class="fl">51.069</span>)</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; .filter_temporal(extent<span class="op">=</span>[<span class="st">"2019-10-10"</span>, <span class="st">"2019-10-10"</span>])</span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co"># CARD4L-compliant normalised radar backscatter (gamma0, terrain-flattened)</span></span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>nrb <span class="op">=</span> s1grd.ard_normalized_radar_backscatter()</span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Submit as batch job and download results</span></span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>job <span class="op">=</span> nrb.execute_batch()</span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>job.get_results().download_files(<span class="st">"./output/"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(openeo)</span>
+<div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> openeo</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>con <span class="ot">&lt;-</span> <span class="fu">connect</span>(<span class="st">"openeo.terrascope.be"</span>)</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="fu">login</span>()</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">processes</span>()</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Load Sentinel-1 GRD with spatial and temporal filters</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>s1grd <span class="ot">&lt;-</span> p<span class="sc">$</span><span class="fu">load_collection</span>(</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>&nbsp; <span class="at">id =</span> <span class="st">"SENTINEL1_GRD"</span>,</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>&nbsp; <span class="at">bands =</span> <span class="fu">c</span>(<span class="st">"VH"</span>, <span class="st">"VV"</span>)</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>s1grd <span class="ot">&lt;-</span> p<span class="sc">$</span><span class="fu">filter_bbox</span>(</span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>&nbsp; <span class="at">data =</span> s1grd,</span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>&nbsp; <span class="at">extent =</span> <span class="fu">list</span>(<span class="at">west=</span><span class="fl">2.590</span>, <span class="at">east=</span><span class="fl">2.895</span>, <span class="at">south=</span><span class="fl">51.069</span>, <span class="at">north=</span><span class="fl">51.221</span>)</span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>s1grd <span class="ot">&lt;-</span> p<span class="sc">$</span><span class="fu">filter_temporal</span>(</span>
-<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>&nbsp; <span class="at">data =</span> s1grd,</span>
-<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>&nbsp; <span class="at">extent =</span> <span class="fu">c</span>(<span class="st">"2019-10-10"</span>, <span class="st">"2019-10-10"</span>)</span>
-<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply CARD4L-compliant normalised radar backscatter</span></span>
-<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>nrb <span class="ot">&lt;-</span> p<span class="sc">$</span><span class="fu">ard_normalized_radar_backscatter</span>(<span class="at">data =</span> s1grd)</span>
-<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Submit batch job</span></span>
-<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>job <span class="ot">&lt;-</span> <span class="fu">create_job</span>(</span>
-<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>&nbsp; <span class="at">graph =</span> nrb,</span>
-<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>&nbsp; <span class="at">title =</span> <span class="st">"S1 CARD4L NRB"</span></span>
-<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a><span class="fu">start_job</span>(job)</span>
-<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Monitor and download when complete</span></span>
-<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>job_status <span class="ot">&lt;-</span> <span class="fu">describe_job</span>(job)</span>
-<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a><span class="fu">download_results</span>(job, <span class="at">folder =</span> <span class="st">"./output/"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>connection <span class="op">=</span> openeo.<span class="ex">connect</span>(<span class="st">"openeo.vito.be"</span>).authenticate_oidc()</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Load Sentinel-1 GRD — spatial/temporal filters are fine before backscatter</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>s1grd <span class="op">=</span> (</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a> connection.load_collection(</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; <span class="st">"SENTINEL1_GRD"</span>,</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; bands<span class="op">=</span>[<span class="st">"VH"</span>, <span class="st">"VV"</span>]</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; )</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; .filter_bbox(west<span class="op">=</span><span class="fl">2.590</span>, east<span class="op">=</span><span class="fl">2.895</span>, north<span class="op">=</span><span class="fl">51.221</span>, south<span class="op">=</span><span class="fl">51.069</span>)</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; .filter_temporal(extent<span class="op">=</span>[<span class="st">"2019-10-10"</span>, <span class="st">"2019-10-10"</span>])</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="co"># CARD4L-compliant normalised radar backscatter (gamma0, terrain-flattened)</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>nrb <span class="op">=</span> s1grd.ard_normalized_radar_backscatter()</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Submit as batch job and download results</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>job <span class="op">=</span> nrb.execute_batch()</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>job.get_results().download_files(<span class="st">"./output/"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { Connection } <span class="im">from</span> <span class="st">"@openeo/js-client"</span><span class="op">;</span></span>
+<div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(openeo)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> con <span class="op">=</span> <span class="cf">await</span> Connection<span class="op">.</span><span class="fu">connect</span>(<span class="st">"openeo.terrascope.be"</span>)<span class="op">;</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> con<span class="op">.</span><span class="fu">authenticateOIDC</span>()<span class="op">;</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>con <span class="ot">&lt;-</span> <span class="fu">connect</span>(<span class="st">"openeo.terrascope.be"</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">login</span>()</span>
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> builder <span class="op">=</span> <span class="cf">await</span> con<span class="op">.</span><span class="fu">buildProcess</span>()<span class="op">;</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">processes</span>()</span>
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co">// Load Sentinel-1 GRD</span></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> s1grd <span class="op">=</span> builder<span class="op">.</span><span class="fu">load_collection</span>(</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>&nbsp; <span class="st">"SENTINEL1_GRD"</span><span class="op">,</span></span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>&nbsp; <span class="kw">null</span><span class="op">,</span> <span class="kw">null</span><span class="op">,</span></span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a> [<span class="st">"VH"</span><span class="op">,</span> <span class="st">"VV"</span>]</span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>)<span class="op">;</span></span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="co">// Apply spatial and temporal filters first</span></span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>s1grd <span class="op">=</span> builder<span class="op">.</span><span class="fu">filter_bbox</span>(s1grd<span class="op">,</span> {</span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a> <span class="dt">west</span><span class="op">:</span> <span class="fl">2.590</span><span class="op">,</span> <span class="dt">east</span><span class="op">:</span> <span class="fl">2.895</span><span class="op">,</span></span>
-<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a> <span class="dt">south</span><span class="op">:</span> <span class="fl">51.069</span><span class="op">,</span> <span class="dt">north</span><span class="op">:</span> <span class="fl">51.221</span></span>
-<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span>
-<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>s1grd <span class="op">=</span> builder<span class="op">.</span><span class="fu">filter_temporal</span>(s1grd<span class="op">,</span> [<span class="st">"2019-10-10"</span><span class="op">,</span> <span class="st">"2019-10-10"</span>])<span class="op">;</span></span>
-<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a><span class="co">// CARD4L normalised radar backscatter</span></span>
-<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> nrb <span class="op">=</span> builder<span class="op">.</span><span class="fu">ard_normalized_radar_backscatter</span>(s1grd)<span class="op">;</span></span>
-<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> result <span class="op">=</span> builder<span class="op">.</span><span class="fu">save_result</span>(nrb<span class="op">,</span> <span class="st">"GTiff"</span>)<span class="op">;</span></span>
-<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a><span class="co">// Submit as batch job</span></span>
-<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> job <span class="op">=</span> <span class="cf">await</span> con<span class="op">.</span><span class="fu">createJob</span>(result<span class="op">,</span> { <span class="dt">title</span><span class="op">:</span> <span class="st">"S1 NRB Belgium"</span> })<span class="op">;</span></span>
-<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> job<span class="op">.</span><span class="fu">startJob</span>()<span class="op">;</span></span>
-<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a><span class="co">// Poll until done, then download</span></span>
-<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> results <span class="op">=</span> <span class="cf">await</span> job<span class="op">.</span><span class="fu">getResults</span>()<span class="op">;</span></span>
-<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (<span class="kw">const</span> asset <span class="kw">of</span> <span class="bu">Object</span><span class="op">.</span><span class="fu">values</span>(results<span class="op">.</span><span class="at">assets</span>)) {</span>
-<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>&nbsp; <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="st">"Download:"</span><span class="op">,</span> asset<span class="op">.</span><span class="at">href</span>)<span class="op">;</span></span>
-<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Load Sentinel-1 GRD with spatial and temporal filters</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>s1grd <span class="ot">&lt;-</span> p<span class="sc">$</span><span class="fu">load_collection</span>(</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>&nbsp; <span class="at">id =</span> <span class="st">"SENTINEL1_GRD"</span>,</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>&nbsp; <span class="at">bands =</span> <span class="fu">c</span>(<span class="st">"VH"</span>, <span class="st">"VV"</span>)</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>s1grd <span class="ot">&lt;-</span> p<span class="sc">$</span><span class="fu">filter_bbox</span>(</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>&nbsp; <span class="at">data =</span> s1grd,</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>&nbsp; <span class="at">extent =</span> <span class="fu">list</span>(<span class="at">west=</span><span class="fl">2.590</span>, <span class="at">east=</span><span class="fl">2.895</span>, <span class="at">south=</span><span class="fl">51.069</span>, <span class="at">north=</span><span class="fl">51.221</span>)</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>s1grd <span class="ot">&lt;-</span> p<span class="sc">$</span><span class="fu">filter_temporal</span>(</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>&nbsp; <span class="at">data =</span> s1grd,</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>&nbsp; <span class="at">extent =</span> <span class="fu">c</span>(<span class="st">"2019-10-10"</span>, <span class="st">"2019-10-10"</span>)</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply CARD4L-compliant normalised radar backscatter</span></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>nrb <span class="ot">&lt;-</span> p<span class="sc">$</span><span class="fu">ard_normalized_radar_backscatter</span>(<span class="at">data =</span> s1grd)</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Submit batch job</span></span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>job <span class="ot">&lt;-</span> <span class="fu">create_job</span>(</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>&nbsp; <span class="at">graph =</span> nrb,</span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>&nbsp; <span class="at">title =</span> <span class="st">"S1 CARD4L NRB"</span></span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a><span class="fu">start_job</span>(job)</span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Monitor and download when complete</span></span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>job_status <span class="ot">&lt;-</span> <span class="fu">describe_job</span>(job)</span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a><span class="fu">download_results</span>(job, <span class="at">folder =</span> <span class="st">"./output/"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-</div>
-</div>
-</section>
-</section>
-<hr>
-<section id="compute-sar-backscatter" class="level2 tag-filter-item" data-process="sar_backscatter">
-<h2 class="anchored" data-anchor-id="compute-sar-backscatter">Compute SAR backscatter</h2>
-<p><code>sar_backscatter</code> calibrates radar observations and can produce a chosen backscatter coefficient, such as <code>gamma0-terrain</code>. Use it when you need explicit control over calibration, terrain correction, elevation data, or noise removal, rather than the higher-level CARD4L process.</p>
-<section id="python-4" class="level3">
-<h3 class="anchored" data-anchor-id="python-4">Python</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>s1_image <span class="op">=</span> connection.load_collection(</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; <span class="st">"SENTINEL1_GRD"</span>,</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; temporal_extent<span class="op">=</span>[<span class="st">"2017-08-09"</span>, <span class="st">"2017-08-12"</span>],</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; spatial_extent<span class="op">=</span>aoi,</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; bands<span class="op">=</span>[<span class="st">"VV"</span>],</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<div id="tabset-4-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { Connection } <span class="im">from</span> <span class="st">"@openeo/js-client"</span><span class="op">;</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> con <span class="op">=</span> <span class="cf">await</span> Connection<span class="op">.</span><span class="fu">connect</span>(<span class="st">"openeo.terrascope.be"</span>)<span class="op">;</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> con<span class="op">.</span><span class="fu">authenticateOIDC</span>()<span class="op">;</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> builder <span class="op">=</span> <span class="cf">await</span> con<span class="op">.</span><span class="fu">buildProcess</span>()<span class="op">;</span></span>
 <span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>s1_backscatter <span class="op">=</span> s1_image.sar_backscatter(coefficient<span class="op">=</span><span class="st">"sigma0-ellipsoid"</span>)</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>job <span class="op">=</span> s1_backscatter.execute_batch(</span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>&nbsp; title<span class="op">=</span><span class="st">"S1 backscatter example"</span>,</span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>&nbsp; description<span class="op">=</span><span class="st">"Terrain-flattened gamma0 over Belgium"</span>,</span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>job.get_results().download_files(<span class="st">"./output/"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co">// Load Sentinel-1 GRD</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> s1grd <span class="op">=</span> builder<span class="op">.</span><span class="fu">load_collection</span>(</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>&nbsp; <span class="st">"SENTINEL1_GRD"</span><span class="op">,</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>&nbsp; <span class="kw">null</span><span class="op">,</span> <span class="kw">null</span><span class="op">,</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a> [<span class="st">"VH"</span><span class="op">,</span> <span class="st">"VV"</span>]</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>)<span class="op">;</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="co">// Apply spatial and temporal filters first</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>s1grd <span class="op">=</span> builder<span class="op">.</span><span class="fu">filter_bbox</span>(s1grd<span class="op">,</span> {</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a> <span class="dt">west</span><span class="op">:</span> <span class="fl">2.590</span><span class="op">,</span> <span class="dt">east</span><span class="op">:</span> <span class="fl">2.895</span><span class="op">,</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a> <span class="dt">south</span><span class="op">:</span> <span class="fl">51.069</span><span class="op">,</span> <span class="dt">north</span><span class="op">:</span> <span class="fl">51.221</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>s1grd <span class="op">=</span> builder<span class="op">.</span><span class="fu">filter_temporal</span>(s1grd<span class="op">,</span> [<span class="st">"2019-10-10"</span><span class="op">,</span> <span class="st">"2019-10-10"</span>])<span class="op">;</span></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a><span class="co">// CARD4L normalised radar backscatter</span></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> nrb <span class="op">=</span> builder<span class="op">.</span><span class="fu">ard_normalized_radar_backscatter</span>(s1grd)<span class="op">;</span></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> result <span class="op">=</span> builder<span class="op">.</span><span class="fu">save_result</span>(nrb<span class="op">,</span> <span class="st">"GTiff"</span>)<span class="op">;</span></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a><span class="co">// Submit as batch job</span></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> job <span class="op">=</span> <span class="cf">await</span> con<span class="op">.</span><span class="fu">createJob</span>(result<span class="op">,</span> { <span class="dt">title</span><span class="op">:</span> <span class="st">"S1 NRB Belgium"</span> })<span class="op">;</span></span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> job<span class="op">.</span><span class="fu">startJob</span>()<span class="op">;</span></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a><span class="co">// Poll until done, then download</span></span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> results <span class="op">=</span> <span class="cf">await</span> job<span class="op">.</span><span class="fu">getResults</span>()<span class="op">;</span></span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (<span class="kw">const</span> asset <span class="kw">of</span> <span class="bu">Object</span><span class="op">.</span><span class="fu">values</span>(results<span class="op">.</span><span class="at">assets</span>)) {</span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>&nbsp; <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="st">"Download:"</span><span class="op">,</span> asset<span class="op">.</span><span class="at">href</span>)<span class="op">;</span></span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+</section>
+<section id="sar-backscatter" class="level2 tag-filter-item" data-process="sar_backscatter">
+<h2 class="anchored" data-anchor-id="sar-backscatter">SAR backscatter</h2>
+<p><code>sar_backscatter</code> calibrates radar observations and can produce a chosen backscatter coefficient, such as <code>gamma0-terrain</code>. Use it when you need explicit control over calibration, terrain correction, elevation data, or noise removal, rather than the higher-level CARD4L process. For more information, refer to the process documentation <a href="https://processes.openeo.org/2.0.0-rc.2/#sar_backscatter">here</a>.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-5-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-1" role="tab" aria-controls="tabset-5-1" aria-selected="true" href="">Python</a></li></ul>
+<div class="tab-content">
+<div id="tabset-5-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-5-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>s1_image <span class="op">=</span> connection.load_collection(</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; <span class="st">"SENTINEL1_GRD"</span>,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; temporal_extent<span class="op">=</span>[<span class="st">"2017-08-09"</span>, <span class="st">"2017-08-12"</span>],</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; spatial_extent<span class="op">=</span>aoi,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; bands<span class="op">=</span>[<span class="st">"VV"</span>],</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>s1_backscatter <span class="op">=</span> s1_image.sar_backscatter(coefficient<span class="op">=</span><span class="st">"sigma0-ellipsoid"</span>)</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>job <span class="op">=</span> s1_backscatter.execute_batch(</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>&nbsp; title<span class="op">=</span><span class="st">"S1 backscatter example"</span>,</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>&nbsp; description<span class="op">=</span><span class="st">"Terrain-flattened gamma0 over Belgium"</span>,</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>job.get_results().download_files(<span class="st">"./output/"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
 <p>The returned values are calibrated radar measurements, usually expressed on a linear or decibel scale depending on the process parameters. Check the backend metadata for supported coefficients and ancillary data requirements.</p>
 </section>
-</section>
-<hr>
-<section id="performance-considerations" class="level2">
-<h2 class="anchored" data-anchor-id="performance-considerations">Performance considerations</h2>
-<p>Both <code>atmospheric_correction</code> and <code>sar_backscatter</code> can require substantial backend resources. Before including them in a workflow, consider the following:</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Example notebooks
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
 <ul>
-<li><strong>Use batch jobs:</strong> synchronous execution may time out beyond a small test area.</li>
-<li><strong>Filter early:</strong> Apply <code>filter_bbox</code> and <code>filter_temporal</code> before these processes to reduce the volume of data processed.</li>
-<li><strong>Prefer pre-corrected collections:</strong> many backends provide analysis-ready collections, such as Sentinel-2 L2A or Sentinel-1 backscatter products.</li>
-<li><strong>Test a small area first:</strong> resource use and costs can increase substantially for larger areas or longer time ranges.</li>
+<li><a href="../../client_examples/openeo-community-examples/python/FloodNDWI/flood_SAR.ipynb">Identifying Flooded Areas with Sentinel-1 Data</a></li>
+<li><a href="../../client_examples/openeo-community-examples/python/OilSpill/OilSpillMapping.ipynb">Oil Spill Mapping using Sentinel-1</a></li>
+<li><a href="../../client_examples/openeo-community-examples/python/SAR_in_openEO/Interferogram_deformation_map.ipynb">Analysing openEO-Generated Interferograms for Surface Deformation</a></li>
+<li><a href="../../client_examples/openeo-community-examples/python/SAR_in_openEO/Coherence_for_harvestdays.ipynb">Analysing Coherence Output for Harvest-Day Detection</a></li>
+<li><a href="../../client_examples/openeo-community-examples/python/Sentinel1_Stats/Sentinel1_Stats.ipynb">Publishing an openEO Workflow as a User-Defined Process (Sentinel-1 stats)</a></li>
+<li><a href="https://github.com/Open-EO/openeo-community-examples/blob/main/python/SurfaceSoilMoisture/SoilMoisture.ipynb">Soil Surface Moisture using openEO API</a></li>
 </ul>
+<p>More notebooks are listed on the <a href="../../examples.html">sample notebooks page</a>.</p>
+</div>
+</div>
+</div>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -931,29 +968,54 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>If your backend provides a collection such as <code>SENTINEL2_L2A</code> or <code>SENTINEL1_BACKSCATTER</code>, use it when it meets the analysis requirements. These products are already processed and usually require fewer backend resources.</p>
 </div>
 </div>
-</section>
-<section id="related-standard-processes" class="level2">
-<h2 class="anchored" data-anchor-id="related-standard-processes">Related standard processes</h2>
-<p>Some standard processes are useful during preprocessing but have a different primary purpose. To avoid documenting one process twice, use the dedicated pages for their full explanations and examples:</p>
+<section id="cloud-detection" class="level2 tag-filter-item" data-process="cloud_detection">
+<h2 class="anchored" data-anchor-id="cloud-detection">Cloud detection</h2>
+<p><a href="https://processes.openeo.org/#cloud_detection"><code>Cloud detection</code></a> is defined within the OpenEO processes as a method to identify cloud-covered pixels in satellite imagery. It detects atmospheric disturbances such as clouds, cloud shadows, aerosols, haze, ozone and/or water vapour in optical imagery. Then it creates a data cube with spatial and temporal dimensions compatible with the source data cube, and a dimension containing a label for each supported/considered atmospheric disturbance. The naming of the bands follows these pre-defined values:</p>
 <ul>
-<li><a href="../../documentation/cube_operations/spatial_operations.html"><code>mask_polygon</code></a> masks pixels outside a geometry.</li>
-<li><a href="../../documentation/cube_operations/cube_manipulations.html"><code>apply</code></a> applies a per-pixel process callback.</li>
-<li><a href="../../documentation/cube_operations/spectral_operations.html"><code>linear_scale_range</code></a> rescales numeric values.</li>
+<li>cloud</li>
+<li>aerosol</li>
+<li>shadow</li>
+<li>aerosol</li>
+<li>haze</li>
+<li>ozone</li>
+<li>water_vapor</li>
 </ul>
-<p>These processes remain individually associated with backend support through their own <code>data-process</code> sections on those pages.</p>
-<p><code>cloud_detection</code> is not included here because it is not advertised by any backend in the current generated support data. It should only be documented after a backend advertises the process and its process metadata has been checked.</p>
-<hr>
+<p>All bands have values between 0 (clear) and 1, which describes the probability that it is an atmospheric disturbance.</p>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Caution</span>Experimental
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Please note that this process is experimental and may change significantly. Feel encouraged to try it out and give feedback, but refrain from using it in production.</p>
+</div>
+</div>
+</div>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-6-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-1" role="tab" aria-controls="tabset-6-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-2" role="tab" aria-controls="tabset-6-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-3" role="tab" aria-controls="tabset-6-3" aria-selected="false" href="">JavaScript</a></li></ul>
+<div class="tab-content">
+<div id="tabset-6-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-6-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>cloud_mask <span class="op">=</span> s2_image.cloud_detection()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-6-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>cloud_mask <span class="ot">&lt;-</span> <span class="fu">cloud_detection</span>(s2_image)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-6-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> cloud_mask <span class="op">=</span> s2_image<span class="op">.</span><span class="fu">cloud_detection</span>()<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
 </section>
-<section id="produce-card4l-surface-reflectance" class="level2 tag-filter-item" data-process="ard_surface_reflectance">
-<h2 class="anchored" data-anchor-id="produce-card4l-surface-reflectance">Produce CARD4L surface reflectance</h2>
-<p><code>ard_surface_reflectance</code> creates an analysis-ready optical product from suitable input data. It can include atmospheric, geometric, and quality corrections, depending on the backend implementation.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>surface_reflectance <span class="op">=</span> l1c.ard_surface_reflectance()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<p>Each section is shown only for backends that advertise their process. The process metadata remains authoritative for exact parameters, supported collections, and output conventions.</p>
 
 
 
-</main> <!-- /main -->
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
@@ -1354,6 +1416,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
   });
   </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../documentation/cube_operations/general_operations.html" class="pagination-link" aria-label="General Operations">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">General Operations</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../documentation/cube_operations/spatial_operations.html" class="pagination-link" aria-label="Spatial Operations">
+        <span class="nav-page-text">Spatial Operations</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
 </div> <!-- /content -->
 
 

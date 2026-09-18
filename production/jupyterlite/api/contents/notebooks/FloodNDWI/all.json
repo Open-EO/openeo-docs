@@ -1,0 +1,57 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2026-09-18T14:12:11.253032Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:12:08.262211Z",
+      "mimetype": null,
+      "name": "flood_ndwi.ipynb",
+      "path": "notebooks/FloodNDWI/flood_ndwi.ipynb",
+      "size": 13850,
+      "type": "notebook",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2026-09-18T14:12:11.242394Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:12:08.261379Z",
+      "mimetype": null,
+      "name": "flood_SAR.ipynb",
+      "path": "notebooks/FloodNDWI/flood_SAR.ipynb",
+      "size": 5816331,
+      "type": "notebook",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2026-09-18T14:12:11.240874Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:12:08.260410Z",
+      "mimetype": "application/geo+json",
+      "name": "cologne_all.geojson",
+      "path": "notebooks/FloodNDWI/cologne_all.geojson",
+      "size": 6620,
+      "type": "file",
+      "writable": true
+    }
+  ],
+  "created": "2026-09-18T14:12:11.252395Z",
+  "format": "json",
+  "hash": null,
+  "hash_algorithm": null,
+  "last_modified": "2026-09-18T14:12:11.252395Z",
+  "mimetype": null,
+  "name": "FloodNDWI",
+  "path": "notebooks/FloodNDWI",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}

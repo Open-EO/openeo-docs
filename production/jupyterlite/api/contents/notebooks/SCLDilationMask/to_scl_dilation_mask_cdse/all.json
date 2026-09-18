@@ -1,0 +1,29 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2026-09-18T14:12:11.379462Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-18T14:12:08.281226Z",
+      "mimetype": "application/x-netcdf",
+      "name": "openEO.nc",
+      "path": "notebooks/SCLDilationMask/to_scl_dilation_mask_cdse/openEO.nc",
+      "size": 320421,
+      "type": "file",
+      "writable": true
+    }
+  ],
+  "created": "2026-09-18T14:12:11.379462Z",
+  "format": "json",
+  "hash": null,
+  "hash_algorithm": null,
+  "last_modified": "2026-09-18T14:12:11.379462Z",
+  "mimetype": null,
+  "name": "to_scl_dilation_mask_cdse",
+  "path": "notebooks/SCLDilationMask/to_scl_dilation_mask_cdse",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}

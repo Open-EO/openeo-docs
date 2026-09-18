@@ -1,30 +1,20 @@
 # Temporal Operations
 
-Temporal processes select observations, build regular composites, and apply calculations along a cube’s time dimension.
+This page provides an overview of several temporal processes offered by openEO for analyzing and manipulating time dimension in an EO application. These processes can be handy for tasks such as filtering observations by date, building temporal composites, and applying calculations along the time dimension.
 
-VITO
-
-EODC
-
-CDSE
-
-Sentinel Hub
-
-Google Earth Engine
+*Note: Not all temporal processes might be covered in this page. For a complete list, refer to the [openEO processes documentation](https://processes.openeo.org/).*
 
 > **NOTE:**
 >
-> The buttons on this page are a documentation aid, not a live capability registry. Use the [openEO Hub](https://hub.openeo.org/) for a cross-backend overview: open **Filters**, select a process under **Processes**, and the Hub shows only matching services. The Hub data is crawled and cached.
-
-> **NOTE:**
->
-> The labels identify backends associated with these examples, not a permanent guarantee of capability. Check the backend process listing for its current support.
+> The buttons above let you filter processes supported by different backends. Selecting or deselecting a backend will show or hide the relevant sections in the documentation. However, please note that it is based on the latest documentation rendering. Thus, please refer to the [openEO Hub](https://hub.openeo.org/) for the most up-to-date information.
 
 ## Select a time range
 
-Use `filter_temporal` immediately after loading a collection when the temporal extent is not already supplied to `load_collection`. It accepts an inclusive start and exclusive end timestamp, so consecutive intervals can be joined without duplicated observations.
+When working with the satellite data, the temporal frequency of observation can vary for different sensors and acquisition strategies. While some sensors may provide daily observations, others might only capture data every few weeks. To make it easier for analysis, openEO provides temporal filtering capabilities through the `filter_temporal` process. While user can define temporal extent when loading the collection using `load_collection`, `filter_temporal` allows further refinement of the time range.
 
-### Python
+It limits the data cube to the specified interval of dates and/or times. More precisely, the filter checks whether each of the temporal dimension labels is greater than or equal to the lower boundary (start date/time) and less than the value of the upper boundary (end date/time). This corresponds to a left-closed interval, which contains the lower boundary but not the upper boundary.
+
+## Python
 
 ``` python
 import openeo
@@ -34,13 +24,35 @@ cube = connection.load_collection("SENTINEL2_L2A", bands=["B04", "B08"])
 growing_season = cube.filter_temporal(["2024-04-01", "2024-10-01"])
 ```
 
-------------------------------------------------------------------------
+## R
 
-## Build monthly composites
+``` r
+library(openeo)
 
-Clouds and irregular acquisition dates make raw satellite time series difficult to compare. `aggregate_temporal_period` groups observations into calendar periods and reduces each group. A monthly median is a robust first composite for optical data after cloud masking.
+connection <- connect("openeofed.dataspace.copernicus.eu") %>% authenticate_oidc()
+cube <- connection %>% load_collection("SENTINEL2_L2A", bands=c("B04", "B08"))
+growing_season <- cube %>% filter_temporal(c("2024-04-01", "2024-10-01"))
+```
 
-### Python
+## JavaScript
+
+``` javascript
+import OpenEO from "openeo-js-client";
+
+const connection = await OpenEO.connect("openeofed.dataspace.copernicus.eu").authenticate_oidc();
+const cube = connection.load_collection("SENTINEL2_L2A", { bands: ["B04", "B08"] });
+const growing_season = cube.filter_temporal(["2024-04-01", "2024-10-01"]);
+```
+
+This results in a datacube restricted to the specified temporal extent. The dimensions and dimension properties (name, type, labels, reference system and resolution) remain unchanged, except that the temporal dimensions (determined by dimensions parameter) may have less dimension labels.
+
+## Aggregate data based on temporal periods
+
+It is often noticed that clouds and irregular acquisition dates makes satellite data difficult to compare or there are usecases where one is interested in aggregating data over specific temporal periods. For such scenarios, `aggregate_temporal_period` is particularly useful. The `aggregate_temporal_period` process computes a temporal aggregation based on calendar hierarchies such as years, months or seasons.
+
+For each interval, all data along the dimension will be passed through the reducer. If the dimension is not set or is set to null, the data cube is expected to only have one temporal dimension.
+
+## Python
 
 ``` python
 monthly_median = growing_season.aggregate_temporal_period(
@@ -50,26 +62,55 @@ monthly_median = growing_season.aggregate_temporal_period(
 monthly_median.download("monthly_median.tif", format="GTiff")
 ```
 
-Use `aggregate_temporal` instead when you already have explicit date intervals, for example a crop calendar or event-based periods.
+## R
 
-## Aggregate explicit time intervals
+``` r
+monthly_median <- growing_season %>% aggregate_temporal_period(
+  period="month",
+  reducer="median"
+)
+download_result(monthly_median, "monthly_median.tif", format="GTiff")
+```
 
-`aggregate_temporal` reduces user-defined intervals, such as phenological phases or event windows.
+## JavaScript
 
-``` python
-seasonal = growing_season.aggregate_temporal(
-  intervals=["2024-04-01", "2024-06-01"],
-  reducer="mean",
+``` javascript
+const monthly_median = growing_season.aggregate_temporal_period({
+  period: "month",
+  reducer: "median"
+});
+await monthly_median.download("monthly_median.tif", { format: "GTiff" });
+```
+
+## Aggregate data over explicit time intervals
+
+In contrast to `aggregate_temporal_period`, which aggregates over regular calendar periods, `aggregate_temporal` allows you to define custom intervals for aggregation. It computes a temporal aggregation based on an array of date and/or time intervals.
+
+Calendar hierarchies such as year, month, week etc. must be transformed into specific intervals by the clients. For each interval, all data along the dimension will be passed through the reducer. The computed values will be projected to the labels, so the number of labels and the number of intervals need to be equal.
+
+## R
+
+``` r
+seasonal <- growing_season %>% aggregate_temporal(
+  intervals=list(c("2024-04-01", "2024-06-01")),
+  reducer="mean"
 )
 ```
 
-------------------------------------------------------------------------
+## JavaScript
 
-## Apply a reducer along time
+``` javascript
+const seasonal = growing_season.aggregate_temporal({
+  intervals: [["2024-04-01", "2024-06-01"]],
+  reducer: "mean"
+});
+```
 
-`reduce_dimension` is the flexible option for collapsing a dimension. Set `dimension="t"` to derive one raster from the whole time series, such as the maximum NDVI or the number of valid observations.
+## Reduce time dimension
 
-### Python
+The `reduce_dimension` process with dimension=“t” collapses the time dimension by applying a specified reducer, such as “max” or “mean”. In other words when using `reduce_dimension` with `dimension="t"`, you end up with a single raster for each band, representing the aggregated result over the entire time series. This process is useful for generating summary statistics or single-value representations of temporal data.
+
+## Python
 
 ``` python
 seasonal_maximum = growing_season.reduce_dimension(
@@ -78,22 +119,50 @@ seasonal_maximum = growing_season.reduce_dimension(
 )
 ```
 
-> **TIP:**
+## R
+
+``` r
+seasonal_maximum <- growing_season %>% reduce_dimension(
+  dimension="t",
+  reducer="max"
+)
+```
+
+## JavaScript
+
+``` javascript
+const seasonal_maximum = growing_season.reduce_dimension({
+  dimension: "t",
+  reducer: "max"
+});
+```
+
+> **NOTE:**
 >
 > `aggregate_temporal_period` retains a time dimension with one label per period. `reduce_dimension` removes the reduced dimension entirely. Choose the former for a monthly series and the latter for a single seasonal product.
 
-For the definitive schema, consult [`filter_temporal`](https://processes.openeo.org/), [`aggregate_temporal`](https://processes.openeo.org/), [`aggregate_temporal_period`](https://processes.openeo.org/), and [`reduce_dimension`](https://processes.openeo.org/).
-
-## Temporal process details
-
-Each process below has its own backend filter. Generic dimension processes are shown here with `dimension="t"`.
-
 ## Align temporal labels
 
-Use `resample_cube_temporal` before merging or comparing cubes whose timestamps do not line up. The target cube supplies the temporal labels and avoids accidentally comparing observations from different dates.
+The process `resample_cube_temporal` can be used to align the temporal labels of one cube with another, ensuring that observations from different cubes correspond to the same points in time. Resamples one or more given temporal dimensions from a source data cube to align with the corresponding dimensions of the given target data cube using the nearest neighbor method. Returns a new data cube with the resampled dimensions.
+
+By default, this process simply takes the nearest neighbor independent of the value (including no-data values). Depending on the data cubes this may lead to values being assigned to two target timestamps. To only consider valid values in a specific range around the target timestamps, use the parameter valid_within.
+
+## Python
 
 ``` python
 aligned = source.resample_cube_temporal(target)
+```
+
+## R
+
+``` r
+aligned <- source %>% resample_cube_temporal(target)
+```
+
+## JavaScript
+
+``` javascript
+const aligned = source.resample_cube_temporal(target);
 ```
 
 ## Apply a process along time
@@ -109,40 +178,120 @@ smoothed = cube.apply_dimension(
 
 ## Count observations over time
 
-Use `count` to measure how many valid or matching observations contribute to each pixel. This is useful as a quality layer alongside a temporal mean or median.
+The `count_time` process counts the number of images with a valid mask in a time series for all bands of the input dataset. This is useful for understanding the data coverage and quality over time.
+
+## Python
 
 ``` python
-observation_count = cube.count(dimension="t")
+observation_count = cube.count_time()
+```
+
+## R
+
+``` r
+observation_count <- cube %>% count_time()
+```
+
+## JavaScript
+
+``` javascript
+const observation_count = cube.count_time();
 ```
 
 ## Fit a temporal curve
 
-Use `fit_curve` when a time series should be represented by a model, such as a linear trend or seasonal curve. The fitted parameters can then be passed to `predict_curve`.
+The `fit_curve` process uses non-linear least squares to fit a model function y = f(x, parameters) to data. It throws an InvalidValues exception if invalid values are encountered. It is recommended to use `fit_curve` when a time series should be represented by a model, such as a linear trend or seasonal curve. The fitted parameters can then be passed to `predict_curve`.
+
+## Python
 
 ``` python
 model = cube.fit_curve(reducer="linear", parameters={"order": 1})
 ```
 
+## R
+
+``` r
+model <- cube %>% fit_curve(reducer="linear", parameters=list(order=1))
+```
+
+## JavaScript
+
+``` javascript
+const model = cube.fit_curve({reducer:"linear", parameters:{order:1}});
+```
+
 ## Predict from a temporal curve
 
-Use `predict_curve` to evaluate a model created by `fit_curve` at new timestamps or labels. This can fill a regular time axis or estimate values at dates not directly observed.
+The process `predict_curve` predicts values using a model function and pre-computed parameters. The process is intended to compute values for new labels. It can be used to evaluate a model created by `fit_curve` at new timestamps or labels. This can fill a regular time axis or estimate values at dates not directly observed.
+
+## Python
 
 ``` python
 prediction = model.predict_curve(labels=["2025-01-01", "2025-07-01"])
 ```
 
+## R
+
+``` r
+prediction <- model %>% predict_curve(labels=c("2025-01-01", "2025-07-01"))
+```
+
+## JavaScript
+
+``` javascript
+const prediction = model.predict_curve({labels:["2025-01-01", "2025-07-01"]});
+```
+
 ## Calculate a climatological normal
 
-Use `climatological_normal` to calculate a typical value for recurring periods, such as the mean NDVI for each month across several years. It provides the baseline needed for anomaly analysis.
+Use `climatological_normal` to calculate a typical value for recurring periods, such as the mean NDVI for each month across several years. It provides the baseline needed for anomaly analysis. In climatology, the climatological normal period is usually a 30 year average of a weather variable. Climatological normals are used as an average or baseline to evaluate climate events and provide context for yearly, monthly, daily or seasonal variability.
+
+## Python
 
 ``` python
 normal = cube.climatological_normal(period="month", reducer="mean")
 ```
 
+## R
+
+``` r
+normal <- cube %>% climatological_normal(period="month", reducer="mean")
+```
+
+## JavaScript
+
+``` javascript
+const normal = cube.climatological_normal({period:"month", reducer:"mean"});
+```
+
 ## Calculate temporal anomalies
 
-Use `anomaly` to express observations as departures from a climatological normal. Positive and negative values then indicate conditions above or below the expected baseline.
+The `anomaly` process computes anomalies based on normals for temporal periods. It compares the data for each label in the temporal dimension with the corresponding data in the normals data cube by subtracting the normal from the data. Therefore, it is recommended to first calculate a climatological normal using `climatological_normal` before computing anomalies. Positive and negative values then indicate conditions above or below the expected baseline.
+
+## Python
 
 ``` python
 anomalies = cube.anomaly(normal=normal)
 ```
+
+## R
+
+``` r
+anomalies <- cube %>% anomaly(normal=normal)
+```
+
+## JavaScript
+
+``` javascript
+const anomalies = cube.anomaly({normal:normal});
+```
+
+> **TIP:**
+>
+> - [Regional Benchmarking Service for Anomaly Identification](../../client_examples/openeo-community-examples/python/Anomaly_Detection/Anomaly_Detection.ipynb)
+> - [Heatwave in the Netherlands](../../client_examples/openeo-community-examples/python/Heatwave/HeatwaveNL.ipynb)
+> - [Comparing the Summer Drought in Serbia (NDDI)](../../client_examples/openeo-community-examples/python/NDDI/NDDI_Drought.ipynb)
+>
+> More notebooks are listed on the [sample notebooks page](../../examples.llms.md).
+
+Back to top

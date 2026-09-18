@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>User Defined Functions – openEO</title>
+<title>User Defined Functions (UDF) – openEO</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -71,6 +71,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
+<link href="../../documentation/cube_operations/machine_learning.html" rel="next">
+<link href="../../documentation/cube_operations/cube_manipulations.html" rel="prev">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
@@ -152,11 +154,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
                 support = await response.json();
             } catch (error) { console.warn("Could not load backend process support data.", error); }
         }
+        const getExplicitTags = (item) => new Set((item.getAttribute("data-tags") || "").toLowerCase().split(/\s+/).filter(Boolean));
+        const getDefaultTags = () => new Set(staticBadges.map((badge) => badge.dataset.tag).filter(Boolean));
         const getTags = (item) => {
+            const explicitTags = getExplicitTags(item);
             if (support && item.hasAttribute("data-process")) {
-                return new Set(item.getAttribute("data-process").split(/[\s,]+/).flatMap((id) => support.processes[id] || []));
+                const liveTags = new Set(item.getAttribute("data-process").split(/[\s,]+/).flatMap((id) => support.processes[id] || []));
+                return liveTags.size > 0 ? liveTags : explicitTags.size > 0 ? explicitTags : getDefaultTags();
             }
-            return new Set((item.getAttribute("data-tags") || "").toLowerCase().split(/\s+/).filter(Boolean));
+            return explicitTags.size > 0 ? explicitTags : getDefaultTags();
         };
         let badges = staticBadges;
         if (support) {
@@ -172,11 +178,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             });
         }
         if (badges.length === 0) return;
+        const tocLinks = Array.from(document.querySelectorAll("#TOC a[data-scroll-target]"));
         const applyFilter = () => {
             const selectedTags = new Set(badges.filter((badge) => badge.classList.contains("active")).map((badge) => badge.dataset.tag));
             items.forEach((item) => {
                 const tags = getTags(item);
-                item.hidden = ![...selectedTags].some((tag) => tags.has(tag));
+                const visible = [...selectedTags].some((tag) => tags.has(tag));
+                item.hidden = !visible;
+                const tocLink = tocLinks.find((link) => link.dataset.scrollTarget === `#${item.id}`);
+                tocLink?.closest("li")?.toggleAttribute("hidden", !visible);
             });
         };
         badges.forEach((badge) => badge.addEventListener("click", function (event) {
@@ -305,6 +315,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
         <li><hr class="dropdown-divider"></li>
         <li class="dropdown-header">CUBE OPERATIONS</li>
+        <li>
+    <a class="dropdown-item" href="../../documentation/cube_operations/general_operations.html">
+ <span class="dropdown-text">General Operations</span></a>
+  </li>  
         <li>
     <a class="dropdown-item" href="../../documentation/cube_operations/preprocessing.html">
  <span class="dropdown-text">Preprocessing</span></a>
@@ -483,6 +497,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../../documentation/cube_operations/general_operations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">General Operations</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../../documentation/cube_operations/preprocessing.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Preprocessing</span></a>
   </div>
@@ -553,17 +573,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#apply-a-udf" id="toc-apply-a-udf" class="nav-link active" data-scroll-target="#apply-a-udf">Apply a UDF</a>
-  <ul class="collapse">
-  <li><a href="#python" id="toc-python" class="nav-link" data-scroll-target="#python">Python</a></li>
-  </ul></li>
-  <li><a href="#choose-the-right-extension-mechanism" id="toc-choose-the-right-extension-mechanism" class="nav-link" data-scroll-target="#choose-the-right-extension-mechanism">Choose the right extension mechanism</a></li>
-  <li><a href="#udf-related-processes" id="toc-udf-related-processes" class="nav-link" data-scroll-target="#udf-related-processes">UDF-related processes</a></li>
-  <li><a href="#run-a-backend-udf" id="toc-run-a-backend-udf" class="nav-link" data-scroll-target="#run-a-backend-udf">Run a backend UDF</a></li>
-  <li><a href="#run-an-external-udf" id="toc-run-an-external-udf" class="nav-link" data-scroll-target="#run-an-external-udf">Run an external UDF</a></li>
-  <li><a href="#apply-a-standardized-pixel-callback" id="toc-apply-a-standardized-pixel-callback" class="nav-link" data-scroll-target="#apply-a-standardized-pixel-callback">Apply a standardized pixel callback</a></li>
-  <li><a href="#apply-a-standardized-dimension-callback" id="toc-apply-a-standardized-dimension-callback" class="nav-link" data-scroll-target="#apply-a-standardized-dimension-callback">Apply a standardized dimension callback</a></li>
-  <li><a href="#apply-a-standardized-neighbourhood-callback" id="toc-apply-a-standardized-neighbourhood-callback" class="nav-link" data-scroll-target="#apply-a-standardized-neighbourhood-callback">Apply a standardized neighbourhood callback</a></li>
+  <li><a href="#author-a-python-udf" id="toc-author-a-python-udf" class="nav-link active" data-scroll-target="#author-a-python-udf">Author a Python UDF</a></li>
+  <li><a href="#select-a-udf-execution-context" id="toc-select-a-udf-execution-context" class="nav-link" data-scroll-target="#select-a-udf-execution-context">Select a UDF execution context</a></li>
+  <li><a href="#logging-from-udfs" id="toc-logging-from-udfs" class="nav-link" data-scroll-target="#logging-from-udfs">Logging from UDFs</a></li>
   </ul>
 </nav>
     </div>
@@ -572,8 +584,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../documentation/cube_operations.html">CUBE OPERATIONS</a></li><li class="breadcrumb-item"><a href="../../documentation/cube_operations/udf.html">User Defined Functions</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">User Defined Functions</h1>
-<p class="subtitle lead">Run custom Python or R logic on the backend</p>
+<h1 class="title">User Defined Functions (UDF)</h1>
 </div>
 
 
@@ -590,60 +601,164 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<div class="lead">
-<p>A User Defined Function (UDF) is custom Python or R code executed within an openEO process graph. Use it when standard processes do not express the required calculation.</p>
-</div>
+<p>While openEO supports a wide range of predefined processes and allows you to build more complex user-defined processes from them, you sometimes need operations or algorithms that are not (yet) available or standardised as openEO processes. User-Defined Functions (UDF) are an openEO feature (via the run_udf process) that aims to fill that gap by allowing a user to express (part of) an algorithm as a Python/R/… script to be run on the back end within the openEO processing environment.</p>
 <div class="tag-filter-ui" id="tag-filter-ui">
-  <button class="tag-filter-badge active" data-tag="vito">VITO</button>
-  <button class="tag-filter-badge active" data-tag="eodc">EODC</button>
-  <button class="tag-filter-badge active" data-tag="cdse">CDSE</button>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
 <span class="screen-reader-only">Note</span>Backend support overview
 </div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>The buttons on this page are a documentation aid, not a live capability registry. Use the <a href="https://hub.openeo.org/">openEO Hub</a> for a cross-backend overview: open <strong>Filters</strong>, select a process under <strong>Processes</strong>, and the Hub shows only matching services. The Hub data is crawled and cached.</p>
+<p>The buttons above let you filter processes supported by different backends. Selecting or deselecting a backend will show or hide the relevant sections in the documentation. However, please note that it is based on the latest documentation rendering. Thus, please refer to the <a href="https://hub.openeo.org/">openEO Hub</a> for the most up-to-date information.</p>
 </div>
 </div>
-<section id="apply-a-udf" class="level2 tag-filter-item" data-process="run_udf">
-<h2 class="anchored" data-anchor-id="apply-a-udf">Apply a UDF</h2>
-<p><code>run_udf</code> passes raster or vector data to backend-managed code. The supported runtime, packages, resource limits, and data model are backend-specific, so begin with a small batch job.</p>
-<section id="python" class="level3">
-<h3 class="anchored" data-anchor-id="python">Python</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>udf_code <span class="op">=</span> <span class="st">"""</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="st">def apply_datacube(cube, context):</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="st">    return cube * 2</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> cube.run_udf(</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    udf<span class="op">=</span>udf_code,</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    runtime<span class="op">=</span><span class="st">"Python"</span>,</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="author-a-python-udf" class="level2">
+<h2 class="anchored" data-anchor-id="author-a-python-udf">Author a Python UDF</h2>
+<p>A Python UDF is typically defined as a function with a specific entry point, usually named <code>apply_datacube</code>, which takes an <code>xarray.DataArray</code> and a context dictionary as input and returns an <code>xarray.DataArray</code> as output. The function name and type annotations are part of the UDF contract, so retain them.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">Python UDF</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># scale_reflectance.py</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> xarray</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> apply_datacube(cube: xarray.DataArray, context: <span class="bu">dict</span>) <span class="op">-&gt;</span> xarray.DataArray:</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>&nbsp; <span class="cf">return</span> cube <span class="op">*</span> <span class="fl">0.0001</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<p>Next, load the source with the openEO Python client and pass the resulting UDF object to the process that defines how it is applied:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">Python Client Usage</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> openeo</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>udf <span class="op">=</span> openeo.UDF.from_file(<span class="st">"scale_reflectance.py"</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> cube.<span class="bu">apply</span>(process<span class="op">=</span>udf)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<p>Ideally, it allows you to embed existing Python/R/… implementations in an openEO workflow (with some necessary “glue code”). However, it is recommended to try to do as much pre- or postprocessing with predefined processes before copy-pasting source code snippets as UDFs. Predefined processes are typically well optimised by the backend, whereas UDFs can incur a performance penalty and higher development/debug/ maintenance costs.</p>
+</section>
+<section id="select-a-udf-execution-context" class="level2">
+<h2 class="anchored" data-anchor-id="select-a-udf-execution-context">Select a UDF execution context</h2>
+<p>While the above examples show how to define and apply a UDF, it is important to understand the execution context in which the UDF operates. The called process determines the kind of input the UDF receives and the expected output structure.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Process</th>
+<th>UDF input and output contract</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>apply</code></td>
+<td>A per-pixel transformation. Dimensions and labels are preserved. Prefer standard math processes for simple calculations.</td>
+</tr>
+<tr class="even">
+<td><code>apply_dimension</code></td>
+<td>A complete series along the chosen dimension; other dimensions can still be chunked. The selected dimension may change in length.</td>
+</tr>
+<tr class="odd">
+<td><code>reduce_dimension</code></td>
+<td>A complete series along the chosen dimension. The UDF output must remove that dimension.</td>
+</tr>
+<tr class="even">
+<td><code>apply_neighborhood</code></td>
+<td>A spatial window. Specify the window size and overlap so that algorithms that require surrounding pixels produce coherent results at chunk boundaries.</td>
+</tr>
+<tr class="odd">
+<td><code>apply_kernel</code></td>
+<td>A spatial kernel operation. Similar to <code>apply_neighborhood</code>, but typically used for convolution-like operations with a fixed kernel size.</td>
+</tr>
+</tbody>
+</table>
+<p>For example, apply a time-series UDF along the temporal dimension:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false" href="">R</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>smoothed <span class="op">=</span> cube.apply_dimension(process<span class="op">=</span>udf, dimension<span class="op">=</span><span class="st">"t"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>smoothed <span class="ot">&lt;-</span> cube <span class="sc">%&gt;%</span> <span class="fu">apply_dimension</span>(<span class="at">process =</span> udf, <span class="at">dimension =</span> <span class="st">"t"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<p>It is recommended to start with a small batch job to verify the UDF’s behaviour and resource requirements. Additionally, use <code>connection.list_udf_runtimes()</code> to inspect advertised runtimes and libraries.</p>
+</section>
+<section id="logging-from-udfs" class="level2">
+<h2 class="anchored" data-anchor-id="logging-from-udfs">Logging from UDFs</h2>
+<div class="tag-filter-item" data-process="inspect">
+<p>From time to time, when things are not working as expected, you may want to log additional debug information from your UDF, inspect the data being processed, or log warnings. This can be done using the <code>inspect()</code>function.</p>
+<p>For example, to discover the shape of the data cube chunk that you receive in your UDF function:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false" href="">R</a></li></ul>
+<div class="tab-content">
+<div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> openeo.udf <span class="im">import</span> inspect</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> xarray</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> apply_datacube(cube: xarray.DataArray, context: <span class="bu">dict</span>) <span class="op">-&gt;</span> xarray.DataArray:</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a> inspect(data<span class="op">=</span>[cube.shape], message<span class="op">=</span><span class="st">"UDF input chunk shape"</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> cube <span class="op">*</span> <span class="fl">0.0001</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(openeo)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>apply_datacube <span class="ot">&lt;-</span> <span class="cf">function</span>(cube, context) {</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inspect</span>(<span class="at">data =</span> <span class="fu">list</span>(<span class="fu">dim</span>(cube)), <span class="at">message =</span> <span class="st">"UDF input chunk shape"</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(cube <span class="sc">*</span> <span class="fl">0.0001</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-5-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-1" role="tab" aria-controls="tabset-5-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-2" role="tab" aria-controls="tabset-5-2" aria-selected="false" href="">R</a></li></ul>
+<div class="tab-content">
+<div id="tabset-5-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-5-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>job.logs()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-5-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>job<span class="sc">$</span><span class="fu">logs</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<p>Backends can limit the types accepted by <code>inspect</code> and may process many chunks, so logging is best used sparingly for diagnosis.</p>
 <div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
 <span class="screen-reader-only">Warning</span>Portability consideration
 </div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>Keep UDFs small and use only packages documented by the selected backend. Standard openEO processes are generally more portable and can be optimized more easily by a backend.</p>
+<p>Keep UDFs small and use only packages documented by the selected backend. Standard openEO processes are generally more portable and can be optimised more easily by a backend.</p>
 </div>
 </div>
-<p>See <a href="https://processes.openeo.org/"><code>run_udf</code></a> and the backend documentation for the current runtime contract.</p>
-</section>
-</section>
+</div>
 <section id="choose-the-right-extension-mechanism" class="level2">
 <h2 class="anchored" data-anchor-id="choose-the-right-extension-mechanism">Choose the right extension mechanism</h2>
-<p>A <strong>callback</strong> is not a UDF. With <code>apply</code>, <code>apply_dimension</code>, <code>reduce_dimension</code>, <code>aggregate_temporal</code>, <code>aggregate_spatial</code>, or <code>apply_neighborhood</code>, a Python lambda describes an openEO process graph using standardized processes; no arbitrary Python code is sent to the backend. A <strong>UDF</strong> sends backend-executed Python or R code through <code>run_udf</code>.</p>
+<p>A <strong>callback</strong> is not a UDF. With <code>apply</code>, <code>apply_dimension</code>, <code>reduce_dimension</code>, <code>aggregate_temporal</code>, <code>aggregate_spatial</code>, or <code>apply_neighborhood</code>, a Python lambda describes an openEO process graph using standardised processes; no arbitrary Python code is sent to the backend. A <strong>UDF</strong> sends backend-executed Python or R code through <code>run_udf</code>.</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 50%">
@@ -678,41 +793,164 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Do not confuse user-defined functions (abbreviated as UDF) with user-defined processes (sometimes abbreviated as UDP) in openEO, which is a way to define and use your own process graphs as reusable building blocks. See <a href="../../documentation/cube_operations/udp.html">User-Defined Processes (UDP)</a> for more information.</p>
+</div>
+</div>
+</div>
 </section>
 <section id="udf-related-processes" class="level2">
 <h2 class="anchored" data-anchor-id="udf-related-processes">UDF-related processes</h2>
-<p>Each process below has its own backend filter. The callback processes are included for comparison, but they do not execute arbitrary Python or R code on the backend.</p>
+<p>The processes related to UDFs in openEO allow you to execute custom code on the backend or apply standardised callbacks to your data cube. These callback processes are included for comparison, but they do not execute arbitrary Python or R code on the backend.</p>
 </section>
 <section id="run-a-backend-udf" class="level2 tag-filter-item" data-process="run_udf">
 <h2 class="anchored" data-anchor-id="run-a-backend-udf">Run a backend UDF</h2>
-<p>Use <code>run_udf</code> when the required algorithm cannot be expressed with standardized openEO processes. The backend executes the supplied Python or R code close to the data, subject to its runtime, package, memory, and execution limits.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> cube.run_udf(udf<span class="op">=</span>udf_code, runtime<span class="op">=</span><span class="st">"Python"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Use <code>run_udf</code> when the required algorithm cannot be expressed with standardised openEO processes. This process can either: - load and run a UDF stored in a file on the server-side workspace of the authenticated user. The path to the UDF file must be relative to the root directory of the user’s workspace. - fetch and run a remotely stored and published UDF by absolute URI. - run the source code specified inline as a string.</p>
+<p>The loaded UDF can be executed in several processes, such as aggregate_spatial, apply, apply_dimension and reduce_dimension. The user must ensure that the data is provided in a way that the UDF code can interpret.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-6-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-1" role="tab" aria-controls="tabset-6-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-2" role="tab" aria-controls="tabset-6-2" aria-selected="false" href="">R</a></li></ul>
+<div class="tab-content">
+<div id="tabset-6-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-6-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> cube.run_udf(udf<span class="op">=</span>udf_code, runtime<span class="op">=</span><span class="st">"Python"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-6-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> cube<span class="sc">$</span><span class="fu">run_udf</span>(<span class="at">udf=</span>udf_code, <span class="at">runtime=</span><span class="st">"R"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
 </section>
 <section id="run-an-external-udf" class="level2 tag-filter-item" data-process="run_udf_externally">
 <h2 class="anchored" data-anchor-id="run-an-external-udf">Run an external UDF</h2>
 <p>Use <code>run_udf_externally</code> when the computation must run in an environment managed outside the backend. This is useful for custom dependencies, but it is less portable and may require backend-specific credentials or configuration.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> openeo.processes.run_udf_externally(data<span class="op">=</span>cube, udf<span class="op">=</span>udf_code)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-7-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-1" role="tab" aria-controls="tabset-7-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-7-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-2" role="tab" aria-controls="tabset-7-2" aria-selected="false" href="">R</a></li></ul>
+<div class="tab-content">
+<div id="tabset-7-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-7-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> openeo.processes.run_udf_externally(data<span class="op">=</span>cube, udf<span class="op">=</span>udf_code)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-7-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-7-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> openeo<span class="sc">::</span><span class="fu">run_udf_externally</span>(<span class="at">data=</span>cube, <span class="at">udf=</span>udf_code)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
 </section>
-<section id="apply-a-standardized-pixel-callback" class="level2 tag-filter-item" data-process="apply">
-<h2 class="anchored" data-anchor-id="apply-a-standardized-pixel-callback">Apply a standardized pixel callback</h2>
-<p>Apply a standardized process callback independently to each pixel; this is not arbitrary Python execution.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>scaled <span class="op">=</span> cube.<span class="bu">apply</span>(<span class="kw">lambda</span> value: value <span class="op">*</span> <span class="fl">0.0001</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="run-an-ogc-api-process-hosted-by-the-backend" class="level2 tag-filter-item" data-process="run_ogcapi">
+<h2 class="anchored" data-anchor-id="run-an-ogc-api-process-hosted-by-the-backend">Run an OGC API process hosted by the backend</h2>
+<p><code>run_ogcapi</code> invokes an OGC API - Processes process that the connected backend offers through its own OGC API - Processes deployment (Part 2: Deploy, Replace, Undeploy). Use it to reuse a process the backend already deployed under OGC API - Processes, instead of re-implementing the same logic as a UDF.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-8-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-1" role="tab" aria-controls="tabset-8-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-8-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-2" role="tab" aria-controls="tabset-8-2" aria-selected="false" href="">R</a></li></ul>
+<div class="tab-content">
+<div id="tabset-8-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-8-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> openeo.processes.run_ogcapi(data<span class="op">=</span>cube, <span class="bu">id</span><span class="op">=</span><span class="st">"ogc-process-id"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-8-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-8-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> openeo<span class="sc">::</span><span class="fu">run_ogcapi</span>(<span class="at">data =</span> cube, <span class="at">id =</span> <span class="st">"ogc-process-id"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
 </section>
-<section id="apply-a-standardized-dimension-callback" class="level2 tag-filter-item" data-process="apply_dimension">
-<h2 class="anchored" data-anchor-id="apply-a-standardized-dimension-callback">Apply a standardized dimension callback</h2>
-<p>Apply a standardized callback along one cube dimension.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>smoothed <span class="op">=</span> cube.apply_dimension(dimension<span class="op">=</span><span class="st">"t"</span>, process<span class="op">=</span><span class="kw">lambda</span> series: series.median())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="run-an-externally-hosted-ogc-api-process" class="level2 tag-filter-item" data-process="run_ogcapi_externally">
+<h2 class="anchored" data-anchor-id="run-an-externally-hosted-ogc-api-process">Run an externally hosted OGC API process</h2>
+<p><code>run_ogcapi_externally</code> runs an OGC API - Processes process hosted outside the connected backend, either by another service provider or on the user’s own machine. This is useful for calling a process that is only available at a third-party OGC API - Processes endpoint.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-9-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-9-1" role="tab" aria-controls="tabset-9-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-9-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-9-2" role="tab" aria-controls="tabset-9-2" aria-selected="false" href="">R</a></li></ul>
+<div class="tab-content">
+<div id="tabset-9-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-9-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> openeo.processes.run_ogcapi_externally(</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    data<span class="op">=</span>cube, url<span class="op">=</span><span class="st">"https://example.org/ogcapi"</span>, <span class="bu">id</span><span class="op">=</span><span class="st">"ogc-process-id"</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-9-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-9-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> openeo<span class="sc">::</span><span class="fu">run_ogcapi_externally</span>(</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> cube, <span class="at">url =</span> <span class="st">"https://example.org/ogcapi"</span>, <span class="at">id =</span> <span class="st">"ogc-process-id"</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<p>Both processes are experimental and depend on the backend (or external service) implementing OGC API - Processes; check process support before relying on them in production.</p>
 </section>
-<section id="apply-a-standardized-neighbourhood-callback" class="level2 tag-filter-item" data-process="apply_neighborhood">
-<h2 class="anchored" data-anchor-id="apply-a-standardized-neighbourhood-callback">Apply a standardized neighbourhood callback</h2>
-<p>Apply a standardized callback over a moving spatial neighbourhood.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> cube.apply_neighborhood(size<span class="op">=</span>[<span class="dv">3</span>, <span class="dv">3</span>], process<span class="op">=</span><span class="kw">lambda</span> window: window.mean())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="apply-a-standardised-pixel-callback" class="level2 tag-filter-item" data-process="apply">
+<h2 class="anchored" data-anchor-id="apply-a-standardised-pixel-callback">Apply a standardised pixel callback</h2>
+<p>Apply a standardised process callback independently to each pixel; this is not arbitrary Python execution. This ensures that the operation is applied consistently across the entire data cube.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-10-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-10-1" role="tab" aria-controls="tabset-10-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-10-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-10-2" role="tab" aria-controls="tabset-10-2" aria-selected="false" href="">R</a></li></ul>
+<div class="tab-content">
+<div id="tabset-10-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-10-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>scaled <span class="op">=</span> cube.<span class="bu">apply</span>(<span class="kw">lambda</span> value: value <span class="op">*</span> <span class="fl">0.0001</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-10-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-10-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>scaled <span class="ot">&lt;-</span> cube<span class="sc">$</span><span class="fu">apply</span>(<span class="cf">function</span>(value) value <span class="sc">*</span> <span class="fl">0.0001</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
 </section>
-<p>The <a href="https://open-eo.github.io/openeo-python-client/processes.html">Python-client guide to callbacks</a> explains the distinction and the callback restrictions in detail.</p>
+<section id="apply-a-standardised-dimension-callback" class="level2 tag-filter-item" data-process="apply_dimension">
+<h2 class="anchored" data-anchor-id="apply-a-standardised-dimension-callback">Apply a standardised dimension callback</h2>
+<p>Apply a standardised callback along one cube dimension. You can also find more information about <code>apply_dimension</code> in the spatial and temporal processing sections, which apply the operation along the respective dimensions.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-11-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-11-1" role="tab" aria-controls="tabset-11-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-11-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-11-2" role="tab" aria-controls="tabset-11-2" aria-selected="false" href="">R</a></li></ul>
+<div class="tab-content">
+<div id="tabset-11-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-11-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>smoothed <span class="op">=</span> cube.apply_dimension(dimension<span class="op">=</span><span class="st">"t"</span>, process<span class="op">=</span><span class="kw">lambda</span> series: series.median())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-11-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-11-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>smoothed <span class="ot">&lt;-</span> cube<span class="sc">$</span><span class="fu">apply_dimension</span>(<span class="at">dimension=</span><span class="st">"t"</span>, <span class="at">process=</span><span class="cf">function</span>(series) <span class="fu">median</span>(series))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+</section>
+<section id="reduce-a-dimension-with-a-udf" class="level2 tag-filter-item" data-process="reduce_dimension">
+<h2 class="anchored" data-anchor-id="reduce-a-dimension-with-a-udf">Reduce a dimension with a UDF</h2>
+<p>Similar to <code>apply_dimension</code>, but instead of returning a series along the reduced dimension, it collapses the dimension into a single value. The process has also been discussed in the spatial and temporal processing sections to illustrate its usage along those dimensions.</p>
+<p>Thus, use <code>reduce_dimension</code> when a UDF must turn every series along one dimension into a single value and remove that dimension from its output.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-12-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-12-1" role="tab" aria-controls="tabset-12-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-12-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-12-2" role="tab" aria-controls="tabset-12-2" aria-selected="false" href="">R</a></li></ul>
+<div class="tab-content">
+<div id="tabset-12-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-12-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>reduced <span class="op">=</span> cube.reduce_dimension(dimension<span class="op">=</span><span class="st">"t"</span>, reducer<span class="op">=</span>udf)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-12-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-12-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>reduced <span class="ot">&lt;-</span> cube<span class="sc">$</span><span class="fu">reduce_dimension</span>(<span class="at">dimension=</span><span class="st">"t"</span>, <span class="at">reducer=</span>udf)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+</section>
+<section id="apply-a-standardised-neighbourhood-callback" class="level2 tag-filter-item" data-process="apply_neighborhood">
+<h2 class="anchored" data-anchor-id="apply-a-standardised-neighbourhood-callback">Apply a standardised neighbourhood callback</h2>
+<p>The <code>apply_neighborhood</code> process applies a focal process to a data cube.</p>
+<p>A focal process operates on a ‘neighbourhood’ of pixels. The neighbourhood can extend into multiple dimensions; the size argument specifies this extent. It is not only (part of) the size of the input window, but also the size of the output for a given position of the sliding window. The sliding window moves in multiples of size.</p>
+<p>An overlap can be specified so that neighbourhoods can have overlapping boundaries. This allows for continuity of the output. The overlap region must be included in the data cube or array returned by process, but any changed values will be ignored. The missing overlap at the borders of the original data cube is made available as no-data values in the sub-data cubes.</p>
+<p>The neighbourhood size should be kept small enough to avoid exceeding computational resources, but a too-small size will result in more process invocations, which may slow down processing. Window sizes for spatial dimensions typically range from 64 to 512 pixels, while overlaps of 8 to 32 pixels are common.</p>
+<p>For the special case of 2D convolution, it is recommended to use <code>apply_kernel</code>.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-13-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-13-1" role="tab" aria-controls="tabset-13-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-13-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-13-2" role="tab" aria-controls="tabset-13-2" aria-selected="false" href="">R</a></li></ul>
+<div class="tab-content">
+<div id="tabset-13-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-13-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> cube.apply_neighborhood(size<span class="op">=</span>[<span class="dv">3</span>, <span class="dv">3</span>], process<span class="op">=</span><span class="kw">lambda</span> window: window.mean())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-13-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-13-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> cube<span class="sc">$</span><span class="fu">apply_neighborhood</span>(<span class="at">size=</span><span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">3</span>), <span class="at">process=</span><span class="cf">function</span>(window) <span class="fu">mean</span>(window))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+</section>
 
 
+</div>
+</section>
 
-</main> <!-- /main -->
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
@@ -1113,6 +1351,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
   });
   </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../documentation/cube_operations/cube_manipulations.html" class="pagination-link" aria-label="Cube Manipulations">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Cube Manipulations</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../documentation/cube_operations/machine_learning.html" class="pagination-link" aria-label="Machine Learning">
+        <span class="nav-page-text">Machine Learning</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
 </div> <!-- /content -->
 
 

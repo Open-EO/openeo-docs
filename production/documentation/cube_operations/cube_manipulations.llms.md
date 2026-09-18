@@ -1,74 +1,124 @@
 # Cube Manipulations
 
-Cube-manipulation processes change a cube’s structure without changing the scientific question: combine compatible cubes, add derived bands, and make dimensions easier to work with.
-
-VITO
-
-EODC
-
-CDSE
-
-Sentinel Hub
+The cube-manipulation processes defined in this section allow you to modify the structure of data cubes without altering the underlying scientific content. It includes processes for merging cubes, adding or dropping dimensions, renaming labels, and flattening or unflattening dimensions. Please note that several operations described in the [spatial](../../documentation/cube_operations/spatial_operations.llms.md), [temporal](../../documentation/cube_operations/temporal_operations.llms.md), and [spectral](../../documentation/cube_operations/spectral_operations.llms.md) can also be considered as cube-manipulation processes. However, their primary purpose is often analysis along that dimension rather than structural modification.
 
 > **NOTE:**
 >
-> The buttons on this page are a documentation aid, not a live capability registry. Use the [openEO Hub](https://hub.openeo.org/) for a cross-backend overview: open **Filters**, select a process under **Processes**, and the Hub shows only matching services. The Hub data is crawled and cached.
+> The buttons above let you filter processes supported by different backends. Selecting or deselecting a backend will show or hide the relevant sections in the documentation. However, please note that it is based on the latest documentation rendering. Thus, please refer to the [openEO Hub](https://hub.openeo.org/) for the most up-to-date information.
 
-> **NOTE:**
->
-> These are standardized processes, but a backend can implement a subset or impose compatibility rules. Check its process metadata before relying on a workflow.
+## Create an empty data cube
+
+`create_data_cube` creates a data cube without dimensions. Add dimensions with `add_dimension` before using it in a workflow.
+
+``` python
+empty_cube = openeo.processes.create_data_cube()
+```
 
 ## Merge cubes
 
-`merge_cubes` combines two compatible cubes. Without an overlap resolver, the cubes must not contain overlapping labels. When they do overlap, provide a callback that defines how values are combined.
+The `merge_cubes` process combines two compatible cubes. The data cubes must be compatible, meaning they share a common subset of equal dimensions. To conveniently obtain such a subset of equal dimensions, the process implicitly aligns the horizontal spatial dimensions (axes x and y) with resample_cube_spatial if required. cube1 is the target data cube for resampling, and the default parameters of resample_cube_spatial apply. The equality for geometries follows the definition in the OGC Simple Features standard.
 
-### Python
+All dimensions share the same properties, such as name, type, reference system, and resolution. Dimensions can have disjoint or overlapping labels. If there is any overlap between the dimension labels, the parameter overlap_resolver must be specified to combine the two values for these overlapping labels. A merge operation without overlap should be reversible with (a set of) filter operations for each of the two cubes, if no implicit resampling were applied.
+
+It is not possible to merge a vector and a raster data cube. Merging vector data cubes with different base geometry types (points, lines/line strings, polygons) is not possible and throws the IncompatibleGeometryTypes exception. The base geometry types can be merged with their corresponding multi-geometry types.
+
+After the merge, the dimensions with a natural/inherent label order (in this reference system, each spatial and temporal dimension) still have all dimension labels sorted. For other dimensions without inherent order, including bands, the dimension labels retain the order they appear in the original data cubes, and the dimension labels of cube2 are appended to those of cube1.
+
+## Python
 
 ``` python
 # For example: stack two non-overlapping seasonal cubes.
-full_year = spring.merge_cubes(summer)
+full_year = spring_cube.merge_cubes(summer_cube)
 ```
 
-Use `merge_cubes` for a union of compatible data. Use `resample_cube_spatial` or `resample_cube_temporal` first when grids or time labels must be aligned.
+## R
 
-------------------------------------------------------------------------
+``` r
+# For example: stack two non-overlapping seasonal cubes.
+full_year <- merge_cubes(spring_cube, summer_cube)
+```
+
+## JavaScript
+
+``` javascript
+// For example: stack two non-overlapping seasonal cubes.
+const full_year = mergeCubes(spring_cube, summer_cube);
+```
+
+> **TIP:**
+>
+> Use `merge_cubes` to union compatible data. Use `resample_cube_spatial` or `resample_cube_temporal` first when grids or time labels must be aligned.
 
 ## Add a dimension
 
-`add_dimension` can turn a single-band result into a labelled band in a larger workflow.
+The `add_dimension` process adds a new dimension to a data cube, which can be useful for organising data into bands, categories, or other structural elements.
 
-### Python
+Afterwards, the dimension can be referenced with the specified name. If a dimension with the specified name exists, the process fails with a DimensionExists error. The dimension label is set to the specified label.
+
+This call does not modify the datacube in place, but returns a new datacube with the additional dimension.
+
+## Python
 
 ``` python
 # Add a named band dimension to a single-band derived raster.
 with_band = derived.add_dimension(name="NDVI", label="bands", type="bands")
 ```
 
-`drop_dimension` removes a dimension only when it has one label. For other structural changes, see `flatten_dimensions` and `unflatten_dimension` in the [process reference](https://processes.openeo.org/).
+## R
 
-## Rename dimension labels
-
-`rename_labels` replaces labels while keeping the dimension structure unchanged.
-
-``` python
-renamed = with_band.rename_labels(dimension="bands", target=["vegetation_index"])
+``` r
+# Add a named band dimension to a single-band derived raster.
+with_band <- add_dimension(derived, name="NDVI", label="bands", type="bands")
 ```
 
-## Cube-structure process details
+## JavaScript
 
-Each structural process is documented in its own section below. A process is documented on another operations page when its primary purpose is analysis along that dimension.
+``` javascript
+// Add a named band dimension to a single-band derived raster.
+const with_band = addDimension(derived, {name: "NDVI", label: "bands", type: "bands"});
+```
 
 ## Drop a singleton dimension
 
-Use `drop_dimension` after a workflow produces a dimension with one label and that dimension is no longer useful in the output. It does not remove a dimension containing multiple labels.
+The `drop_dimension` process removes a dimension from a data cube only if it contains a single label. Dropping a dimension only works on dimensions with a single remaining dimension label; otherwise, the process fails with a DimensionLabelCountMismatch exception. Dimension values can be reduced to a single value with a filter such as filter_bands or the reduce_dimension process. If a dimension with the specified name does not exist, the process fails with a DimensionNotAvailable exception.
 
-``` python
-without_singleton = cube.drop_dimension(dimension="bands")
+Please note that it is different from `reduce_dimension`, which can reduce a dimension to a single value but does not remove the dimension itself.
+
+## R
+
+``` r
+without_singleton <- drop_dimension(cube, dimension="bands")
+```
+
+## JavaScript
+
+``` javascript
+// Drop a singleton dimension from a data cube.
+const without_singleton = dropDimension(cube, {dimension: "bands"});
+```
+
+## Rename dimension labels
+
+The `rename_labels` process renames the labels of the specified dimension in the data cube from source to target.
+
+If the array for the source labels is empty (the default), the dimension labels are enumerated with zero-based numbering (0,1,2,3,…) so that the dimension labels directly map to the indices of the array specified for the parameter target. Otherwise, the number of the source and target labels must be equal. If none of these requirements is fulfilled, the LabelMismatch exception is thrown.
+
+## R
+
+``` r
+renamed <- rename_labels(with_band, dimension="bands", target=c("vegetation_index"))
+```
+
+## JavaScript
+
+``` javascript
+// Rename dimension labels of a data cube.
+const renamed = renameLabels(with_band, {dimension: "bands", target: ["vegetation_index"]});
 ```
 
 ## Rename a dimension
 
-Use `rename_dimension` to make a dimension name match the vocabulary expected by a later process or output consumer. The labels and values remain unchanged.
+Use `rename_dimension` to make a dimension name match the vocabulary expected by a later process or output consumer. The labels and values remain unchanged. It is different from `rename_labels`, which changes the labels of a dimension but keeps the dimension name the same. For example, if a cube has a dimension named “bands” and you want to rename it to “spectral”, you would use `rename_dimension`.
 
 ``` python
 renamed = cube.rename_dimension(dimension="bands", target="spectral")
@@ -76,32 +126,107 @@ renamed = cube.rename_dimension(dimension="bands", target="spectral")
 
 ## Read dimension labels
 
-Use `dimension_labels` when a workflow needs to inspect or pass on the labels of a dimension, for example band names or temporal labels.
+For usecase scenarios where you need to examine or manipulate the labels of a specific dimension, such as selecting particular bands or time steps, `dimension_labels` provides a convenient way to access these labels.
 
-``` python
-labels = cube.dimension_labels(dimension="bands")
+The user can call `dimension_labels` with the desired dimension name to retrieve its labels. For example, to get the labels of the “bands” dimension:
+
+## R
+
+``` r
+labels <- dimension_labels(cube, dimension="bands")
+```
+
+## JavaScript
+
+``` javascript
+// Get dimension labels of a data cube.
+const labels = dimensionLabels(cube, {dimension: "bands"});
 ```
 
 ## Filter dimension labels
 
-Use `filter_labels` to select a subset of labels such as specific bands, dates, or categories while keeping the other cube dimensions intact.
+Similar to `dimension_labels`, `filter_labels` operates on the labels of a specific dimension, but instead of just retrieving them, it allows you to select a subset based on a condition. Therefore, it is recommended to use this process when you need to work with only a specific subset of dimension labels, such as excluding certain bands or selecting particular time steps.
 
-``` python
-selected = cube.filter_labels(dimension="bands", condition=lambda label: label != "QA")
+## R
+
+``` r
+selected <- filter_labels(cube, dimension="bands", condition=function(label) label != "QA")
+```
+
+## JavaScript
+
+``` javascript
+// Filter dimension labels of a data cube.
+const selected = filterLabels(cube, {dimension: "bands", condition: label => label !== "QA"});
 ```
 
 ## Flatten dimensions
 
-Use `flatten_dimensions` when a downstream model expects a single feature axis instead of separate spatial or categorical dimensions. Keep the original labels if you may need to reverse the operation.
+The `flatten_dimensions` process combines multiple given dimensions into a single dimension by flattening the values and merging the dimension labels with the given label_separator. Non-string dimension labels will be converted to strings. This process is the opposite of the unflatten_dimension process, but executing both processes sequentially doesn’t necessarily produce a data cube equal to the original data cube.
 
-``` python
-flattened = cube.flatten_dimensions(dimension_names=["x", "y"], target_dimension="pixels")
+Example: Executing the process with a data cube with two dimensions A (labels: 2020 and 2021) and B (labels: B1 and B2) and the data \[\[1,2\],\[3,4\]\] and the parameters dimensions = \[A, B\] and target_dimension = X will result in a data cube with one dimension X (labels: 2020~B1, 2020~B2, 2021~B1 and 2021~B2) and the data \[1,2,3,4\].
+
+Use `flatten_dimensions` when a downstream model expects a single feature axis instead of separate spatial or categorical dimensions. Keep the original labels in case you need to reverse the operation.
+
+## R
+
+``` r
+flattened <- flatten_dimensions(cube, dimension_names=c("x", "y"), target_dimension="pixels")
+```
+
+## JavaScript
+
+``` javascript
+// Flatten dimensions of a data cube.
+const flattened = flattenDimensions(cube, {dimensionNames: ["x", "y"], targetDimension: "pixels"});
 ```
 
 ## Unflatten a dimension
 
-Use `unflatten_dimension` to restore the dimensions represented by a flattened axis, for example after a model or export step that required one feature dimension.
+The `unflatten_dimension` process splits a single dimension into multiple dimensions by systematically extracting values and splitting the dimension labels by the given label_separator. This process is the opposite of the flatten_dimensions process, but executing both processes sequentially doesn’t necessarily produce a data cube equal to the original data cube.
+
+Example: Executing the process with a data cube with one dimension X (labels: 2020~B1, 2020~B2, 2021~B1 and 2021~B2) and the data \[1,2,3,4\] and the parameters dimension = X and target_dimensions = \[A, B\] will result in a data cube with two dimensions A (labels: 2020 and 2021) and B (labels: B1 and B2) and the data \[\[1,2\],\[3,4\]\].
+
+## Python
 
 ``` python
 unflattened = flattened.unflatten_dimension(dimension="pixels", target_dimensions=["x", "y"])
 ```
+
+## R
+
+``` r
+unflattened <- unflatten_dimension(flattened, dimension="pixels", target_dimensions=c("x", "y"))
+```
+
+## JavaScript
+
+``` javascript
+// Unflatten a dimension of a data cube.
+const unflattened = unflattenDimension(flattened, {dimension: "pixels", targetDimensions: ["x", "y"]});
+```
+
+## Remove empty dimension labels
+
+`trim_cube` removes dimension labels that solely contain no-data values. It is useful for cleaning up a cube after filtering or masking operations that leave behind labels (e.g. time steps or bands) with no valid data, so that subsequent processing only iterates over labels that actually contain data.
+
+## Python
+
+``` python
+trimmed = cube.trim_cube()
+```
+
+## R
+
+``` r
+trimmed <- trim_cube(cube)
+```
+
+## JavaScript
+
+``` javascript
+// Remove dimension labels that only contain no-data values.
+const trimmed = trimCube(cube);
+```
+
+Back to top

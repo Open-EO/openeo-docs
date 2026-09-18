@@ -60,3 +60,5 @@ All of these tasks took much more time than initially expected. For example, one
 ## Conclusion
 
 This was a deep dive into *some* of my challenges during the last years. I hope it is useful for others and I’m hoping to get into discussions with developers facing similar issues. Maybe with joint forces we can solve some of these for a better cloud processing experience in the future. If you have anything to say, please contact me via [e-mail](mailto:m.mohr@uni-muenster.de), GitHub issues ([API](https://github.com/Open-EO/openeo-api), [Processes](https://github.com/Open-EO/openeo-processes/issues)) or [Twitter](https://twitter.com/matthmohr). You can also [contact openEO](../contact.md).
+
+Back to top

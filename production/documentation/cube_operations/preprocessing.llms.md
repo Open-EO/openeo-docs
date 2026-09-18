@@ -1,46 +1,16 @@
 # Preprocessing
 
-This page highlights key openEO processes for preprocessing satellite imagery into Analysis Ready Data.
-
- 
-
-VITO
-
- 
-
-Sentinel Hub
-
- 
-
-EODC
-
- 
-
-CDSE
-
- 
-
-Federation
-
- 
-
-EURAC
-
- 
-
-Google Earth Engine
+This page provides an overview of preprocessing operations available in openEO for pre-processing EO datacubes for further analysis. Please note that the availability of specific processes may vary depending on the backend you are using. In addition to being backend-dependent, some processes might be experimental, or support may be available only for a specific client library.
 
 > **NOTE:**
 >
 > The buttons above let you filter processes supported by different backends. Selecting or deselecting a backend will show or hide the relevant sections in the documentation. However, please note that it is based on the latest documentation rendering. Thus, please refer to the [openEO Hub](https://hub.openeo.org/) for the most up-to-date information.
 
-------------------------------------------------------------------------
-
 ## Mask a cube
 
 openEO provides the `mask` process to mask out unwanted or invalid observations. The standard [`mask`](https://open-eo.github.io/openeo-python-client/api-processes.html#openeo.processes.mask) process replaces values where a Boolean mask is true. It is the portable choice when the collection exposes its own quality band or when you build a mask from another data cube.
 
-### Python
+## Python
 
 ``` python
 import openeo
@@ -64,13 +34,11 @@ cloud_free = sentinel2.mask(mask=quality_mask)
 >
 > The result keeps the original cube dimensions and sets masked pixels to no-data. The exact meaning of the quality-band labels is collection-specific.
 
-------------------------------------------------------------------------
-
 ## Sentinel-2 SCL Dilation Mask
 
 [`to_scl_dilation_mask`](https://open-eo.github.io/openeo-python-client/api-processes.html#openeo.processes.to_scl_dilation_mask) is a backend-specific convenience process that derives and creates a cloud and cloud-shadow mask from the Sentinel-2 Scene Classification (SCL) band. The cloud mask generated can be used directly with the standard `mask` process to filter out cloudy pixels.
 
-### Python
+## Python
 
 ``` python
 scl = c.load_collection(
@@ -82,15 +50,19 @@ scl = c.load_collection(
 cloud_mask = scl.process( data=scl,process_id="to_scl_dilation_mask")
 ```
 
-The process is backend-specific and is not available on every backend. An openEO notebook demonstrating how it works and how to replicate the standard openEO process across different backends can be found [here](https://github.com/Open-EO/openeo-community-examples/blob/main/python/SCLDilationMask/to_scl_dilation_mask.ipynb).
-
-------------------------------------------------------------------------
+The process is backend-specific and is not available on every backend. An openEO notebook demonstrating how it works and how to replicate the standard openEO process across different backends is available [here](https://github.com/Open-EO/openeo-community-examples/blob/main/python/SCLDilationMask/to_scl_dilation_mask.ipynb).
 
 ## Atmospheric Correction
 
-Atmospheric correction accounts for atmospheric scattering, absorption, and haze in optical observations. It converts top-of-atmosphere measurements into surface reflectance, which is more suitable for comparing observations across dates and locations.
+[Atmospheric correction](https://processes.openeo.org/2.0.0-rc.2/#atmospheric_correction) accounts for atmospheric scattering, absorption, and haze in optical observations. It converts top-of-atmosphere measurements into surface reflectance, which is more suitable for comparing observations across dates and locations.
 
-The required input bands and correction methods depend on the collection and backend. Check the collection metadata and process description before use.
+The atmospheric correction process can apply a chosen method to raw ‘L1C’ data. The supported methods and input datasets depend on the backend, because not every method is validated or works with every dataset, and different backends offer a variety of options. This gives you, as a user, more options to run and compare different methods, and select the most suitable one for your case.
+
+To perform an atmospheric correction, the user has to load an uncorrected L1C optical dataset. On the resulting datacube, the atmospheric_correction() method can be invoked. Note that it may not be possible to apply certain processes to the raw input data: preprocessing algorithms can be tightly coupled with the raw data, making it hard or impossible for the backend to perform operations in between loading and correcting the data.
+
+> **CAUTION:**
+>
+> Please note that this process is experimental and may change significantly. Feel encouraged to try it out and give feedback, but refrain from using it in production.
 
 ### Code examples
 
@@ -178,13 +150,21 @@ const result = builder.save_result(l2a, "GTiff");
 await con.computeResult(result, { filename: "sentinel2_icor.tif" });
 ```
 
-------------------------------------------------------------------------
+## CARD4L surface reflectance
 
-## Create CARD4L normalised radar backscatter
+The CARD4L variant of the atmospheric correction process is: ard_surface_reflectance(). This process follows CEOS specifications and thus can include additional processing steps, such as a BRDF correction, that are not yet available as separate processes.
+
+`ard_surface_reflectance` creates an analysis-ready optical product from suitable input data. It can include atmospheric, geometric, and quality corrections, depending on the backend implementation.
+
+``` python
+surface_reflectance = l1c.ard_surface_reflectance()
+```
+
+## CARD4L normalised radar backscatter
+
+Data from synthetic aperture radar sensors requires significant preprocessing to be calibrated and normalised for terrain. This is referred to as backscatter computation, and supported by [`sar_backscatter`](#compute-sar-backscatter) and the CARD4L compliant variant [`ard_normalized_radar_backscatter`](https://processes.openeo.org/2.0.0-rc.2/#ard_normalized_radar_backscatter).
 
 SAR backscatter processing calibrates raw radar observations and can apply terrain correction and normalisation. The resulting measurements are commonly expressed as sigma0 or gamma0 in linear or decibel scale. Terrain correction is especially important in areas with varied topography.
-
-### Code examples
 
 ## Python
 
@@ -293,13 +273,11 @@ for (const asset of Object.values(results.assets)) {
 }
 ```
 
-------------------------------------------------------------------------
+## SAR backscatter
 
-## Compute SAR backscatter
+`sar_backscatter` calibrates radar observations and can produce a chosen backscatter coefficient, such as `gamma0-terrain`. Use it when you need explicit control over calibration, terrain correction, elevation data, or noise removal, rather than the higher-level CARD4L process. For more information, refer to the process documentation [here](https://processes.openeo.org/2.0.0-rc.2/#sar_backscatter).
 
-`sar_backscatter` calibrates radar observations and can produce a chosen backscatter coefficient, such as `gamma0-terrain`. Use it when you need explicit control over calibration, terrain correction, elevation data, or noise removal, rather than the higher-level CARD4L process.
-
-### Python
+## Python
 
 ``` python
 s1_image = connection.load_collection(
@@ -320,41 +298,55 @@ job.get_results().download_files("./output/")
 
 The returned values are calibrated radar measurements, usually expressed on a linear or decibel scale depending on the process parameters. Check the backend metadata for supported coefficients and ancillary data requirements.
 
-------------------------------------------------------------------------
-
-## Performance considerations
-
-Both `atmospheric_correction` and `sar_backscatter` can require substantial backend resources. Before including them in a workflow, consider the following:
-
-- **Use batch jobs:** synchronous execution may time out beyond a small test area.
-- **Filter early:** Apply `filter_bbox` and `filter_temporal` before these processes to reduce the volume of data processed.
-- **Prefer pre-corrected collections:** many backends provide analysis-ready collections, such as Sentinel-2 L2A or Sentinel-1 backscatter products.
-- **Test a small area first:** resource use and costs can increase substantially for larger areas or longer time ranges.
+> **TIP:**
+>
+> - [Identifying Flooded Areas with Sentinel-1 Data](../../client_examples/openeo-community-examples/python/FloodNDWI/flood_SAR.ipynb)
+> - [Oil Spill Mapping using Sentinel-1](../../client_examples/openeo-community-examples/python/OilSpill/OilSpillMapping.ipynb)
+> - [Analysing openEO-Generated Interferograms for Surface Deformation](../../client_examples/openeo-community-examples/python/SAR_in_openEO/Interferogram_deformation_map.ipynb)
+> - [Analysing Coherence Output for Harvest-Day Detection](../../client_examples/openeo-community-examples/python/SAR_in_openEO/Coherence_for_harvestdays.ipynb)
+> - [Publishing an openEO Workflow as a User-Defined Process (Sentinel-1 stats)](../../client_examples/openeo-community-examples/python/Sentinel1_Stats/Sentinel1_Stats.ipynb)
+> - [Soil Surface Moisture using openEO API](https://github.com/Open-EO/openeo-community-examples/blob/main/python/SurfaceSoilMoisture/SoilMoisture.ipynb)
+>
+> More notebooks are listed on the [sample notebooks page](../../examples.llms.md).
 
 > **TIP:**
 >
 > If your backend provides a collection such as `SENTINEL2_L2A` or `SENTINEL1_BACKSCATTER`, use it when it meets the analysis requirements. These products are already processed and usually require fewer backend resources.
 
-## Related standard processes
+## Cloud detection
 
-Some standard processes are useful during preprocessing but have a different primary purpose. To avoid documenting one process twice, use the dedicated pages for their full explanations and examples:
+[`Cloud detection`](https://processes.openeo.org/#cloud_detection) is defined within the OpenEO processes as a method to identify cloud-covered pixels in satellite imagery. It detects atmospheric disturbances such as clouds, cloud shadows, aerosols, haze, ozone and/or water vapour in optical imagery. Then it creates a data cube with spatial and temporal dimensions compatible with the source data cube, and a dimension containing a label for each supported/considered atmospheric disturbance. The naming of the bands follows these pre-defined values:
 
-- [`mask_polygon`](../../documentation/cube_operations/spatial_operations.llms.md) masks pixels outside a geometry.
-- [`apply`](../../documentation/cube_operations/cube_manipulations.llms.md) applies a per-pixel process callback.
-- [`linear_scale_range`](../../documentation/cube_operations/spectral_operations.llms.md) rescales numeric values.
+- cloud
+- aerosol
+- shadow
+- aerosol
+- haze
+- ozone
+- water_vapor
 
-These processes remain individually associated with backend support through their own `data-process` sections on those pages.
+All bands have values between 0 (clear) and 1, which describes the probability that it is an atmospheric disturbance.
 
-`cloud_detection` is not included here because it is not advertised by any backend in the current generated support data. It should only be documented after a backend advertises the process and its process metadata has been checked.
+> **CAUTION:**
+>
+> Please note that this process is experimental and may change significantly. Feel encouraged to try it out and give feedback, but refrain from using it in production.
 
-------------------------------------------------------------------------
-
-## Produce CARD4L surface reflectance
-
-`ard_surface_reflectance` creates an analysis-ready optical product from suitable input data. It can include atmospheric, geometric, and quality corrections, depending on the backend implementation.
+## Python
 
 ``` python
-surface_reflectance = l1c.ard_surface_reflectance()
+cloud_mask = s2_image.cloud_detection()
 ```
 
-Each section is shown only for backends that advertise their process. The process metadata remains authoritative for exact parameters, supported collections, and output conventions.
+## R
+
+``` r
+cloud_mask <- cloud_detection(s2_image)
+```
+
+## JavaScript
+
+``` javascript
+let cloud_mask = s2_image.cloud_detection();
+```
+
+Back to top
