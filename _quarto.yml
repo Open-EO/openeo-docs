@@ -23,6 +23,8 @@ project:
 
 website:
   title: "openEO"
+  back-to-top-navigation: true
+  page-navigation: true
   site-url: "https://open-eo.github.io/openeo-docs/"
   description: >
     openEO is an open source standard that provides a unified solution for processing Earth observation data. It allows users to access and analyze earth observation data from various providers in a standardized and cost-efficient way.
@@ -137,10 +139,8 @@ website:
           - href: "https://api.openeo.org/"
             text: REST API Reference
             target: "_blank"
-          - href: 404-not-found.qmd
+          - href: https://openeo.org/documentation/1.0/developers/backends/xarray.html
             text: Xarray/Dask Guide
-          - href: 404-not-found.qmd
-            text: Backend Development
       
           
 format:
