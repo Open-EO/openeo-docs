@@ -2,11 +2,11 @@
   "content": [
     {
       "content": null,
-      "created": "2026-09-18T14:46:56.786144Z",
+      "created": "2026-09-21T06:34:46.435729Z",
       "format": null,
       "hash": null,
       "hash_algorithm": null,
-      "last_modified": "2026-09-18T14:46:53.682249Z",
+      "last_modified": "2026-09-21T06:34:43.754174Z",
       "mimetype": null,
       "name": "HeatwaveNL.ipynb",
       "path": "notebooks/Heatwave/HeatwaveNL.ipynb",
@@ -16,11 +16,11 @@
     },
     {
       "content": null,
-      "created": "2026-09-18T14:46:56.786995Z",
+      "created": "2026-09-21T06:34:46.436336Z",
       "format": null,
       "hash": null,
       "hash_algorithm": null,
-      "last_modified": "2026-09-18T14:46:53.682374Z",
+      "last_modified": "2026-09-21T06:34:43.754269Z",
       "mimetype": "application/geo+json",
       "name": "Netherlands_polygon.geojson",
       "path": "notebooks/Heatwave/Netherlands_polygon.geojson",
@@ -29,11 +29,11 @@
       "writable": true
     }
   ],
-  "created": "2026-09-18T14:46:56.786206Z",
+  "created": "2026-09-21T06:34:46.436336Z",
   "format": "json",
   "hash": null,
   "hash_algorithm": null,
-  "last_modified": "2026-09-18T14:46:56.786206Z",
+  "last_modified": "2026-09-21T06:34:46.436336Z",
   "mimetype": null,
   "name": "Heatwave",
   "path": "notebooks/Heatwave",

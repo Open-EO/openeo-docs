@@ -2,11 +2,11 @@
   "content": [
     {
       "content": null,
-      "created": "2026-09-18T14:46:56.858785Z",
+      "created": "2026-09-21T06:34:46.501277Z",
       "format": null,
       "hash": null,
       "hash_algorithm": null,
-      "last_modified": "2026-09-18T14:46:53.693206Z",
+      "last_modified": "2026-09-21T06:34:43.763989Z",
       "mimetype": "application/x-netcdf",
       "name": "openEO.nc",
       "path": "notebooks/RankComposites/results/openEO.nc",
@@ -16,11 +16,11 @@
     },
     {
       "content": null,
-      "created": "2026-09-18T14:46:56.857388Z",
+      "created": "2026-09-21T06:34:46.499991Z",
       "format": null,
       "hash": null,
       "hash_algorithm": null,
-      "last_modified": "2026-09-18T14:46:53.692993Z",
+      "last_modified": "2026-09-21T06:34:43.763810Z",
       "mimetype": "application/json",
       "name": "job-results.json",
       "path": "notebooks/RankComposites/results/job-results.json",
@@ -29,11 +29,11 @@
       "writable": true
     }
   ],
-  "created": "2026-09-18T14:46:56.858785Z",
+  "created": "2026-09-21T06:34:46.500417Z",
   "format": "json",
   "hash": null,
   "hash_algorithm": null,
-  "last_modified": "2026-09-18T14:46:56.858785Z",
+  "last_modified": "2026-09-21T06:34:46.500417Z",
   "mimetype": null,
   "name": "results",
   "path": "notebooks/RankComposites/results",

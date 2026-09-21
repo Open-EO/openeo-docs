@@ -1634,10 +1634,7 @@
     "href": "404-not-found.html",
     "title": "404 — Process Not Found",
     "section": "",
-    "text": "🌍\n  404\n  \n    ProcessNotFoundException\n  \n  \n    The page you're looking for is not available. It might be that the URL is incorrect, or that the content has been moved or deleted. It's also possible that this page is still under development.\n  \n  ← Back to home\n\n\n\n\n Back to top",
-    "crumbs": [
-      "Xarray/Dask Guide"
-    ]
+    "text": "🌍\n  404\n  \n    ProcessNotFoundException\n  \n  \n    The page you're looking for is not available. It might be that the URL is incorrect, or that the content has been moved or deleted. It's also possible that this page is still under development.\n  \n  ← Back to home\n\n\n\n\n Back to top"
   },
   {
     "objectID": "contact.html",
