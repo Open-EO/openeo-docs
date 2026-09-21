@@ -143,9 +143,9 @@ website:
           - href: "https://api.openeo.org/"
             text: REST API Reference
             target: "_blank"
-          - href: 404-not-found.qmd
+          - href: https://openeo.org/documentation/1.0/developers/backends/xarray.html
             text: Xarray/Dask Guide
-          - href: 404-not-found.qmd
+          - href: https://openeo.org/documentation/1.0/developers/backends/getting-started.html
             text: Backend Development
       
           
