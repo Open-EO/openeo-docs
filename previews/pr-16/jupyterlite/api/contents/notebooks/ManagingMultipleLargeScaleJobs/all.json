@@ -1,0 +1,43 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2026-09-21T06:24:19.803430Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-21T06:24:16.998782Z",
+      "mimetype": null,
+      "name": "ManagingMultipleLargeScaleJobs.ipynb",
+      "path": "notebooks/ManagingMultipleLargeScaleJobs/ManagingMultipleLargeScaleJobs.ipynb",
+      "size": 1210402,
+      "type": "notebook",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2026-09-21T06:24:19.806152Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-21T06:24:16.999184Z",
+      "mimetype": null,
+      "name": "VisualisingMultipleOpeneoJobs.ipynb",
+      "path": "notebooks/ManagingMultipleLargeScaleJobs/VisualisingMultipleOpeneoJobs.ipynb",
+      "size": 12492,
+      "type": "notebook",
+      "writable": true
+    }
+  ],
+  "created": "2026-09-21T06:24:19.805413Z",
+  "format": "json",
+  "hash": null,
+  "hash_algorithm": null,
+  "last_modified": "2026-09-21T06:24:19.805413Z",
+  "mimetype": null,
+  "name": "ManagingMultipleLargeScaleJobs",
+  "path": "notebooks/ManagingMultipleLargeScaleJobs",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}

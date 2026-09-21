@@ -1,0 +1,43 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2026-09-21T06:24:19.840017Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-21T06:24:17.004105Z",
+      "mimetype": "text/x-python",
+      "name": "onnx_udf.py",
+      "path": "notebooks/OnnxMLInference/onnx_udf.py",
+      "size": 4382,
+      "type": "file",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2026-09-21T06:24:19.838664Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-21T06:24:17.003933Z",
+      "mimetype": null,
+      "name": "Onnx_ML_Inference.ipynb",
+      "path": "notebooks/OnnxMLInference/Onnx_ML_Inference.ipynb",
+      "size": 529544,
+      "type": "notebook",
+      "writable": true
+    }
+  ],
+  "created": "2026-09-21T06:24:19.839412Z",
+  "format": "json",
+  "hash": null,
+  "hash_algorithm": null,
+  "last_modified": "2026-09-21T06:24:19.839412Z",
+  "mimetype": null,
+  "name": "OnnxMLInference",
+  "path": "notebooks/OnnxMLInference",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}

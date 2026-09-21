@@ -1,0 +1,172 @@
+# Export Formats
+
+The openEO API offers various options for exporting results in different formats. It could differ depending on the backend capabilities and the type of data being exported.
+
+An openEO workflow remains a process graph until it is executed. A detailed explanation of how to execute openEO jobs can be found in the [Job Execution](cube_operations/execute_jobs.llms.md) section. On this page, we focus on exploring the available export formats and saving results in different formats.
+
+Common choices are GeoTIFF (`GTiff`) for raster images, NetCDF (`netCDF`) or Zarr for multidimensional scientific data, PNG for images, and JSON, CSV, GeoJSON, or Parquet for tables and vector results.
+
+To explore the available export formats, you can use the `list_file_formats()` method provided by the openEO client.
+
+## Python
+
+``` r
+library(openeo)
+con <- connect("your_backend_url")
+formats <- con$list_file_formats()
+print(names(formats$output))
+```
+
+## R
+
+``` js
+const con = await openeo.connect("your_backend_url");
+const formats = await con.listFileFormats();
+console.log(Object.keys(formats.output));
+```
+
+## JavaScript
+
+The result identifies the format names accepted by `save_result` and may list format-specific options. A workflow can fail if the selected format cannot represent the result, for example when exporting a multidimensional raster to an image format.
+
+## Export a raster data cube
+
+GeoTIFF is a common choice for a spatial raster result that you want to open in desktop GIS software. For a time series or a data cube with several dimensions, NetCDF or Zarr is often a better fit because it preserves multidimensional data. The following examples add a GeoTIFF result node to an existing `cube` and run a batch job.
+
+## Python
+
+``` python
+result = cube.save_result(format="GTiff")
+job = result.create_job(title="GeoTIFF export")
+job.start_and_wait()
+job.get_results().download_files("./output")
+```
+
+## R
+
+``` r
+result <- p$save_result(data = cube, format = "GTiff")
+job <- create_job(graph = result, title = "GeoTIFF export")
+start_job(job = job)
+
+# Download after the job has finished.
+download_results(job = job, folder = "./output")
+```
+
+## JavaScript
+
+``` js
+const result = builder.save_result(cube, "GTiff");
+const job = await con.createJob(result, "GeoTIFF export");
+await job.startJob();
+
+// Obtain the result download URLs after the job has finished.
+const results = await job.listResults();
+console.log(results);
+```
+
+For a very small result, the Python client also supports a direct download:
+
+``` python
+cube.download("./output/result.tif", format="GTiff")
+```
+
+Use batch jobs for larger areas, long time ranges, or workflows that may take more than a few minutes.
+
+## Export tables and vector data
+
+Processes such as `aggregate_spatial` usually produce a table-like or vector result rather than a raster. JSON is a portable choice for inspecting a small result. CSV is useful for tabular analysis, while GeoJSON and Parquet are common vector-data formats when supported by the backend.
+
+## Python
+
+``` python
+result = aggregated_cube.save_result(format="JSON")
+job = result.create_job(title="JSON export")
+job.start_and_wait()
+job.get_results().download_files("./output")
+```
+
+## R
+
+``` r
+result <- p$save_result(data = aggregated_cube, format = "JSON")
+job <- create_job(graph = result, title = "JSON export")
+start_job(job = job)
+download_results(job = job, folder = "./output")
+```
+
+## JavaScript
+
+``` js
+const result = builder.save_result(aggregatedCube, "JSON");
+const job = await con.createJob(result, "JSON export");
+await job.startJob();
+```
+
+Replace `aggregated_cube` or `aggregatedCube` with the variable holding your result. Use a format listed by the backend; not every backend provides every format for every type of result.
+
+## Use format options carefully
+
+Some formats accept options, such as image rendering settings or compression. Options are backend-specific, so always consult `list_file_formats()` and the backend documentation. The following PNG example assigns cube bands to red, green, and blue channels. It only works when the selected backend supports these options and the cube contains suitable bands.
+
+## Python
+
+``` python
+result = rgb_cube.save_result(
+        format="PNG",
+        options={"red": "B04", "green": "B03", "blue": "B02"},
+)
+```
+
+## R
+
+``` r
+result <- p$save_result(
+    data = rgb_cube,
+    format = "PNG",
+    options = list(red = "B04", green = "B03", blue = "B02")
+)
+```
+
+## JavaScript
+
+``` js
+const result = builder.save_result(rgbCube, "PNG", {
+ red: "B04",
+ green: "B03",
+ blue: "B02"
+});
+```
+
+PNG is for a display-ready image. It is generally not appropriate when you need the original measurement values for later analysis.
+
+## Export a process graph
+
+Exporting a process graph as JSON lets you inspect, archive, share, or reuse a workflow in another compatible openEO tool. Export the final graph object, such as the `result` returned by `save_result`, rather than an internal graph representation.
+
+## Python
+
+``` python
+from pathlib import Path
+
+process_json = result.to_json()
+Path("process-graph.json").write_text(process_json, encoding="utf-8")
+```
+
+## R
+
+``` r
+library(jsonlite)
+
+process_json <- toJSON(as(result, "Process"), auto_unbox = TRUE, pretty = TRUE)
+writeLines(process_json, "process-graph.json")
+```
+
+## JavaScript
+
+``` js
+const processJson = JSON.stringify(result.toJSON(), null, 2);
+console.log(processJson);
+```
+
+Back to top

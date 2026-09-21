@@ -1,0 +1,71 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2026-09-21T06:24:19.748602Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-21T06:24:16.991060Z",
+      "mimetype": "image/png",
+      "name": "BandSignificanceCurve.png",
+      "path": "notebooks/DimensionalityReduction/img/BandSignificanceCurve.png",
+      "size": 70715,
+      "type": "file",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2026-09-21T06:24:19.748363Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-21T06:24:16.991028Z",
+      "mimetype": "image/png",
+      "name": "AbsoluteSignificantBandLoadingsHeatmap.png",
+      "path": "notebooks/DimensionalityReduction/img/AbsoluteSignificantBandLoadingsHeatmap.png",
+      "size": 40766,
+      "type": "file",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2026-09-21T06:24:19.748912Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-21T06:24:16.991096Z",
+      "mimetype": "image/png",
+      "name": "CumulativeExplainedVariance.png",
+      "path": "notebooks/DimensionalityReduction/img/CumulativeExplainedVariance.png",
+      "size": 30109,
+      "type": "file",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2026-09-21T06:24:19.749123Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-21T06:24:16.991122Z",
+      "mimetype": "image/png",
+      "name": "ExplainedVarianceRatio.png",
+      "path": "notebooks/DimensionalityReduction/img/ExplainedVarianceRatio.png",
+      "size": 16759,
+      "type": "file",
+      "writable": true
+    }
+  ],
+  "created": "2026-09-21T06:24:19.749123Z",
+  "format": "json",
+  "hash": null,
+  "hash_algorithm": null,
+  "last_modified": "2026-09-21T06:24:19.749123Z",
+  "mimetype": null,
+  "name": "img",
+  "path": "notebooks/DimensionalityReduction/img",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}

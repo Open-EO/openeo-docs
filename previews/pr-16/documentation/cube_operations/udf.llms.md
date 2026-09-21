@@ -1,0 +1,278 @@
+# User Defined Functions (UDF)
+
+While openEO supports a wide range of predefined processes and allows you to build more complex user-defined processes from them, you sometimes need operations or algorithms that are not (yet) available or standardised as openEO processes. User-Defined Functions (UDF) are an openEO feature (via the run_udf process) that aims to fill that gap by allowing a user to express (part of) an algorithm as a Python/R/… script to be run on the back end within the openEO processing environment.
+
+> **NOTE:**
+>
+> The buttons above let you filter processes supported by different backends. Selecting or deselecting a backend will show or hide the relevant sections in the documentation. However, please note that it is based on the latest documentation rendering. Thus, please refer to the [openEO Hub](https://hub.openeo.org/) for the most up-to-date information.
+
+## Author a Python UDF
+
+A Python UDF is typically defined as a function with a specific entry point, usually named `apply_datacube`, which takes an `xarray.DataArray` and a context dictionary as input and returns an `xarray.DataArray` as output. The function name and type annotations are part of the UDF contract, so retain them.
+
+## Python UDF
+
+``` python
+# scale_reflectance.py
+import xarray
+
+
+def apply_datacube(cube: xarray.DataArray, context: dict) -> xarray.DataArray:
+  return cube * 0.0001
+```
+
+Next, load the source with the openEO Python client and pass the resulting UDF object to the process that defines how it is applied:
+
+## Python Client Usage
+
+``` python
+import openeo
+
+udf = openeo.UDF.from_file("scale_reflectance.py")
+result = cube.apply(process=udf)
+```
+
+Ideally, it allows you to embed existing Python/R/… implementations in an openEO workflow (with some necessary “glue code”). However, it is recommended to try to do as much pre- or postprocessing with predefined processes before copy-pasting source code snippets as UDFs. Predefined processes are typically well optimised by the backend, whereas UDFs can incur a performance penalty and higher development/debug/ maintenance costs.
+
+## Select a UDF execution context
+
+While the above examples show how to define and apply a UDF, it is important to understand the execution context in which the UDF operates. The called process determines the kind of input the UDF receives and the expected output structure.
+
+| Process | UDF input and output contract |
+|----|----|
+| `apply` | A per-pixel transformation. Dimensions and labels are preserved. Prefer standard math processes for simple calculations. |
+| `apply_dimension` | A complete series along the chosen dimension; other dimensions can still be chunked. The selected dimension may change in length. |
+| `reduce_dimension` | A complete series along the chosen dimension. The UDF output must remove that dimension. |
+| `apply_neighborhood` | A spatial window. Specify the window size and overlap so that algorithms that require surrounding pixels produce coherent results at chunk boundaries. |
+| `apply_kernel` | A spatial kernel operation. Similar to `apply_neighborhood`, but typically used for convolution-like operations with a fixed kernel size. |
+
+For example, apply a time-series UDF along the temporal dimension:
+
+## Python
+
+``` python
+smoothed = cube.apply_dimension(process=udf, dimension="t")
+```
+
+## R
+
+``` r
+smoothed <- cube %>% apply_dimension(process = udf, dimension = "t")
+```
+
+It is recommended to start with a small batch job to verify the UDF’s behaviour and resource requirements. Additionally, use `connection.list_udf_runtimes()` to inspect advertised runtimes and libraries.
+
+## Logging from UDFs
+
+From time to time, when things are not working as expected, you may want to log additional debug information from your UDF, inspect the data being processed, or log warnings. This can be done using the `inspect()`function.
+
+For example, to discover the shape of the data cube chunk that you receive in your UDF function:
+
+## Python
+
+``` python
+from openeo.udf import inspect
+import xarray
+
+
+def apply_datacube(cube: xarray.DataArray, context: dict) -> xarray.DataArray:
+ inspect(data=[cube.shape], message="UDF input chunk shape")
+  return cube * 0.0001
+```
+
+## R
+
+``` r
+library(openeo)
+
+apply_datacube <- function(cube, context) {
+  inspect(data = list(dim(cube)), message = "UDF input chunk shape")
+  return(cube * 0.0001)
+}
+```
+
+## Python
+
+``` python
+job.logs()
+```
+
+## R
+
+``` r
+job$logs()
+```
+
+Backends can limit the types accepted by `inspect` and may process many chunks, so logging is best used sparingly for diagnosis.
+
+> **WARNING:**
+>
+> Keep UDFs small and use only packages documented by the selected backend. Standard openEO processes are generally more portable and can be optimised more easily by a backend.
+
+## Choose the right extension mechanism
+
+A **callback** is not a UDF. With `apply`, `apply_dimension`, `reduce_dimension`, `aggregate_temporal`, `aggregate_spatial`, or `apply_neighborhood`, a Python lambda describes an openEO process graph using standardised processes; no arbitrary Python code is sent to the backend. A **UDF** sends backend-executed Python or R code through `run_udf`.
+
+| Need | Preferred mechanism |
+|----|----|
+| Scale values, calculate an index, or reduce a dimension | A standard process or callback. |
+| Reuse a named process graph | A UDP. |
+| Apply a backend-supported ML model | The backend’s ML process. |
+| Run an algorithm unavailable as an openEO process | `run_udf`. |
+| Use a custom external execution environment | `run_udf_externally`, when advertised by the backend. |
+
+> **IMPORTANT:**
+>
+> Do not confuse user-defined functions (abbreviated as UDF) with user-defined processes (sometimes abbreviated as UDP) in openEO, which is a way to define and use your own process graphs as reusable building blocks. See [User-Defined Processes (UDP)](../../documentation/cube_operations/udp.llms.md) for more information.
+
+## UDF-related processes
+
+The processes related to UDFs in openEO allow you to execute custom code on the backend or apply standardised callbacks to your data cube. These callback processes are included for comparison, but they do not execute arbitrary Python or R code on the backend.
+
+## Run a backend UDF
+
+Use `run_udf` when the required algorithm cannot be expressed with standardised openEO processes. This process can either: - load and run a UDF stored in a file on the server-side workspace of the authenticated user. The path to the UDF file must be relative to the root directory of the user’s workspace. - fetch and run a remotely stored and published UDF by absolute URI. - run the source code specified inline as a string.
+
+The loaded UDF can be executed in several processes, such as aggregate_spatial, apply, apply_dimension and reduce_dimension. The user must ensure that the data is provided in a way that the UDF code can interpret.
+
+## Python
+
+``` python
+result = cube.run_udf(udf=udf_code, runtime="Python")
+```
+
+## R
+
+``` r
+result <- cube$run_udf(udf=udf_code, runtime="R")
+```
+
+## Run an external UDF
+
+Use `run_udf_externally` when the computation must run in an environment managed outside the backend. This is useful for custom dependencies, but it is less portable and may require backend-specific credentials or configuration.
+
+## Python
+
+``` python
+result = openeo.processes.run_udf_externally(data=cube, udf=udf_code)
+```
+
+## R
+
+``` r
+result <- openeo::run_udf_externally(data=cube, udf=udf_code)
+```
+
+## Run an OGC API process hosted by the backend
+
+`run_ogcapi` invokes an OGC API - Processes process that the connected backend offers through its own OGC API - Processes deployment (Part 2: Deploy, Replace, Undeploy). Use it to reuse a process the backend already deployed under OGC API - Processes, instead of re-implementing the same logic as a UDF.
+
+## Python
+
+``` python
+result = openeo.processes.run_ogcapi(data=cube, id="ogc-process-id")
+```
+
+## R
+
+``` r
+result <- openeo::run_ogcapi(data = cube, id = "ogc-process-id")
+```
+
+## Run an externally hosted OGC API process
+
+`run_ogcapi_externally` runs an OGC API - Processes process hosted outside the connected backend, either by another service provider or on the user’s own machine. This is useful for calling a process that is only available at a third-party OGC API - Processes endpoint.
+
+## Python
+
+``` python
+result = openeo.processes.run_ogcapi_externally(
+    data=cube, url="https://example.org/ogcapi", id="ogc-process-id"
+)
+```
+
+## R
+
+``` r
+result <- openeo::run_ogcapi_externally(
+    data = cube, url = "https://example.org/ogcapi", id = "ogc-process-id"
+)
+```
+
+Both processes are experimental and depend on the backend (or external service) implementing OGC API - Processes; check process support before relying on them in production.
+
+## Apply a standardised pixel callback
+
+Apply a standardised process callback independently to each pixel; this is not arbitrary Python execution. This ensures that the operation is applied consistently across the entire data cube.
+
+## Python
+
+``` python
+scaled = cube.apply(lambda value: value * 0.0001)
+```
+
+## R
+
+``` r
+scaled <- cube$apply(function(value) value * 0.0001)
+```
+
+## Apply a standardised dimension callback
+
+Apply a standardised callback along one cube dimension. You can also find more information about `apply_dimension` in the spatial and temporal processing sections, which apply the operation along the respective dimensions.
+
+## Python
+
+``` python
+smoothed = cube.apply_dimension(dimension="t", process=lambda series: series.median())
+```
+
+## R
+
+``` r
+smoothed <- cube$apply_dimension(dimension="t", process=function(series) median(series))
+```
+
+## Reduce a dimension with a UDF
+
+Similar to `apply_dimension`, but instead of returning a series along the reduced dimension, it collapses the dimension into a single value. The process has also been discussed in the spatial and temporal processing sections to illustrate its usage along those dimensions.
+
+Thus, use `reduce_dimension` when a UDF must turn every series along one dimension into a single value and remove that dimension from its output.
+
+## Python
+
+``` python
+reduced = cube.reduce_dimension(dimension="t", reducer=udf)
+```
+
+## R
+
+``` r
+reduced <- cube$reduce_dimension(dimension="t", reducer=udf)
+```
+
+## Apply a standardised neighbourhood callback
+
+The `apply_neighborhood` process applies a focal process to a data cube.
+
+A focal process operates on a ‘neighbourhood’ of pixels. The neighbourhood can extend into multiple dimensions; the size argument specifies this extent. It is not only (part of) the size of the input window, but also the size of the output for a given position of the sliding window. The sliding window moves in multiples of size.
+
+An overlap can be specified so that neighbourhoods can have overlapping boundaries. This allows for continuity of the output. The overlap region must be included in the data cube or array returned by process, but any changed values will be ignored. The missing overlap at the borders of the original data cube is made available as no-data values in the sub-data cubes.
+
+The neighbourhood size should be kept small enough to avoid exceeding computational resources, but a too-small size will result in more process invocations, which may slow down processing. Window sizes for spatial dimensions typically range from 64 to 512 pixels, while overlaps of 8 to 32 pixels are common.
+
+For the special case of 2D convolution, it is recommended to use `apply_kernel`.
+
+## Python
+
+``` python
+result = cube.apply_neighborhood(size=[3, 3], process=lambda window: window.mean())
+```
+
+## R
+
+``` r
+result <- cube$apply_neighborhood(size=c(3, 3), process=function(window) mean(window))
+```
+
+Back to top

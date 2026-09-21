@@ -1,0 +1,71 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2026-09-21T06:24:19.790113Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-21T06:24:16.996874Z",
+      "mimetype": "application/x-netcdf",
+      "name": "ghsl.nc",
+      "path": "notebooks/GlobalFloodMonitoring/ghsl.nc",
+      "size": 398628,
+      "type": "file",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2026-09-21T06:24:19.789650Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-21T06:24:16.996817Z",
+      "mimetype": "image/png",
+      "name": "gfm-observed-water.png",
+      "path": "notebooks/GlobalFloodMonitoring/gfm-observed-water.png",
+      "size": 135776,
+      "type": "file",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2026-09-21T06:24:19.787748Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-21T06:24:16.996558Z",
+      "mimetype": null,
+      "name": "Global_Flood_Monitoring.ipynb",
+      "path": "notebooks/GlobalFloodMonitoring/Global_Flood_Monitoring.ipynb",
+      "size": 241213,
+      "type": "notebook",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2026-09-21T06:24:19.788468Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-21T06:24:16.996651Z",
+      "mimetype": "image/png",
+      "name": "gfm-flood-extent.png",
+      "path": "notebooks/GlobalFloodMonitoring/gfm-flood-extent.png",
+      "size": 482155,
+      "type": "file",
+      "writable": true
+    }
+  ],
+  "created": "2026-09-21T06:24:19.790113Z",
+  "format": "json",
+  "hash": null,
+  "hash_algorithm": null,
+  "last_modified": "2026-09-21T06:24:19.790113Z",
+  "mimetype": null,
+  "name": "GlobalFloodMonitoring",
+  "path": "notebooks/GlobalFloodMonitoring",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}

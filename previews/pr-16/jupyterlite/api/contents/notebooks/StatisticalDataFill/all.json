@@ -1,0 +1,29 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2026-09-21T06:24:19.893478Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-21T06:24:17.011592Z",
+      "mimetype": null,
+      "name": "StatisticalDataFill.ipynb",
+      "path": "notebooks/StatisticalDataFill/StatisticalDataFill.ipynb",
+      "size": 98539,
+      "type": "notebook",
+      "writable": true
+    }
+  ],
+  "created": "2026-09-21T06:24:19.893478Z",
+  "format": "json",
+  "hash": null,
+  "hash_algorithm": null,
+  "last_modified": "2026-09-21T06:24:19.893478Z",
+  "mimetype": null,
+  "name": "StatisticalDataFill",
+  "path": "notebooks/StatisticalDataFill",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}

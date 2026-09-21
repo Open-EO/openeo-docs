@@ -1,0 +1,71 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2026-09-21T06:24:19.889907Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-21T06:24:17.011153Z",
+      "mimetype": null,
+      "name": "to_scl_dilation_mask.ipynb",
+      "path": "notebooks/SCLDilationMask/to_scl_dilation_mask.ipynb",
+      "size": 71435,
+      "type": "notebook",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2026-09-21T06:24:19.891680Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-21T06:24:19.891680Z",
+      "mimetype": null,
+      "name": "to_scl_dilation_mask_standard",
+      "path": "notebooks/SCLDilationMask/to_scl_dilation_mask_standard",
+      "size": null,
+      "type": "directory",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2026-09-21T06:24:19.890493Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-21T06:24:19.890493Z",
+      "mimetype": null,
+      "name": "to_scl_dilation_mask_cdse",
+      "path": "notebooks/SCLDilationMask/to_scl_dilation_mask_cdse",
+      "size": null,
+      "type": "directory",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2026-09-21T06:24:19.890261Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-21T06:24:17.011194Z",
+      "mimetype": "text/x-python",
+      "name": "to_scl_dilation_mask.py",
+      "path": "notebooks/SCLDilationMask/to_scl_dilation_mask.py",
+      "size": 5201,
+      "type": "file",
+      "writable": true
+    }
+  ],
+  "created": "2026-09-21T06:24:19.890493Z",
+  "format": "json",
+  "hash": null,
+  "hash_algorithm": null,
+  "last_modified": "2026-09-21T06:24:19.890493Z",
+  "mimetype": null,
+  "name": "SCLDilationMask",
+  "path": "notebooks/SCLDilationMask",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}

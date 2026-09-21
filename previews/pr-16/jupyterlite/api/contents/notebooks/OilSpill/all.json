@@ -1,0 +1,43 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2026-09-21T06:24:19.811413Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-21T06:24:16.999973Z",
+      "mimetype": null,
+      "name": "OilSpillMapping.ipynb",
+      "path": "notebooks/OilSpill/OilSpillMapping.ipynb",
+      "size": 1849150,
+      "type": "notebook",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2026-09-21T06:24:19.818413Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-09-21T06:24:17.003444Z",
+      "mimetype": "image/png",
+      "name": "gt.png",
+      "path": "notebooks/OilSpill/gt.png",
+      "size": 10977883,
+      "type": "file",
+      "writable": true
+    }
+  ],
+  "created": "2026-09-21T06:24:19.814413Z",
+  "format": "json",
+  "hash": null,
+  "hash_algorithm": null,
+  "last_modified": "2026-09-21T06:24:19.814413Z",
+  "mimetype": null,
+  "name": "OilSpill",
+  "path": "notebooks/OilSpill",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}
