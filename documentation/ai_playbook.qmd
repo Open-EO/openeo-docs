@@ -196,35 +196,28 @@ Reference: [geospatial embeddings examples](https://github.com/Open-EO/openeo-co
 
 ## 3. Packaging (embedding) models for openEO inference
 
+### 3.1 User-Defined Functions: the integration point
 
-### 5.2 User Defined Functions 
+The most common way to run an ML model inside openEO is a [User-Defined Function (UDF)](https://open-eo.github.io/openeo-python-client/udf.html), simply because it offers incredible flexibility: a UDF lets you import arbitrary Python code into your process graph instead of being limited to what the backend ships natively.
 
-The most common method for integrating ML workflows within openEO is through User Defined Functions, simply because the offer an incredible flexibility. [https://open-eo.github.io/openeo-python-client/udf.html]
+That flexibility comes with a catch: UDF runtimes in the cloud are intentionally minimal. You can inspect what's available with the [runtime docs](https://openeo.dataspace.copernicus.eu/openeo/1.2/udf_runtimes) or, on an established connection, with:
 
-UDFs enable importing custum python code within your openEO process graph. Nevertheless in the cloud based environment the UDF runtimes are intentionally minimal.
+```python
+connection.list_udf_runtimes()
+```
 
-Which libraries are available to use can be inspected via [runtime docs](https://openeo.dataspace.copernicus.eu/openeo/1.2/udf_runtimes) or by running the Connection.list_udf_runtimes(). command on an established connection to a backend.
+At first glance this looks very limiting, but there are two ways to extend what a UDF can use:
 
-
-
-At a first glace this seems extremely limited; nevertheless several options exist for extending the avialable packages within a UDF. 
-
-The most straightforward method for small packages consists out of installing them within the UDF itself via the PEP 723 “Inline script metadata” standard.
-
-More information on this feature can be discovered under: https://open-eo.github.io/openeo-python-client/udf.html#declaration-of-udf-dependencies.
-
-
-For ML workflows which often rely on heavier packages; this option is often not suitable. In those case we rely on passing a complementary zip file with the compatible libraries through the job options (https://documentation.dataspace.copernicus.eu/APIs/openEO/job_config.html)
-
-Building and maintaining such dependency archives does require dedicated tooling and a good openEO knowledge. For this reason we provide and maintain dpeendency archives ourselves for common formats
-
-
+1. **Small packages**: install them inline inside the UDF itself via the [PEP 723 "inline script metadata" standard](https://open-eo.github.io/openeo-python-client/udf.html#declaration-of-udf-dependencies). This is the lightest option and works well for pure-Python dependencies.
+2. **Heavier packages** (the common case for ML): ship a prebuilt dependency archive and attach it through [job options](https://documentation.dataspace.copernicus.eu/APIs/openEO/job_config.html). Building and maintaining such archives requires dedicated tooling and solid openEO/runtime knowledge, so we build and maintain ready-to-use archives ourselves for the common ML formats (ONNX, PyTorch).
 
 A good strategy order is: start with pre-built dependency archives, then use small runtime additions for tiny extras, and keep heavy runtime installation as a last resort.
 
+Our strong default recommendation is ONNX: it's a much lighter dependency than a full framework archive, which directly lowers the cost of the job (smaller archive to ship, faster cold start, less memory/time spent on imports).
+
 A local import-path hack can accelerate prototyping, but production should use explicit deployable artifacts.
 
-Example dependency archive wiring in job options:
+Example of wiring a dependency archive through job options:
 
 ```python
 job = pred.execute_batch(
@@ -240,22 +233,50 @@ job = pred.execute_batch(
 )
 ```
 
-### 3.1 Prefer ONNX when feasible
+### 3.2 Prefer ONNX when feasible
 
+Default to ONNX export for stable inference models.
 
+In practice this usually wins because it is lighter and simpler to operate.
+You generally get faster startup and less dependency pain than shipping a full deep-learning framework.
 
-Default to ONNX export for stable inference models:
+Use full-framework deployment only when you really need it: custom operators that do not export, highly dynamic model logic, or models that are still changing every week.
 
-- smaller runtime footprint than full framework archives,
-- faster and more predictable cold starts,
-- closed, versioned inference artifact.
+#### Fast decision rule 
 
-Use full-framework deployment only when needed (unsupported custom ops, dynamic control flow, rapidly changing architecture).
+Pick ONNX when all of these are true:
 
-Example ONNX export with dynamic batch axis:
+1. The architecture is mostly fixed.
+2. You can define one stable input/output contract (shape, dtype, layout).
+3. You can pass source-vs-ONNX parity on representative data.
+4. The target backend/runtime can run the exported opset with acceptable latency.
+
+Stay on full-framework packaging for now when at least one is true:
+
+1. The model does not export cleanly.
+2. You still change architecture/training code every week.
+3. Runtime behavior depends on framework features that ONNX does not capture.
+
+#### Treat export as an interface contract
+
+Export is not just "run one command and done". Before publishing a model, lock these fields explicitly:
+
+1. **Input signature**: names, dtypes, rank, layout (`NCHW`/`NHWC`), dynamic axes. Dynamic axes can be a great asset for openEO, because optimization often means making the model run over as large an area as possible in one go.
+2. **Opset version**: explicit and pinned, never implicit defaults.
+3. **Output semantics**: logits/probabilities/embeddings and exact expected shape.
+4. **Runtime target**: test on the runtime you will actually use in production (usually ONNX Runtime CPU in openEO UDF jobs).
+
+If any of these are fuzzy, you're not done packaging.
+
+#### Reference export pipeline (PyTorch)
 
 ```python
-dummy = torch.randn(1, 4, 224, 224)
+import torch
+
+# 1) Build a realistic dummy input in the exact layout your runtime will receive.
+dummy = torch.randn(1, 4, 224, 224, dtype=torch.float32)
+
+# 2) Export with explicit names, dynamic axes, and pinned opset.
 torch.onnx.export(
   wrapped.eval().cpu(),
   dummy,
@@ -267,9 +288,29 @@ torch.onnx.export(
 )
 ```
 
-### 3.2 Export preprocessing with the model
+#### Sanity Checks
 
-Most silent failures come from value semantics drift. If possible, bake normalization into the exported graph.
+Once the model is ported to e.g. onnx and you want to incorperate the inference into an openEO UDF there are a few safety check one has to build in.
+As openEO passes the input cube to the UDF, its not warrented that the order of bands, dimensions or dtype of the cube is as expected. This might even differe per back-end.
+
+Therefore within the UDF implementation it is good practice to ensure there is no:
+
+1. **Layout mismatch**: trained with `NCHW`, inferred with `NHWC`.
+2. **Band-order mismatch**: model expects `B02,B03,B04,B08`, runtime sends different order.
+3. **Implicit preprocessing**: training normalized input but exported graph assumes raw data.
+4. **dtype drift**: training path used `float32`, runtime path silently casts/feeds another dtype.
+5. **Dynamic axis mismatch**: batch dynamic but spatial dimensions accidentally fixed (or vice versa).
+
+Most of these do not crash. They just give wrong outputs quietly, which is even worse.
+
+
+
+
+### 3.3 Calibration lives inside the model
+
+An added benefit of the use of onnx is that the framework provides more than a CPU friendly transition,  it's flexible enough to embed the input calibration the network depends on (e.g. z-score normalization), so the exported graph stays self-contained instead of relying on the UDF to reproduce preprocessing exactly. The [TerraMind](https://github.com/Open-EO/openeo-community-examples/tree/main/python/60_geospatial-embeddings/terramind) and [Tessera](https://github.com/Open-EO/openeo-community-examples/tree/main/python/60_geospatial-embeddings/tessera) embedding examples both bake this calibration step into the exported ONNX graph.
+
+Given than most wrong output comes from silent failures due to data drift. If possible, bake normalization into the exported graph itself:
 
 ```python
 class EncoderONNX(nn.Module):
@@ -283,13 +324,20 @@ class EncoderONNX(nn.Module):
         return self.backbone((data - self.mean) / (self.std + 1e-9))
 ```
 
-### 3.3 Treat parity as a release gate
+#### Validity check
 
-Export success is not correctness. Keep deterministic fixtures and compare source runtime vs ONNX runtime.
+The flow that works well in practice is:
+
+1. First test parity between the original model runtime and the exported ONNX runtime.
+2. Then generate a realistic input cube with openEO and run the UDF locally on that cube.
+3. Only after those pass, run a tiny CDSE job (small AOI and short time window).
+4. Then scale up gradually.
+
+Example 1: source-vs-ONNX parity check.
 
 ```python
 with torch.inference_mode():
-    source = wrapped(data).detach().cpu().numpy()
+  source = wrapped(data).detach().cpu().numpy()
 
 session = ort.InferenceSession("encoder.onnx", providers=["CPUExecutionProvider"])
 exported = session.run(None, {"data": data.numpy()})[0]
@@ -298,128 +346,89 @@ assert source.shape == exported.shape
 assert np.allclose(source, exported, rtol=1e-4, atol=1e-5)
 ```
 
-Test normal and edge cases (cloud/no-data/boundaries where relevant).
-
-### 3.4 External-weight ONNX artifacts
-
-If export creates sidecar data files, ship them together with preserved relative layout.
-
-```text
-model_archive.zip
-├── encoder.onnx
-└── encoder.onnx.data
-```
-
-For STAC handoff, use a simple test: if someone cannot figure out how to call the model from STAC plus artifact layout alone, the metadata is still incomplete.
-
-Example packaging command:
-
-```bash
-zip -r model_archive.zip encoder.onnx encoder.onnx.data runtime-requirements.txt
-```
-
-## 4. STAC model description and hosting
-
-Use STAC `ml-model` plus project-level metadata for operational details not enforced by base fields.
-
-At minimum, capture input band order, expected units/ranges, tensor layout, expected tile shape/window semantics, normalization policy, output semantics, runtime requirements with checksums, and links to all sidecar artifacts.
-
-```json
-{
-  "stac_extensions": [
-    "https://stac-extensions.github.io/ml-model/v1.0.0/schema.json"
-  ],
-  "properties": {
-    "ml-model:type": "ml-model",
-    "apex:input_bands": ["B02", "B03", "B04", "B08"],
-    "apex:input_units": "surface_reflectance_0_1",
-    "apex:input_layout": "NCHW",
-    "apex:tile_shape": [224, 224],
-    "apex:normalization": "embedded_in_onnx",
-    "apex:output": {"name": "embedding", "dimensions": ["batch", 768]},
-    "apex:onnx_opset": 17
-  },
-  "assets": {
-    "model": {"href": "https://example.org/model.onnx", "type": "application/onnx"},
-    "weights": {"href": "https://example.org/model.onnx.data", "roles": ["data"]}
-  }
-}
-```
-
-Reference model collection: [World Agricultural Commodities model catalog](https://browser.moregeo.it/external/stac.openeo.vito.be/collections/world-agri-commodities-models).
-
-Related process interfaces: [openEO Python client process definitions](https://github.com/Open-EO/openeo-python-client/blob/bc035cc74c1460e6d170fcfac8b0182254f6f19c/openeo/processes.py#L2138).
-
-Example STAC generation with `pystac`:
+Example 2: local UDF test on an openEO-generated cube.
 
 ```python
-import pystac
+from udf.py import apply_datacube
 
-item = pystac.Item(
-  id="crop-encoder-v3",
-  geometry=None,
-  bbox=None,
-  datetime=None,
-  properties={
-    "ml-model:type": "ml-model",
-    "apex:input_bands": ["B02", "B03", "B04", "B08"],
-    "apex:input_layout": "NCHW",
-    "apex:normalization": "embedded_in_onnx",
-  },
-)
+inputs = xr.open_dataset("results/representative_input.nc")
+cube = inputs.to_array(dim="bands").astype("float32").transpose("bands", "t", "y", "x")
+tile = cube.isel(y=slice(0, 1024), x=slice(0, 1024))
 
-item.add_asset(
-  "model",
-  pystac.Asset(href="https://example.org/model.onnx", media_type="application/onnx"),
-)
-item.add_asset(
-  "weights",
-  pystac.Asset(href="https://example.org/model.onnx.data", roles=["data"]),
-)
-
-item.save_object(dest_href="stac/model-item.json")
+result = apply_datacube(tile, context)
 ```
 
-## 5. Inference pipelines in openEO
+Example 3: tiny CDSE smoke run before scaling.
 
-### 5.1 Native ONNX vs UDF
+Start with a very small area (around 1x1 km), verify the output, and then scale up in small steps.
 
-Use native `predict_onnx` whenever it supports your model and runtime needs. Move to a UDF when you need fine-grained session control, custom patch stitching, framework-specific runtime behavior, or heavier pre/postprocessing logic.
+During this phase, add enough logging inside the UDF. You can retrieve these logs in the web client and quickly see what worked and what failed.
 
-Example native ONNX inference process:
+Once the model runs reliably, expand the extent gradually. At some point you will likely hit OOM issues. When that happens, increasing Python memory or executor memory overhead is usually the first thing to try. If that is not enough, reach out through APEx or the CDSE forum for upscaling support.
+
+See [3.1](#31-user-defined-functions-the-integration-point) for how UDF runtimes, inline dependencies, and dependency archives work.
+
+### 5.2 Choosing between `apply`, `apply_dimension`, and `apply_neighborhood`
+
+OpenEO offers varrious ways of applying your custom script along a datacube; the way you want to use mainly dependes on the required input for your ML network.
+
+
+Quick rule of thumb:
+
+1. Use `apply` when each pixel can be handled independently and there is no neighborhood context.
+2. Use `apply_dimension` when logic runs along one dimension (most often time, `t`) for each pixel location.
+3. Use `apply_neighborhood` when your model needs a spatial patch (for example CNN-style inference).
+
+Minimal patterns:
 
 ```python
-inference_cube = features.process(
-  "predict_onnx",
-  {
-    "model": "https://example.org/stac/model-item.json",
-    "input": features,
-  },
-)
-
-inference_cube.execute_batch(out_format="GTiff", title="onnx_inference_v1")
+# 1) Per-pixel operation: no spatial context needed.
+scaled = prediction.apply(lambda x: x * 100.0)
 ```
 
-For lightweight random-forest models, a process-graph route using `load_ml_model` plus `predict_random_forest` is often simpler than ONNX conversion, and is directly reusable as a UDP for operational runs.
+```python
+# 2) Per-pixel time-series logic along one dimension.
+udf_temporal = openeo.UDF.from_file("udf_temporal.py")
 
-Example UDF inference process:
+temporal_out = cube.apply_dimension(
+  dimension="t",
+  process=udf_temporal,
+)
+```
 
 ```python
+# 3) Spatial patch inference with overlap.
+udf_spatial = openeo.UDF.from_file("udf_spatial.py")
+
 pred = features.apply_neighborhood(
-  process=lambda data: data.run_udf(
-    udf=udf_code,
-    runtime="Python",
-    context={
-      "model_url": "https://example.org/models/encoder.onnx",
-      "input_bands": ["B02", "B03", "B04", "B08"],
-    },
-  ),
-  size=[{"dimension": "x", "value": 224, "unit": "px"}, {"dimension": "y", "value": 224, "unit": "px"}],
-  overlap=[{"dimension": "x", "value": 32, "unit": "px"}, {"dimension": "y", "value": 32, "unit": "px"}],
+  process=udf_spatial,
+  size=[
+    {"dimension": "x", "value": 224, "unit": "px"},
+    {"dimension": "y", "value": 224, "unit": "px"},
+  ],
+  overlap=[
+    {"dimension": "x", "value": 32, "unit": "px"},
+    {"dimension": "y", "value": 32, "unit": "px"},
+  ],
 )
 ```
 
+Its important to discuss how the overlap exactly works, as it may lead to the idea that we apply the UDF as a convolution kernel.
+In reality the overlap works differently:
 
+- openEO runs the UDF on overlapping patches.
+- For each processed patch, the border area is dropped.
+- Only the center part is kept and stitched with neighboring center parts.
+
+That "center-keep" behavior is exactly what reduces tiling artifacts at patch boundaries.
+
+Example intuition: with a $224 \times 224$ patch and $32$ px overlap on each side, the reliable center is
+$$(224 - 2 \cdot 32) \times (224 - 2 \cdot 32) = 160 \times 160.$$ 
+
+So every patch contributes mainly its $160 \times 160$ center, while the noisy borders are discarded.
+
+If the entire AOI is not an exact multitude of the apply window; center padding with nans is applied during the UDF runtime. Therefore its paramount that the UDF implementation knows how to 
+work with nan inputs. 
 
 ### 5.3 Caching and concurrency
 
@@ -633,6 +642,75 @@ Do not call garbage collection in hot loops without measured benefit.
 Before moving beyond smoke tests, verify:
 
 contract fields (bands, units, scale, temporal semantics, no-data policy) are explicit, source and exported model parity passes on representative fixtures, artifact and sidecars resolve in runtime paths, local and backend outputs agree on representative tests, held-out validation is reproducible, and job options are tuned on fixed small benchmarks before large-scale runs.
+
+
+## 4. STAC model description and hosting
+
+In many projects we see that it is difficult to have a single model which works well across the entire world; often the more accurate results.
+
+
+
+Use STAC `ml-model` plus project-level metadata for operational details not enforced by base fields.
+
+At minimum, capture input band order, expected units/ranges, tensor layout, expected tile shape/window semantics, normalization policy, output semantics, runtime requirements with checksums, and links to all sidecar artifacts.
+
+```json
+{
+  "stac_extensions": [
+    "https://stac-extensions.github.io/ml-model/v1.0.0/schema.json"
+  ],
+  "properties": {
+    "ml-model:type": "ml-model",
+    "apex:input_bands": ["B02", "B03", "B04", "B08"],
+    "apex:input_units": "surface_reflectance_0_1",
+    "apex:input_layout": "NCHW",
+    "apex:tile_shape": [224, 224],
+    "apex:normalization": "embedded_in_onnx",
+    "apex:output": {"name": "embedding", "dimensions": ["batch", 768]},
+    "apex:onnx_opset": 17
+  },
+  "assets": {
+    "model": {"href": "https://example.org/model.onnx", "type": "application/onnx"},
+    "weights": {"href": "https://example.org/model.onnx.data", "roles": ["data"]}
+  }
+}
+```
+
+Reference model collection: [World Agricultural Commodities model catalog](https://browser.moregeo.it/external/stac.openeo.vito.be/collections/world-agri-commodities-models).
+
+Related process interfaces: [openEO Python client process definitions](https://github.com/Open-EO/openeo-python-client/blob/bc035cc74c1460e6d170fcfac8b0182254f6f19c/openeo/processes.py#L2138).
+
+Example STAC generation with `pystac`:
+
+```python
+import pystac
+
+item = pystac.Item(
+  id="crop-encoder-v3",
+  geometry=None,
+  bbox=None,
+  datetime=None,
+  properties={
+    "ml-model:type": "ml-model",
+    "apex:input_bands": ["B02", "B03", "B04", "B08"],
+    "apex:input_layout": "NCHW",
+    "apex:normalization": "embedded_in_onnx",
+  },
+)
+
+item.add_asset(
+  "model",
+  pystac.Asset(href="https://example.org/model.onnx", media_type="application/onnx"),
+)
+item.add_asset(
+  "weights",
+  pystac.Asset(href="https://example.org/model.onnx.data", roles=["data"]),
+)
+
+item.save_object(dest_href="stac/model-item.json")
+```
+
+
 
 ## Related references
 
