@@ -368,9 +368,79 @@ Once the model runs reliably, expand the extent gradually. At some point you wil
 
 See [3.1](#31-user-defined-functions-the-integration-point) for how UDF runtimes, inline dependencies, and dependency archives work.
 
-### 5.2 Choosing between `apply`, `apply_dimension`, and `apply_neighborhood`
+## 4. STAC model description and hosting
 
-OpenEO offers varrious ways of applying your custom script along a datacube; the way you want to use mainly dependes on the required input for your ML network.
+Once a model is packaged and validated, it still needs a home that other people (and other openEO jobs) can actually find and trust. In many projects we have seen that a single global model rarely works equally well everywhere, so the metadata around a model matters almost as much as the model itself: it tells a future user, including future you, where the model is expected to work and under which exact input contract.
+
+The STAC community originally proposed a dedicated `ml-model` extension for this, but that extension has since been archived in favour of the newer [Machine Learning Model (MLM) extension](https://github.com/stac-extensions/mlm), which adds richer support for things like multiple model inputs, hyperparameters, and accelerator requirements. New catalogs are better off starting directly with MLM; the `apex:` fields used below are a thin, project-specific layer that complements whichever base extension you choose and covers the operational details that are not strictly enforced by either one.
+
+At minimum, capture the input band order, expected units and value ranges, tensor layout, expected tile shape and window semantics, the normalization policy, output semantics, runtime requirements with checksums, and links to all sidecar artifacts. None of this is exotic, but it is exactly the kind of detail that gets lost between the person who trained the model and the person who deploys it six months later.
+
+```json
+{
+  "stac_extensions": [
+    "https://stac-extensions.github.io/mlm/v1.4.0/schema.json"
+  ],
+  "properties": {
+    "mlm:name": "crop-encoder-v3",
+    "mlm:architecture": "resnet-encoder",
+    "mlm:tasks": ["classification"],
+    "apex:input_bands": ["B02", "B03", "B04", "B08"],
+    "apex:input_units": "surface_reflectance_0_1",
+    "apex:input_layout": "NCHW",
+    "apex:tile_shape": [224, 224],
+    "apex:normalization": "embedded_in_onnx",
+    "apex:output": {"name": "embedding", "dimensions": ["batch", 768]},
+    "apex:onnx_opset": 17
+  },
+  "assets": {
+    "model": {"href": "https://example.org/model.onnx", "type": "application/onnx"},
+    "weights": {"href": "https://example.org/model.onnx.data", "roles": ["data"]}
+  }
+}
+```
+
+Reference model collection: [World Agricultural Commodities model catalog](https://browser.moregeo.it/external/stac.openeo.vito.be/collections/world-agri-commodities-models).
+
+Related process interfaces: [openEO Python client process definitions](https://github.com/Open-EO/openeo-python-client/blob/bc035cc74c1460e6d170fcfac8b0182254f6f19c/openeo/processes.py#L2138).
+
+A minimal STAC item can be generated directly with `pystac`, which keeps the metadata close to the export step instead of being written by hand after the fact:
+
+```python
+import pystac
+
+item = pystac.Item(
+  id="crop-encoder-v3",
+  geometry=None,
+  bbox=None,
+  datetime=None,
+  properties={
+    "mlm:name": "crop-encoder-v3",
+    "apex:input_bands": ["B02", "B03", "B04", "B08"],
+    "apex:input_layout": "NCHW",
+    "apex:normalization": "embedded_in_onnx",
+  },
+)
+
+item.add_asset(
+  "model",
+  pystac.Asset(href="https://example.org/model.onnx", media_type="application/onnx"),
+)
+item.add_asset(
+  "weights",
+  pystac.Asset(href="https://example.org/model.onnx.data", roles=["data"]),
+)
+
+item.save_object(dest_href="stac/model-item.json")
+```
+
+## 5. Running inference inside the UDF
+
+With the model packaged and described, the remaining work happens inside the UDF itself: deciding how the datacube is chunked for the model, keeping sessions and sockets alive across invocations, and making sure a window of pixels is handled consistently from training all the way through to a large-scale production run. The next few sections walk through the patterns that tend to make this reliable in practice.
+
+### 5.1 Choosing between `apply`, `apply_dimension`, and `apply_neighborhood`
+
+OpenEO offers several ways of applying your custom script along a datacube, and the one you want depends mainly on the input your ML network actually needs.
 
 
 Quick rule of thumb:
@@ -430,9 +500,11 @@ So every patch contributes mainly its $160 \times 160$ center, while the noisy b
 If the entire AOI is not an exact multitude of the apply window; center padding with nans is applied during the UDF runtime. Therefore its paramount that the UDF implementation knows how to 
 work with nan inputs. 
 
-### 5.3 Caching and concurrency
+### 5.2 Caching and concurrency
 
-Workers may process several chunks. Cache loaded artifacts/sessions and guard shared downloads with locks.
+A single batch job can spin up many workers, and each of those workers may process several chunks over its lifetime. Loading a model and spinning up an inference session is comparatively expensive, so it pays off to cache the loaded artifact at the module level instead of re-creating it for every chunk, and to guard any shared downloads (for example a model file fetched once per worker) with a lock so that concurrent chunks do not race to fetch the same file.
+
+The thread settings on the inference session also matter more than they might seem to. ONNX Runtime distinguishes between intra-op threads, which parallelize work inside a single operator, and inter-op threads, which run independent branches of the graph in parallel when `ExecutionMode.ORT_PARALLEL` is used. Left at their defaults, both pools size themselves to the number of physical cores on the machine, which is reasonable on a dedicated machine but can quietly oversubscribe a shared executor in a cluster, where several worker processes compete for the same cores. Pinning `intra_op_num_threads` to match the number of cores actually assigned to the executor avoids that kind of contention.
 
 ```python
 def get_session(model_path, num_threads=2):
@@ -444,15 +516,11 @@ def get_session(model_path, num_threads=2):
     return ort.InferenceSession(model_path, options, providers=["CPUExecutionProvider"])
 ```
 
-### 5.4 Spatial context and chunk semantics
+### 5.3 Spatial context and chunk semantics
 
-For patch models using `apply_neighborhood`, make sure window size and overlap match what the model learned during training. Overlap helps reduce edge artifacts but increases memory pressure, and openEO will stitch chunk centers after parallel processing.
+For patch-based models that go through `apply_neighborhood`, the window size and overlap you choose at inference time need to match what the model actually learned during training. The official process guidance is a useful anchor here: spatial window sizes typically range from 64 to 512 pixels, with overlaps of 8 to 32 pixels being common, and openEO will stitch the kept centers of neighboring chunks back together once processing finishes. A larger overlap reduces edge artifacts but also increases memory pressure, since every extra pixel of overlap is recomputed in both of its neighboring chunks.
 
-A common failure mode is using a generic tile/window size that does not match the model’s training assumptions.
-
-Another common failure mode is silent metadata drift between training and inference. Keep model path, expected bands, and normalization policy together in one versioned context object.
-
-Example UDF context contract:
+A common failure mode is reaching for a generic tile or window size without checking it against the model's training assumptions. A second, quieter failure mode is metadata drift between training and inference, where the model path, expected band order, or normalization policy slowly diverge between the two environments without anyone noticing until the outputs look wrong. The fix is simple in principle: keep all of that information together in one versioned context object that travels with the UDF call, rather than being reconstructed separately on each side.
 
 ```python
 context = {
@@ -470,13 +538,9 @@ context = {
 }
 ```
 
-### 5.5 Embeddings as reusable products
+### 5.4 Embeddings as reusable products
 
-Embeddings are often the most expensive stage. Export once and reuse when multiple downstream tasks need the same representation.
-
-If embeddings are not a final deliverable, skip serializing them by default.
-
-Example embedding export only when requested:
+Embeddings tend to be the most expensive stage of a pipeline built around a heavyweight backbone, so it is worth exporting them once and reusing them whenever several downstream tasks need the same representation, rather than recomputing them per task. On the other hand, if embeddings are an intermediate product rather than something the project actually needs to deliver, there is no reason to serialize them by default, since that only adds storage cost and job time for no benefit.
 
 ```python
 if context.get("emit_embeddings", False):
@@ -487,13 +551,9 @@ else:
 
 ## 6. Validation pipelines in openEO
 
-Validation must follow the same path as production.
+Validation is only informative if it follows the same path as production. It is tempting to validate a model against a convenient local dataset and call it done, but the goal here is to catch exactly the kinds of drift described above, so the validation path has to go through the same UDF, the same context object, and ultimately the same backend that will run in production.
 
-Use a three-stage validation loop:
-
-1. tensor parity: source vs exported model,
-2. local UDF parity on representative NetCDF tile,
-3. backend parity on tiny held-out AOI.
+A three-stage validation loop tends to catch problems early and cheaply, before they become expensive to debug on a large job. The first stage checks tensor parity between the original model and the exported model, as already shown in [section 3.3](#33-calibration-lives-inside-the-model). The second stage runs the UDF locally against a representative NetCDF tile, which is fast to iterate on and catches most shape, dtype, and band-order mistakes. The third stage runs the same UDF through the actual backend on a tiny, held-out area of interest, which is the only stage that can catch backend-specific surprises.
 
 ```python
 inputs = xr.open_dataset("results/representative_input.nc")
@@ -506,15 +566,13 @@ result = apply_datacube(XarrayDataCube(tile), context)
 
 Reference local-testing style: [THOR local UDF test](https://github.com/Open-EO/openeo-community-examples/tree/main/python/60_geospatial-embeddings/thor/tests).
 
-Example tiny-area backend validation run:
-
 ```python
 tiny = pred.filter_bbox(west=5.12, south=51.25, east=5.14, north=51.27)
 job = tiny.execute_batch(out_format="NetCDF", title="tiny_validation_run")
 tiny.download("pred_tiny.nc")
 ```
 
-Example metric check from prediction and label arrays:
+Once predictions exist, they still need to be checked against an independent reference rather than just inspected by eye. A plain metric such as macro F1 is a reasonable starting point:
 
 ```python
 import numpy as np
@@ -528,27 +586,53 @@ macro_f1 = f1_score(ref[valid], pred[valid], average="macro")
 print({"macro_f1": float(macro_f1)})
 ```
 
-When computing metrics, align predictions with independent references, guard against spatial or temporal leakage, and inspect output maps in addition to aggregate scores.
+Two things are easy to get wrong at this stage and worth calling out explicitly. The first is spatial and temporal leakage: because satellite imagery is spatially autocorrelated, a random pixel-wise train/test split tends to overestimate accuracy, since nearby pixels in the training and test sets are not really independent. Grouping or blocking the split by field, parcel, or spatial tile (sometimes called spatial cross-validation) gives a much more honest estimate of how the model will perform on genuinely new areas. The second is relying only on aggregate scores; a macro F1 of 0.9 can still hide a systematic failure over one land cover class or one region, so looking at the output maps themselves, not just the numbers, remains part of the validation step.
 
-Persist experiment metadata: model STAC/checksum, UDF revision, dependencies, process graph, backend, split rule, job options, and metrics.
-
-For scaling, move to large AOIs only when the validation bundle above is complete and reproducible.
+It is also worth persisting the experiment metadata alongside the metrics: the model's STAC item and checksum, the UDF revision, the dependency archive used, the process graph, the backend, the split rule, the job options, and the resulting scores. None of that needs to be elaborate, but having it means a result can be reproduced or questioned later without having to reconstruct it from memory. Only once this full validation bundle is in place and reproducible does it make sense to move on to larger areas of interest.
 
 ## 7. Upscaling and performance tuning
 
 ### 7.1 Incremental scaling strategy
 
-Scale in phases: start with a tiny AOI and short period, keep AOI fixed while tuning job options, then increase area and time range gradually. After each step, verify coverage, quality, and runtime before moving on. Only launch full operational extent once the setup is stable.
+Scaling up is best done in phases rather than in one jump from a tiny test to the full operational extent. Start with a tiny area of interest and a short time period, keep that area fixed while you tune job options, and only then start increasing area and time range gradually. After each step, check coverage, output quality, and runtime before moving to the next one, and keep one known-good local NetCDF benchmark tile around so that later regressions are easy to spot against a stable baseline.
 
-Keep one known-good local NetCDF benchmark tile for regression checks.
+In practice, this incremental approach pairs well with the [`MultiBackendJobManager`](https://open-eo.github.io/openeo-python-client/cookbook/job_manager.html), which is built specifically for running and tracking large numbers of batch jobs rather than babysitting them one at a time. Instead of manually looping over areas and keeping track of what succeeded, you describe the work as a small table, one row per job, and let the manager submit, poll, retry, and download results for you. Its `split_area()` helper is a convenient way to turn one large area of interest into a grid of smaller tiles, each of which becomes its own job and its own row:
+
+```python
+import pandas as pd
+from openeo.extra.job_management import MultiBackendJobManager, create_job_db, split_area
+
+tiles = split_area(
+  aoi={"west": 5.0, "south": 51.0, "east": 5.2, "north": 51.2, "crs": "EPSG:4326"},
+  tile_size=10_000,
+  projection="EPSG:3857",
+)
+
+job_db = create_job_db("jobs.csv", df=tiles)
+
+def start_job(row, connection, **kwargs):
+  return connection.load_collection(
+    "SENTINEL2_L2A",
+    spatial_extent=row.geometry.bounds,
+    temporal_extent=["2024-04-01", "2024-09-30"],
+  ).execute_batch(out_format="GTiff", title=f"tile_{row.name}")
+
+manager = MultiBackendJobManager()
+manager.add_backend("cdse", connection=connection, parallel_jobs=4)
+manager.run_jobs(job_db=job_db, start_job=start_job)
+```
+
+Because the job database is persisted to disk (as CSV or Parquet), the whole run can be interrupted and resumed later with `get_job_db()` without losing track of which tiles already finished, which is exactly the kind of bookkeeping that becomes tedious to do by hand once you are past a handful of jobs. The same mechanism that helps you scale out to many tiles at the end also makes a good fit for the incremental ramp-up itself: start the job database with just one or two rows covering the tiny benchmark area, confirm the output looks right, then grow the dataframe to the full tile grid once you trust the job options.
 
 ### 7.2 Threading and oversubscription
 
-More threads is not automatically faster. ONNX Runtime, BLAS, and PyTorch can over-subscribe shared executors. Tune thread limits together with executor configuration.
+More threads is not automatically faster, and this is one of the more counter-intuitive things to tune. ONNX Runtime, BLAS, and PyTorch each try to parallelize across all available cores by default, and when several of these libraries are active in the same process, or when several worker processes share a node, their thread pools end up competing for the same physical cores. The practical fix is to tune thread limits together with the executor configuration rather than in isolation, generally keeping `intra_op_num_threads` close to the number of cores actually allocated to each executor.
+
+The `parallel_jobs` setting on `add_backend()` interacts with this in a way that is easy to overlook: it controls how many jobs the job manager tries to keep active on a backend at once, independent of how many threads each job's UDF workers spin up internally. Pushing `parallel_jobs` higher without also capping `executor-cores` and the ONNX thread counts per job is a common way to end up with the exact oversubscription described above, just spread across jobs instead of within a single one. It is worth tuning `parallel_jobs` the same way you tune thread counts: start conservative, watch runtime and failure rates, and increase it only once you have evidence the backend has headroom.
 
 ### 7.3 Tune job options empirically
 
-Use a conservative base and single-parameter variations.
+Job options rarely have one obviously correct setting, so it helps to start from a conservative baseline and vary one parameter at a time rather than guessing at a large combination upfront.
 
 ```python
 base_job_options = {
@@ -574,13 +658,9 @@ parameter_variations = [
 
 ### 7.4 Use a job manager for variation sweeps
 
-For many experiments, use a job manager rather than ad-hoc manual runs. It ensures reproducible comparison over constant AOI/time range with one controlled change per run.
+Once you are comparing more than a couple of variations, a job manager is worth the setup over ad-hoc manual runs, since it makes the comparison reproducible: the same area of interest and time range stay constant, and only one option changes per run. For each sweep run it is worth tracking the variation label, the resolved options, the job id and status, runtime and backend metrics such as CPU or memory billing indicators, and basic output sanity checks like coverage, no-data share, and value range. Failed runs are not wasted effort here either, they are useful evidence of lower bounds and deserve to stay in the comparison table rather than being discarded.
 
-Track each sweep run with a variation label, resolved options, job id and status, runtime and backend metrics (for example CPU or memory billing indicators), and output sanity checks such as coverage, no-data share, and value range.
-
-Failed runs are useful evidence of lower bounds and should stay in the comparison table.
-
-Example manual sweep runner:
+The sweep below is written as a plain loop to keep the idea visible, but it is really a miniature version of what the [`MultiBackendJobManager`](#71-incremental-scaling-strategy) does for you: a dataframe of variations, a `start_job` callback, and a column of resulting job ids. For anything beyond a handful of variations, running it through the actual job manager gets you retries, resumability, and parallel submission for free instead of having to add them by hand.
 
 ```python
 from copy import deepcopy
@@ -602,8 +682,6 @@ for i, variation in enumerate(parameter_variations, start=1):
   })
 ```
 
-Example tracking table export:
-
 ```python
 import pandas as pd
 
@@ -612,7 +690,7 @@ pd.DataFrame(results).to_csv("sweep_runs.csv", index=False)
 
 ### 7.5 UDF profiling before infrastructure changes
 
-Add opt-in stage timing and memory checks. Avoid diagnostic methods that materialize full arrays when sampling is enough.
+Before reaching for bigger executors or more memory, it is worth checking whether the UDF itself is the bottleneck. Opt-in stage timing and lightweight memory checks go a long way here, as long as the diagnostics themselves stay cheap: sampling an array instead of materializing the full thing is usually enough to see whether values look reasonable, without adding meaningful overhead to the job.
 
 ```python
 def diagnostic_sample(values, maximum=500_000):
@@ -621,7 +699,7 @@ def diagnostic_sample(values, maximum=500_000):
     return flat[::stride][:maximum]
 ```
 
-For PyTorch-based UDFs:
+For PyTorch-based UDFs specifically, disabling gradient tracking and batching the forward pass avoids a surprising amount of wasted memory and compute:
 
 ```python
 torch.set_grad_enabled(False)
@@ -635,82 +713,11 @@ pieces.clear()
 gc.collect()
 ```
 
-Do not call garbage collection in hot loops without measured benefit.
+That said, garbage collection calls inside hot loops are not free either, so it is worth confirming there is a measured benefit before adding one as a habit.
 
 ## Model release checklist
 
-Before moving beyond smoke tests, verify:
-
-contract fields (bands, units, scale, temporal semantics, no-data policy) are explicit, source and exported model parity passes on representative fixtures, artifact and sidecars resolve in runtime paths, local and backend outputs agree on representative tests, held-out validation is reproducible, and job options are tuned on fixed small benchmarks before large-scale runs.
-
-
-## 4. STAC model description and hosting
-
-In many projects we see that it is difficult to have a single model which works well across the entire world; often the more accurate results.
-
-
-
-Use STAC `ml-model` plus project-level metadata for operational details not enforced by base fields.
-
-At minimum, capture input band order, expected units/ranges, tensor layout, expected tile shape/window semantics, normalization policy, output semantics, runtime requirements with checksums, and links to all sidecar artifacts.
-
-```json
-{
-  "stac_extensions": [
-    "https://stac-extensions.github.io/ml-model/v1.0.0/schema.json"
-  ],
-  "properties": {
-    "ml-model:type": "ml-model",
-    "apex:input_bands": ["B02", "B03", "B04", "B08"],
-    "apex:input_units": "surface_reflectance_0_1",
-    "apex:input_layout": "NCHW",
-    "apex:tile_shape": [224, 224],
-    "apex:normalization": "embedded_in_onnx",
-    "apex:output": {"name": "embedding", "dimensions": ["batch", 768]},
-    "apex:onnx_opset": 17
-  },
-  "assets": {
-    "model": {"href": "https://example.org/model.onnx", "type": "application/onnx"},
-    "weights": {"href": "https://example.org/model.onnx.data", "roles": ["data"]}
-  }
-}
-```
-
-Reference model collection: [World Agricultural Commodities model catalog](https://browser.moregeo.it/external/stac.openeo.vito.be/collections/world-agri-commodities-models).
-
-Related process interfaces: [openEO Python client process definitions](https://github.com/Open-EO/openeo-python-client/blob/bc035cc74c1460e6d170fcfac8b0182254f6f19c/openeo/processes.py#L2138).
-
-Example STAC generation with `pystac`:
-
-```python
-import pystac
-
-item = pystac.Item(
-  id="crop-encoder-v3",
-  geometry=None,
-  bbox=None,
-  datetime=None,
-  properties={
-    "ml-model:type": "ml-model",
-    "apex:input_bands": ["B02", "B03", "B04", "B08"],
-    "apex:input_layout": "NCHW",
-    "apex:normalization": "embedded_in_onnx",
-  },
-)
-
-item.add_asset(
-  "model",
-  pystac.Asset(href="https://example.org/model.onnx", media_type="application/onnx"),
-)
-item.add_asset(
-  "weights",
-  pystac.Asset(href="https://example.org/model.onnx.data", roles=["data"]),
-)
-
-item.save_object(dest_href="stac/model-item.json")
-```
-
-
+Before moving a model beyond smoke tests, it is worth going through its contract one more time with a critical eye. The bands, units, scale, temporal semantics, and no-data policy should all be explicit rather than implied. Source and exported model parity should pass on representative fixtures, every artifact and sidecar file should resolve correctly in the actual runtime paths, and local outputs should agree with backend outputs on the same representative tests. Held-out validation should be reproducible from a clean checkout, and job options should already be tuned on small, fixed benchmarks before committing to a large-scale run. None of this is glamorous work, but skipping it is almost always more expensive than doing it.
 
 ## Related references
 
