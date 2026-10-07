@@ -7,7 +7,7 @@ toc: true
 
 ## Summary
 
-A hands-on guide to running machine-learning projects with openEO end to end, from feature extraction and training to model packaging, inference, validation, and upscaling.
+A hands-on guide to running machine-learning projects with openEO end to end, from reference data and feature extraction to training, model packaging, inference, validation, and upscaling.
 
 :::
 
@@ -19,11 +19,9 @@ It complements [Machine Learning](cube_operations/machine_learning.qmd), [User D
 
 openEO is strongest at consistent, reproducible EO data access and processing at scale. In practice, a robust setup uses openEO for feature extraction and operational inference, while heavy training often stays in external GPU environments. Once trained, the model is brought back into openEO as a reusable inference block.
 
-This split is usually a strength: extraction and inference stay reproducible, while model development stays flexible.
-By keeping openEO constraints in mind from the start, many later operational hurdles can be avoided.
+This split is usually a strength: extraction and inference stay reproducible, while model development stays flexible. By keeping openEO constraints in mind from the start, many later operational hurdles can be avoided.
 
-
-This playbook shares the working patterns we therefore learned from real projects.
+This playbook shares the working patterns we have learned from real projects. It is the concrete implementation of the ESA APEx blueprint on machine learning with openEO. The blueprint scope covers organising reference data with STAC, extracting EO features, training models (offline or via EOTDL) and converting them to ONNX, describing models with STAC, running inference and validation pipelines in openEO (optionally embedding-based), and upscaling with performance tuning. Each of those stages maps to a section below.
 
 ## End-to-end story
 
@@ -34,26 +32,26 @@ flowchart LR
   C --> D[Model training<br/>offline or online]
   D --> E[Model export<br/>ONNX or framework package]
   E --> F[Offline validation]
-  F --> G[STAC model description + hosting]
-  G --> H[openEO inference graph<br/>predict_onnx or UDF]
+  F -.-> G[STAC model description + hosting<br/>optional, for transparency/reuse]
+  F --> H[openEO inference graph<br/>predict_onnx or UDF]
+  G -.-> H
   H --> I[Online validation + metrics]
   I --> J[Upscaling + tuning<br/>job manager sweeps]
 ```
 
 ## 1. Data extraction and feature engineering in openEO
 
-If your goal is an ML model that is eventually operationalized through openEO, start with openEO constraints in mind from the first day. The biggest failures we see are not model or openEO failures, they are data-distribution failures: training on data that is not available on target backends, or training on a product variant that differs from what operations will use (for example processing baseline differences).
+If your goal is an ML model that is eventually operationalized through openEO, start with openEO constraints in mind from day one. The biggest failures we see are not model or openEO failures; they are data-distribution failures: training on data that is not available on target backends, or training on a product variant that differs from what operations will use (for example, processing-baseline differences).
 
-That is why the first real step is backend discovery, not model design. Check which collections are available, whether temporal coverage is good enough, and whether the backend processing level matches your planned production workflow.
+That is why the first real step is backend discovery, not model design. Before you write a single line of model code, check which collections are actually available on the backend you intend to use in production, whether their temporal coverage is good enough for your use case, and whether the backend processing level matches your planned production workflow. A model trained on Sentinel-2 L2A data from one backend may not behave the same way when the operational backend serves a different processing baseline, a different cloud-masking approach, or a different atmospheric correction. These differences are often subtle in isolation but compound across a full inference run.
 
-No single backend has everything. When a needed source is missing, openEO's `load_stac` is often the clean fallback path for integrating external, open, STAC-compliant assets: [load_stac process reference](https://open-eo.github.io/openeo-python-client/api-processes.html#openeo.processes.load_stac).
+No single backend has everything. When a needed source is missing, openEO's `load_stac` is often the clean fallback path for integrating external, open, STAC-compliant assets: [load_stac process reference](https://open-eo.github.io/openeo-python-client/api-processes.html#openeo.processes.load_stac). This lets you pull in data from other catalogs without leaving the openEO graph, which keeps the extraction logic in one place rather than splitting it across systems.
 
-The practical goal is simple: make feature extraction an openEO-native graph from day one so that the model trained on those features still behaves correctly during openEO inference. Once extraction is reproducible and composable, you can turn it into integration and regression checks (for example in ESA APEx project environments and algorithm support workflows: https://apex.esa.int/project-environments and https://apex.esa.int/algorithm-support). That gives you a clear MLOps path and a way to share preprocessing recipes with the community.
+The practical goal is simple: make feature extraction an openEO-native graph from day one so that the model trained on those features still behaves correctly during openEO inference. Once extraction is reproducible and composable, you can turn it into integration and regression checks (for example, in ESA APEx project environments and algorithm support workflows: https://apex.esa.int/project-environments and https://apex.esa.int/algorithm-support). That gives you a clear MLOps path and a way to share preprocessing recipes with the community.
 
-In this way you maintain an exmplicit data-input pipeline which is transparant on the input bands and source collections, physical units and scaling (for example reflectance in $[0,1]$, DN, SAR dB vs linear), CRS and resolution, temporal compositing, cloud/no-data handling, and feature engineering steps.
+In this way you maintain an explicit data-input pipeline that is transparent about input bands and source collections, physical units and scaling (for example, reflectance in $[0,1]$, DN, SAR dB vs. linear), CRS and resolution, temporal compositing, cloud/no-data handling, and feature-engineering steps. Each of these choices affects what the model sees, and making them explicit rather than implicit is what allows you to reproduce a training run six months later or hand the pipeline to a colleague without a long verbal explanation.
 
-
-When moving towards the  training step, freeze the extraction graph revision and treat it as part of the model definition.
+When moving toward the training step, freeze the extraction graph revision and treat it as part of the model definition. This means versioning the graph alongside the model weights, so that when you later load the model for inference, you can verify that the input features are being generated by the exact same logic that produced the training data. Without this, it is surprisingly easy to make a small change to the extraction graph — a different cloud mask, a new band, a changed temporal window — and silently degrade inference quality without any error being raised.
 
 Example extraction graph and feature export:
 
@@ -92,30 +90,216 @@ samples = features.aggregate_spatial(
 samples.download("training_features.geojson")
 ```
 
+## 2. Organising and extracting reference data for machine learning
 
+Training a machine-learning model on Earth observation data starts with high-quality reference data: a set of locations for which the target variable (for example, a crop type, land-cover class, or biophysical measurement) is known. This section describes how to organise such reference data and how to extract the corresponding satellite observations with openEO, either as points (tabular time series per sample) or as patches (small raster chips per sample).
 
-## 2. Training strategy: where openEO fits
+### 2.1 Extraction modes
 
-### 2.1 Training outside openEO (common path)
+The first decision you make is whether your model needs per-pixel time series or spatial patches. This is not a stylistic choice; it is dictated by the architecture of the model you intend to train. A random forest or gradient-boosted tree expects a table of features per sample, while a convolutional neural network expects a small image chip around each sample. openEO supports both, but the extraction process, the output format, and the job-sizing considerations are different enough that it is worth deciding early.
 
-Deep learning training usually runs outside openEO on GPU-capable environments. European initiatives such as [EOTDL](https://www.eotdl.com/) are a good option if you want cloud-based training on EU infrastructure.
+Depending on the type of ML model you are training, you will want one of two extraction modes:
 
-The important part for this playbook is not where training runs, but that training sees exactly the same feature semantics as operational inference.
+| Mode | openEO process | Typical model | Output |
+| --- | --- | --- | --- |
+| Point extraction | `aggregate_spatial` | Models operating on per-pixel (time series) inputs, such as random forests, gradient boosting, or time-series deep learning models (for example, LSTM, transformers) | A vector cube, exported as tabular data (Parquet/CSV) with one row per sample and observation date |
+| Patch extraction | `filter_spatial` | Models requiring spatial context, such as convolutional neural networks or vision transformers | A sparse raster cube, exported as one netCDF or GeoTIFF file per sample polygon |
+
+### 2.2 Organising your reference data
+
+#### Format and structure
+
+Reference data is best managed as a vector dataset, with one feature per sample. The structure you choose here determines how smoothly the rest of the pipeline runs, because every downstream step — extraction, training, validation — inherits the decisions you make at this stage.
+
+- **Geometry**: a point for point extractions, or a polygon (the patch outline) for patch extractions. For patch extractions, keep patches small, for example 64x64 up to 512x512 pixels; larger areas are better handled as a separate job per sample. The reason for this limit is practical: a single large polygon forces the backend to materialize a large raster cube for that one sample, which can dominate job cost and memory even when the rest of the samples are tiny.
+- **Target attribute(s)**: the label or value that your model will learn to predict. If you have multiple target variables, keep them as separate columns rather than encoding them into a single field; this makes it easier to train different models from the same reference dataset without re-extracting.
+- **Sample identifier**: a unique ID per sample, so extracted pixels can be traced back to the original reference data. This becomes essential during validation, when you need to compare predictions against reference labels sample by sample.
+- **Temporal information (recommended)**: a validity date or period per sample, so you can define the correct temporal extent when extracting satellite data. Without this, you either extract a fixed window for all samples (which may be wrong for samples collected in different seasons) or you manually split the reference data into temporal groups, which is error-prone at scale.
+
+The recommended file formats are GeoParquet and GeoJSON. GeoParquet is preferred for larger datasets, as it is compressed, columnar, and faster to read. GeoJSON is fine for small datasets and for cases where you need to inspect the file by hand, but it becomes unwieldy beyond a few thousand features.
+
+> **Tip**
+>
+> The WorldCereal Reference Data Module (RDM) is a good example of how reference data can be curated and harmonised at scale: samples are stored with a unique ID, a harmonised label, a validity time, and quality attributes, and are exported as GeoParquet for extraction.
+
+#### Cataloguing with STAC
+
+When your reference data grows beyond a handful of files, the STAC specification can help keep it organised and discoverable. Describe each GeoParquet/GeoJSON file as a STAC item, with its spatial and temporal extent as item metadata and the file itself as an asset, and group the items in a STAC collection. The label extension can additionally document the classes and tasks of your labels. This makes it easy to search reference data by region or period, and the asset URLs can be passed directly to `load_url` for extraction.
+
+The practical benefit is that you stop tracking reference data in a spreadsheet or a folder tree. Instead, you can query a catalog for "all reference data covering this region and this time period" and get back a list of URLs that feed directly into the extraction pipeline. This is especially valuable when reference data is contributed by multiple partners or collected over several years.
+
+#### Hosting the data at a URL
+
+Sending many geometries inline as GeoJSON quickly makes openEO requests too large. Instead, upload your reference data to a (publicly) accessible URL, for example object storage (S3), Artifactory, or a GitHub repository, and load it into openEO with the `load_url` process ([`Connection.load_url()`](https://openeo-python-client.readthedocs.io/en/latest/api/openeo.rest.connection.html#openeo.rest.connection.Connection.load_url)):
+
+```python
+import openeo
+
+connection = openeo.connect("openeofed.dataspace.copernicus.eu").authenticate_oidc()
+
+reference_data = connection.load_url(
+    "https://example.com/my_reference_data.parquet",
+    format="Parquet",
+)
+```
+
+For GeoJSON files, use `format="GeoJSON"` instead.
+
+If you do not have your own hosting, the openEO Python client provides an [artifact helper](../api-artifacts.rst) that temporarily stores files on S3 storage offered by the backend and returns a presigned URL that can be passed straight to `load_url`:
+
+```python
+from openeo.extra.artifacts import build_artifact_helper
+
+artifact_helper = build_artifact_helper(connection)
+storage_uri = artifact_helper.upload_file("my_reference_data.parquet")
+reference_data_url = artifact_helper.get_presigned_url(storage_uri)
+
+reference_data = connection.load_url(reference_data_url, format="Parquet")
+```
+
+> **Note**
+>
+> Artifact storage is backend-specific functionality and the uploaded files are only kept temporarily, so it is well suited for one-off extractions, but not as a long-term home for your reference dataset. If you rely on it for a multi-week training campaign, you may find that your reference data has expired between runs.
+
+#### Splitting into spatial groups
+
+For large-scale (for example, continental or global) reference datasets, do not extract everything in a single batch job. A single job that covers a continent will typically fail for one of two reasons: either it runs out of memory because the backend tries to materialize too many input assets at once, or it runs for so long that any transient failure forces you to start over. Instead, split your samples into spatial groups, resulting in one GeoParquet/GeoJSON file and one openEO batch job per group. The Sentinel-2 tiling grid (MGRS, roughly 110x110 km tiles) is a good unit for this: one job per Sentinel-2 tile keeps the job size manageable, aligns with how the input data is stored, and guarantees that each group stays within a single UTM zone.
+
+The openEO Python client offers a [job splitting utility](https://open-eo.github.io/openeo-python-client/cookbook/job_manager.html#splitting-an-area-into-tiles) (`split_area` in `openeo.extra.job_management`) that partitions your area or samples over a tile grid, such as a pre-computed Sentinel-2 tile grid, and returns a GeoDataFrame with one row per tile — a ready-made starting point for a job database. The openEO [MultiBackendJobManager](https://open-eo.github.io/openeo-python-client/cookbook/job_manager.html) can then run and track the resulting list of extraction jobs.
+
+> **Important**
+>
+> Not only the spatial extent of a group, but also its spatial density — how many reference observations fall within that extent — determines how large a job can be. A tile with thousands of samples may need to be split further, while sparsely sampled tiles could be merged into a single job. Finding the right job size may require some trial-and-error fine-tuning. A good starting point is to aim for a few hundred to a few thousand samples per job, then adjust based on observed runtime and memory usage.
+
+### 2.3 Loading satellite data
+
+Load the satellite collections that provide the input features of your model, restricting the spatial and temporal extent to what is needed for your samples. A typical multi-sensor example with Sentinel-2 optical data and Sentinel-1 SAR data:
+
+```python
+temporal_extent = ["2024-01-01", "2024-12-31"]
+
+s2 = connection.load_collection(
+    "SENTINEL2_L2A",
+    temporal_extent=temporal_extent,
+    bands=["B02", "B03", "B04", "B08", "B11", "B12", "SCL"],
+    max_cloud_cover=80,
+)
+
+s1 = connection.load_collection(
+    "SENTINEL1_GRD",
+    temporal_extent=temporal_extent,
+    bands=["VV", "VH"],
+)
+```
+
+There is no need to specify a `spatial_extent`: the extraction processes (`aggregate_spatial` or `filter_spatial`) will restrict the computation to the sample locations. This is a deliberate design choice in openEO: the extraction process knows which pixels it needs, so it can push that constraint down to the data loading step rather than reading the entire scene and then filtering.
+
+### 2.4 Preprocessing
+
+Whether and where to preprocess is a design choice of your ML pipeline, and it is worth making it explicitly rather than letting it emerge by accident. The two options have different trade-offs:
+
+- **Preprocess in openEO**: apply cloud masking (for example, based on the Sentinel-2 SCL band with `mask_scl_dilation`/`to_scl_dilation_mask`), compute backscatter with `sar_backscatter`, composite to regular time steps with `aggregate_temporal_period`, resample with `resample_cube_spatial`, and merge sensors with `merge_cubes`. This yields analysis-ready training data and keeps the ML code simple. The advantage is that the preprocessing is visible in the openEO graph, versioned alongside the extraction logic, and applied identically to training and inference.
+- **Preprocess in the model**: extract (nearly) raw observations and perform normalisation, compositing, or feature engineering inside the model itself, for example as part of an ONNX model that is later used for inference in openEO. This guarantees that training and inference apply identical preprocessing, but it pushes complexity into the model export and makes the preprocessing harder to inspect or modify without retraining.
+
+Whichever option you choose, make sure the extraction produces exactly the inputs your model expects at inference time. The most common source of silent accuracy loss in production is a mismatch between the preprocessing applied during training and the preprocessing applied during inference — for example, training on reflectance scaled to $[0,1]$ and inferring on DN values, or training with cloud-masked composites and inferring on raw scenes.
+
+```python
+# Example: monthly compositing and merging into a single feature cube
+s2_masked = s2.process(
+    "mask_scl_dilation",
+    data=s2,
+    scl_band_name="SCL",
+)
+s2_monthly = s2_masked.aggregate_temporal_period(period="month", reducer="median")
+s1_monthly = s1.aggregate_temporal_period(period="month", reducer="mean")
+
+features = s2_monthly.merge_cubes(s1_monthly.resample_cube_spatial(s2_monthly))
+```
+
+### 2.5 Point extraction with `aggregate_spatial`
+
+For point-based models, use [`aggregate_spatial`](https://openeo-python-client.readthedocs.io/en/latest/api/openeo.rest.datacube.html#openeo.rest.datacube.DataCube.aggregate_spatial) to sample the feature cube at your reference locations. The reducer receives the pixel values intersecting each geometry. For point geometries this is typically a single pixel, so the choice of reducer barely matters: any reducer (`mean`, `median`, `first`, ...) will simply return that pixel's value.
+
+`aggregate_spatial` can also be used with polygon geometries, for example to extract one aggregated time series per parcel instead of per pixel. In that case the reducer does matter, as it determines how the pixels within each polygon are combined (for example, `mean` or `median`). For heterogeneous parcels, a median reducer is often more robust to outliers than a mean, but the right choice depends on the physical meaning of the bands and the noise characteristics of the sensor.
+
+```python
+samples = features.aggregate_spatial(
+    geometries=reference_data,
+    reducer="mean",
+)
+
+job = samples.execute_batch(
+    out_format="Parquet",
+    title="ML point extraction",
+)
+```
+
+In contrast to `filter_spatial`, which produces raster output, `aggregate_spatial` produces vector output: a table with one value per sample, band, and timestep, which can be exported to GeoParquet or CSV and used directly for model training. This tabular structure is what makes point extraction a natural fit for classical ML models, which expect a fixed-length feature vector per sample.
+
+#### Attribute propagation
+
+All attributes (properties) of the features in your reference data — labels, sample identifiers, validity dates — are propagated to the extracted output, both in the GeoParquet output of `aggregate_spatial` and in the netCDF output of `filter_spatial`. There is no need to join the extractions back to the reference data afterwards: labels and metadata travel along with the extracted pixel values. This is a small convenience that saves a surprising amount of error-prone bookkeeping, especially when reference data is split across multiple files and multiple extraction jobs.
+
+### 2.6 Patch extraction with `filter_spatial`
+
+For models that need spatial context, use [`filter_spatial`](https://openeo-python-client.readthedocs.io/en/latest/api/openeo.rest.datacube.html#openeo.rest.datacube.DataCube.filter_spatial) with polygon geometries describing the patch outlines. The backend then only computes the data cube for those polygons, producing a sparse raster output cube. Combine this with the `sample_by_feature` output option to write one file per sample:
+
+```python
+patches = features.filter_spatial(geometries=reference_data)
+
+job = patches.create_job(
+    title="ML patch extraction",
+    out_format="netCDF",
+    sample_by_feature=True,
+    feature_id_property="sample_id",
+)
+job.start_and_wait()
+job.get_results().download_files("patches/")
+```
+
+Each resulting netCDF file contains the full time series of all bands for one patch, named after the `sample_id` property of the corresponding feature. These files can be converted into training tensors for your deep learning framework of choice.
+
+> **Warning**
+>
+> Extraction only works as a batch job, since it produces multiple output files that cannot be transferred in a synchronous call.
+
+### 2.7 Performance considerations
+
+Extraction is not necessarily cheap: even a sparse output may require reading a large number of raw EO assets. The input data volume, not the output size, usually determines cost and duration. A patch extraction that produces a few megabytes of netCDF output may still read gigabytes of Sentinel-2 imagery to compute those patches, because the backend has to load and process the full scenes that intersect the sample locations.
+
+- Group samples spatially (see [Splitting into spatial groups](#splitting-into-spatial-groups)) and run one job per Sentinel-2 tile.
+- Restrict the temporal extent and band selection to what your model actually needs. Every extra band and every extra month of data adds to the input volume, even if the model ignores it.
+- Consider caching extractions: store the extracted training data (for example, as GeoParquet in object storage) so that model iterations do not require re-extraction. This is especially valuable during the experimentation phase, when you may retrain a model dozens of times with different hyperparameters but the same input features.
+
+## 3. Training strategy: where openEO fits
+
+### 3.1 Training outside openEO (common path)
+
+Deep learning training usually runs outside openEO on GPU-capable environments. European initiatives such as [EOTDL](https://www.eotdl.com/) (Earth Observation Training Data Lab) are a good option if you want cloud-based training on EU infrastructure. EOTDL is worth considering for three distinct reasons, and it helps to be clear about which one you actually need:
+
+- **A curated dataset repository.** EOTDL hosts a catalogue of EO training datasets that you can stage and reuse instead of rebuilding from scratch. If your task overlaps with an existing dataset, this can remove a large part of the reference-data work described in [Section 2](#2-organising-and-extracting-reference-data-for-machine-learning).
+- **A staging mechanism.** Datasets can be staged into your own environment in a reproducible way, which matters when you want to pin a training run to a specific dataset version rather than a snapshot you copied by hand.
+- **Cloud workspaces with GPU machines.** For the actual training step, EOTDL provides cloud workspaces suitable for GPU workloads, which is the piece openEO deliberately does not try to cover.
+
+The reason training typically happens outside openEO is not a limitation of the platform but a matter of fit: openEO is optimized for scalable EO data processing, not for GPU-accelerated gradient descent, and the tooling around model development (experiment tracking, hyperparameter search, GPU scheduling) is more mature elsewhere.
+
+The important part for this playbook is not where training runs, but that training sees exactly the same feature semantics as operational inference. If you train on a laptop with locally downloaded data and then deploy to openEO, you are implicitly trusting that the local data and the openEO data are equivalent. That trust is often misplaced, because the two paths may differ in cloud masking, atmospheric correction, resampling, or compositing. Using EOTDL for training does not change that requirement: whatever dataset you train on, the features must match what your openEO inference graph will produce.
 
 Reference implementation used here: [random-forest forest-fire example](https://github.com/Open-EO/openeo-community-examples/tree/main/python/40_machine-learning/random-forest-forest-fire).
 
-In that example, the workflow is split in a way that maps well to production:
-- EO feature engineering is handled in openEO (`eo_extractor.py` and a feature UDF).
-- The model is trained as a lightweight random forest.
-- Inference is executed as an openEO process graph (`fire_using_RF.json`) using `load_ml_model` and `predict_random_forest`.
+### 3.2 Training in openEO for lightweight models: the forest-fire example, cell by cell
 
+For tree-based models, openEO-native training and inference is a strong option, and it is genuinely CPU-friendly: `fit_class_random_forest` trains server-side on the backend's regular compute nodes, not on a GPU. You send openEO a cube of input features (for example, determined in the previous step) and a set of labelled points, and the backend fits the trees.
 
+In that example, the workflow is split across several files in a way that maps well to production, and each file has a clear job:
 
-### 2.2 Training in openEO for lightweight models: the forest-fire example, cell by cell
+- `eo_extractor.py` handles EO feature engineering: it builds the feature cube from the source collections, applying the band selection, compositing, and masking steps that define what the model actually sees.
+- `feature_udf_ndfi_glcm.py` is the feature UDF, which computes derived features (NDFI and GLCM texture) inside the openEO graph rather than in a separate local step.
+- The training notebook fits a lightweight random forest on the extracted features and labels.
+- `fire_using_RF.json` is the inference process graph, which loads the trained model and runs `predict_random_forest` on a new feature cube.
+- The companion notebook turns that inference graph into a reusable User-Defined Process (UDP), which is what makes the model callable by other jobs rather than being a one-off script.
 
-For tree-based models, openEO-native training and inference is a strong option, and it's genuinely CPU-friendly: `fit_class_random_forest` trains server-side on the backend's regular compute nodes, not on a GPU.  You send openEO a cube of infut features, e.g. determined in the previous step,  and a set of labelled points, and the backend fits the trees.
-
-Here's the actual training call from `random-forest-training.ipynb`. By this point in the notebook, Sentinel-1 (`s1_features`) and Sentinel-2 (`s2_features`, including the GLCM texture UDF) cubes have already been merged into a single `training_cube`, and `y_train` is a GeoDataFrame of labelled points (fire / no-fire):
+Here is the actual training call from `random-forest-training.ipynb`. By this point in the notebook, Sentinel-1 (`s1_features`) and Sentinel-2 (`s2_features`, including the GLCM texture UDF) cubes have already been merged into a single `training_cube`, and `y_train` is a GeoDataFrame of labelled points (fire / no-fire):
 
 ```python
 # Train the model and DOWNLOAD THE IMAGE USED FOR TRAINING THE MODEL
@@ -132,14 +316,11 @@ model = predictors.fit_class_random_forest(
 model = model.save_ml_model()
 ```
 
-`fit_class_random_forest` then trains directly on the backend against those aggregated predictors and the `target` labels. 
+`fit_class_random_forest` then trains directly on the backend against those aggregated predictors and the `target` labels.
 
-When saving the model, it does not return to your laptop but it tells the backend to persist the fitted model as a batch job result asset, alongside the usual STAC metadata.
-In this manner meta data is added to inform the user on the spatio temporal information of the training data; thereby making the application area of the model transparant. 
-When you `execute_batch()` this graph, the job's results include an `ml_model_metadata.json` asset that any other openEO job can reference directly by URL. 
+When saving the model, it does not return to your laptop; instead, it tells the backend to persist the fitted model as a batch job result asset, alongside the usual STAC metadata. In this manner, metadata is added to inform the user about the spatio-temporal information of the training data, thereby making the application area of the model transparent. When you `execute_batch()` this graph, the job's results include an `ml_model_metadata.json` asset that any other openEO job can reference directly by URL.
 
-
-### 2.3 Using the trained model at inference time
+### 3.3 Using the trained model at inference time
 
 The companion notebook, `random-forest-inference-udp.ipynb`, picks the model up purely by URL:
 
@@ -148,7 +329,7 @@ The companion notebook, `random-forest-inference-udp.ipynb`, picks the model up 
 model = "https://s3.waw3-1.cloudferro.com/swift/v1/apex-examples/RF-ForestFire/RandomForest-ForestFire-model.json"
 ```
 
-Because the same `s1_features` / `s2_features` helper functions are reused to build the inference cube, there's no risk of training/serving skew from re-implementing feature logic twice:
+Because the same `s1_features` / `s2_features` helper functions are reused to build the inference cube, there is no risk of training/serving skew from re-implementing feature logic twice:
 
 ```python
 # Load s1 and s2 features
@@ -164,43 +345,53 @@ inference = inference_cube.predict_random_forest(
 )
 ```
 
+If your model cannot be expressed as a random forest (or another `predict_*` process openEO ships natively), fall back to the ONNX/UDF path described below.
 
-If your model can't be expressed as a random forest (or another `predict_*` process openEO ships natively), fall back to the ONNX/UDF path described in the section below.
+### 3.4 Embedding-first strategy
 
+While at first glance this support seems limiting, it opens interesting alternative options in today's new paradigm with embeddings.
 
+Embeddings are "general" features learned from multi-modal satellite data. Such pre-computed or on-demand computed features, based on advanced ML architectures, can already provide the heavy lifting for many applications. Instead of training a large model from scratch for each new task, you can use an embedding model to convert raw imagery into a compact representation, then train a small, task-specific model on top of that representation. This is often both cheaper and more accurate than training a task-specific model end-to-end, because the embedding model has already learned to capture relevant spatial and spectral patterns from a much larger and more diverse dataset.
 
-### 2.5 Embedding-first strategy
+Hence, in combination with such embeddings, CPU-friendly training methodologies become a cost-efficient way of getting to specific insights. A random forest or logistic regression on top of embeddings can be trained in minutes on a laptop, while still benefiting from the representational power of a large backbone.
 
-While at a first glance this support seems limiting, it opens interasting alternative options in todays's new paradime with embeddings. 
-
-Embeddings are 'general' features learned based on multi model sattelite data. Such pre-computed or on demand computed features based on advanced ML architectures can already provide the heavy lifting for many applications.
-
-Hence In combination with such embeddings, CPU friendly training methodologies becomes a cost efficient way for getting to specific insights.
-
-Within openEO it is perfectly possible to generate embeddings on the fly as part of the 'feature extraction' pipeline.
-
+Within openEO it is perfectly possible to generate embeddings on the fly as part of the feature-extraction pipeline. This means you do not need to pre-compute and store embeddings for your entire area of interest; instead, the embedding model runs as part of the same graph that produces your training features and your inference outputs, which guarantees consistency between the two.
 
 A practical pattern is:
 
-1. compute embeddings once in openEO,
-2. train small downstream models on top,
-3. deploy those light models back into openEO.
+1. Compute embeddings once in openEO.
+2. Train small downstream models on top.
+3. Deploy those light models back into openEO.
 
+In the next few sections we detail how such heavyweight (embedding) models can be converted and integrated into openEO. While the reference material focuses on embeddings, similar methods have been used to integrate alternative AI model workflows into openEO ([Delineate-Anything](https://github.com/Lavreniuk/Delineate-Anything/tree/main/openeo_udp), [solar_openEO](https://github.com/ray-climate/solar_openEO/tree/main/openeo_udp)).
 
-In the next few sections we detail how such heavy weight (embedding) models can be converted and integrated into openEO.
-While the reference material focusses on embeddings; similar methods have been used to integrate alternative AI model workflows into openEO 
-(https://github.com/Lavreniuk/Delineate-Anything/tree/main/openeo_udp, https://github.com/ray-climate/solar_openEO/tree/main/openeo_udp)
+Reference: [geospatial embeddings examples](https://github.com/Open-EO/openeo-community-examples/tree/main/python/60_geospatial-embeddings). This folder is the practical starting point for the embedding-first pattern. It contains several worked examples that cover different points on the spectrum from classical dimensionality reduction to foundation-model-style embeddings:
 
-Reference: [geospatial embeddings examples](https://github.com/Open-EO/openeo-community-examples/tree/main/python/60_geospatial-embeddings).
+- **Dimensionality reduction** examples showing how a compact representation can be derived without a heavy backbone, useful as a baseline before committing to a large model.
+- **TESSERA** and **TerraMind** examples, which demonstrate foundation-model-style embeddings, including how the input calibration the network depends on is baked into the exported ONNX graph (see [Section 4.3](#43-calibration-lives-inside-the-model)).
+- **CORSA** and related examples, which show alternative embedding strategies and how they are wired into an openEO inference graph.
 
+Each example is a runnable notebook rather than a fragment, so it doubles as a template for your own pipeline.
 
-## 3. Packaging (embedding) models for openEO inference
+### 3.5 Emerging: a standardized ML API in openEO
 
-### 3.1 User-Defined Functions: the integration point
+Everything in this playbook currently relies on two mechanisms for getting a trained model into openEO: a `predict_*` process that the backend ships natively (as in the forest-fire example), or a UDF that loads the model itself. Both work today, and both are what you should build on for production right now.
 
-The most common way to run an ML model inside openEO is a [User-Defined Function (UDF)](https://open-eo.github.io/openeo-python-client/udf.html), simply because it offers incredible flexibility: a UDF lets you import arbitrary Python code into your process graph instead of being limited to what the backend ships natively.
+There is, however, ongoing work to standardize how models are described and loaded in openEO, and it is worth being aware of it so you can follow the direction of travel rather than being surprised by it later. The idea is to treat a trained model as a first-class, discoverable object rather than as a file behind a URL:
 
-That flexibility comes with a catch: UDF runtimes in the cloud are intentionally minimal. You can inspect what's available with the [runtime docs](https://openeo.dataspace.copernicus.eu/openeo/1.2/udf_runtimes) or, on an established connection, with:
+- Models are described as STAC Items using the [MLM extension](https://github.com/stac-extensions/mlm), which is the same metadata layer discussed in [Section 5](#5-stac-model-description-and-hosting).
+- A dedicated process retrieves such a model directly from a STAC catalog, so the model URL, its input contract, and its provenance travel together.
+- Inference then runs against that loaded model, without the user having to wire up a dependency archive or a UDF by hand for the common case.
+
+This is a natural extension of the STAC description work already recommended in Section 5: if you have gone to the trouble of describing your model with MLM metadata, a standardized loader is what makes that metadata pay off by letting other jobs find and use the model directly. It does not change any of the practical advice in this playbook — keep using UDFs and dependency archives for anything non-standard — but it is the direction the ecosystem is moving, and describing your models with MLM metadata now positions them to take advantage of it when it lands.
+
+## 4. Packaging (embedding) models for openEO inference
+
+### 4.1 User-Defined Functions: the integration point
+
+The most common way to run an ML model inside openEO is a [User-Defined Function (UDF)](https://open-eo.github.io/openeo-python-client/udf.html), simply because it offers incredible flexibility: a UDF lets you import arbitrary Python code into your process graph instead of being limited to what the backend ships natively. This is what makes it possible to run a custom neural network, a specialized embedding model, or any other Python-based inference logic inside an openEO job.
+
+That flexibility comes with a catch: UDF runtimes in the cloud are intentionally minimal. They ship with a small set of pre-installed packages and no GPU, and they are designed to be lightweight so that jobs can start quickly and run efficiently on shared infrastructure. You can inspect what is available with the [runtime docs](https://openeo.dataspace.copernicus.eu/openeo/1.2/udf_runtimes) or, on an established connection, with:
 
 ```python
 connection.list_udf_runtimes()
@@ -208,12 +399,12 @@ connection.list_udf_runtimes()
 
 At first glance this looks very limiting, but there are two ways to extend what a UDF can use:
 
-1. **Small packages**: install them inline inside the UDF itself via the [PEP 723 "inline script metadata" standard](https://open-eo.github.io/openeo-python-client/udf.html#declaration-of-udf-dependencies). This is the lightest option and works well for pure-Python dependencies.
-2. **Heavier packages** (the common case for ML): ship a prebuilt dependency archive and attach it through [job options](https://documentation.dataspace.copernicus.eu/APIs/openEO/job_config.html). Building and maintaining such archives requires dedicated tooling and solid openEO/runtime knowledge, so we build and maintain ready-to-use archives ourselves for the common ML formats (ONNX, PyTorch).
+1. **Small packages**: install them inline inside the UDF itself via the [PEP 723 "inline script metadata" standard](https://open-eo.github.io/openeo-python-client/udf.html#declaration-of-udf-dependencies). This is the lightest option and works well for pure-Python dependencies. It is best suited for small utilities that do not have compiled extensions or complex transitive dependencies.
+2. **Heavier packages** (the common case for ML): ship a prebuilt dependency archive and attach it through [job options](https://documentation.dataspace.copernicus.eu/APIs/openEO/job_config.html). Building and maintaining such archives requires dedicated tooling and solid openEO/runtime knowledge, so we build and maintain ready-to-use archives ourselves for the common ML formats (ONNX, PyTorch). The archive is downloaded once per worker and unpacked into the UDF runtime, which is why keeping it small matters for cold-start time.
 
-A good strategy order is: start with pre-built dependency archives, then use small runtime additions for tiny extras, and keep heavy runtime installation as a last resort.
+A good strategy order is: start with pre-built dependency archives, then use small runtime additions for tiny extras, and keep heavy runtime installation as a last resort. Installing packages at runtime inside the UDF is possible but slow and fragile, and it should be treated as a prototyping shortcut rather than a production pattern.
 
-Our strong default recommendation is ONNX: it's a much lighter dependency than a full framework archive, which directly lowers the cost of the job (smaller archive to ship, faster cold start, less memory/time spent on imports).
+Our strong default recommendation is ONNX: it is a much lighter dependency than a full framework archive, which directly lowers the cost of the job (smaller archive to ship, faster cold start, less memory/time spent on imports).
 
 A local import-path hack can accelerate prototyping, but production should use explicit deployable artifacts.
 
@@ -233,16 +424,36 @@ job = pred.execute_batch(
 )
 ```
 
-### 3.2 Prefer ONNX when feasible
+The syntax matters here, because the archive is mounted into the UDF runtime at a specific path and the `#` fragment in the URL is what names that path. A model file and its runtime dependencies are typically passed as separate archives with separate mount points, so the UDF can refer to them by a stable path regardless of the worker it happens to run on:
+
+```python
+job_options={
+    "udf-dependency-archives": [
+        "https://example.org/archives/onnxruntime_deps.zip#deps",
+        "https://example.org/archives/model_files.zip#model",
+    ],
+}
+```
+
+Inside the UDF, those archives are then available as `deps/` and `model/` relative to the UDF's working directory.
+
+For ONNX specifically, getting a compatible ONNX Runtime build is a common stumbling block, because the archive has to match the Python version of the UDF runtime. A known-good ONNX dependency archive for the Python 3.11 runtime is:
+
+```text
+https://s3.waw3-1.cloudferro.com/swift/v1/project_dependencies/onnx_deps_python311.zip#onnx_deps
+```
+
+Using a ready-made archive like this is exactly the "start with pre-built dependency archives" strategy recommended above: it removes the build step from your critical path and lets you focus on the model itself. Because such archives are pinned to a specific runtime Python version, it is worth checking the URL against `connection.list_udf_runtimes()` whenever the backend runtime changes.
+
+### 4.2 Prefer ONNX when feasible
 
 Default to ONNX export for stable inference models.
 
-In practice this usually wins because it is lighter and simpler to operate.
-You generally get faster startup and less dependency pain than shipping a full deep-learning framework.
+In practice this usually wins because it is lighter and simpler to operate. You generally get faster startup and less dependency pain than shipping a full deep-learning framework. An ONNX Runtime archive is on the order of tens of megabytes, while a full PyTorch archive can be hundreds of megabytes, and that difference translates directly into cold-start time and memory overhead for every worker that loads the archive.
 
 Use full-framework deployment only when you really need it: custom operators that do not export, highly dynamic model logic, or models that are still changing every week.
 
-#### Fast decision rule 
+#### Fast decision rule
 
 Pick ONNX when all of these are true:
 
@@ -261,12 +472,12 @@ Stay on full-framework packaging for now when at least one is true:
 
 Export is not just "run one command and done". Before publishing a model, lock these fields explicitly:
 
-1. **Input signature**: names, dtypes, rank, layout (`NCHW`/`NHWC`), dynamic axes. Dynamic axes can be a great asset for openEO, because optimization often means making the model run over as large an area as possible in one go.
-2. **Opset version**: explicit and pinned, never implicit defaults.
-3. **Output semantics**: logits/probabilities/embeddings and exact expected shape.
-4. **Runtime target**: test on the runtime you will actually use in production (usually ONNX Runtime CPU in openEO UDF jobs).
+1. **Input signature**: names, dtypes, rank, layout (`NCHW`/`NHWC`), dynamic axes. Dynamic axes can be a great asset for openEO, because optimization often means making the model run over as large an area as possible in one go. If the batch dimension is dynamic, the same exported model can process one tile or many tiles without re-export.
+2. **Opset version**: explicit and pinned, never implicit defaults. Different opset versions support different operators, and an opset that works on your local ONNX Runtime may not be supported by the runtime available in the openEO backend.
+3. **Output semantics**: logits/probabilities/embeddings and exact expected shape. This matters most when the output is consumed by downstream code that assumes a particular interpretation; a model that outputs logits but is treated as probabilities will produce subtly wrong results.
+4. **Runtime target**: test on the runtime you will actually use in production (usually ONNX Runtime CPU in openEO UDF jobs). Testing on a different runtime, or on a GPU, can hide issues that only appear on the production runtime.
 
-If any of these are fuzzy, you're not done packaging.
+If any of these are fuzzy, you are not done packaging.
 
 #### Reference export pipeline (PyTorch)
 
@@ -288,29 +499,25 @@ torch.onnx.export(
 )
 ```
 
-#### Sanity Checks
+#### Sanity checks
 
-Once the model is ported to e.g. onnx and you want to incorperate the inference into an openEO UDF there are a few safety check one has to build in.
-As openEO passes the input cube to the UDF, its not warrented that the order of bands, dimensions or dtype of the cube is as expected. This might even differe per back-end.
+Once the model is ported to ONNX and you want to incorporate the inference into an openEO UDF, there are a few safety checks one has to build in. As openEO passes the input cube to the UDF, it is not guaranteed that the order of bands, dimensions, or dtype of the cube is as expected. This may even differ per backend. A UDF that works perfectly on one backend may silently produce wrong outputs on another, simply because the input cube is laid out differently.
 
-Therefore within the UDF implementation it is good practice to ensure there is no:
+Therefore, within the UDF implementation it is good practice to ensure there is no:
 
-1. **Layout mismatch**: trained with `NCHW`, inferred with `NHWC`.
-2. **Band-order mismatch**: model expects `B02,B03,B04,B08`, runtime sends different order.
-3. **Implicit preprocessing**: training normalized input but exported graph assumes raw data.
-4. **dtype drift**: training path used `float32`, runtime path silently casts/feeds another dtype.
-5. **Dynamic axis mismatch**: batch dynamic but spatial dimensions accidentally fixed (or vice versa).
+1. **Layout mismatch**: trained with `NCHW`, inferred with `NHWC`. This is the most common mistake, because PyTorch conventions and openEO cube conventions are not the same, and the transpose may be implicit in one path but not the other.
+2. **Band-order mismatch**: model expects `B02,B03,B04,B08`, runtime sends a different order. openEO does not guarantee band order unless you explicitly reorder, so a model that relies on implicit ordering is fragile.
+3. **Implicit preprocessing**: training normalized input but exported graph assumes raw data. If normalization is not baked into the exported graph, the UDF must reproduce it exactly, and any deviation will degrade accuracy without raising an error.
+4. **dtype drift**: training path used `float32`, runtime path silently casts/feeds another dtype. This is especially common when the input cube contains integer bands alongside float bands, and the UDF does not explicitly cast.
+5. **Dynamic-axis mismatch**: batch dynamic but spatial dimensions accidentally fixed (or vice versa). A model exported with a fixed spatial size will fail or silently truncate when the runtime sends a different tile size.
 
-Most of these do not crash. They just give wrong outputs quietly, which is even worse.
+Most of these do not crash. They just give wrong outputs quietly, which is even worse. A model that crashes is easy to debug; a model that produces plausible-looking but incorrect outputs can go unnoticed for weeks.
 
+### 4.3 Calibration lives inside the model
 
+An added benefit of ONNX is that the framework provides more than a CPU-friendly transition: it is flexible enough to embed the input calibration the network depends on (for example, z-score normalization), so the exported graph stays self-contained instead of relying on the UDF to reproduce preprocessing exactly. The [TerraMind](https://github.com/Open-EO/openeo-community-examples/tree/main/python/60_geospatial-embeddings/terramind) and [Tessera](https://github.com/Open-EO/openeo-community-examples/tree/main/python/60_geospatial-embeddings/tessera) embedding examples both bake this calibration step into the exported ONNX graph.
 
-
-### 3.3 Calibration lives inside the model
-
-An added benefit of the use of onnx is that the framework provides more than a CPU friendly transition,  it's flexible enough to embed the input calibration the network depends on (e.g. z-score normalization), so the exported graph stays self-contained instead of relying on the UDF to reproduce preprocessing exactly. The [TerraMind](https://github.com/Open-EO/openeo-community-examples/tree/main/python/60_geospatial-embeddings/terramind) and [Tessera](https://github.com/Open-EO/openeo-community-examples/tree/main/python/60_geospatial-embeddings/tessera) embedding examples both bake this calibration step into the exported ONNX graph.
-
-Given than most wrong output comes from silent failures due to data drift. If possible, bake normalization into the exported graph itself:
+Given that most wrong output comes from silent failures due to data drift, if possible, bake normalization into the exported graph itself:
 
 ```python
 class EncoderONNX(nn.Module):
@@ -332,6 +539,8 @@ The flow that works well in practice is:
 2. Then generate a realistic input cube with openEO and run the UDF locally on that cube.
 3. Only after those pass, run a tiny CDSE job (small AOI and short time window).
 4. Then scale up gradually.
+
+Each stage catches a different class of problem. Stage 1 catches export errors — operators that were not exported correctly, precision loss, or shape mismatches. Stage 2 catches UDF integration errors — band order, layout, dtype, and preprocessing mismatches. Stage 3 catches backend-specific surprises — runtime differences, dependency archive issues, and memory limits. Stage 4 catches scaling issues — chunking, thread contention, and job-option tuning.
 
 Example 1: source-vs-ONNX parity check.
 
@@ -362,19 +571,19 @@ Example 3: tiny CDSE smoke run before scaling.
 
 Start with a very small area (around 1x1 km), verify the output, and then scale up in small steps.
 
-During this phase, add enough logging inside the UDF. You can retrieve these logs in the web client and quickly see what worked and what failed.
+During this phase, add enough logging inside the UDF. You can retrieve these logs in the web client and quickly see what worked and what failed. Logging is especially valuable here because the UDF runs remotely and you cannot attach a debugger; the logs are your only window into what the code actually did.
 
 Once the model runs reliably, expand the extent gradually. At some point you will likely hit OOM issues. When that happens, increasing Python memory or executor memory overhead is usually the first thing to try. If that is not enough, reach out through APEx or the CDSE forum for upscaling support.
 
-See [3.1](#31-user-defined-functions-the-integration-point) for how UDF runtimes, inline dependencies, and dependency archives work.
+See [4.1](#41-user-defined-functions-the-integration-point) for how UDF runtimes, inline dependencies, and dependency archives work.
 
-## 4. STAC model description and hosting
+## 5. STAC model description and hosting
 
-Once a model is packaged and validated, it still needs a home that other people (and other openEO jobs) can actually find and trust. In many projects we have seen that a single global model rarely works equally well everywhere, so the metadata around a model matters almost as much as the model itself: it tells a future user, including future you, where the model is expected to work and under which exact input contract.
+This step is optional: a UDF can load a model directly from a plain URL, as the forest-fire example in [3.3](#33-using-the-trained-model-at-inference-time) does, without any STAC item in sight. What a STAC description buys you is transparency and reuse. Once a model is packaged and validated, it still needs a home that other people (and other openEO jobs) can actually find and trust, and that matters more as soon as more than one person or one job depends on the model. In many projects we have seen that a single global model rarely works equally well everywhere, so the metadata around a model matters almost as much as the model itself: it tells a future user, including future you, where the model is expected to work and under which exact input contract. If a model is a one-off, internal, short-lived experiment, skipping this step and keeping the plain-URL approach is a perfectly reasonable choice.
 
 The STAC community originally proposed a dedicated `ml-model` extension for this, but that extension has since been archived in favour of the newer [Machine Learning Model (MLM) extension](https://github.com/stac-extensions/mlm), which adds richer support for things like multiple model inputs, hyperparameters, and accelerator requirements. New catalogs are better off starting directly with MLM; the `apex:` fields used below are a thin, project-specific layer that complements whichever base extension you choose and covers the operational details that are not strictly enforced by either one.
 
-At minimum, capture the input band order, expected units and value ranges, tensor layout, expected tile shape and window semantics, the normalization policy, output semantics, runtime requirements with checksums, and links to all sidecar artifacts. None of this is exotic, but it is exactly the kind of detail that gets lost between the person who trained the model and the person who deploys it six months later.
+At minimum, capture the input band order, expected units and value ranges, tensor layout, expected tile shape and window semantics, the normalization policy, output semantics, runtime requirements with checksums, and links to all sidecar artifacts. None of this is exotic, but it is exactly the kind of detail that gets lost between the person who trained the model and the person who deploys it six months later. A checksum in particular is worth including: it lets a downstream job verify that the model file it loaded is the same one that was validated, which is a cheap safeguard against silent corruption or accidental replacement.
 
 ```json
 {
@@ -434,20 +643,19 @@ item.add_asset(
 item.save_object(dest_href="stac/model-item.json")
 ```
 
-## 5. Running inference inside the UDF
+## 6. Running inference inside the UDF
 
 With the model packaged and described, the remaining work happens inside the UDF itself: deciding how the datacube is chunked for the model, keeping sessions and sockets alive across invocations, and making sure a window of pixels is handled consistently from training all the way through to a large-scale production run. The next few sections walk through the patterns that tend to make this reliable in practice.
 
-### 5.1 Choosing between `apply`, `apply_dimension`, and `apply_neighborhood`
+### 6.1 Choosing between `apply`, `apply_dimension`, and `apply_neighborhood`
 
-OpenEO offers several ways of applying your custom script along a datacube, and the one you want depends mainly on the input your ML network actually needs.
-
+openEO offers several ways of applying your custom script along a datacube, and the one you want depends mainly on the input your ML network actually needs. Choosing the wrong one is not just inefficient; it can produce incorrect results if the model expects spatial context that the process does not provide.
 
 Quick rule of thumb:
 
-1. Use `apply` when each pixel can be handled independently and there is no neighborhood context.
-2. Use `apply_dimension` when logic runs along one dimension (most often time, `t`) for each pixel location.
-3. Use `apply_neighborhood` when your model needs a spatial patch (for example CNN-style inference).
+1. Use `apply` when each pixel can be handled independently and there is no neighborhood context. This is the simplest and cheapest option, and it is appropriate for per-pixel operations like scaling or thresholding.
+2. Use `apply_dimension` when logic runs along one dimension (most often time, `t`) for each pixel location. This is the natural choice for time-series models that consume a full temporal profile per pixel.
+3. Use `apply_neighborhood` when your model needs a spatial patch (for example, CNN-style inference). This is the most expensive option, because it requires the backend to assemble overlapping spatial windows, but it is the only correct choice for models that use spatial context.
 
 Minimal patterns:
 
@@ -483,28 +691,27 @@ pred = features.apply_neighborhood(
 )
 ```
 
-Its important to discuss how the overlap exactly works, as it may lead to the idea that we apply the UDF as a convolution kernel.
-In reality the overlap works differently:
+It is important to discuss how the overlap exactly works, as it may lead to the idea that we apply the UDF as a convolution kernel. In reality the overlap works differently:
 
 - openEO runs the UDF on overlapping patches.
 - For each processed patch, the border area is dropped.
 - Only the center part is kept and stitched with neighboring center parts.
 
-That "center-keep" behavior is exactly what reduces tiling artifacts at patch boundaries.
+That "center-keep" behavior is exactly what reduces tiling artifacts at patch boundaries. Without it, each patch would contribute its own edge effects to the final mosaic, and those edge effects would be visible as a grid of seams across the output.
 
 Example intuition: with a $224 \times 224$ patch and $32$ px overlap on each side, the reliable center is
-$$(224 - 2 \cdot 32) \times (224 - 2 \cdot 32) = 160 \times 160.$$ 
+
+$$(224 - 2 \cdot 32) \times (224 - 2 \cdot 32) = 160 \times 160.$$
 
 So every patch contributes mainly its $160 \times 160$ center, while the noisy borders are discarded.
 
-If the entire AOI is not an exact multitude of the apply window; center padding with nans is applied during the UDF runtime. Therefore its paramount that the UDF implementation knows how to 
-work with nan inputs. 
+If the entire AOI is not an exact multiple of the apply window, center padding with NaNs is applied during the UDF runtime. Therefore it is paramount that the UDF implementation knows how to work with NaN inputs. A UDF that assumes all input pixels are valid will either crash or produce garbage at the edges of the AOI, and those errors can be difficult to trace back to the padding behavior.
 
-### 5.2 Caching and concurrency
+### 6.2 Caching and concurrency
 
-A single batch job can spin up many workers, and each of those workers may process several chunks over its lifetime. Loading a model and spinning up an inference session is comparatively expensive, so it pays off to cache the loaded artifact at the module level instead of re-creating it for every chunk, and to guard any shared downloads (for example a model file fetched once per worker) with a lock so that concurrent chunks do not race to fetch the same file.
+A single batch job can spin up many workers, and each of those workers may process several chunks over its lifetime. Loading a model and spinning up an inference session is comparatively expensive, so it pays off to cache the loaded artifact at the module level instead of re-creating it for every chunk, and to guard any shared downloads (for example, a model file fetched once per worker) with a lock so that concurrent chunks do not race to fetch the same file.
 
-The thread settings on the inference session also matter more than they might seem to. ONNX Runtime distinguishes between intra-op threads, which parallelize work inside a single operator, and inter-op threads, which run independent branches of the graph in parallel when `ExecutionMode.ORT_PARALLEL` is used. Left at their defaults, both pools size themselves to the number of physical cores on the machine, which is reasonable on a dedicated machine but can quietly oversubscribe a shared executor in a cluster, where several worker processes compete for the same cores. Pinning `intra_op_num_threads` to match the number of cores actually assigned to the executor avoids that kind of contention.
+The thread settings on the inference session also matter more than they might seem to. ONNX Runtime distinguishes between intra-op threads, which parallelize work inside a single operator, and inter-op threads, which run independent branches of the graph in parallel when `ExecutionMode.ORT_PARALLEL` is used. Left at their defaults, both pools size themselves to the number of physical cores on the machine, which is reasonable on a dedicated machine but can quietly oversubscribe a shared executor in a cluster, where several worker processes compete for the same cores. Pinning `intra_op_num_threads` to match the number of cores actually assigned to the executor avoids that kind of contention. The symptom of oversubscription is usually not a crash but a slowdown: each worker spends time waiting for CPU time, and the overall job takes longer than it would with fewer threads per worker.
 
 ```python
 def get_session(model_path, num_threads=2):
@@ -516,11 +723,11 @@ def get_session(model_path, num_threads=2):
     return ort.InferenceSession(model_path, options, providers=["CPUExecutionProvider"])
 ```
 
-### 5.3 Spatial context and chunk semantics
+### 6.3 Spatial context and chunk semantics
 
 For patch-based models that go through `apply_neighborhood`, the window size and overlap you choose at inference time need to match what the model actually learned during training. The official process guidance is a useful anchor here: spatial window sizes typically range from 64 to 512 pixels, with overlaps of 8 to 32 pixels being common, and openEO will stitch the kept centers of neighboring chunks back together once processing finishes. A larger overlap reduces edge artifacts but also increases memory pressure, since every extra pixel of overlap is recomputed in both of its neighboring chunks.
 
-A common failure mode is reaching for a generic tile or window size without checking it against the model's training assumptions. A second, quieter failure mode is metadata drift between training and inference, where the model path, expected band order, or normalization policy slowly diverge between the two environments without anyone noticing until the outputs look wrong. The fix is simple in principle: keep all of that information together in one versioned context object that travels with the UDF call, rather than being reconstructed separately on each side.
+A common failure mode is reaching for a generic tile or window size without checking it against the model's training assumptions. A model trained on 224x224 chips will not behave correctly if it is fed 512x512 chips, even if the input tensor shape happens to be accepted. A second, quieter failure mode is metadata drift between training and inference, where the model path, expected band order, or normalization policy slowly diverge between the two environments without anyone noticing until the outputs look wrong. The fix is simple in principle: keep all of that information together in one versioned context object that travels with the UDF call, rather than being reconstructed separately on each side.
 
 ```python
 context = {
@@ -538,9 +745,9 @@ context = {
 }
 ```
 
-### 5.4 Embeddings as reusable products
+### 6.4 Embeddings as reusable products
 
-Embeddings tend to be the most expensive stage of a pipeline built around a heavyweight backbone, so it is worth exporting them once and reusing them whenever several downstream tasks need the same representation, rather than recomputing them per task. On the other hand, if embeddings are an intermediate product rather than something the project actually needs to deliver, there is no reason to serialize them by default, since that only adds storage cost and job time for no benefit.
+Embeddings tend to be the most expensive stage of a pipeline built around a heavyweight backbone, so it is worth exporting them once and reusing them whenever several downstream tasks need the same representation, rather than recomputing them per task. On the other hand, if embeddings are an intermediate product rather than something the project actually needs to deliver, there is no reason to serialize them by default, since that only adds storage cost and job time for no benefit. The decision should be driven by whether the embeddings are a deliverable in their own right or purely a means to an end.
 
 ```python
 if context.get("emit_embeddings", False):
@@ -549,11 +756,11 @@ else:
   downstream_scores.execute_batch(out_format="GTiff", title="scores_only")
 ```
 
-## 6. Validation pipelines in openEO
+## 7. Validation pipelines in openEO
 
-Validation is only informative if it follows the same path as production. It is tempting to validate a model against a convenient local dataset and call it done, but the goal here is to catch exactly the kinds of drift described above, so the validation path has to go through the same UDF, the same context object, and ultimately the same backend that will run in production.
+Validation is only informative if it follows the same path as production. It is tempting to validate a model against a convenient local dataset and call it done, but the goal here is to catch exactly the kinds of drift described above, so the validation path has to go through the same UDF, the same context object, and ultimately the same backend that will run in production. A validation that uses a different data path is not really validating the production system; it is validating a related but distinct system.
 
-A three-stage validation loop tends to catch problems early and cheaply, before they become expensive to debug on a large job. The first stage checks tensor parity between the original model and the exported model, as already shown in [section 3.3](#33-calibration-lives-inside-the-model). The second stage runs the UDF locally against a representative NetCDF tile, which is fast to iterate on and catches most shape, dtype, and band-order mistakes. The third stage runs the same UDF through the actual backend on a tiny, held-out area of interest, which is the only stage that can catch backend-specific surprises.
+A three-stage validation loop tends to catch problems early and cheaply, before they become expensive to debug on a large job. The first stage checks tensor parity between the original model and the exported model, as already shown in [4.3](#43-calibration-lives-inside-the-model). The second stage runs the UDF locally against a representative NetCDF tile, which is fast to iterate on and catches most shape, dtype, and band-order mistakes. The third stage runs the same UDF through the actual backend on a tiny, held-out area of interest, which is the only stage that can catch backend-specific surprises. Each stage is cheap relative to the next, so a problem caught early saves both time and compute.
 
 ```python
 inputs = xr.open_dataset("results/representative_input.nc")
@@ -586,15 +793,15 @@ macro_f1 = f1_score(ref[valid], pred[valid], average="macro")
 print({"macro_f1": float(macro_f1)})
 ```
 
-Two things are easy to get wrong at this stage and worth calling out explicitly. The first is spatial and temporal leakage: because satellite imagery is spatially autocorrelated, a random pixel-wise train/test split tends to overestimate accuracy, since nearby pixels in the training and test sets are not really independent. Grouping or blocking the split by field, parcel, or spatial tile (sometimes called spatial cross-validation) gives a much more honest estimate of how the model will perform on genuinely new areas. The second is relying only on aggregate scores; a macro F1 of 0.9 can still hide a systematic failure over one land cover class or one region, so looking at the output maps themselves, not just the numbers, remains part of the validation step.
+Two things are easy to get wrong at this stage and worth calling out explicitly. The first is spatial and temporal leakage: because satellite imagery is spatially autocorrelated, a random pixel-wise train/test split tends to overestimate accuracy, since nearby pixels in the training and test sets are not really independent. Grouping or blocking the split by field, parcel, or spatial tile (sometimes called spatial cross-validation) gives a much more honest estimate of how the model will perform on genuinely new areas. The second is relying only on aggregate scores; a macro F1 of 0.9 can still hide a systematic failure over one land-cover class or one region, so looking at the output maps themselves, not just the numbers, remains part of the validation step. A confusion matrix, per-class metrics, and a visual inspection of the output mosaic are all worth the extra effort.
 
 It is also worth persisting the experiment metadata alongside the metrics: the model's STAC item and checksum, the UDF revision, the dependency archive used, the process graph, the backend, the split rule, the job options, and the resulting scores. None of that needs to be elaborate, but having it means a result can be reproduced or questioned later without having to reconstruct it from memory. Only once this full validation bundle is in place and reproducible does it make sense to move on to larger areas of interest.
 
-## 7. Upscaling and performance tuning
+## 8. Upscaling and performance tuning
 
-### 7.1 Incremental scaling strategy
+### 8.1 Incremental scaling strategy
 
-Scaling up is best done in phases rather than in one jump from a tiny test to the full operational extent. Start with a tiny area of interest and a short time period, keep that area fixed while you tune job options, and only then start increasing area and time range gradually. After each step, check coverage, output quality, and runtime before moving to the next one, and keep one known-good local NetCDF benchmark tile around so that later regressions are easy to spot against a stable baseline.
+Scaling up is best done in phases rather than in one jump from a tiny test to the full operational extent. Start with a tiny area of interest and a short time period, keep that area fixed while you tune job options, and only then start increasing area and time range gradually. After each step, check coverage, output quality, and runtime before moving to the next one, and keep one known-good local NetCDF benchmark tile around so that later regressions are easy to spot against a stable baseline. The benchmark tile is what lets you distinguish "the job got slower because the area got bigger" from "the job got slower because something in the pipeline changed."
 
 In practice, this incremental approach pairs well with the [`MultiBackendJobManager`](https://open-eo.github.io/openeo-python-client/cookbook/job_manager.html), which is built specifically for running and tracking large numbers of batch jobs rather than babysitting them one at a time. Instead of manually looping over areas and keeping track of what succeeded, you describe the work as a small table, one row per job, and let the manager submit, poll, retry, and download results for you. Its `split_area()` helper is a convenient way to turn one large area of interest into a grid of smaller tiles, each of which becomes its own job and its own row:
 
@@ -624,15 +831,15 @@ manager.run_jobs(job_db=job_db, start_job=start_job)
 
 Because the job database is persisted to disk (as CSV or Parquet), the whole run can be interrupted and resumed later with `get_job_db()` without losing track of which tiles already finished, which is exactly the kind of bookkeeping that becomes tedious to do by hand once you are past a handful of jobs. The same mechanism that helps you scale out to many tiles at the end also makes a good fit for the incremental ramp-up itself: start the job database with just one or two rows covering the tiny benchmark area, confirm the output looks right, then grow the dataframe to the full tile grid once you trust the job options.
 
-### 7.2 Threading and oversubscription
+### 8.2 Threading and oversubscription
 
 More threads is not automatically faster, and this is one of the more counter-intuitive things to tune. ONNX Runtime, BLAS, and PyTorch each try to parallelize across all available cores by default, and when several of these libraries are active in the same process, or when several worker processes share a node, their thread pools end up competing for the same physical cores. The practical fix is to tune thread limits together with the executor configuration rather than in isolation, generally keeping `intra_op_num_threads` close to the number of cores actually allocated to each executor.
 
 The `parallel_jobs` setting on `add_backend()` interacts with this in a way that is easy to overlook: it controls how many jobs the job manager tries to keep active on a backend at once, independent of how many threads each job's UDF workers spin up internally. Pushing `parallel_jobs` higher without also capping `executor-cores` and the ONNX thread counts per job is a common way to end up with the exact oversubscription described above, just spread across jobs instead of within a single one. It is worth tuning `parallel_jobs` the same way you tune thread counts: start conservative, watch runtime and failure rates, and increase it only once you have evidence the backend has headroom.
 
-### 7.3 Tune job options empirically
+### 8.3 Tune job options empirically
 
-Job options rarely have one obviously correct setting, so it helps to start from a conservative baseline and vary one parameter at a time rather than guessing at a large combination upfront.
+Job options rarely have one obviously correct setting, so it helps to start from a conservative baseline and vary one parameter at a time rather than guessing at a large combination upfront. Changing multiple parameters at once makes it impossible to attribute a change in runtime or success rate to any particular setting, which turns tuning into guesswork.
 
 ```python
 base_job_options = {
@@ -656,11 +863,11 @@ parameter_variations = [
 ]
 ```
 
-### 7.4 Use a job manager for variation sweeps
+### 8.4 Use a job manager for variation sweeps
 
-Once you are comparing more than a couple of variations, a job manager is worth the setup over ad-hoc manual runs, since it makes the comparison reproducible: the same area of interest and time range stay constant, and only one option changes per run. For each sweep run it is worth tracking the variation label, the resolved options, the job id and status, runtime and backend metrics such as CPU or memory billing indicators, and basic output sanity checks like coverage, no-data share, and value range. Failed runs are not wasted effort here either, they are useful evidence of lower bounds and deserve to stay in the comparison table rather than being discarded.
+Once you are comparing more than a couple of variations, a job manager is worth the setup over ad-hoc manual runs, since it makes the comparison reproducible: the same area of interest and time range stay constant, and only one option changes per run. For each sweep run it is worth tracking the variation label, the resolved options, the job id and status, runtime and backend metrics such as CPU or memory billing indicators, and basic output sanity checks like coverage, no-data share, and value range. Failed runs are not wasted effort here either; they are useful evidence of lower bounds and deserve to stay in the comparison table rather than being discarded.
 
-The sweep below is written as a plain loop to keep the idea visible, but it is really a miniature version of what the [`MultiBackendJobManager`](#71-incremental-scaling-strategy) does for you: a dataframe of variations, a `start_job` callback, and a column of resulting job ids. For anything beyond a handful of variations, running it through the actual job manager gets you retries, resumability, and parallel submission for free instead of having to add them by hand.
+The sweep below is written as a plain loop to keep the idea visible, but it is really a miniature version of what the [`MultiBackendJobManager`](#81-incremental-scaling-strategy) does for you: a dataframe of variations, a `start_job` callback, and a column of resulting job ids. For anything beyond a handful of variations, running it through the actual job manager gets you retries, resumability, and parallel submission for free instead of having to add them by hand.
 
 ```python
 from copy import deepcopy
@@ -688,7 +895,7 @@ import pandas as pd
 pd.DataFrame(results).to_csv("sweep_runs.csv", index=False)
 ```
 
-### 7.5 UDF profiling before infrastructure changes
+### 8.5 UDF profiling before infrastructure changes
 
 Before reaching for bigger executors or more memory, it is worth checking whether the UDF itself is the bottleneck. Opt-in stage timing and lightweight memory checks go a long way here, as long as the diagnostics themselves stay cheap: sampling an array instead of materializing the full thing is usually enough to see whether values look reasonable, without adding meaningful overhead to the job.
 
