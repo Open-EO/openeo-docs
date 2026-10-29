@@ -1,0 +1,29 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2026-10-29T09:19:23.932266Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-10-29T09:19:20.845601Z",
+      "mimetype": null,
+      "name": "NDDI_Drought.ipynb",
+      "path": "notebooks/NDDI/NDDI_Drought.ipynb",
+      "size": 2283105,
+      "type": "notebook",
+      "writable": true
+    }
+  ],
+  "created": "2026-10-29T09:19:23.931679Z",
+  "format": "json",
+  "hash": null,
+  "hash_algorithm": null,
+  "last_modified": "2026-10-29T09:19:23.931679Z",
+  "mimetype": null,
+  "name": "NDDI",
+  "path": "notebooks/NDDI",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}

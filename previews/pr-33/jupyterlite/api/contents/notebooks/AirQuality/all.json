@@ -1,0 +1,29 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2026-10-29T09:19:23.849266Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-10-29T09:19:20.832501Z",
+      "mimetype": null,
+      "name": "AirQuality.ipynb",
+      "path": "notebooks/AirQuality/AirQuality.ipynb",
+      "size": 605756,
+      "type": "notebook",
+      "writable": true
+    }
+  ],
+  "created": "2026-10-29T09:19:23.849025Z",
+  "format": "json",
+  "hash": null,
+  "hash_algorithm": null,
+  "last_modified": "2026-10-29T09:19:23.849025Z",
+  "mimetype": null,
+  "name": "AirQuality",
+  "path": "notebooks/AirQuality",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}

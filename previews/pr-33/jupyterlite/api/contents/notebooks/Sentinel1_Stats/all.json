@@ -1,0 +1,43 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2026-10-29T09:19:24.019663Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-10-29T09:19:20.858926Z",
+      "mimetype": "text/x-python",
+      "name": "utils.py",
+      "path": "notebooks/Sentinel1_Stats/utils.py",
+      "size": 2079,
+      "type": "file",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2026-10-29T09:19:24.018885Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-10-29T09:19:20.858823Z",
+      "mimetype": null,
+      "name": "Sentinel1_Stats.ipynb",
+      "path": "notebooks/Sentinel1_Stats/Sentinel1_Stats.ipynb",
+      "size": 205739,
+      "type": "notebook",
+      "writable": true
+    }
+  ],
+  "created": "2026-10-29T09:19:24.019266Z",
+  "format": "json",
+  "hash": null,
+  "hash_algorithm": null,
+  "last_modified": "2026-10-29T09:19:24.019266Z",
+  "mimetype": null,
+  "name": "Sentinel1_Stats",
+  "path": "notebooks/Sentinel1_Stats",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}

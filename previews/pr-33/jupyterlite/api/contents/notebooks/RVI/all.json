@@ -1,0 +1,29 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2026-10-29T09:19:23.972546Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-10-29T09:19:20.851884Z",
+      "mimetype": null,
+      "name": "RVI.ipynb",
+      "path": "notebooks/RVI/RVI.ipynb",
+      "size": 726638,
+      "type": "notebook",
+      "writable": true
+    }
+  ],
+  "created": "2026-10-29T09:19:23.972546Z",
+  "format": "json",
+  "hash": null,
+  "hash_algorithm": null,
+  "last_modified": "2026-10-29T09:19:23.972546Z",
+  "mimetype": null,
+  "name": "RVI",
+  "path": "notebooks/RVI",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}

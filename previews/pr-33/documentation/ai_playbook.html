@@ -1,0 +1,1712 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.19">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>ai_playbook – openEO</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-bf27225e3a48a9273f3daa8f8e829971.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-82fa700b2bddff0b11b0f9de91a858bc.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css?family=Roboto+Mono|Source+Sans+Pro:300,400,600" rel="stylesheet">
+<meta name="zd-site-verification" content="xj9koofr1crilmoclgxsjd">
+
+<script type="text/javascript">
+
+
+    function setActiveClassForCurrentUrl() {
+        // Find all links in the navbarCollapse div where the href attribute is set to the current URL
+        let anchorTag = document.querySelector('#navbarCollapse a[href="' + window.location.href + '"]');
+
+        if (anchorTag) {
+
+            // Find the closest parent of the navigation
+            let parentUl = anchorTag.closest('li.nav-item')?.querySelector('a.nav-link');
+
+            if (parentUl) {
+                // Add active class to both the anchor tag and the parent ul
+                anchorTag.classList.add('active');
+                parentUl.classList.add('active');
+            }
+        }
+    }
+
+    window.addEventListener('popstate', setActiveClassForCurrentUrl);
+    window.addEventListener('hashchange', setActiveClassForCurrentUrl);
+
+    document.addEventListener("DOMContentLoaded", async function () {
+        const items = Array.from(document.querySelectorAll(".tag-filter-item"));
+        const filterUi = document.querySelector(".tag-filter-ui");
+        if (items.length === 0 || !filterUi) return;
+        const staticBadges = Array.from(document.querySelectorAll(".tag-filter-badge"));
+        const hasLiveProcesses = items.some((item) => item.hasAttribute("data-process"));
+        let support = null;
+        if (hasLiveProcesses) {
+            try {
+                const url = new URL("../../_data/backend_process_support.json", window.location.href);
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                support = await response.json();
+            } catch (error) { console.warn("Could not load backend process support data.", error); }
+        }
+        const getExplicitTags = (item) => new Set((item.getAttribute("data-tags") || "").toLowerCase().split(/\s+/).filter(Boolean));
+        const getDefaultTags = () => new Set(staticBadges.map((badge) => badge.dataset.tag).filter(Boolean));
+        const getTags = (item) => {
+            const explicitTags = getExplicitTags(item);
+            if (support && item.hasAttribute("data-process")) {
+                const liveTags = new Set(item.getAttribute("data-process").split(/[\s,]+/).flatMap((id) => support.processes[id] || []));
+                return liveTags.size > 0 ? liveTags : explicitTags.size > 0 ? explicitTags : getDefaultTags();
+            }
+            return explicitTags.size > 0 ? explicitTags : getDefaultTags();
+        };
+        let badges = staticBadges;
+        if (support) {
+            const availableTags = [...new Set(items.flatMap((item) => [...getTags(item)]))].sort();
+            filterUi.replaceChildren();
+            badges = availableTags.map((tag) => {
+                const button = document.createElement("button");
+                button.className = "tag-filter-badge active";
+                button.dataset.tag = tag;
+                button.textContent = support.backends[tag]?.label || tag;
+                filterUi.appendChild(button);
+                return button;
+            });
+        }
+        if (badges.length === 0) return;
+        const tocLinks = Array.from(document.querySelectorAll("#TOC a[data-scroll-target]"));
+        const applyFilter = () => {
+            const selectedTags = new Set(badges.filter((badge) => badge.classList.contains("active")).map((badge) => badge.dataset.tag));
+            items.forEach((item) => {
+                const tags = getTags(item);
+                const visible = [...selectedTags].some((tag) => tags.has(tag));
+                item.hidden = !visible;
+                const tocLink = tocLinks.find((link) => link.dataset.scrollTarget === `#${item.id}`);
+                tocLink?.closest("li")?.toggleAttribute("hidden", !visible);
+            });
+        };
+        badges.forEach((badge) => badge.addEventListener("click", function (event) {
+            event.preventDefault(); this.classList.toggle("active"); this.classList.toggle("inactive"); applyFilter();
+        }));
+        applyFilter();
+    });
+    window.onload = () => {
+        const brand = document.querySelector('.navbar-brand');
+        if (brand) {
+            // Keep local/preview behavior, but use the GitHub Pages project root in production.
+            const brandHref = window.location.hostname === 'open-eo.github.io'
+                ? '/openeo-docs/'
+                : '/index.html';
+            brand.setAttribute('href', brandHref);
+        }
+        setActiveClassForCurrentUrl();
+    }
+
+ 
+</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../custom.css">
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../news/images/openeo_logo.png" alt="openEO logo" class="navbar-logo light-content">
+    <img src="../news/images/openeo_logo.png" alt="openEO logo" class="navbar-logo dark-content">
+    </a>
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">openEO</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-about" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">About</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-about">    
+        <li>
+    <a class="dropdown-item" href="../about.html">
+ <span class="dropdown-text">About openEO</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../psc.html">
+ <span class="dropdown-text">Project Steering Committee (PSC)</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="https://hub.openeo.org/" target="_blank"> 
+<span class="menu-text">Services</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-community" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Community</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-community">    
+        <li>
+    <a class="dropdown-item" href="../news/news.html">
+ <span class="dropdown-text">News</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../meetings.html">
+ <span class="dropdown-text">Meetings</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../events/events.html">
+ <span class="dropdown-text">Events</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-user-documentation" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">User Documentation</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-user-documentation">    
+        <li>
+    <a class="dropdown-item" href="../documentation/cookbook.html">
+ <span class="dropdown-text">COOKBOOK</span></a>
+  </li>  
+        <li><hr class="dropdown-divider"></li>
+        <li class="dropdown-header">KEY CONCEPTS</li>
+        <li>
+    <a class="dropdown-item" href="../documentation/key_concepts/glossary.html">
+ <span class="dropdown-text">Glossary</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../documentation/key_concepts/backend.html">
+ <span class="dropdown-text">Backends</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../documentation/key_concepts/datacube.html">
+ <span class="dropdown-text">Datacube</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../documentation/key_concepts/processes.html">
+ <span class="dropdown-text">Processes</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../documentation/key_concepts/architecture.html">
+ <span class="dropdown-text">Architecture</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../documentation/setup.html">
+ <span class="dropdown-text">SETUP</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../documentation/data_discovery.html">
+ <span class="dropdown-text">DATA DISCOVERY</span></a>
+  </li>  
+        <li><hr class="dropdown-divider"></li>
+        <li class="dropdown-header">CUBE OPERATIONS</li>
+        <li>
+    <a class="dropdown-item" href="../documentation/cube_operations/general_operations.html">
+ <span class="dropdown-text">General Operations</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../documentation/cube_operations/preprocessing.html">
+ <span class="dropdown-text">Preprocessing</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../documentation/cube_operations/spatial_operations.html">
+ <span class="dropdown-text">Spatial Operations</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../documentation/cube_operations/temporal_operations.html">
+ <span class="dropdown-text">Temporal Operations</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../documentation/cube_operations/spectral_operations.html">
+ <span class="dropdown-text">Spectral Operations</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../documentation/cube_operations/cube_manipulations.html">
+ <span class="dropdown-text">Cube Manipulations</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../documentation/cube_operations/udf.html">
+ <span class="dropdown-text">User Defined Functions</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../documentation/cube_operations/machine_learning.html">
+ <span class="dropdown-text">Machine Learning</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../documentation/cube_operations/udp.html">
+ <span class="dropdown-text">User Defined Processes</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../documentation/cube_operations/execute_jobs.html">
+ <span class="dropdown-text">Execute openEO Jobs</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../documentation/export_formats.html">
+ <span class="dropdown-text">EXPORT FORMATS</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-developers" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Developers</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-developers">    
+        <li>
+    <a class="dropdown-item" href="https://api.openeo.org/">
+ <span class="dropdown-text">REST API Reference</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://openeo.org/documentation/1.0/developers/backends/xarray.html">
+ <span class="dropdown-text">Xarray/Dask Guide</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://openeo.org/documentation/1.0/developers/backends/getting-started.html">
+ <span class="dropdown-text">Backend Development</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-support" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Support</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-support">    
+        <li>
+    <a class="dropdown-item" href="../contact.html">
+ <span class="dropdown-text">Contact</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://forum.dataspace.copernicus.eu/c/openeo/28">
+ <span class="dropdown-text">CDSE Forum</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../examples.html">
+ <span class="dropdown-text">Notebook examples</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools tools-wide">
+    <a href="mailto:openeo.psc@uni-muenster.de" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-envelope"></i></a>
+    <a href="https://www.linkedin.com/company/openeospec/" title="" class="quarto-navigation-tool px-1" aria-label="" target="_blank"><i class="bi bi-linkedin"></i></a>
+    <a href="https://bsky.app/profile/openeo.org" title="" class="quarto-navigation-tool px-1" aria-label="" target="_blank"><i class="bi bi-bluesky"></i></a>
+    <a href="https://github.com/Open-EO" title="" class="quarto-navigation-tool px-1" aria-label="" target="_blank"><i class="bi bi-github"></i></a>
+    <a href="https://www.youtube.com/channel/UCMJQil8j9sHBQkcSlSaEsvQ" title="" class="quarto-navigation-tool px-1" aria-label="" target="_blank"><i class="bi bi-youtube"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#summary" id="toc-summary" class="nav-link active" data-scroll-target="#summary">Summary</a></li>
+  <li><a href="#where-openeo-helps-most-in-a-machine-learning-ml-workflow" id="toc-where-openeo-helps-most-in-a-machine-learning-ml-workflow" class="nav-link" data-scroll-target="#where-openeo-helps-most-in-a-machine-learning-ml-workflow">Where openEO helps most in a Machine Learning (ML) workflow</a></li>
+  <li><a href="#end-to-end-story" id="toc-end-to-end-story" class="nav-link" data-scroll-target="#end-to-end-story">End-to-end story</a></li>
+  <li><a href="#data-extraction-and-feature-engineering-in-openeo" id="toc-data-extraction-and-feature-engineering-in-openeo" class="nav-link" data-scroll-target="#data-extraction-and-feature-engineering-in-openeo">1. Data extraction and feature engineering in openEO</a></li>
+  <li><a href="#organising-and-extracting-reference-data-for-ml" id="toc-organising-and-extracting-reference-data-for-ml" class="nav-link" data-scroll-target="#organising-and-extracting-reference-data-for-ml">2. Organising and extracting reference data for ML</a>
+  <ul class="collapse">
+  <li><a href="#extraction-modes" id="toc-extraction-modes" class="nav-link" data-scroll-target="#extraction-modes">2.1 Extraction modes</a></li>
+  <li><a href="#organising-your-reference-data" id="toc-organising-your-reference-data" class="nav-link" data-scroll-target="#organising-your-reference-data">2.2 Organising your reference data</a></li>
+  <li><a href="#loading-satellite-data" id="toc-loading-satellite-data" class="nav-link" data-scroll-target="#loading-satellite-data">2.3 Loading satellite data</a></li>
+  <li><a href="#preprocessing" id="toc-preprocessing" class="nav-link" data-scroll-target="#preprocessing">2.4 Preprocessing</a></li>
+  <li><a href="#point-extraction-with-aggregate_spatial" id="toc-point-extraction-with-aggregate_spatial" class="nav-link" data-scroll-target="#point-extraction-with-aggregate_spatial">2.5 Point extraction with <code>aggregate_spatial</code></a></li>
+  <li><a href="#patch-extraction-with-filter_spatial" id="toc-patch-extraction-with-filter_spatial" class="nav-link" data-scroll-target="#patch-extraction-with-filter_spatial">2.6 Patch extraction with <code>filter_spatial</code></a></li>
+  <li><a href="#performance-considerations" id="toc-performance-considerations" class="nav-link" data-scroll-target="#performance-considerations">2.7 Performance considerations</a></li>
+  </ul></li>
+  <li><a href="#training-strategy-where-openeo-fits" id="toc-training-strategy-where-openeo-fits" class="nav-link" data-scroll-target="#training-strategy-where-openeo-fits">3. Training strategy: where openEO fits</a>
+  <ul class="collapse">
+  <li><a href="#training-outside-openeo-common-path" id="toc-training-outside-openeo-common-path" class="nav-link" data-scroll-target="#training-outside-openeo-common-path">3.1 Training outside openEO (common path)</a></li>
+  <li><a href="#training-in-openeo-for-lightweight-models" id="toc-training-in-openeo-for-lightweight-models" class="nav-link" data-scroll-target="#training-in-openeo-for-lightweight-models">3.2 Training in openEO for lightweight models</a></li>
+  <li><a href="#using-the-trained-model-at-inference-time" id="toc-using-the-trained-model-at-inference-time" class="nav-link" data-scroll-target="#using-the-trained-model-at-inference-time">3.3 Using the trained model at inference time</a></li>
+  <li><a href="#embedding-first-strategy" id="toc-embedding-first-strategy" class="nav-link" data-scroll-target="#embedding-first-strategy">3.4 Embedding-first strategy</a></li>
+  </ul></li>
+  <li><a href="#packaging-embedding-models-for-openeo-inference" id="toc-packaging-embedding-models-for-openeo-inference" class="nav-link" data-scroll-target="#packaging-embedding-models-for-openeo-inference">4. Packaging (embedding) models for openEO inference</a>
+  <ul class="collapse">
+  <li><a href="#choosing-your-onboarding-path-udfs-predict_onnx-and-cwl" id="toc-choosing-your-onboarding-path-udfs-predict_onnx-and-cwl" class="nav-link" data-scroll-target="#choosing-your-onboarding-path-udfs-predict_onnx-and-cwl">4.0 Choosing Your Onboarding Path: UDFs, <code>predict_onnx</code>, and CWL</a></li>
+  <li><a href="#user-defined-functions-the-integration-point" id="toc-user-defined-functions-the-integration-point" class="nav-link" data-scroll-target="#user-defined-functions-the-integration-point">4.1 User-Defined Functions: the integration point</a></li>
+  <li><a href="#prefer-onnx-when-feasible" id="toc-prefer-onnx-when-feasible" class="nav-link" data-scroll-target="#prefer-onnx-when-feasible">4.2 Prefer ONNX when feasible</a></li>
+  <li><a href="#calibration-lives-inside-the-model" id="toc-calibration-lives-inside-the-model" class="nav-link" data-scroll-target="#calibration-lives-inside-the-model">4.3 Calibration lives inside the model</a></li>
+  <li><a href="#tips-for-the-onnx-conversion" id="toc-tips-for-the-onnx-conversion" class="nav-link" data-scroll-target="#tips-for-the-onnx-conversion">4.4 Tips for the ONNX conversion</a></li>
+  </ul></li>
+  <li><a href="#ml-models-and-stac" id="toc-ml-models-and-stac" class="nav-link" data-scroll-target="#ml-models-and-stac">5. ML models and STAC</a></li>
+  <li><a href="#emerging-a-standardized-ml-api-in-openeo" id="toc-emerging-a-standardized-ml-api-in-openeo" class="nav-link" data-scroll-target="#emerging-a-standardized-ml-api-in-openeo">6. Emerging: a standardized ML API in openEO</a></li>
+  <li><a href="#running-inference-inside-the-udf" id="toc-running-inference-inside-the-udf" class="nav-link" data-scroll-target="#running-inference-inside-the-udf">7. Running inference inside the UDF</a>
+  <ul class="collapse">
+  <li><a href="#choosing-between-apply-apply_dimension-and-apply_neighborhood" id="toc-choosing-between-apply-apply_dimension-and-apply_neighborhood" class="nav-link" data-scroll-target="#choosing-between-apply-apply_dimension-and-apply_neighborhood">7.1 Choosing between <code>apply</code>, <code>apply_dimension</code>, and <code>apply_neighborhood</code></a></li>
+  <li><a href="#spatial-context-and-chunk-semantics" id="toc-spatial-context-and-chunk-semantics" class="nav-link" data-scroll-target="#spatial-context-and-chunk-semantics">7.2 Spatial context and chunk semantics</a></li>
+  <li><a href="#caching-and-concurrency" id="toc-caching-and-concurrency" class="nav-link" data-scroll-target="#caching-and-concurrency">7.3 Caching and concurrency</a></li>
+  </ul></li>
+  <li><a href="#validation-pipelines-in-openeo" id="toc-validation-pipelines-in-openeo" class="nav-link" data-scroll-target="#validation-pipelines-in-openeo">8. Validation pipelines in openEO</a></li>
+  <li><a href="#upscaling-and-performance-tuning" id="toc-upscaling-and-performance-tuning" class="nav-link" data-scroll-target="#upscaling-and-performance-tuning">9. Upscaling and performance tuning</a>
+  <ul class="collapse">
+  <li><a href="#incremental-scaling-strategy" id="toc-incremental-scaling-strategy" class="nav-link" data-scroll-target="#incremental-scaling-strategy">9.1 Incremental scaling strategy</a></li>
+  <li><a href="#tune-job-options-empirically" id="toc-tune-job-options-empirically" class="nav-link" data-scroll-target="#tune-job-options-empirically">9.2 Tune job options empirically</a></li>
+  <li><a href="#use-a-job-manager-for-variation-sweeps" id="toc-use-a-job-manager-for-variation-sweeps" class="nav-link" data-scroll-target="#use-a-job-manager-for-variation-sweeps">9.3 Use a job manager for variation sweeps</a></li>
+  <li><a href="#udf-profiling-before-infrastructure-changes" id="toc-udf-profiling-before-infrastructure-changes" class="nav-link" data-scroll-target="#udf-profiling-before-infrastructure-changes">9.4 UDF profiling before infrastructure changes</a></li>
+  </ul></li>
+  <li><a href="#related-references" id="toc-related-references" class="nav-link" data-scroll-target="#related-references">Related references</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content column-page-left" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Geospatial AI Playbook</h1>
+</div>
+
+
+
+<div class="quarto-title-meta column-page-left">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+
+<p>This playbook focuses on what works in real projects and where teams usually lose time.</p>
+<p>It complements <a href="../documentation/cube_operations/machine_learning.html">Machine Learning</a>, <a href="../documentation/cube_operations/udf.html">User Defined Functions</a>, <a href="../documentation/cube_operations/udp.html">User Defined Processes</a>, and <a href="../documentation/cube_operations/execute_jobs.html">Execute openEO Jobs</a>.</p>
+<section id="where-openeo-helps-most-in-a-machine-learning-ml-workflow" class="level2">
+<h2 class="anchored" data-anchor-id="where-openeo-helps-most-in-a-machine-learning-ml-workflow">Where openEO helps most in a Machine Learning (ML) workflow</h2>
+<p>openEO is strongest at consistent, reproducible EO data access and processing at scale. In practice, a robust setup uses openEO for feature extraction and operational inference, while heavy training often stays in external GPU environments. Once trained, the model is brought back into openEO as a reusable inference block.</p>
+<p>This split is usually a strength: extraction and inference stay reproducible, while model development stays flexible. By keeping openEO constraints in mind from the start, many later operational hurdles can be avoided.</p>
+<p>This playbook shares the working patterns we have learned from real projects. Its scope covers:</p>
+<ul>
+<li>organising reference data with STAC,</li>
+<li>extracting EO features,</li>
+<li>training models, converting them to ONNX,</li>
+<li>describing models with STAC,</li>
+<li>running inference and validation pipelines in openEO, and</li>
+<li>upscaling with performance tuning.</li>
+</ul>
+<p>Each of those stages maps to a section below.</p>
+</section>
+<section id="end-to-end-story" class="level2">
+<h2 class="anchored" data-anchor-id="end-to-end-story">End-to-end story</h2>
+<pre class="mermaid"><code>flowchart LR
+  A[Reference data + labels] --&gt; B[openEO feature extraction graph]
+  B --&gt; C[Training dataset]
+  C --&gt; D[Model training&lt;br/&gt;offline or online]
+  D --&gt; E[Model export&lt;br/&gt;ONNX or framework package]
+  E --&gt; F[Offline validation]
+  F -.-&gt; G[STAC model description + hosting&lt;br/&gt;optional, for transparency/reuse]
+  F --&gt; H[openEO inference graph&lt;br/&gt;predict_onnx or UDF]
+  H --&gt; I[Online validation + metrics]
+  I --&gt; J[Upscaling + tuning&lt;br/&gt;job manager sweeps]</code></pre>
+</section>
+<section id="data-extraction-and-feature-engineering-in-openeo" class="level2">
+<h2 class="anchored" data-anchor-id="data-extraction-and-feature-engineering-in-openeo">1. Data extraction and feature engineering in openEO</h2>
+<p>If your goal is an ML model that is eventually operationalized through openEO, start with openEO constraints in mind from day one. The biggest failures we see are not model or openEO failures; they are data-distribution failures: training on data that is not available on target backends, or training on a product variant that differs from what operations will use (for example, processing-baseline differences).</p>
+<p>That is why the first real step is backend discovery, not model design. Before you write a single line of model code, check which collections are actually available on the backend you intend to use in production, whether their temporal coverage is good enough for your use case, and whether the backend processing level matches your planned production workflow. A model trained on Sentinel-2 L2A data from one backend may not behave the same way when the operational backend serves a different processing baseline, a different cloud-masking approach, or a different atmospheric correction. These differences are often subtle in isolation but compound across a full inference run.</p>
+<p>No single backend has everything. When a needed source is missing, openEO’s <code>load_stac</code> is often the clean fallback path for integrating external, open, STAC-compliant assets: <a href="https://open-eo.github.io/openeo-python-client/api-processes.html#openeo.processes.load_stac">load_stac process reference</a>. This lets you pull in data from other catalogs without leaving the openEO graph, which keeps the extraction logic in one place rather than splitting it across systems.</p>
+<p>The practical goal is simple: make feature extraction an openEO-native graph from day one so that the model trained on those features still behaves correctly during openEO inference. Once extraction is reproducible and composable, you can turn it into integration and regression checks (for example, in ESA APEx: https://apex.esa.int/algorithm-support). That gives you a clear ‘MLOps’ path and a way to share preprocessing pipelines with the community.</p>
+<p>In this way, you maintain an explicit data-input pipeline that is transparent about input bands and source collections, physical units and scaling (for example, reflectance in <span class="math inline">\([0,1]\)</span>, DN, SAR dB vs linear), CRS and resolution, temporal compositing, cloud/no-data handling, and feature-engineering steps. Each of these choices affects what the model sees, and making them explicit rather than implicit is what allows anyone to reproduce a data extraction.</p>
+<p>When moving toward the training step, freeze the extraction graph and treat it as part of the model definition. This means versioning the graph alongside the model weights, so that when you later load the model for inference, you can verify that the input features are being generated by the exact same logic that produced the training data.</p>
+<p>Example of a simple openEO feature extraction graph:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> openeo</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>connection <span class="op">=</span> openeo.<span class="ex">connect</span>(<span class="st">"openeo.dataspace.copernicus.eu"</span>).authenticate_oidc()</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>cube <span class="op">=</span> connection.load_collection(</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"SENTINEL2_L2A"</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  spatial_extent<span class="op">=</span>{<span class="st">"west"</span>: <span class="fl">5.08</span>, <span class="st">"south"</span>: <span class="fl">51.20</span>, <span class="st">"east"</span>: <span class="fl">5.22</span>, <span class="st">"north"</span>: <span class="fl">51.31</span>},</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  temporal_extent<span class="op">=</span>[<span class="st">"2024-04-01"</span>, <span class="st">"2024-09-30"</span>],</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  bands<span class="op">=</span>[<span class="st">"B02"</span>, <span class="st">"B03"</span>, <span class="st">"B04"</span>, <span class="st">"B08"</span>, <span class="st">"SCL"</span>],</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>features <span class="op">=</span> (</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  cube.filter_bands([<span class="st">"B02"</span>, <span class="st">"B03"</span>, <span class="st">"B04"</span>, <span class="st">"B08"</span>])</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  .resample_spatial(resolution<span class="op">=</span><span class="dv">10</span>, projection<span class="op">=</span><span class="dv">32631</span>)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  .aggregate_temporal_period(period<span class="op">=</span><span class="st">"dekad"</span>, reducer<span class="op">=</span><span class="st">"median"</span>)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>job <span class="op">=</span> features.execute_batch(</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>  out_format<span class="op">=</span><span class="st">"NetCDF"</span>,</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  title<span class="op">=</span><span class="st">"features_s2_dekad_v1"</span>,</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  job_options<span class="op">=</span>{},</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>In the next section, we will go deeper into how to optimally arrange the data extraction.</p>
+</section>
+<section id="organising-and-extracting-reference-data-for-ml" class="level2">
+<h2 class="anchored" data-anchor-id="organising-and-extracting-reference-data-for-ml">2. Organising and extracting reference data for ML</h2>
+<p>Training a machine-learning model on Earth observation data starts with high-quality reference data: a set of locations for which the target variable (for example, a crop type, land-cover class, or biophysical measurement) is known. This section describes how to organise such reference data and how to extract the corresponding satellite observations with openEO, either as points (tabular time series per sample) or as patches (small raster chips per sample).</p>
+<section id="extraction-modes" class="level3">
+<h3 class="anchored" data-anchor-id="extraction-modes">2.1 Extraction modes</h3>
+<p>The first decision you make is whether your model needs per-pixel time series or spatial patches, dictated by the architecture of the model you intend to train. A random forest or gradient-boosted tree expects a table of features per sample, while a convolutional neural network expects a small image chip around each sample. openEO supports both, but the extraction process, the output format, and the job-sizing considerations are different enough that it is worth deciding early.</p>
+<ul>
+<li>Point extraction Process: <code>aggregate_spatial</code> Typical model: models operating on per-pixel time-series inputs, such as random forests, gradient boosting, or time-series deep-learning models (for example, LSTM, transformers) Output: a vector cube, exported as tabular data (Parquet/CSV) with one row per sample and observation date</li>
+<li>Patch extraction Process: <code>filter_spatial</code> Typical model: models requiring spatial context, such as convolutional neural networks or vision transformers Output: a sparse raster cube, exported as one netCDF or GeoTIFF file per sample polygon</li>
+</ul>
+<p>For process details and parameters, see <a href="https://openeo-python-client.readthedocs.io/en/latest/api/openeo.rest.datacube.html#openeo.rest.datacube.DataCube.aggregate_spatial"><code>aggregate_spatial</code></a> and <a href="https://openeo-python-client.readthedocs.io/en/latest/api/openeo.rest.datacube.html#openeo.rest.datacube.DataCube.filter_spatial"><code>filter_spatial</code></a>.</p>
+</section>
+<section id="organising-your-reference-data" class="level3">
+<h3 class="anchored" data-anchor-id="organising-your-reference-data">2.2 Organising your reference data</h3>
+<section id="format-and-structure" class="level4">
+<h4 class="anchored" data-anchor-id="format-and-structure">Format and structure</h4>
+<p>Reference data is best managed as a vector dataset, with one feature per sample. The structure you choose here determines how smoothly the rest of the pipeline runs, because every downstream step (extraction, training, validation) inherits the decisions you make at this stage.</p>
+<ul>
+<li><strong>Geometry</strong>: a point for point extractions, or a polygon (the patch outline) for patch extractions. For patch extractions, keep patches small, for example 64x64 up to 512x512 pixels; larger areas are better handled as a separate job per sample. The reason for this limit is practical: a single large polygon forces the backend to materialize a large raster cube for that one sample, which can dominate job cost and memory even when the rest of the samples are tiny.</li>
+<li><strong>Target attribute(s)</strong>: the label or value that your model will learn to predict. If you have multiple target variables, keep them as separate columns rather than encoding them into a single field; this makes it easier to train different models from the same reference dataset without re-extracting.</li>
+<li><strong>Sample identifier</strong>: a unique ID per sample, so extracted pixels can be traced back to the original reference data. This becomes essential during validation, when you need to compare predictions against reference labels sample by sample.</li>
+<li><strong>Temporal information (recommended)</strong>: a validity date or period per sample, so you can define the correct temporal extent when extracting satellite data. Without this, you either extract a fixed window for all samples (which may be wrong for samples collected in different seasons) or you manually split the reference data into temporal groups, which is error-prone at scale.</li>
+</ul>
+<p>The recommended file formats are GeoParquet and GeoJSON. GeoParquet is preferred for larger datasets, as it is compressed, columnar, and faster to read. GeoJSON is fine for small datasets and for cases where you need to inspect the file by hand, but it becomes unwieldy beyond a few thousand features.</p>
+<blockquote class="blockquote">
+<p><strong>Tip</strong></p>
+<p>The WorldCereal Reference Data Module (RDM) is a good example of how reference data can be curated and harmonised at scale: samples are stored with a unique ID, a harmonised label, a validity time, and quality attributes, and are exported as GeoParquet for extraction.</p>
+</blockquote>
+</section>
+<section id="cataloguing-with-stac" class="level4">
+<h4 class="anchored" data-anchor-id="cataloguing-with-stac">Cataloguing with STAC</h4>
+<p>When your reference data grows beyond a handful of files, the STAC specification can help keep it organised and discoverable. Describe each GeoParquet/GeoJSON file as an STAC item, with its spatial and temporal extent as item metadata and the file itself as an asset, and group the items in a STAC collection. The label extension can additionally document the classes and tasks of your labels. This makes it easy to search reference data by region or period, and the asset URLs can be passed directly to <code>load_url</code> for extraction.</p>
+<p>The practical benefit is that you stop tracking reference data in a spreadsheet or a folder tree. Instead, you can query a catalog for “all reference data covering this region and this time period” and get back a list of URLs that feed directly into the extraction pipeline. This is especially valuable when reference data is contributed by multiple partners or collected over several years.</p>
+</section>
+<section id="hosting-the-data-at-a-url" class="level4">
+<h4 class="anchored" data-anchor-id="hosting-the-data-at-a-url">Hosting the data at a URL</h4>
+<p>Sending many geometries inline as GeoJSON quickly makes openEO requests too large. Instead, upload your reference data to a (publicly) accessible URL, for example object storage (S3), Artifactory, or a GitHub repository, and load it into openEO with the <code>load_url</code> process (<a href="https://openeo-python-client.readthedocs.io/en/latest/api/openeo.rest.connection.html#openeo.rest.connection.Connection.load_url"><code>Connection.load_url()</code></a>):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> openeo</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>connection <span class="op">=</span> openeo.<span class="ex">connect</span>(<span class="st">"openeofed.dataspace.copernicus.eu"</span>).authenticate_oidc()</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>reference_data <span class="op">=</span> connection.load_url(</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://example.com/my_reference_data.parquet"</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">format</span><span class="op">=</span><span class="st">"Parquet"</span>,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>For GeoJSON files, use <code>format="GeoJSON"</code> instead.</p>
+<p>If you do not have your own hosting, the openEO Python client provides an <a href="https://open-eo.github.io/openeo-python-client/api-artifacts.html">artifact helper</a> that temporarily stores files on S3 storage offered by the backend and returns a presigned URL that can be passed straight to <code>load_url</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> openeo.extra.artifacts <span class="im">import</span> build_artifact_helper</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>artifact_helper <span class="op">=</span> build_artifact_helper(connection)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>storage_uri <span class="op">=</span> artifact_helper.upload_file(<span class="st">"my_reference_data.parquet"</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>reference_data_url <span class="op">=</span> artifact_helper.get_presigned_url(storage_uri)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>reference_data <span class="op">=</span> connection.load_url(reference_data_url, <span class="bu">format</span><span class="op">=</span><span class="st">"Parquet"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<blockquote class="blockquote">
+<p><strong>Note</strong></p>
+<p>Artifact storage is backend-specific functionality and the uploaded files are only kept temporarily, so it is well suited for one-off extractions, but not as a long-term home for your reference dataset. By default, the presigned URL returned by <code>get_presigned_url</code> is valid for 7 days. If you rely on it for a multi-week training campaign, you may find that your reference data has expired between runs.</p>
+</blockquote>
+</section>
+<section id="splitting-into-spatial-groups" class="level4">
+<h4 class="anchored" data-anchor-id="splitting-into-spatial-groups">Splitting into spatial groups</h4>
+<p>For large-scale (for example, continental or global) reference datasets, do not extract everything in a single batch job. A single job that covers a continent will typically fail for one of two reasons: either it runs out of memory because the backend tries to materialize too many input assets at once, or it runs for so long that any transient failure forces you to start over. Instead, split your samples into spatial groups, resulting in one GeoParquet/GeoJSON file and one openEO batch job per group. The Sentinel-2 tiling grid (MGRS, roughly 110x110 km tiles) is a good unit for this: one job per Sentinel-2 tile keeps the job size manageable, aligns with how the input data is stored, and guarantees that each group stays within a single UTM zone.</p>
+<p>The openEO Python client offers a <a href="https://open-eo.github.io/openeo-python-client/cookbook/job_manager.html#splitting-an-area-into-tiles">job splitting utility</a> (<code>split_area</code> in <code>openeo.extra.job_management</code>) that partitions your area or samples over a tile grid, such as a pre-computed Sentinel-2 tile grid, and returns a GeoDataFrame with one row per tile — a ready-made starting point for a job database. The openEO <a href="https://open-eo.github.io/openeo-python-client/cookbook/job_manager.html">MultiBackendJobManager</a> can then run and track the resulting list of extraction jobs.</p>
+<blockquote class="blockquote">
+<p><strong>Important</strong></p>
+<p>Not only the spatial extent of a group, but also its spatial density (how many reference observations fall within that extent) determines how large a job can be. A tile with thousands of samples may need to be split further, while sparsely sampled tiles could be merged into a single job. Finding the right job size may require some trial-and-error fine-tuning. A good starting point is to aim for a few hundred to a few thousand samples per job, then adjust based on observed runtime and memory usage.</p>
+</blockquote>
+</section>
+</section>
+<section id="loading-satellite-data" class="level3">
+<h3 class="anchored" data-anchor-id="loading-satellite-data">2.3 Loading satellite data</h3>
+<p>Load the satellite collections that provide the input features of your model, restricting the spatial and temporal extent to what is needed for your samples. A typical multi-sensor example with Sentinel-2 optical data and Sentinel-1 GRD (SAR) data:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>temporal_extent <span class="op">=</span> [<span class="st">"2024-01-01"</span>, <span class="st">"2024-12-31"</span>]</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>s2 <span class="op">=</span> connection.load_collection(</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"SENTINEL2_L2A"</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    temporal_extent<span class="op">=</span>temporal_extent,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    bands<span class="op">=</span>[<span class="st">"B02"</span>, <span class="st">"B03"</span>, <span class="st">"B04"</span>, <span class="st">"B08"</span>, <span class="st">"B11"</span>, <span class="st">"B12"</span>, <span class="st">"SCL"</span>],</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    max_cloud_cover<span class="op">=</span><span class="dv">80</span>,</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>s1 <span class="op">=</span> connection.load_collection(</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"SENTINEL1_GRD"</span>,</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    temporal_extent<span class="op">=</span>temporal_extent,</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    bands<span class="op">=</span>[<span class="st">"VV"</span>, <span class="st">"VH"</span>],</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>At this point, there is no need to specify a <code>spatial_extent</code>: the extraction processes (<code>aggregate_spatial</code> or <code>filter_spatial</code>) which were referenced above; come into play at the end of the process graph and restrict the computation to the sample locations. This is a deliberate design choice in openEO: the extraction process knows which pixels it needs, so it can push that constraint down to the data loading step rather than reading the entire scene and then filtering.</p>
+</section>
+<section id="preprocessing" class="level3">
+<h3 class="anchored" data-anchor-id="preprocessing">2.4 Preprocessing</h3>
+<p>Whether and where to preprocess is a design choice of your ML pipeline, and it is worth making it explicitly rather than letting it emerge by accident. The two options have different trade-offs:</p>
+<ul>
+<li><strong>Preprocess in openEO</strong>: apply cloud masking (for example, based on the Sentinel-2 SCL band with <code>mask_scl_dilation</code>/<code>to_scl_dilation_mask</code>), compute backscatter with <code>sar_backscatter</code>, composite to regular time steps with <code>aggregate_temporal_period</code>, resample with <code>resample_cube_spatial</code>, and merge sensors with <code>merge_cubes</code>. This yields analysis-ready training data and keeps the ML code simple. The advantage is that the preprocessing is visible in the openEO graph, versioned alongside the extraction logic, and applied identically to training and inference.</li>
+<li><strong>Preprocess in the model</strong>: extract (nearly) raw observations and perform normalisation, compositing, or feature engineering inside the model itself, for example as part of an ONNX model that is later used for inference in openEO. This guarantees that training and inference apply identical preprocessing, but it pushes complexity into the model export and makes the preprocessing harder to inspect or modify without retraining.</li>
+</ul>
+<p>Whichever option you choose, make sure the extraction produces exactly the inputs your model expects at inference time. The most common source of silent accuracy loss in production is a mismatch between the preprocessing applied during training and the preprocessing applied during inference; for example, training on reflectance scaled to <span class="math inline">\([0,1]\)</span> and inferring on DN values, or training with cloud-masked composites and inferring on raw scenes.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example: monthly compositing and merging into a single feature cube</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>s2_masked <span class="op">=</span> s2.process(</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"mask_scl_dilation"</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    data<span class="op">=</span>s2,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    scl_band_name<span class="op">=</span><span class="st">"SCL"</span>,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>s2_monthly <span class="op">=</span> s2_masked.aggregate_temporal_period(period<span class="op">=</span><span class="st">"month"</span>, reducer<span class="op">=</span><span class="st">"median"</span>)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>s1_monthly <span class="op">=</span> s1.aggregate_temporal_period(period<span class="op">=</span><span class="st">"month"</span>, reducer<span class="op">=</span><span class="st">"mean"</span>)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>features <span class="op">=</span> s2_monthly.merge_cubes(s1_monthly.resample_cube_spatial(s2_monthly))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="point-extraction-with-aggregate_spatial" class="level3">
+<h3 class="anchored" data-anchor-id="point-extraction-with-aggregate_spatial">2.5 Point extraction with <code>aggregate_spatial</code></h3>
+<p>For point-based models, use <a href="https://openeo-python-client.readthedocs.io/en/latest/api/openeo.rest.datacube.html#openeo.rest.datacube.DataCube.aggregate_spatial"><code>aggregate_spatial</code></a> to sample the feature cube at your reference locations. The reducer receives the pixel values intersecting each geometry. For point geometries this is typically a single pixel, so the choice of reducer barely matters: any reducer (<code>mean</code>, <code>median</code>, <code>first</code>, …) will simply return that pixel’s value.</p>
+<p><code>aggregate_spatial</code> can also be used with polygon geometries, for example to extract one aggregated time series per parcel instead of per pixel. In that case the reducer does matter, as it determines how the pixels within each polygon are combined (for example, <code>mean</code> or <code>median</code>).</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>samples <span class="op">=</span> features.aggregate_spatial(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    geometries<span class="op">=</span>reference_data,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    reducer<span class="op">=</span><span class="st">"mean"</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>job <span class="op">=</span> samples.execute_batch(</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    out_format<span class="op">=</span><span class="st">"Parquet"</span>,</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">"ML point extraction"</span>,</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>In contrast to <code>filter_spatial</code>, which produces raster output, <code>aggregate_spatial</code> produces vector output: a table with one value per sample, band, and timestep, which can be exported to GeoParquet or CSV and used directly for model training. This tabular structure is what makes point extraction a natural fit for classical ML models, which expect a fixed-length feature vector per sample.</p>
+<section id="attribute-propagation" class="level4">
+<h4 class="anchored" data-anchor-id="attribute-propagation">Attribute propagation</h4>
+<p>All attributes (properties) of the features in your reference data (labels, sample identifiers, validity dates) are propagated to the extracted output. For <code>aggregate_spatial</code>, these properties are carried into the vector result. For <code>filter_spatial</code>, the feature metadata is retained in per-feature outputs when using <code>sample_by_feature</code> together with a stable <code>feature_id_property</code>. In the common workflow, there is no need to join extractions back to the reference data afterwards: labels and metadata travel with the extracted values. This saves a surprising amount of error-prone bookkeeping, especially when reference data is split across multiple files and extraction jobs.</p>
+<blockquote class="blockquote">
+<p><strong>Note</strong></p>
+<p>Whether attributes are carried into the output depends on the output format. Use (Geo)Parquet for <code>aggregate_spatial</code> results if you rely on attribute propagation; other vector formats such as CSV or JSON may not retain the original feature properties.</p>
+</blockquote>
+</section>
+</section>
+<section id="patch-extraction-with-filter_spatial" class="level3">
+<h3 class="anchored" data-anchor-id="patch-extraction-with-filter_spatial">2.6 Patch extraction with <code>filter_spatial</code></h3>
+<p>For models that need spatial context, use <a href="https://openeo-python-client.readthedocs.io/en/latest/api/openeo.rest.datacube.html#openeo.rest.datacube.DataCube.filter_spatial"><code>filter_spatial</code></a> with polygon geometries describing the patch outlines. The backend then only computes the data cube for those polygons, producing a sparse raster output cube. Combine this with the <code>sample_by_feature</code> output option to write one file per sample (see <a href="https://openeo-python-client.readthedocs.io/en/latest/api/openeo.rest.datacube.html#openeo.rest.datacube.DataCube.create_job"><code>DataCube.create_job</code></a>):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>patches <span class="op">=</span> features.filter_spatial(geometries<span class="op">=</span>reference_data)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>job <span class="op">=</span> patches.create_job(</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">"ML patch extraction"</span>,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    out_format<span class="op">=</span><span class="st">"netCDF"</span>,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    sample_by_feature<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    feature_id_property<span class="op">=</span><span class="st">"sample_id"</span>,</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>job.start_and_wait()</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>job.get_results().download_files(<span class="st">"patches/"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Each resulting netCDF file contains the full time series of all bands for one patch, named after the <code>sample_id</code> property of the corresponding feature. These files can be converted into training tensors for your deep learning framework of choice.</p>
+<blockquote class="blockquote">
+<p><strong>Warning</strong></p>
+<p>Extraction only works as a batch job, since it produces multiple output files that cannot be transferred in a synchronous call.</p>
+</blockquote>
+</section>
+<section id="performance-considerations" class="level3">
+<h3 class="anchored" data-anchor-id="performance-considerations">2.7 Performance considerations</h3>
+<p>Extraction is not necessarily cheap: even a sparse output may require reading a large number of raw EO assets. The input data volume, not the output size, usually determines cost and duration. A patch extraction that produces a few megabytes of netCDF output may still read gigabytes of Sentinel-2 imagery to compute those patches, because the backend has to load and process the full scenes that intersect the sample locations.</p>
+<ul>
+<li>Group samples spatially (see <a href="#splitting-into-spatial-groups">Splitting into spatial groups</a>) and run one job per Sentinel-2 tile.</li>
+<li>Restrict the temporal extent and band selection to what your model actually needs. Every extra band and every extra month of data adds to the input volume, even if the model ignores it.</li>
+<li>Consider caching extractions: store the extracted training data (for example, as GeoParquet in object storage) so that model iterations do not require re-extraction. This is especially valuable during the experimentation phase, when you may retrain a model dozens of times with different hyperparameters but the same input features.</li>
+</ul>
+</section>
+</section>
+<section id="training-strategy-where-openeo-fits" class="level2">
+<h2 class="anchored" data-anchor-id="training-strategy-where-openeo-fits">3. Training strategy: where openEO fits</h2>
+<section id="training-outside-openeo-common-path" class="level3">
+<h3 class="anchored" data-anchor-id="training-outside-openeo-common-path">3.1 Training outside openEO (common path)</h3>
+<p>Deep learning training usually runs outside openEO on GPU-capable environments. European initiatives such as <a href="https://www.eotdl.com/">EOTDL</a> (Earth Observation Training Data Lab) are a good option if you want cloud-based training on EU infrastructure. EOTDL is worth considering for three distinct reasons, and it helps to be clear about which one you actually need:</p>
+<ul>
+<li><strong>A curated dataset repository.</strong> EOTDL hosts a catalogue of EO training datasets that you can stage and reuse instead of rebuilding from scratch. If your task overlaps with an existing dataset, this can remove a large part of the reference-data work described in <a href="#2-organising-and-extracting-reference-data-for-ml">Section 2</a>.</li>
+<li><strong>A staging mechanism.</strong> Datasets can be staged into your own environment in a reproducible way, which matters when you want to pin a training run to a specific dataset version rather than a snapshot you copied by hand.</li>
+<li><strong>Cloud workspaces with GPU machines.</strong> For the actual training step, EOTDL provides cloud workspaces suitable for GPU workloads, which is the piece openEO deliberately does not try to cover.</li>
+</ul>
+<p>The reason training typically happens outside openEO is not a limitation of the platform but a matter of fit: openEO is optimized for scalable EO data processing, not for GPU-accelerated gradient descent, and the tooling around model development (experiment tracking, hyperparameter search, GPU scheduling) is more mature elsewhere.</p>
+<p>The important part for this playbook is not where training runs, but that training sees exactly the same feature semantics as operational inference. If you train on a laptop with locally downloaded data and then deploy to openEO, you are implicitly trusting that the local data and the openEO data are equivalent. That trust is often misplaced, because the two paths may differ in cloud masking, atmospheric correction, resampling, or compositing. Using EOTDL for training does not change that requirement: whatever dataset you train on, the features must match what your openEO inference graph will produce. For practical examples, see the EOTDL openEO use-case tutorials: https://github.com/earthpulse/eotdl/tree/main/tutorials/usecases/openEO</p>
+</section>
+<section id="training-in-openeo-for-lightweight-models" class="level3">
+<h3 class="anchored" data-anchor-id="training-in-openeo-for-lightweight-models">3.2 Training in openEO for lightweight models</h3>
+<p>Reference implementation used here: <a href="https://github.com/Open-EO/openeo-community-examples/tree/main/python/40_machine-learning/random-forest-forest-fire">random-forest forest-fire example</a>.</p>
+<p>For tree-based models, openEO does support native training and inference, given that it is genuinely CPU-friendly: <code>fit_class_random_forest</code> trains server-side on the backend’s regular compute nodes. You send openEO a cube of input features (predictors) and a set of labelled points (y_train), and the backend fits the trees.</p>
+<p>In that reference workflow, <code>training_cube</code> is built by merging Sentinel-1 features (<code>s1_features</code>) and Sentinel-2 features (<code>s2_features</code>) before calling <code>aggregate_spatial</code>. This keeps training and inference aligned because the same feature-building logic is reused for prediction:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>training_cube <span class="op">=</span> s2_features.merge_cubes(s1_features)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Train the model and DOWNLOAD THE IMAGE USED FOR TRAINING THE MODEL</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>target <span class="op">=</span> json.loads(y_train.to_json())</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>predictors <span class="op">=</span> training_cube.aggregate_spatial(</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    target, reducer<span class="op">=</span><span class="st">"median"</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> predictors.fit_class_random_forest(</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    target<span class="op">=</span>target,</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    num_trees<span class="op">=</span><span class="dv">200</span>,</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    seed<span class="op">=</span><span class="dv">2082</span>,</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Save the model as a batch job result asset</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="co"># so that we can load it in another job.</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> model.save_ml_model()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>fit_class_random_forest</code> trains directly on the backend against those aggregated predictors and the <code>target</code> labels.</p>
+<p>When saving the model, it does not return to your laptop; instead, it tells the backend to persist the fitted model as a batch job result asset, alongside the usual STAC metadata.</p>
+</section>
+<section id="using-the-trained-model-at-inference-time" class="level3">
+<h3 class="anchored" data-anchor-id="using-the-trained-model-at-inference-time">3.3 Using the trained model at inference time</h3>
+<p>The companion notebook, <code>random-forest-inference-udp.ipynb</code>, picks the model up purely by URL:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># link to the trained model</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> <span class="st">"https://s3.waw3-1.cloudferro.com/apex-examples/RF-ForestFire/RandomForest-ForestFire-model.json"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>We can then reuse the same <code>s1_features</code> / <code>s2_features</code> helper functions to build the inference cube; there is no risk of training/serving skew from re-implementing feature logic twice:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load s1 and s2 features</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>s1_feature_cube <span class="op">=</span> s1_features(connection, temporal_extent, spatial_extent, <span class="st">"median"</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>s2_feature_cube <span class="op">=</span> s2_features(connection, temporal_extent, spatial_extent, <span class="st">"median"</span>, padding_window_size)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Merge the two feature cubes</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>inference_cube <span class="op">=</span> s2_feature_cube.merge_cubes(s1_feature_cube)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co"># predict on new data</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>inference <span class="op">=</span> inference_cube.predict_random_forest(</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    model<span class="op">=</span>model,</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    dimension<span class="op">=</span><span class="st">"bands"</span>,</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>If your model cannot be expressed as a random forest (or another <code>predict_*</code> process openEO ships natively), fall back to the ONNX/UDF path described below.</p>
+</section>
+<section id="embedding-first-strategy" class="level3">
+<h3 class="anchored" data-anchor-id="embedding-first-strategy">3.4 Embedding-first strategy</h3>
+<p>While at first glance CPU-friendly support seems limiting, it opens interesting alternative options in today’s new paradigm with embeddings.</p>
+<p>Embeddings are “general” features learned from multi-modal satellite data. Such pre-computed or on-demand computed features, based on advanced ML architectures, can already provide the heavy lifting for many applications. Instead of training a large model from scratch for each new task, you can use an embedding model to convert raw imagery into a compact representation, then train a small, task-specific model on top of that representation. This is often both cheaper and more accurate than training a task-specific model end-to-end, because the embedding model has already learned to capture relevant spatial and spectral patterns from a much larger and more diverse dataset.</p>
+<p>Hence, in combination with such embeddings, CPU-friendly training methodologies become a cost-efficient way of getting to specific insights. A random forest or logistic regression on top of embeddings can be trained in minutes on a laptop, while still benefiting from the representational power of a large backbone.</p>
+<p>Within openEO, it is perfectly possible to generate embeddings on the fly as part of the feature-extraction pipeline. This means you do not need to pre-compute and store embeddings for your entire area of interest; instead, the embedding model runs as part of the same graph that produces your training features and your inference outputs, which guarantees consistency between the two.</p>
+<p>A practical pattern is:</p>
+<ol type="1">
+<li>Compute embeddings once in openEO.</li>
+<li>Train small downstream models on top.</li>
+<li>Deploy those light models back into openEO.</li>
+</ol>
+<p>In the next few sections, we detail how more heavyweight models, such as embedders, can be converted and integrated into openEO. While the reference material focuses on embeddings, similar methods have been used to integrate alternative AI model workflows into openEO.</p>
+<p>Reference: <a href="https://github.com/Open-EO/openeo-community-examples/tree/main/python/60_geospatial-embeddings">geospatial embeddings examples</a>. This folder is the practical starting point for the embedding-first pattern. It contains several worked examples that cover different points on the spectrum from classical dimensionality reduction to foundation-model-style embeddings:</p>
+<ul>
+<li><strong>Dimensionality reduction</strong> examples showing how a compact representation can be derived without a heavy backbone, useful as a baseline before committing to a large model.</li>
+<li><strong>TESSERA</strong> and <strong>TerraMind</strong> examples, which demonstrate foundation-model-style embeddings, including how the input calibration the network depends on is baked into the exported ONNX graph (see <a href="#43-calibration-lives-inside-the-model">Section 4.3</a>).</li>
+</ul>
+<p>Each example is a runnable notebook rather than a fragment, so it doubles as a template for your own pipeline.</p>
+</section>
+</section>
+<section id="packaging-embedding-models-for-openeo-inference" class="level2">
+<h2 class="anchored" data-anchor-id="packaging-embedding-models-for-openeo-inference">4. Packaging (embedding) models for openEO inference</h2>
+<section id="choosing-your-onboarding-path-udfs-predict_onnx-and-cwl" class="level3">
+<h3 class="anchored" data-anchor-id="choosing-your-onboarding-path-udfs-predict_onnx-and-cwl">4.0 Choosing Your Onboarding Path: UDFs, <code>predict_onnx</code>, and CWL</h3>
+<p>Once a model is trained, the next decision is how to bring it into an openEO workflow. openEO currently offers three distinct mechanisms for running ML inference, each with a different balance of flexibility, operational simplicity, and portability. This section compares them so you can choose the right tool for your use case rather than defaulting to the most familiar one. The subsections below describe each option in turn, and the decision guide at the end summarises the trade-offs.</p>
+<p>At a glance:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Criterion</th>
+<th style="text-align: left;">UDF (User-Defined Function)</th>
+<th style="text-align: left;"><code>predict_onnx</code> (native process)</th>
+<th style="text-align: left;">CWL (via <code>run_udf</code>)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Flexibility</strong></td>
+<td style="text-align: left;">Maximum: arbitrary Python/R code, full <code>xarray</code> access, <code>context</code> object</td>
+<td style="text-align: left;">Fixed: operates on a tensor interface, no <code>context</code> or band-name access</td>
+<td style="text-align: left;">High: can package multi-step, containerized workflows</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Operational simplicity</strong></td>
+<td style="text-align: left;">Medium: you manage the UDF wrapper and dependency archives</td>
+<td style="text-align: left;">High: no UDF code, backend handles ONNX runtime</td>
+<td style="text-align: left;">Low: you define CWL, Docker images, and resource limits</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Portability</strong></td>
+<td style="text-align: left;">Low: tightly coupled to backend UDF runtime and installed libraries</td>
+<td style="text-align: left;">Medium: ONNX is portable, but process support is backend-specific</td>
+<td style="text-align: left;">High: CWL is an open standard designed for portability</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Dependency management</strong></td>
+<td style="text-align: left;">Complex: ship dependency archives for ML frameworks (PyTorch, TensorFlow)</td>
+<td style="text-align: left;">Simple: only need a compatible ONNX Runtime archive</td>
+<td style="text-align: left;">Variable: dependencies are encapsulated in container images</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Best for</strong></td>
+<td style="text-align: left;">Custom preprocessing/postprocessing, models needing full cube context</td>
+<td style="text-align: left;">Fixed per-pixel/per-tile ONNX models on supported backends</td>
+<td style="text-align: left;">Complex, multi-step, or already containerized ML pipelines</td>
+</tr>
+</tbody>
+</table>
+<section id="user-defined-functions-udfs" class="level4">
+<h4 class="anchored" data-anchor-id="user-defined-functions-udfs">4.0.1 User-Defined Functions (UDFs)</h4>
+<p>UDFs are the most flexible and established way to run custom ML code in openEO. The <code>run_udf</code> process executes arbitrary Python (or R) code on the backend, receiving the data cube as an <code>xarray.DataArray</code>.</p>
+<p><strong>Advantages:</strong></p>
+<ul>
+<li><strong>Maximum flexibility:</strong> you can implement any preprocessing, model inference, and postprocessing logic in Python, including custom neural network architectures and specialised embedding models.</li>
+<li><strong>Full data cube access:</strong> the UDF receives band names, coordinates, and the <code>context</code> object, allowing you to pass per-job parameters and inspect the cube’s structure.</li>
+<li><strong>Mature ecosystem:</strong> well-documented patterns exist for managing dependencies via <code>udf-dependency-archives</code> and for applying UDFs with <code>apply</code>, <code>apply_dimension</code>, and <code>apply_neighborhood</code>.</li>
+</ul>
+<p><strong>Disadvantages:</strong></p>
+<ul>
+<li><strong>Portability concerns:</strong> UDFs introduce a technology dependency that makes workflows less portable across backends.</li>
+<li><strong>Dependency management complexity:</strong> you are responsible for building and shipping dependency archives for heavy ML frameworks (for example PyTorch or TensorFlow), which can be large and increase cold-start times.</li>
+<li><strong>Performance overhead:</strong> UDFs can reduce some of the benefits openEO brings in terms of performance and open science.</li>
+</ul>
+<p><strong>Best for:</strong> any model that requires custom Python logic, access to the full data cube (band names, coordinates), or per-job parameterisation via the <code>context</code> object. See <a href="#41-user-defined-functions-the-integration-point">Section 4.1</a> for the detailed UDF integration patterns.</p>
+</section>
+<section id="native-predict_onnx-process" class="level4">
+<h4 class="anchored" data-anchor-id="native-predict_onnx-process">4.0.2 Native <code>predict_onnx</code> Process</h4>
+<p><code>predict_onnx</code> is a more streamlined, backend-native approach for deploying ONNX models. Instead of writing a UDF wrapper, you pass the model directly to the process, and the backend handles the ONNX runtime and data chunking internally.</p>
+<p><strong>Advantages:</strong></p>
+<ul>
+<li><strong>No UDF code required:</strong> you avoid writing and maintaining a UDF wrapper, which simplifies the operational pipeline.</li>
+<li><strong>Simplified dependency management:</strong> the backend handles the ONNX runtime; you only need to provide a compatible dependency archive if the default version is insufficient.</li>
+<li><strong>Precision and testability:</strong> you can test the exact ONNX graph locally with <code>onnxruntime</code> to verify parity before running a job, giving high confidence in the results.</li>
+</ul>
+<p><strong>Disadvantages:</strong></p>
+<ul>
+<li><strong>Experimental and backend-specific:</strong> <code>predict_onnx</code> is currently an experimental feature and is not universally supported across all openEO backends. The community example specifically targets the CDSE backend.</li>
+<li><strong>Fixed interface:</strong> the process operates on a tensor interface with no access to band names, coordinates, or the <code>context</code> object, making it unsuitable for models that need this metadata.</li>
+<li><strong>Limited to ONNX:</strong> only models that can be exported to ONNX and conform to the expected input/output contract are supported.</li>
+</ul>
+<p><strong>Best for:</strong> fixed, per-pixel or per-tile computations where the model is a self-contained ONNX graph and the target backend supports the process. See the community example <a href="https://github.com/Open-EO/openeo-community-examples/tree/main/python/30_openeo-processing/brdf-predict-onnx">brdf-predict-onnx</a> for a reference implementation, and the <a href="https://github.com/Open-EO/openeo-community-examples/pull/120">corresponding PR</a> for the current state of the discussion.</p>
+</section>
+<section id="common-workflow-language-cwl" class="level4">
+<h4 class="anchored" data-anchor-id="common-workflow-language-cwl">4.0.3 Common Workflow Language (CWL)</h4>
+<p>CWL is an open standard for describing command-line tools and workflows. openEO can run CWL workflows inside the <code>run_udf</code> process, orchestrating them with <a href="https://duke-gcb.github.io/calrissian/">Calrissian</a> on a Kubernetes cluster.</p>
+<p><strong>Advantages:</strong></p>
+<ul>
+<li><strong>Standardised and portable:</strong> CWL is a vendor-neutral standard, making workflows highly portable and reusable across different platforms and HPC environments.</li>
+<li><strong>Scalable:</strong> designed to scale complex data analysis and ML workflows from a laptop to massively parallel cluster and cloud environments.</li>
+<li><strong>Ideal for existing workflows:</strong> a natural fit for integrating existing CWL-based processing chains or containerized tools into a larger openEO graph.</li>
+</ul>
+<p><strong>Disadvantages:</strong></p>
+<ul>
+<li><strong>Conceptual overlap with openEO:</strong> CWL and openEO have overlapping purposes, which can lead to complexity in deciding where one ends and the other begins.</li>
+<li><strong>Indirect data handling:</strong> the CWL workflow must output a STAC collection, which openEO then reads back via <code>load_stac</code> to produce a data cube. This adds an extra layer of indirection compared to a UDF.</li>
+<li><strong>Manual resource management:</strong> you must explicitly define resource limits (for example memory or cores) in the CWL definition to avoid scheduling all steps on a single node and causing out-of-memory errors.</li>
+</ul>
+<p><strong>Best for:</strong> packaging and running complex, multi-step, or container-based ML workflows that are already defined in CWL, or when you need the standardisation and portability that CWL offers. See the <a href="https://open-eo.github.io/openeo-geopyspark-driver/udf-eoap-cwl.html">CWL UDF documentation</a> for the operational details.</p>
+</section>
+<section id="decision-guide" class="level4">
+<h4 class="anchored" data-anchor-id="decision-guide">4.0.4 Decision Guide</h4>
+<p>Use the following rules of thumb to choose the right onboarding path:</p>
+<ol type="1">
+<li><strong>Use a UDF</strong> for everything else that requires custom Python code, the <code>context</code> object, or access to the full data cube (band names, coordinates). This remains the most flexible and widely applicable option.</li>
+<li><strong>Use <code>predict_onnx</code></strong> if your model is a fixed, per-pixel ONNX graph and the target backend supports the process. It is the simplest operational path, with no UDF wrapper and minimal dependency management.</li>
+<li><strong>Use CWL</strong> when you need to wrap an existing, complex, or multi-step workflow, especially one that is already containerized or defined in CWL. It is the right tool for orchestrating containerized ML pipelines at scale.</li>
+</ol>
+<p>This decision framework complements the STAC-based model description discussed in <a href="#5-ml-models-and-stac">Section 5</a>: by describing your model with MLM metadata, you make it discoverable regardless of which onboarding path you ultimately choose.</p>
+<blockquote class="blockquote">
+<p><strong>Note</strong></p>
+<p>The three options are not mutually exclusive. A common production pattern is to use <code>predict_onnx</code> for the per-pixel parts of a pipeline, a UDF for the custom glue logic, and CWL to orchestrate the whole thing when the workflow becomes multi-step or needs to be reused outside openEO.</p>
+</blockquote>
+</section>
+</section>
+<section id="user-defined-functions-the-integration-point" class="level3">
+<h3 class="anchored" data-anchor-id="user-defined-functions-the-integration-point">4.1 User-Defined Functions: the integration point</h3>
+<p>The most common way to run an ML model inside openEO is a <a href="https://open-eo.github.io/openeo-python-client/udf.html">User-Defined Function (UDF)</a>, simply because it offers incredible flexibility: a UDF lets you import arbitrary Python code into your process graph instead of being limited to what the backend ships natively. This is what makes it possible to run a custom neural network, a specialized embedding model, or any other Python-based inference logic inside an openEO job.</p>
+<p>That flexibility comes with a catch: UDF runtimes in the cloud are intentionally minimal. They ship with a small set of pre-installed packages, and they are designed to be lightweight so that jobs can start quickly and run efficiently on shared infrastructure. You can inspect what is available with the <a href="https://openeo.dataspace.copernicus.eu/openeo/1.2/udf_runtimes">runtime docs</a> or, on an established connection, with:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>connection.list_udf_runtimes()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<blockquote class="blockquote">
+<p><strong>Note</strong></p>
+<p>UDF runtimes and package support are backend-specific. Always check <code>connection.list_udf_runtimes()</code> (or the backend runtime endpoint) before pinning dependency archives, and retest when runtime versions change.</p>
+</blockquote>
+<p>However, there are two ways to extend what a UDF can use:</p>
+<ol type="1">
+<li><strong>Small packages</strong>: install them inline inside the UDF itself via the <a href="https://open-eo.github.io/openeo-python-client/udf.html#declaration-of-udf-dependencies">PEP 723 “inline script metadata” standard</a>. This is the lightest option and works well for pure-Python dependencies. It is best suited for small utilities that do not have compiled extensions or complex transitive dependencies.</li>
+<li><strong>Heavier packages</strong> (the common case for ML): ship a prebuilt dependency archive and attach it through <a href="https://documentation.dataspace.copernicus.eu/APIs/openEO/job_config.html">job options</a>. Building and maintaining such archives requires dedicated tooling and solid openEO/runtime knowledge, so we build and maintain ready-to-use archives ourselves for the common ML formats (ONNX, PyTorch). The archive is downloaded once per worker and unpacked into the UDF runtime, which is why keeping it small matters for cold-start time.</li>
+</ol>
+<p>A good strategy order is: start with pre-built dependency archives, then use small runtime additions for tiny extras, and keep heavy runtime installation as a last resort.</p>
+<p>Our strong default recommendation, for which we provide standard dependency archives, is ONNX. ONNX (Open Neural Network Exchange) is an open model format for representing ML graphs across frameworks (https://onnx.ai/onnx/intro/). For inference in openEO UDF jobs, ONNX Runtime is a good fit because it is cross-platform, optimized for inference, and applies graph optimizations at runtime (https://onnxruntime.ai/docs/). In practice this gives a strong operational trade-off: smaller dependency bundles, faster cold starts, lower memory pressure, and fewer runtime compatibility issues than shipping a full training framework archive.</p>
+<p>For ONNX specifically, we for instance provide ONNX Runtime dependency archives such as:</p>
+<pre class="text"><code>https://s3.waw3-1.cloudferro.com/project_dependencies/onnx_deps_python311.zip#onnx_deps</code></pre>
+<p>Example of wiring a dependency archive through job options:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>job <span class="op">=</span> pred.execute_batch(</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  out_format<span class="op">=</span><span class="st">"NetCDF"</span>,</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  title<span class="op">=</span><span class="st">"udf_inference_with_deps"</span>,</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  job_options<span class="op">=</span>{</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"udf-dependency-archives"</span>: [</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>      <span class="st">"https://example.org/archives/onnxruntime_deps.zip#deps"</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"executor-memory"</span>: <span class="st">"3g"</span>,</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"max-executors"</span>: <span class="dv">12</span>,</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  },</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The syntax matters here because the archive is mounted into the UDF runtime at a specific path, and the <code>#</code> fragment in the URL is what names that path. A model file and its runtime dependencies are typically passed as separate archives with separate mount points, so the UDF can refer to them by a stable path regardless of the worker it happens to run on:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>job_options<span class="op">=</span>{</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"udf-dependency-archives"</span>: [</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">"https://example.org/archives/onnxruntime_deps.zip#deps"</span>,</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">"https://example.org/archives/model_files.zip#model"</span>,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Inside the UDF, those archives are then available as <code>deps/</code> and <code>model/</code> relative to the UDF’s working directory.</p>
+<p>Using a ready-made archive like this is exactly the “start with pre-built dependency archives” strategy recommended above: it removes the build step from your critical path and lets you focus on the model itself.</p>
+</section>
+<section id="prefer-onnx-when-feasible" class="level3">
+<h3 class="anchored" data-anchor-id="prefer-onnx-when-feasible">4.2 Prefer ONNX when feasible</h3>
+<p>Default to ONNX export for stable inference models.</p>
+<p>In practice, this usually wins because it is lighter and simpler to operate. You generally get a faster startup and less dependency pain than shipping a full deep-learning framework. An ONNX Runtime archive is on the order of tens of megabytes, while a full PyTorch archive can be hundreds of megabytes, and that difference translates directly into cold-start time and memory overhead for every worker that loads the archive.</p>
+<p>Use full-framework deployment only when you really need it: custom operators that do not export, highly dynamic model logic, or models that are still changing every week.</p>
+</section>
+<section id="calibration-lives-inside-the-model" class="level3">
+<h3 class="anchored" data-anchor-id="calibration-lives-inside-the-model">4.3 Calibration lives inside the model</h3>
+<p>An added benefit of ONNX is that the framework provides more than a CPU-friendly transition: it is flexible enough to embed the input calibration the network depends on (for example, z-score normalization), so the exported graph stays self-contained instead of relying on the UDF to reproduce preprocessing exactly.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> EncoderONNX(nn.Module):</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, backbone, mean, std):</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.backbone <span class="op">=</span> backbone</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.register_buffer(<span class="st">"mean"</span>, torch.tensor(mean).view(<span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>))</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.register_buffer(<span class="st">"std"</span>, torch.tensor(std).view(<span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>))</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, data):</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.backbone((data <span class="op">-</span> <span class="va">self</span>.mean) <span class="op">/</span> (<span class="va">self</span>.std <span class="op">+</span> <span class="fl">1e-9</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>In this way you can be certain that the correct data distribution enters the model at runtime.</p>
+</section>
+<section id="tips-for-the-onnx-conversion" class="level3">
+<h3 class="anchored" data-anchor-id="tips-for-the-onnx-conversion">4.4 Tips for the ONNX conversion</h3>
+<p>For general conversion guides, see the <a href="https://onnx.ai/onnx/intro/converters.html">ONNX tutorials</a> and the framework-specific exporters, such as <a href="https://docs.pytorch.org/docs/stable/onnx.html"><code>torch.onnx</code></a> for PyTorch, <a href="https://github.com/onnx/tensorflow-onnx">tf2onnx</a> for TensorFlow/Keras, and <a href="https://onnx.ai/sklearn-onnx/">skl2onnx</a> for scikit-learn.</p>
+<p>Using ONNX is a strong choice when all of these are true:</p>
+<ol type="1">
+<li>The architecture is mostly fixed.</li>
+<li>You can define one stable input/output contract (shape, dtype, layout).</li>
+<li>You can pass source-vs-ONNX parity on representative data.</li>
+<li>The target backend/runtime can run the exported opset with acceptable latency.</li>
+</ol>
+<p>When exporting a model, treat export as an interface contract and lock the following parameters explicitly:</p>
+<ol type="1">
+<li><strong>Input signature</strong>: names, dtypes, rank, layout (<code>NCHW</code>/<code>NHWC</code>), dynamic axes. Dynamic axes can be a great asset for openEO, because optimization often means making the model run over as large an area as possible in one go. If the batch dimension is dynamic, the same exported model can process one tile or many tiles without re-export.</li>
+<li><strong>Opset version</strong>: explicit and pinned, never implicit defaults. Different opset versions support different operators, and an opset that works on your local ONNX Runtime may not be supported by the runtime available in the openEO backend.</li>
+<li><strong>Output semantics</strong>: logits/probabilities/embeddings and exact expected shape. This matters most when the output is consumed by downstream code that assumes a particular interpretation; a model that outputs logits but is treated as probabilities will produce subtly wrong results.</li>
+<li><strong>Runtime target</strong>: test on the runtime you will actually use in production (usually ONNX Runtime CPU in openEO UDF jobs). Testing on a different runtime, or on a GPU, can hide issues that only appear on the production runtime.</li>
+</ol>
+<section id="reference-export-pipeline-pytorch" class="level4">
+<h4 class="anchored" data-anchor-id="reference-export-pipeline-pytorch">Reference export pipeline (PyTorch)</h4>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) Build a realistic dummy input in the exact layout your runtime will receive.</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>dummy <span class="op">=</span> torch.randn(<span class="dv">1</span>, <span class="dv">4</span>, <span class="dv">224</span>, <span class="dv">224</span>, dtype<span class="op">=</span>torch.float32)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) Export with explicit names, dynamic axes, and pinned opset.</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>torch.onnx.export(</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  wrapped.<span class="bu">eval</span>().cpu(),</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  dummy,</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  <span class="st">"encoder.onnx"</span>,</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>  input_names<span class="op">=</span>[<span class="st">"data"</span>],</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>  output_names<span class="op">=</span>[<span class="st">"embedding"</span>],</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>  dynamic_axes<span class="op">=</span>{<span class="st">"data"</span>: {<span class="dv">0</span>: <span class="st">"batch"</span>}, <span class="st">"embedding"</span>: {<span class="dv">0</span>: <span class="st">"batch"</span>}},</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>  opset_version<span class="op">=</span><span class="dv">17</span>,</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="sanity-checks" class="level4">
+<h4 class="anchored" data-anchor-id="sanity-checks">Sanity checks</h4>
+<p>Once the model is ported to ONNX and you want to incorporate the inference into an openEO UDF, there are a few safety checks one has to build in. As openEO passes the input cube to the UDF, it is not guaranteed that the order of bands, dimensions, or dtype of the cube is as you expected.</p>
+<p>Therefore, within the UDF implementation it is good practice to ensure there is no:</p>
+<ol type="1">
+<li><p><strong>Layout mismatch</strong>: trained with <code>NCHW</code>, inferred with <code>NHWC</code>. This is the most common mistake, because your conventions and openEO cube conventions are not the same, and the transpose may be implicit in one path but not the other.</p></li>
+<li><p><strong>Implicit preprocessing</strong>: training normalised input, but the exported graph assumes raw data. If normalisation is not baked into e.g.&nbsp;the exported ONNX graph, the UDF must reproduce it exactly, and any deviation will degrade accuracy without raising an error.</p></li>
+<li><p><strong>dtype drift</strong>: training path used <code>uint16</code>, runtime standardizes on float32.</p></li>
+<li><p><strong>Dynamic-axis mismatch</strong>: batch dynamic but spatial dimensions accidentally fixed (or vice versa). A model exported with a fixed spatial size will fail when during runtime you provide a different tile size.</p></li>
+</ol>
+</section>
+</section>
+</section>
+<section id="ml-models-and-stac" class="level2">
+<h2 class="anchored" data-anchor-id="ml-models-and-stac">5. ML models and STAC</h2>
+<p>In many projects we have seen that a single global model rarely works equally well everywhere, so the metadata around a model matters almost as much as the model itself: it tells a future user, including future you, where the model is expected to work and under which exact input contract.</p>
+<p>The STAC community originally proposes the <a href="https://github.com/stac-extensions/mlm">Machine Learning Model (MLM) extension</a>, which adds rich support for things like multiple model inputs, hyperparameters, and accelerator requirements.</p>
+<p>At minimum, capture the spatiotemporal relevance, input band order, expected units and value ranges, tensor layout, expected tile shape and window semantics, the normalization policy, output semantics, runtime requirements, and links to all sidecar artifacts. This kind of information is especially relevant during deployment.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"stac_extensions"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://stac-extensions.github.io/mlm/v1.4.0/schema.json"</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"properties"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"mlm:name"</span><span class="fu">:</span> <span class="st">"crop-encoder-v3"</span><span class="fu">,</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"mlm:architecture"</span><span class="fu">:</span> <span class="st">"resnet-encoder"</span><span class="fu">,</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"mlm:tasks"</span><span class="fu">:</span> <span class="ot">[</span><span class="st">"classification"</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"apex:input_bands"</span><span class="fu">:</span> <span class="ot">[</span><span class="st">"B02"</span><span class="ot">,</span> <span class="st">"B03"</span><span class="ot">,</span> <span class="st">"B04"</span><span class="ot">,</span> <span class="st">"B08"</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"apex:input_units"</span><span class="fu">:</span> <span class="st">"surface_reflectance_0_1"</span><span class="fu">,</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"apex:input_layout"</span><span class="fu">:</span> <span class="st">"NCHW"</span><span class="fu">,</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"apex:tile_shape"</span><span class="fu">:</span> <span class="ot">[</span><span class="dv">224</span><span class="ot">,</span> <span class="dv">224</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"apex:normalization"</span><span class="fu">:</span> <span class="st">"embedded_in_onnx"</span><span class="fu">,</span></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"apex:output"</span><span class="fu">:</span> <span class="fu">{</span><span class="dt">"name"</span><span class="fu">:</span> <span class="st">"embedding"</span><span class="fu">,</span> <span class="dt">"dimensions"</span><span class="fu">:</span> <span class="ot">[</span><span class="st">"batch"</span><span class="ot">,</span> <span class="dv">768</span><span class="ot">]</span><span class="fu">},</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"apex:onnx_opset"</span><span class="fu">:</span> <span class="dv">17</span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">},</span></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"assets"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"model"</span><span class="fu">:</span> <span class="fu">{</span><span class="dt">"href"</span><span class="fu">:</span> <span class="st">"https://example.org/model.onnx"</span><span class="fu">,</span> <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"application/onnx"</span><span class="fu">},</span></span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"weights"</span><span class="fu">:</span> <span class="fu">{</span><span class="dt">"href"</span><span class="fu">:</span> <span class="st">"https://example.org/model.onnx.data"</span><span class="fu">,</span> <span class="dt">"roles"</span><span class="fu">:</span> <span class="ot">[</span><span class="st">"data"</span><span class="ot">]</span><span class="fu">}</span></span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="emerging-a-standardized-ml-api-in-openeo" class="level2">
+<h2 class="anchored" data-anchor-id="emerging-a-standardized-ml-api-in-openeo">6. Emerging: a standardized ML API in openEO</h2>
+<p>Everything in this playbook currently relies on two mechanisms for getting a trained model into openEO: a <code>predict_*</code> process that the backend ships natively (as in the forest-fire example), or a UDF that loads the model itself. Both work today, and both are what you should build on for production right now.</p>
+<p>There is, however, ongoing work to standardize how models are described and loaded in openEO, and it is worth being aware of it so you can follow the direction of travel rather than being surprised by it later. The idea is to treat a trained model as a first-class, discoverable object rather than as a file behind a URL:</p>
+<ul>
+<li>Models are described as STAC Items using the <a href="https://github.com/stac-extensions/mlm">MLM extension</a>, which is the same metadata layer discussed in <a href="#5-ml-models-and-stac">Section 5</a>.</li>
+<li>A dedicated process retrieves such a model directly from a STAC catalog, so the model URL, its input contract, and its provenance travel together.</li>
+<li>Inference then runs against that loaded model, without the user having to wire up a dependency archive or a UDF by hand for the common case.</li>
+</ul>
+<p>This is a natural extension of the STAC description work already recommended in Section 5: if you have gone to the trouble of describing your model with MLM metadata, a standardized loader is what makes that metadata pay off by letting other jobs find and use the model directly. It does not change any of the practical advice in this playbook — keep using UDFs and dependency archives for anything non-standard — but it is the direction the ecosystem is moving, and describing your models with MLM metadata now positions them to take advantage of it when it lands.</p>
+</section>
+<section id="running-inference-inside-the-udf" class="level2">
+<h2 class="anchored" data-anchor-id="running-inference-inside-the-udf">7. Running inference inside the UDF</h2>
+<p>With the model packaged and described, the remaining work happens inside the UDF itself: deciding how the datacube is chunked for the model, keeping sessions and sockets alive across invocations, and making sure a window of pixels is handled consistently from training all the way through to a large-scale production run. The next few sections walk through the patterns that tend to make this reliable in practice.</p>
+<section id="choosing-between-apply-apply_dimension-and-apply_neighborhood" class="level3">
+<h3 class="anchored" data-anchor-id="choosing-between-apply-apply_dimension-and-apply_neighborhood">7.1 Choosing between <code>apply</code>, <code>apply_dimension</code>, and <code>apply_neighborhood</code></h3>
+<p>openEO offers several ways of applying your custom script along a datacube, and the one you want depends mainly on the input your ML network actually needs. Choosing the wrong one is not just inefficient; it can produce incorrect results if the model expects spatial context that the process does not provide.</p>
+<p>Quick rule of thumb:</p>
+<ol type="1">
+<li>Use <a href="https://openeo.org/documentation/1.0/processes.html#apply"><code>apply</code></a> when each pixel can be handled independently and there is no neighborhood context. This is the simplest and cheapest option, and it is appropriate for per-pixel operations like scaling or thresholding.</li>
+<li>Use <a href="https://openeo.org/documentation/1.0/processes.html#apply_dimension"><code>apply_dimension</code></a> when logic runs along one dimension (most often time, <code>t</code>) for each pixel location. This is the natural choice for time-series models that consume a full temporal profile per pixel.</li>
+<li>Use <a href="https://openeo.org/documentation/1.0/processes.html#apply_neighborhood"><code>apply_neighborhood</code></a> when your model needs a spatial patch (for example, CNN-style inference). This is the most expensive option, because it requires the backend to assemble overlapping spatial windows, but it is the only correct choice for models that use spatial context.</li>
+</ol>
+<p>Minimal patterns:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) Per-pixel operation: no spatial context needed.</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>scaled <span class="op">=</span> prediction.<span class="bu">apply</span>(<span class="kw">lambda</span> x: x <span class="op">*</span> <span class="fl">100.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) Per-pixel time-series logic along one dimension.</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>udf_temporal <span class="op">=</span> openeo.UDF.from_file(<span class="st">"udf_temporal.py"</span>)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>temporal_out <span class="op">=</span> cube.apply_dimension(</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  dimension<span class="op">=</span><span class="st">"t"</span>,</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  process<span class="op">=</span>udf_temporal,</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 3) Spatial patch inference with overlap.</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>udf_spatial <span class="op">=</span> openeo.UDF.from_file(<span class="st">"udf_spatial.py"</span>)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>pred <span class="op">=</span> features.apply_neighborhood(</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  process<span class="op">=</span>udf_spatial,</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  size<span class="op">=</span>[</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    {<span class="st">"dimension"</span>: <span class="st">"x"</span>, <span class="st">"value"</span>: <span class="dv">224</span>, <span class="st">"unit"</span>: <span class="st">"px"</span>},</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>    {<span class="st">"dimension"</span>: <span class="st">"y"</span>, <span class="st">"value"</span>: <span class="dv">224</span>, <span class="st">"unit"</span>: <span class="st">"px"</span>},</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>  ],</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>  overlap<span class="op">=</span>[</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>    {<span class="st">"dimension"</span>: <span class="st">"x"</span>, <span class="st">"value"</span>: <span class="dv">32</span>, <span class="st">"unit"</span>: <span class="st">"px"</span>},</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>    {<span class="st">"dimension"</span>: <span class="st">"y"</span>, <span class="st">"value"</span>: <span class="dv">32</span>, <span class="st">"unit"</span>: <span class="st">"px"</span>},</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>  ],</span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="spatial-context-and-chunk-semantics" class="level3">
+<h3 class="anchored" data-anchor-id="spatial-context-and-chunk-semantics">7.2 Spatial context and chunk semantics</h3>
+<p>For patch-based models that go through <code>apply_neighborhood</code>, the window size and overlap you choose at inference time need to match what the model actually learned during training. The official process guidance is a useful anchor here: spatial window sizes typically range from 64 to 512 pixels, with overlaps of 8 to 32 pixels being common, and openEO will stitch the kept centers of neighboring chunks back together once processing finishes. A larger overlap reduces edge artifacts but also increases memory pressure, since every extra pixel of overlap is recomputed in both of its neighboring chunks.</p>
+<p>If the entire AOI is not an exact multiple of the apply window, center padding with NaNs is applied during the UDF runtime. Therefore it is paramount that the UDF implementation knows how to work with NaN inputs. A UDF that assumes all input pixels are valid will either crash or produce garbage at the edges of the AOI, and those errors can be difficult to trace back to the padding behavior.</p>
+</section>
+<section id="caching-and-concurrency" class="level3">
+<h3 class="anchored" data-anchor-id="caching-and-concurrency">7.3 Caching and concurrency</h3>
+<p>A single batch job can spin up many workers, and each of those workers may process several chunks over its lifetime. Loading a model and spinning up an inference session is comparatively expensive, so it pays off to cache the loaded artifact at the module level instead of re-creating it for every chunk.</p>
+<p>The thread settings on the inference session can also strongly impact performance. ONNX Runtime distinguishes between intra-op threads, which parallelize work inside a single operator, and inter-op threads, which run independent branches of the graph in parallel. Increasing the number of thread whilst avoiding oversubscription can pay off during runtime. The number of optimal threads is again backend-specific; in our experience 2 works great.</p>
+<blockquote class="blockquote">
+<p><strong>Note</strong></p>
+<p>When benchmarking locally against openEO, set the same ONNX Runtime thread limits you use in the UDF. In our experience <code>intra_op_num_threads=2</code> and <code>inter_op_num_threads=2</code> is a good starting point. Comparing a local run with default all-core settings to a 2-thread UDF run will give misleading timings.</p>
+</blockquote>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_session(model_path, num_threads<span class="op">=</span><span class="dv">2</span>):</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    options <span class="op">=</span> ort.SessionOptions()</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    options.intra_op_num_threads <span class="op">=</span> num_threads</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    options.inter_op_num_threads <span class="op">=</span> num_threads</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    options.execution_mode <span class="op">=</span> ort.ExecutionMode.ORT_SEQUENTIAL</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    options.graph_optimization_level <span class="op">=</span> ort.GraphOptimizationLevel.ORT_ENABLE_ALL</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> ort.InferenceSession(model_path, options, providers<span class="op">=</span>[<span class="st">"CPUExecutionProvider"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>More threads is not automatically faster, and this is one of the more counter-intuitive things to tune. ONNX Runtime, BLAS, and PyTorch each try to parallelize across all available cores by default, and when several of these libraries are active in the same process, or when several worker processes share a node, their thread pools end up competing for the same physical cores. The practical fix is to tune thread limits together with the executor configuration rather than in isolation, generally keeping <code>intra_op_num_threads</code> close to the number of cores actually allocated to each executor.</p>
+</section>
+</section>
+<section id="validation-pipelines-in-openeo" class="level2">
+<h2 class="anchored" data-anchor-id="validation-pipelines-in-openeo">8. Validation pipelines in openEO</h2>
+<p>Validation is only informative if it follows the same path as production. It is tempting to validate a model against a convenient local dataset and call it done, but the goal here is to catch exactly the kinds of drift described above, so the validation path has to go through the same UDF, the same context object, and ultimately the same backend that will run in production. A validation that uses a different data path is not really validating the production system; it is validating a related but distinct system.</p>
+<p>A three-stage validation loop tends to catch problems early and cheaply, before they become expensive to debug on a large job. The first stage checks tensor parity between the original model and the exported model, as already shown in <a href="#43-calibration-lives-inside-the-model">4.3</a>. The second stage runs the UDF locally against a representative NetCDF tile, which is fast to iterate on and catches most shape, dtype, and band-order mistakes. The third stage runs the same UDF through the actual backend on a tiny, held-out area of interest, which is the only stage that can catch backend-specific surprises. Each stage is cheap relative to the next, so a problem caught early saves both time and compute.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>inputs <span class="op">=</span> xr.open_dataset(<span class="st">"results/representative_input.nc"</span>)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>inputs <span class="op">=</span> inputs.drop_vars(<span class="st">"crs"</span>, errors<span class="op">=</span><span class="st">"ignore"</span>)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>cube <span class="op">=</span> inputs.to_array(dim<span class="op">=</span><span class="st">"bands"</span>).astype(<span class="st">"float32"</span>)</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>cube <span class="op">=</span> cube.transpose(<span class="st">"bands"</span>, <span class="st">"t"</span>, <span class="st">"y"</span>, <span class="st">"x"</span>)</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>tile <span class="op">=</span> cube.isel(y<span class="op">=</span><span class="bu">slice</span>(<span class="dv">0</span>, <span class="dv">1024</span>), x<span class="op">=</span><span class="bu">slice</span>(<span class="dv">0</span>, <span class="dv">1024</span>))</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> apply_datacube(XarrayDataCube(tile), context)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Example 1: source-vs-ONNX parity check.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> torch.inference_mode():</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  source <span class="op">=</span> wrapped(data).detach().cpu().numpy()</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>session <span class="op">=</span> ort.InferenceSession(<span class="st">"encoder.onnx"</span>, providers<span class="op">=</span>[<span class="st">"CPUExecutionProvider"</span>])</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>exported <span class="op">=</span> session.run(<span class="va">None</span>, {<span class="st">"data"</span>: data.numpy()})[<span class="dv">0</span>]</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> source.shape <span class="op">==</span> exported.shape</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> np.allclose(source, exported, rtol<span class="op">=</span><span class="fl">1e-4</span>, atol<span class="op">=</span><span class="fl">1e-5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Example 2: local UDF test on an openEO-generated cube.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> udf <span class="im">import</span> apply_datacube</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>inputs <span class="op">=</span> xr.open_dataset(<span class="st">"results/representative_input.nc"</span>)</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>cube <span class="op">=</span> inputs.to_array(dim<span class="op">=</span><span class="st">"bands"</span>).astype(<span class="st">"float32"</span>).transpose(<span class="st">"bands"</span>, <span class="st">"t"</span>, <span class="st">"y"</span>, <span class="st">"x"</span>)</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>tile <span class="op">=</span> cube.isel(y<span class="op">=</span><span class="bu">slice</span>(<span class="dv">0</span>, <span class="dv">1024</span>), x<span class="op">=</span><span class="bu">slice</span>(<span class="dv">0</span>, <span class="dv">1024</span>))</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> apply_datacube(tile, context)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Example 3: tiny CDSE smoke run before scaling.</p>
+<p>Start with a very small area (around 1x1 km), verify the output, and then scale up in small steps.</p>
+<p>During this phase, add enough logging inside the UDF. You can retrieve these logs in the openEO Web Editor (https://editor.openeo.org/) and quickly see what worked and what failed. Logging is especially valuable here because the UDF runs remotely and you cannot attach a debugger; the logs are your only window into what the code actually did.</p>
+<p>Once the model runs reliably, expand the extent gradually. At some point you will likely hit OOM issues. When that happens, increasing Python memory or executor memory overhead is usually the first thing to try. If that is not enough, reach out through the Copernicus Data Space Ecosystem forum (https://forum.dataspace.copernicus.eu/) for upscaling support, or get in touch with ESA APEx, which provides algorithm support services (https://apex.esa.int/algorithm-support).</p>
+<p>See <a href="#41-user-defined-functions-the-integration-point">4.1</a> for how UDF runtimes, inline dependencies, and dependency archives work.</p>
+</section>
+<section id="upscaling-and-performance-tuning" class="level2">
+<h2 class="anchored" data-anchor-id="upscaling-and-performance-tuning">9. Upscaling and performance tuning</h2>
+<section id="incremental-scaling-strategy" class="level3">
+<h3 class="anchored" data-anchor-id="incremental-scaling-strategy">9.1 Incremental scaling strategy</h3>
+<p>Scaling up is best done in phases rather than in one jump from a tiny test to the full operational extent. Start with a tiny area of interest and a short time period, keep that area fixed while you tune job options, and only then start increasing area and time range gradually. After each step, check coverage, output quality, and runtime before moving to the next one.</p>
+<p>In practice, this incremental approach pairs well with the <a href="https://open-eo.github.io/openeo-python-client/cookbook/job_manager.html"><code>MultiBackendJobManager</code></a>, which is built specifically for running and tracking large numbers of batch jobs rather than babysitting them one at a time. Instead of manually looping over areas or job options and keeping track of what succeeded, you describe the work as a small table, one row per job, and let the manager submit, poll, retry, and download results for you. For a scaling sweep, describe the areas and memory settings as rows and let the manager run them:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> openeo.extra.job_management <span class="im">import</span> MultiBackendJobManager, create_job_db</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> square_extent(km: <span class="bu">float</span>) <span class="op">-&gt;</span> <span class="bu">dict</span>:</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Rough degree-based AOI for small scaling tests. Use a projected grid in production."""</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>    d <span class="op">=</span> km <span class="op">/</span> <span class="fl">111.0</span></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">"west"</span>: <span class="fl">5.00</span>,</span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">"south"</span>: <span class="fl">51.00</span>,</span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>        <span class="st">"east"</span>: <span class="fl">5.00</span> <span class="op">+</span> d,</span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>        <span class="st">"north"</span>: <span class="fl">51.00</span> <span class="op">+</span> d,</span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>        <span class="st">"crs"</span>: <span class="st">"EPSG:4326"</span>,</span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a>scales <span class="op">=</span> [</span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a>    {<span class="st">"label"</span>: <span class="st">"1km"</span>,  <span class="st">"spatial_extent"</span>: square_extent(<span class="dv">1</span>),  <span class="st">"executor-memoryOverhead"</span>: <span class="st">"1g"</span>},</span>
+<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a>    {<span class="st">"label"</span>: <span class="st">"2km"</span>,  <span class="st">"spatial_extent"</span>: square_extent(<span class="dv">2</span>),  <span class="st">"executor-memoryOverhead"</span>: <span class="st">"1g"</span>},</span>
+<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a>    {<span class="st">"label"</span>: <span class="st">"5km"</span>,  <span class="st">"spatial_extent"</span>: square_extent(<span class="dv">5</span>),  <span class="st">"executor-memoryOverhead"</span>: <span class="st">"2g"</span>},</span>
+<span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a>    {<span class="st">"label"</span>: <span class="st">"10km"</span>, <span class="st">"spatial_extent"</span>: square_extent(<span class="dv">10</span>), <span class="st">"executor-memoryOverhead"</span>: <span class="st">"2g"</span>},</span>
+<span id="cb27-22"><a href="#cb27-22" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb27-23"><a href="#cb27-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-24"><a href="#cb27-24" aria-hidden="true" tabindex="-1"></a>job_db <span class="op">=</span> create_job_db(<span class="st">"scaling_jobs.csv"</span>, df<span class="op">=</span>pd.DataFrame(scales))</span>
+<span id="cb27-25"><a href="#cb27-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-26"><a href="#cb27-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-27"><a href="#cb27-27" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> start_job(row, connection, <span class="op">**</span>kwargs):</span>
+<span id="cb27-28"><a href="#cb27-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> connection.load_collection(</span>
+<span id="cb27-29"><a href="#cb27-29" aria-hidden="true" tabindex="-1"></a>        <span class="st">"SENTINEL2_L2A"</span>,</span>
+<span id="cb27-30"><a href="#cb27-30" aria-hidden="true" tabindex="-1"></a>        spatial_extent<span class="op">=</span>row[<span class="st">"spatial_extent"</span>],</span>
+<span id="cb27-31"><a href="#cb27-31" aria-hidden="true" tabindex="-1"></a>        temporal_extent<span class="op">=</span>[<span class="st">"2024-04-01"</span>, <span class="st">"2024-09-30"</span>],</span>
+<span id="cb27-32"><a href="#cb27-32" aria-hidden="true" tabindex="-1"></a>        bands<span class="op">=</span>[<span class="st">"B02"</span>, <span class="st">"B03"</span>, <span class="st">"B04"</span>, <span class="st">"B08"</span>],</span>
+<span id="cb27-33"><a href="#cb27-33" aria-hidden="true" tabindex="-1"></a>    ).execute_batch(</span>
+<span id="cb27-34"><a href="#cb27-34" aria-hidden="true" tabindex="-1"></a>        out_format<span class="op">=</span><span class="st">"GTiff"</span>,</span>
+<span id="cb27-35"><a href="#cb27-35" aria-hidden="true" tabindex="-1"></a>        title<span class="op">=</span><span class="ss">f"scale_</span><span class="sc">{</span>row[<span class="st">'label'</span>]<span class="sc">}</span><span class="ss">"</span>,</span>
+<span id="cb27-36"><a href="#cb27-36" aria-hidden="true" tabindex="-1"></a>        job_options<span class="op">=</span>{</span>
+<span id="cb27-37"><a href="#cb27-37" aria-hidden="true" tabindex="-1"></a>            <span class="st">"executor-memoryOverhead"</span>: row[<span class="st">"executor-memoryOverhead"</span>],</span>
+<span id="cb27-38"><a href="#cb27-38" aria-hidden="true" tabindex="-1"></a>        },</span>
+<span id="cb27-39"><a href="#cb27-39" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb27-40"><a href="#cb27-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-41"><a href="#cb27-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-42"><a href="#cb27-42" aria-hidden="true" tabindex="-1"></a>manager <span class="op">=</span> MultiBackendJobManager()</span>
+<span id="cb27-43"><a href="#cb27-43" aria-hidden="true" tabindex="-1"></a>manager.add_backend(<span class="st">"cdse"</span>, connection<span class="op">=</span>connection, parallel_jobs<span class="op">=</span><span class="dv">4</span>)</span>
+<span id="cb27-44"><a href="#cb27-44" aria-hidden="true" tabindex="-1"></a>manager.run_jobs(job_db<span class="op">=</span>job_db, start_job<span class="op">=</span>start_job)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Because the job database is persisted to disk (as CSV or Parquet), the whole run can be interrupted and resumed later with <code>get_job_db()</code> without losing track of which tiles already finished, which is exactly the kind of bookkeeping that becomes tedious to do by hand once you are past a handful of jobs.</p>
+</section>
+<section id="tune-job-options-empirically" class="level3">
+<h3 class="anchored" data-anchor-id="tune-job-options-empirically">9.2 Tune job options empirically</h3>
+<p>Job options rarely have one obviously correct setting, so it helps to start from a conservative baseline and vary one parameter at a time rather than guessing at a large combination upfront. Changing multiple parameters at once makes it impossible to attribute a change in runtime or success rate to any particular setting, which turns tuning into guesswork.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>base_job_options <span class="op">=</span> {</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"driver-memory"</span>: <span class="st">"2g"</span>,</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"driver-memoryOverhead"</span>: <span class="st">"2g"</span>,</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"executor-memory"</span>: <span class="st">"3g"</span>,</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"executor-memoryOverhead"</span>: <span class="st">"2g"</span>,</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"python-memory"</span>: <span class="st">"3g"</span>,</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"max-executors"</span>: <span class="dv">15</span>,</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"executor-cores"</span>: <span class="st">"1"</span>,</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"executor-task-cpus"</span>: <span class="st">"1"</span>,</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"udf-dependency-archives"</span>: [<span class="ss">f"</span><span class="sc">{</span>ONNX_DEPS_URL<span class="sc">}</span><span class="ss">#onnx_deps"</span>],</span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>parameter_variations <span class="op">=</span> [</span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a>    {<span class="st">"driver-memory"</span>: <span class="st">"1g"</span>},</span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>    {<span class="st">"driver-memory"</span>: <span class="st">"3g"</span>},</span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a>    {<span class="st">"executor-memory"</span>: <span class="st">"2g"</span>},</span>
+<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a>    {<span class="st">"max-executors"</span>: <span class="dv">10</span>},</span>
+<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a>    {<span class="st">"max-executors"</span>: <span class="dv">20</span>},</span>
+<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="use-a-job-manager-for-variation-sweeps" class="level3">
+<h3 class="anchored" data-anchor-id="use-a-job-manager-for-variation-sweeps">9.3 Use a job manager for variation sweeps</h3>
+<p>Once you are comparing more than a couple of variations, a job manager is worth the setup over ad-hoc manual runs, since it makes the comparison reproducible: the same area of interest and time range stay constant, and only one option changes per run. For each sweep run it is worth tracking the variation label, the resolved options, the job id and status, runtime and backend metrics such as CPU or memory billing indicators, and basic output sanity checks like coverage, no-data share, and value range. Failed runs are not wasted effort here either; they are useful evidence of lower bounds and deserve to stay in the comparison table rather than being discarded.</p>
+<p>The sweep below is written as a plain loop to keep the idea visible, but it is really a miniature version of what the <a href="#91-incremental-scaling-strategy"><code>MultiBackendJobManager</code></a> does for you: a dataframe of variations, a <code>start_job</code> callback, and a column of resulting job ids. For anything beyond a handful of variations, running it through the actual job manager gets you retries, resumability, and parallel submission for free instead of having to add them by hand.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> copy <span class="im">import</span> deepcopy</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> []</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, variation <span class="kw">in</span> <span class="bu">enumerate</span>(parameter_variations, start<span class="op">=</span><span class="dv">1</span>):</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>  opts <span class="op">=</span> deepcopy(base_job_options)</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>  opts.update(variation)</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>  job <span class="op">=</span> pred.execute_batch(</span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>    out_format<span class="op">=</span><span class="st">"GTiff"</span>,</span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="ss">f"sweep_</span><span class="sc">{</span>i<span class="sc">:02d}</span><span class="ss">"</span>,</span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>    job_options<span class="op">=</span>opts,</span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>  results.append({</span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"label"</span>: <span class="ss">f"sweep_</span><span class="sc">{</span>i<span class="sc">:02d}</span><span class="ss">"</span>,</span>
+<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"variation"</span>: variation,</span>
+<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">"job_id"</span>: job.job_id,</span>
+<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a>  })</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>pd.DataFrame(results).to_csv(<span class="st">"sweep_runs.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="udf-profiling-before-infrastructure-changes" class="level3">
+<h3 class="anchored" data-anchor-id="udf-profiling-before-infrastructure-changes">9.4 UDF profiling before infrastructure changes</h3>
+<p>Before reaching for bigger executors or more memory, it is worth checking whether the UDF itself is the bottleneck. Useful tools include:</p>
+<ul>
+<li><code>time.perf_counter()</code> plus <code>logging</code> for coarse stage timing.</li>
+<li><code>cProfile</code> + <code>pstats</code> for function-level CPU profiling.</li>
+<li><code>line_profiler</code> (<code>kernprof -l -v</code>) for line-level hotspots.</li>
+<li><code>memory_profiler</code> (<code>@profile</code>) for peak memory and per-line allocations.</li>
+<li><code>tracemalloc</code> for Python allocation snapshots.</li>
+<li><code>py-spy</code> for sampling remote or long-running processes where instrumentation is awkward.</li>
+</ul>
+<p>In a UDF, keep profiling opt-in via an environment variable or job option, and log timings for model load, preprocessing, inference, and postprocessing separately.</p>
+</section>
+</section>
+<section id="related-references" class="level2">
+<h2 class="anchored" data-anchor-id="related-references">Related references</h2>
+<ul>
+<li><a href="../documentation/cube_operations/machine_learning.html">Machine Learning</a></li>
+<li><a href="../documentation/cube_operations/udf.html">User Defined Functions</a></li>
+<li><a href="../documentation/cube_operations/udp.html">User Defined Processes</a></li>
+<li><a href="../documentation/cube_operations/execute_jobs.html">Execute openEO Jobs</a></li>
+<li><a href="../documentation/data_discovery.html">Data Discovery</a></li>
+<li><a href="https://github.com/Open-EO/openeo-community-examples/tree/main/python/60_geospatial-embeddings">openEO community examples: geospatial embeddings</a></li>
+<li><a href="https://www.eotdl.com/">EOTDL</a></li>
+</ul>
+
+
+</section>
+
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/open-eo\.github\.io\/openeo-docs\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
